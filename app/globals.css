@@ -94,3 +94,15 @@
 .sidebar-routes {
   height:calc(100vh - 120px);
 }
+
+.dashboard-main {
+  min-height:calc(100vh - 108px);
+}
+
+.text-voilet {
+  color: #6c5dd3;
+}
+
+.bg-voilet {
+  background-color: #6c5dd3;
+}

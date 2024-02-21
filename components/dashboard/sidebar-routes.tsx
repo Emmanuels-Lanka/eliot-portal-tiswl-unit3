@@ -9,10 +9,6 @@ import { Separator } from '@/components/ui/separator';
 
 const SidebarRoutes = () => {
     const pathname = usePathname();
-    const urlPath = pathname.substring(pathname.lastIndexOf('/') + 0);
-
-    console.log(urlPath);
-    
 
     return (
         <>
@@ -29,7 +25,7 @@ const SidebarRoutes = () => {
                                     key={route.href}
                                     className={cn(
                                         "flex flex-row items-center px-3 py-2.5 gap-3 text-slate-200/80 hover:text-slate-200 hover:bg-white/10 rounded-sm cursor-pointer transition",
-                                        route.href === urlPath && "text-slate-200 bg-white/10"
+                                        route.href === pathname && "text-slate-200 bg-white/10"
                                     )}
                                 >
                                     <route.icon className="w-5 h-5" />
