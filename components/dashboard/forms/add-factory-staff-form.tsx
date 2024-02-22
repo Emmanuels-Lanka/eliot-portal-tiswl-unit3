@@ -26,39 +26,42 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { cn } from "@/lib/utils";
 
+const phoneRegex = new RegExp(
+    /^([+]?[\s0-9]+)?(\d{3}|[(]?[0-9]+[)])?([-]?[\s]?[0-9])+$/
+);
+
 const formSchema = z.object({
-    productionUnit: z.string().min(1, {
-        message: "Production Unit is required"
+    designation: z.string().min(1, {
+        message: "Designation is required"
     }),
-    machineType: z.string().min(1, {
-        message: "Machine Type is required"
+    employeeId: z.number({
+        required_error: "Employee ID is required",
+        invalid_type_error: "Employee ID must be a number",
     }),
-    sewingMachineSerialNumber: z.string().min(1, {
-        message: "Sewing Machine Serial Number is required"
+    name: z.string().min(1, {
+        message: "Name is required"
     }),
-    sewingMachineId: z.string().min(1, {
-        message: "Sewing Machine ID is required"
+    rfid: z.string().min(1, {
+        message: "RFID is required"
     }),
-    eliotDevice: z.string().min(1, {
-        message: "Eliot Device is required"
-    }),
-    ownership: z.string().min(1, {
-        message: "Machine Type is required"
-    }),
+    phone: z.string().regex(phoneRegex, 'Invalid Phone Number!'),
+    email: z.string().min(1, {
+        message: "Gender is required"
+    }).email("This is not a valid email!"),
 });
 
-const AddSewingMachineForm = () => {
+const AddFactoryStaffForm = () => {
     const { toast } = useToast();
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            productionUnit: "",
-            machineType: "",
-            sewingMachineSerialNumber: "",
-            sewingMachineId: "",
-            eliotDevice: "",
-            ownership: ""
+            designation: "",
+            employeeId: undefined,
+            name: "",
+            rfid: "OP-",
+            phone: "",
+            email: "",
         },
     });
 
@@ -102,26 +105,55 @@ const AddSewingMachineForm = () => {
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-6 gap-y-8">
                         <FormField
                             control={form.control}
-                            name="productionUnit"
+                            name="designation"
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel className="text-base">
-                                        Production Unit
+                                        Designation
                                     </FormLabel>
                                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                                         <FormControl>
                                             <SelectTrigger>
-                                                <SelectValue placeholder="Select production unit" />
+                                                <SelectValue placeholder="Select designation" />
                                             </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
-                                            <SelectItem value="unit1">Unit 1</SelectItem>
-                                            <SelectItem value="unit2">Unit 2</SelectItem>
-                                            <SelectItem value="unit3">Unit 3</SelectItem>
-                                            <SelectItem value="unit4">Unit 4</SelectItem>
-                                            <SelectItem value="unit5">Unit 5</SelectItem>
+                                            <SelectItem value="supervisor">Supervisor</SelectItem>
+                                            <SelectItem value="mechanics">Mechanics</SelectItem>
+                                            <SelectItem value="quality-inspector">Quality Inspector</SelectItem>
+                                            <SelectItem value="accessories-input-man">Accessories Input man</SelectItem>
+                                            <SelectItem value="fabric-input-man">Fabric Input man</SelectItem>
+                                            <SelectItem value="production-manager">Production Manager</SelectItem>
+                                            <SelectItem value="mechanics-manager">Mechanics Manager</SelectItem>
+                                            <SelectItem value="industrial-engineer">Industrial Engineer</SelectItem>
                                         </SelectContent>
                                     </Select>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        
+                        <FormField
+                            control={form.control}
+                            name="employeeId"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel className="text-base">
+                                        Employee ID
+                                    </FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            type="number"
+                                            className="hide-steps-number-input"
+                                            disabled={isSubmitting}
+                                            placeholder="e.g. '1234'"
+                                            {...field}
+                                            onChange={(e) => {
+                                                const employeeId: number = parseInt(e.target.value);
+                                                form.setValue('employeeId', employeeId, { shouldValidate: true, shouldDirty: true });
+                                            }}
+                                        />
+                                    </FormControl>
                                     <FormMessage />
                                 </FormItem>
                             )}
@@ -129,36 +161,19 @@ const AddSewingMachineForm = () => {
 
                         <FormField
                             control={form.control}
-                            name="machineType"
+                            name="name"
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel className="text-base">
-                                        Machine Type
+                                        Name with Initial
                                     </FormLabel>
-                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                        <FormControl>
-                                            <SelectTrigger>
-                                                <SelectValue placeholder="Select machine type" />
-                                            </SelectTrigger>
-                                        </FormControl>
-                                        <SelectContent>
-                                            <SelectItem value="ol5t">OL5T</SelectItem>
-                                            <SelectItem value="dnls">DNLS</SelectItem>
-                                            <SelectItem value="snls">SNLS</SelectItem>
-                                            <SelectItem value="ol3t">OL3T</SelectItem>
-                                            <SelectItem value="fl">FL</SelectItem>
-                                            <SelectItem value="ks">KS</SelectItem>
-                                            <SelectItem value="hw">HW</SelectItem>
-                                            <SelectItem value="snap">SNAP</SelectItem>
-                                            <SelectItem value="foa">FOA</SelectItem>
-                                            <SelectItem value="iron">IRON</SelectItem>
-                                            <SelectItem value="snec">SNEC</SelectItem>
-                                            <SelectItem value="sncs">SNCS</SelectItem>
-                                            <SelectItem value="eh">EH</SelectItem>
-                                            <SelectItem value="dna">DNA</SelectItem>
-                                            <SelectItem value="bt">BT</SelectItem>
-                                        </SelectContent>
-                                    </Select>
+                                    <FormControl>
+                                        <Input
+                                            disabled={isSubmitting}
+                                            placeholder="e.g. 'V. Vinojan'"
+                                            {...field}
+                                        />
+                                    </FormControl>
                                     <FormMessage />
                                 </FormItem>
                             )}
@@ -166,11 +181,11 @@ const AddSewingMachineForm = () => {
 
                         <FormField
                             control={form.control}
-                            name="sewingMachineSerialNumber"
+                            name="rfid"
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel className="text-base">
-                                        Sewing Machine Serial Number / Model Number
+                                        RFID
                                     </FormLabel>
                                     <FormControl>
                                         <Input
@@ -186,16 +201,17 @@ const AddSewingMachineForm = () => {
 
                         <FormField
                             control={form.control}
-                            name="sewingMachineId"
+                            name="phone"
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel className="text-base">
-                                    Sewing Machine ID
+                                        Phone
                                     </FormLabel>
                                     <FormControl>
                                         <Input
+                                            type="tel"
                                             disabled={isSubmitting}
-                                            placeholder="e.g. 'xxxxx'"
+                                            placeholder="e.g. '0771234567'"
                                             {...field}
                                         />
                                     </FormControl>
@@ -206,47 +222,20 @@ const AddSewingMachineForm = () => {
 
                         <FormField
                             control={form.control}
-                            name="eliotDevice"
+                            name="email"
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel className="text-base">
-                                        Production Unit
+                                        Email
                                     </FormLabel>
-                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                        <FormControl>
-                                            <SelectTrigger>
-                                                <SelectValue placeholder="Select production unit" />
-                                            </SelectTrigger>
-                                        </FormControl>
-                                        <SelectContent>
-                                            <SelectItem value="device1">Device 1</SelectItem>
-                                            <SelectItem value="device2">Device 2</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-
-                        <FormField
-                            control={form.control}
-                            name="ownership"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel className="text-base">
-                                        Ownership
-                                    </FormLabel>
-                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                        <FormControl>
-                                            <SelectTrigger>
-                                                <SelectValue placeholder="Select the ownership" />
-                                            </SelectTrigger>
-                                        </FormControl>
-                                        <SelectContent>
-                                            <SelectItem value="rented">Rented</SelectItem>
-                                            <SelectItem value="owned">Owned</SelectItem>
-                                        </SelectContent>
-                                    </Select>
+                                    <FormControl>
+                                        <Input
+                                            type="email"
+                                            disabled={isSubmitting}
+                                            placeholder="e.g. 'example@gmail.com'"
+                                            {...field}
+                                        />
+                                    </FormControl>
                                     <FormMessage />
                                 </FormItem>
                             )}
@@ -263,7 +252,7 @@ const AddSewingMachineForm = () => {
                         >
                             <Zap className={cn("w-5 h-5", isSubmitting && "hidden")} />
                             <Loader2 className={cn("animate-spin w-5 h-5 hidden", isSubmitting && "flex")} />
-                            Add Machine
+                            Add Staff
                         </Button>
                     </div>
                 </form>
@@ -272,4 +261,4 @@ const AddSewingMachineForm = () => {
     )
 }
 
-export default AddSewingMachineForm
+export default AddFactoryStaffForm

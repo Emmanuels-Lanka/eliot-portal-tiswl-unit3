@@ -14,30 +14,48 @@ import {
     FormLabel,
     FormMessage,
 } from "@/components/ui/form";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { cn } from "@/lib/utils";
 
 const formSchema = z.object({
-    serialNumber: z.string().min(1, {
-        message: "Serial Number is required"
+    employeeId: z.number({
+        required_error: "Employee ID is required",
+        invalid_type_error: "Employee ID must be a number",
     }),
-    modelNumber: z.string().min(1, {
-        message: "Model Number is required"
+    rfid: z.string().min(1, {
+        message: "RFID is required"
     }),
-    installedDate: z.date(),
+    name: z.string().min(1, {
+        message: "Name is required"
+    }),
+    gender: z.string().min(1, {
+        message: "Gender is required"
+    }),
+    designation: z.string().min(1, {
+        message: "Designation is required"
+    }),
 });
 
-const AddEliotDeviceForm = () => {
+const AddSewingOperatorForm = () => {
     const { toast } = useToast();
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            serialNumber: "ELIoT-",
-            modelNumber: "",
-            installedDate: undefined,
+            employeeId: undefined,
+            rfid: "OP-",
+            name: "",
+            gender: "",
+            designation: ""
         },
     });
 
@@ -78,68 +96,118 @@ const AddEliotDeviceForm = () => {
                     onSubmit={form.handleSubmit(onSubmit)}
                     className="w-full space-y-6 mt-4"
                 >
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-6 gap-y-8">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-8">
                         <FormField
                             control={form.control}
-                            name="serialNumber"
+                            name="employeeId"
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel className="text-base">
-                                        Serial Number
+                                        Employee ID
                                     </FormLabel>
                                     <FormControl>
                                         <Input
+                                            type="number"
+                                            className="hide-steps-number-input"
                                             disabled={isSubmitting}
-                                            placeholder="e.g. 'ELIoT-xxx'"
+                                            placeholder="e.g. '1234'"
                                             {...field}
-                                        />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-
-                        <FormField
-                            control={form.control}
-                            name="modelNumber"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel className="text-base">
-                                        Model Number
-                                    </FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            disabled={isSubmitting}
-                                            placeholder="e.g. 'ELIOTXXXX'"
-                                            {...field}
-                                        />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-
-                        <FormField
-                            control={form.control}
-                            name="installedDate"
-                            render={({ field }: { field: FieldValues['fields']['date'] }) => (
-                                <FormItem>
-                                    <FormLabel className="text-base">
-                                        Installed Date
-                                    </FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            type="date"
-                                            disabled={isSubmitting}
-                                            placeholder="Enter installed date."
-                                            {...field}
-                                            value={field.value instanceof Date ? field.value.toISOString().split('T')[0] : ''}
                                             onChange={(e) => {
-                                                const selectedDate = new Date(e.target.value);
-                                                form.setValue('installedDate', selectedDate, { shouldValidate: true, shouldDirty: true });
+                                                const employeeId: number = parseInt(e.target.value);
+                                                form.setValue('employeeId', employeeId, { shouldValidate: true, shouldDirty: true });
                                             }}
                                         />
                                     </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+
+                        <FormField
+                            control={form.control}
+                            name="rfid"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel className="text-base">
+                                        RFID
+                                    </FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            disabled={isSubmitting}
+                                            placeholder="e.g. 'xxxxxxx'"
+                                            {...field}
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+
+                        <FormField
+                            control={form.control}
+                            name="name"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel className="text-base">
+                                        Name with Initial
+                                    </FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            disabled={isSubmitting}
+                                            placeholder="e.g. 'V. Vinojan'"
+                                            {...field}
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+
+                        <FormField
+                            control={form.control}
+                            name="gender"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel className="text-base">
+                                        Gender
+                                    </FormLabel>
+                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                        <FormControl>
+                                            <SelectTrigger>
+                                                <SelectValue placeholder="Select gender" />
+                                            </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                            <SelectItem value="male">Male</SelectItem>
+                                            <SelectItem value="female">Female</SelectItem>
+                                            <SelectItem value="other">Other</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+
+                        <FormField
+                            control={form.control}
+                            name="designation"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel className="text-base">
+                                        Designation
+                                    </FormLabel>
+                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                        <FormControl>
+                                            <SelectTrigger>
+                                                <SelectValue placeholder="Select designation" />
+                                            </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                            <SelectItem value="junior-operator">Junior Operator</SelectItem>
+                                            <SelectItem value="operator">Operator</SelectItem>
+                                            <SelectItem value="senior-operator">Senior Operator</SelectItem>
+                                        </SelectContent>
+                                    </Select>
                                     <FormMessage />
                                 </FormItem>
                             )}
@@ -156,7 +224,7 @@ const AddEliotDeviceForm = () => {
                         >
                             <Zap className={cn("w-5 h-5", isSubmitting && "hidden")} />
                             <Loader2 className={cn("animate-spin w-5 h-5 hidden", isSubmitting && "flex")} />
-                            Add Device
+                            Add Operator
                         </Button>
                     </div>
                 </form>
@@ -165,4 +233,4 @@ const AddEliotDeviceForm = () => {
     )
 }
 
-export default AddEliotDeviceForm
+export default AddSewingOperatorForm
