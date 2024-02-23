@@ -3,7 +3,10 @@ import {
     Blocks, 
     Cog, 
     LayoutDashboard, 
+    LayoutPanelTop, 
+    PlusSquare, 
     ScissorsLineDashed,
+    Settings,
     UserRoundCog,
     UserRoundPlus
 } from "lucide-react";
@@ -140,4 +143,53 @@ export const SIDEBAR_ROUTES = [
             },
         ]
     }
+];
+
+export const HEADER_INFO = [
+    {
+        label: "Dashboard",
+        href: '/dashboard',
+        icon: LayoutPanelTop
+    },
+    {
+        label: "Add ELIoT Devices",
+        href: "/eliot-devices/create-new",
+        icon: PlusSquare
+    },
+    {
+        label: "Manage ELIoT Devices",
+        href: "/eliot-devices",
+        icon: Settings
+    },
+    {
+        label: "Add Sewing Machines",
+        href: "/sewing-machines/create-new",
+        icon: PlusSquare
+    },
+    {
+        label: "Manage Sewing Machines",
+        href: "/sewing-machines",
+        icon: Settings
+    },
+    {
+        label: "Add Sewing Operators",
+        href: "/sewing-operators/create-new",
+        icon: UserRoundPlus
+    },
+    {
+        label: "Manage Sewing Operators",
+        href: "/sewing-operators",
+        icon: UserRoundCog
+    },
+    
+    {
+        label: "Add Factory Staff",
+        href: "/factory-staff/create-new",
+        icon: UserRoundPlus
+    },
+    {
+        label: "Manage Factory Staff",
+        href: "/factory-staff",
+        icon: UserRoundCog
+    },
 ]
