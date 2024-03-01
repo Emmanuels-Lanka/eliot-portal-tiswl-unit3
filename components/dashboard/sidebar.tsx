@@ -15,7 +15,7 @@ const Sidebar = () => {
                         height={90}
                     />
                 </div>
-                <div className="w-full overflow-y-auto sidebar-routes">
+                <div className="w-full mt-4 overflow-y-auto sidebar-routes">
                     <SidebarRoutes />
                 </div>
             </div>
