@@ -3,8 +3,10 @@
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FieldValues, useForm } from "react-hook-form";
-import { useState } from "react";
-import { Check, Loader2, Plus, Zap } from "lucide-react";
+import axios from "axios";
+import { useRouter } from "next/navigation";
+import { Loader2, Zap } from "lucide-react";
+import { EliotDevice } from "@prisma/client";
 
 import {
     Form,
@@ -19,6 +21,12 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { cn } from "@/lib/utils";
 
+interface AddEliotDeviceFormProps {
+    initialData?: EliotDevice | null;
+    deviceId?: string;
+    mode?: string;
+}
+
 const formSchema = z.object({
     serialNumber: z.string().min(1, {
         message: "Serial Number is required"
@@ -29,45 +37,94 @@ const formSchema = z.object({
     installedDate: z.date(),
 });
 
-const AddEliotDeviceForm = () => {
+const AddEliotDeviceForm = ({
+    initialData,
+    deviceId,
+    mode
+}: AddEliotDeviceFormProps) => {
     const { toast } = useToast();
+    const router = useRouter();
+
+    // Type: String to Date
+    const formatedDate = initialData?.installedDate ? new Date(initialData.installedDate) : undefined
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            serialNumber: "ELIoT-",
-            modelNumber: "",
-            installedDate: undefined,
+            serialNumber: initialData?.serialNumber || "ELIoT-",
+            modelNumber: initialData?.modelNumber || "",
+            installedDate: formatedDate || undefined,
         },
     });
 
     const { isSubmitting, isValid } = form.formState;
 
     const onSubmit = async (data: z.infer<typeof formSchema>) => {
-        try {
-            // Data store api
-            toast({
-                title: "DATA",
-                description: (
-                    <div className='mt-2 bg-slate-200 py-2 px-3 md:w-[336px] rounded-md'>
-                        <code className="text-slate-800">
-                            {JSON.stringify(data, null, 2)}
-                        </code>
-                    </div>
-                ),
-            });
-            // form.reset();
-        } catch (error: any) {
-            toast({
-                title: "Something went wrong!",
-                description: (
-                    <div className='mt-2 bg-slate-200 py-2 px-3 md:w-[336px] rounded-md'>
-                        <code className="text-slate-800">
-                            ERROR: {error.message}
-                        </code>
-                    </div>
-                ),
-            });
+        if (mode && mode === 'create') {
+            try {
+                const res = await axios.post('/api/eliot-device', data);
+                toast({
+                    title: "Successfully created new device",
+                    variant: "success",
+                    description: (
+                        <div className='mt-2 bg-slate-200 py-2 px-3 md:w-[336px] rounded-md'>
+                            <code className="text-slate-800">
+                                Serial No: {res.data.data.serialNumber}
+                            </code>
+                        </div>
+                    ),
+                });
+                router.refresh();
+                form.reset();
+            } catch (error: any) {
+                if (error.response && error.response.status === 409) {
+                    toast({
+                        title: error.response.data,
+                        variant: "error"
+                    });
+                } else {
+                    toast({
+                        title: "Something went wrong! Try again",
+                        variant: "error",
+                        description: (
+                            <div className='mt-2 bg-slate-200 py-2 px-3 md:w-[336px] rounded-md'>
+                                <code className="text-slate-800">
+                                    ERROR: {error.message}
+                                </code>
+                            </div>
+                        ),
+                    });
+                }
+            }
+        } else {
+            try {
+                const res = await axios.put(`/api/eliot-device/${deviceId}`, data);
+                toast({
+                    title: "Updated successfully",
+                    variant: "success",
+                });
+                router.refresh();
+                router.push('/eliot-devices');
+            } catch (error: any) {
+                if (error.response && error.response.status === 409) {
+                    toast({
+                        title: error.response.data,
+                        variant: "error"
+                    });
+                } else {
+                    toast({
+                        title: "Something went wrong! Try again",
+                        variant: "error",
+                        description: (
+                            <div className='mt-2 bg-slate-200 py-2 px-3 md:w-[336px] rounded-md'>
+                                <code className="text-slate-800">
+                                    ERROR: {error.message}
+                                </code>
+                            </div>
+                        ),
+                    });
+                }
+            }
         }
     }
 
@@ -145,10 +202,22 @@ const AddEliotDeviceForm = () => {
                             )}
                         />
                     </div>
-                    <div className="mt-4 flex justify-between gap-2">
-                        <Button variant='outline' className="flex gap-2 pr-5" onClick={() => form.reset()}>
-                            Reset
-                        </Button>
+                    {mode && mode === 'create' ? 
+                        <div className="mt-4 flex justify-between gap-2">
+                            <Button variant='outline' className="flex gap-2 pr-5" onClick={() => form.reset()}>
+                                Reset
+                            </Button>
+                            <Button
+                                type="submit"
+                                disabled={!isValid || isSubmitting}
+                                className="flex gap-2 pr-5"
+                            >
+                                <Zap className={cn("w-5 h-5", isSubmitting && "hidden")} />
+                                <Loader2 className={cn("animate-spin w-5 h-5 hidden", isSubmitting && "flex")} />
+                                Add Device
+                            </Button>
+                        </div>
+                        :
                         <Button
                             type="submit"
                             disabled={!isValid || isSubmitting}
@@ -156,9 +225,9 @@ const AddEliotDeviceForm = () => {
                         >
                             <Zap className={cn("w-5 h-5", isSubmitting && "hidden")} />
                             <Loader2 className={cn("animate-spin w-5 h-5 hidden", isSubmitting && "flex")} />
-                            Add Device
+                            Update
                         </Button>
-                    </div>
+                    }
                 </form>
             </Form>
         </div>

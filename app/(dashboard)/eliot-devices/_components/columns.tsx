@@ -1,7 +1,8 @@
 "use client"
 
 import { useState } from "react";
-import { ArrowUpDown, MoreHorizontal, Loader2, Trash2, Edit } from "lucide-react";
+import Link from "next/link";
+import { ArrowUpDown, Loader2, Trash2, Edit } from "lucide-react";
 import axios from "axios";
 import { EliotDevice } from "@prisma/client"
 import { useRouter } from "next/navigation";
@@ -12,40 +13,46 @@ import ConfirmModel from "@/components/model/confirm-model";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
-import Link from "next/link";
 
 const ActionCell = ({ row }: { row: any }) => {
-    const { id } = row.original;        // temperature id
+    const { id } = row.original;
 
     const { toast } = useToast();
     const router = useRouter();
 
     const [isLoading, setIsLoading] = useState(false);
 
-    const onDelete = async (temperatureId: string) => {
-        //   try {
-        //     setIsLoading(true);
-        //     await axios.delete(`/api/shops/temperature/${temperatureId}`);
-        //     router.refresh();
-        //     toast({
-        //       title: "Successfully removed temperature!",
-        //       variant: 'success',
-        //     });
-        //   } catch (error: any) {
-        //     toast({
-        //       title: "⚠️ Something went wrong 👎",
-        //       variant: 'error',
-        //       description: (
-        //         <div className='mt-2 bg-slate-200 py-2 px-3 md:w-[336px] rounded-md'>
-        //           <code className="text-slate-800">
-        //             ERROR: {error.message}
-        //           </code>
-        //         </div>
-        //       ),
-        //     });
-        //   } finally {
-        //     setIsLoading(false);
-        //   }
+    const onDelete = async (deviceId: string) => {
+        try {
+            setIsLoading(true);
+            await axios.delete(`/api/eliot-device/${deviceId}`);
+            router.refresh();
+            toast({
+                title: "Successfully removed device!",
+                variant: 'success',
+            });
+        } catch (error: any) {
+            if (error.response && error.response.status === 409) {
+                toast({
+                    title: error.response.data,
+                    variant: "error"
+                });
+            } else {
+                toast({
+                    title: "Something went wrong! Try again",
+                    variant: "error",
+                    description: (
+                        <div className='mt-2 bg-slate-200 py-2 px-3 md:w-[336px] rounded-md'>
+                            <code className="text-slate-800">
+                                ERROR: {error.message}
+                            </code>
+                        </div>
+                    ),
+                });
+            }
+        } finally {
+            setIsLoading(false);
+        }
     }
 
     return (
