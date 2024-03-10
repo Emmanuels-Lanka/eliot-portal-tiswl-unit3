@@ -2,9 +2,12 @@
 
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { FieldValues, useForm } from "react-hook-form";
-import { useState } from "react";
-import { Check, Loader2, Plus, Zap } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { Loader2, Zap } from "lucide-react";
+import axios from "axios";
+import { useRouter } from "next/navigation";
+import { Operator } from "@prisma/client";
+import Link from "next/link";
 
 import {
     Form,
@@ -26,16 +29,21 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { cn } from "@/lib/utils";
 
+interface AddSewingOperatorFormProps {
+    initialData?: Operator | null;
+    operatorId?: string;
+    mode?: string;
+}
+
 const formSchema = z.object({
-    employeeId: z.number({
-        required_error: "Employee ID is required",
-        invalid_type_error: "Employee ID must be a number",
+    name: z.string().min(1, {
+        message: "Name is required"
+    }),
+    employeeId: z.string().min(1, {
+        message: "Employee Id is required"
     }),
     rfid: z.string().min(1, {
         message: "RFID is required"
-    }),
-    name: z.string().min(1, {
-        message: "Name is required"
     }),
     gender: z.string().min(1, {
         message: "Gender is required"
@@ -45,47 +53,93 @@ const formSchema = z.object({
     }),
 });
 
-const AddSewingOperatorForm = () => {
+const AddSewingOperatorForm = ({
+    initialData,
+    operatorId,
+    mode
+}: AddSewingOperatorFormProps) => {
     const { toast } = useToast();
+    const router = useRouter();
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            employeeId: undefined,
-            rfid: "OP-",
-            name: "",
-            gender: "",
-            designation: ""
+            name: initialData?.name || "",
+            employeeId: initialData?.employeeId || "",
+            rfid: initialData?.rfid || "OP-",
+            gender: initialData?.gender || "",
+            designation: initialData?.designation || ""
         },
     });
 
     const { isSubmitting, isValid } = form.formState;
 
     const onSubmit = async (data: z.infer<typeof formSchema>) => {
-        try {
-            // Data store api
-            toast({
-                title: "DATA",
-                description: (
-                    <div className='mt-2 bg-slate-200 py-2 px-3 md:w-[336px] rounded-md'>
-                        <code className="text-slate-800">
-                            {JSON.stringify(data, null, 2)}
-                        </code>
-                    </div>
-                ),
-            });
-            // form.reset();
-        } catch (error: any) {
-            toast({
-                title: "Something went wrong!",
-                description: (
-                    <div className='mt-2 bg-slate-200 py-2 px-3 md:w-[336px] rounded-md'>
-                        <code className="text-slate-800">
-                            ERROR: {error.message}
-                        </code>
-                    </div>
-                ),
-            });
+        if (mode && mode === 'create') {
+            try {
+                const res = await axios.post('/api/sewing-operator', data);
+                toast({
+                    title: "Successfully created new operator",
+                    variant: "success",
+                    description: (
+                        <div className='mt-2 bg-slate-200 py-2 px-3 md:w-[336px] rounded-md'>
+                            <code className="text-slate-800">
+                                Name: {res.data.data.name}
+                            </code>
+                        </div>
+                    ),
+                });
+                router.refresh();
+                form.reset();
+            } catch (error: any) {
+                if (error.response && error.response.status === 409) {
+                    toast({
+                        title: error.response.data,
+                        variant: "error"
+                    });
+                } else {
+                    toast({
+                        title: "Something went wrong! Try again",
+                        variant: "error",
+                        description: (
+                            <div className='mt-2 bg-slate-200 py-2 px-3 md:w-[336px] rounded-md'>
+                                <code className="text-slate-800">
+                                    ERROR: {error.message}
+                                </code>
+                            </div>
+                        ),
+                    });
+                }
+            }
+        } else {
+            try {
+                const res = await axios.put(`/api/sewing-operator/${operatorId}`, data);
+                toast({
+                    title: "Updated successfully",
+                    variant: "success",
+                });
+                router.refresh();
+                router.push('/sewing-operators');
+            } catch (error: any) {
+                if (error.response && error.response.status === 409) {
+                    toast({
+                        title: error.response.data,
+                        variant: "error"
+                    });
+                } else {
+                    toast({
+                        title: "Something went wrong! Try again",
+                        variant: "error",
+                        description: (
+                            <div className='mt-2 bg-slate-200 py-2 px-3 md:w-[336px] rounded-md'>
+                                <code className="text-slate-800">
+                                    ERROR: {error.message}
+                                </code>
+                            </div>
+                        ),
+                    });
+                }
+            }
         }
     }
 
@@ -97,6 +151,26 @@ const AddSewingOperatorForm = () => {
                     className="w-full space-y-6 mt-4"
                 >
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-8">
+
+                        <FormField
+                            control={form.control}
+                            name="name"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel className="text-base">
+                                        Name with Initial
+                                    </FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            disabled={isSubmitting}
+                                            placeholder="e.g. 'V. Vinojan'"
+                                            {...field}
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
                         <FormField
                             control={form.control}
                             name="employeeId"
@@ -107,15 +181,9 @@ const AddSewingOperatorForm = () => {
                                     </FormLabel>
                                     <FormControl>
                                         <Input
-                                            type="number"
-                                            className="hide-steps-number-input"
                                             disabled={isSubmitting}
-                                            placeholder="e.g. '1234'"
+                                            placeholder="e.g. 'OP34'"
                                             {...field}
-                                            onChange={(e) => {
-                                                const employeeId: number = parseInt(e.target.value);
-                                                form.setValue('employeeId', employeeId, { shouldValidate: true, shouldDirty: true });
-                                            }}
                                         />
                                     </FormControl>
                                     <FormMessage />
@@ -135,26 +203,6 @@ const AddSewingOperatorForm = () => {
                                         <Input
                                             disabled={isSubmitting}
                                             placeholder="e.g. 'xxxxxxx'"
-                                            {...field}
-                                        />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-
-                        <FormField
-                            control={form.control}
-                            name="name"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel className="text-base">
-                                        Name with Initial
-                                    </FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            disabled={isSubmitting}
-                                            placeholder="e.g. 'V. Vinojan'"
                                             {...field}
                                         />
                                     </FormControl>
@@ -213,20 +261,39 @@ const AddSewingOperatorForm = () => {
                             )}
                         />
                     </div>
-                    <div className="mt-4 flex justify-between gap-2">
-                        <Button variant='outline' className="flex gap-2 pr-5" onClick={() => form.reset()}>
-                            Reset
-                        </Button>
-                        <Button
-                            type="submit"
-                            disabled={!isValid || isSubmitting}
-                            className="flex gap-2 pr-5"
-                        >
-                            <Zap className={cn("w-5 h-5", isSubmitting && "hidden")} />
-                            <Loader2 className={cn("animate-spin w-5 h-5 hidden", isSubmitting && "flex")} />
-                            Add Operator
-                        </Button>
-                    </div>
+                    {mode && mode === 'create' ?
+                        <div className="mt-4 flex justify-between gap-2">
+                            <Button variant='outline' className="flex gap-2 pr-5" onClick={() => form.reset()}>
+                                Reset
+                            </Button>
+                            <Button
+                                type="submit"
+                                disabled={!isValid || isSubmitting}
+                                className="flex gap-2 pr-5"
+                            >
+                                <Zap className={cn("w-5 h-5", isSubmitting && "hidden")} />
+                                <Loader2 className={cn("animate-spin w-5 h-5 hidden", isSubmitting && "flex")} />
+                                Add Operator
+                            </Button>
+                        </div>
+                        :
+                        <div className="mt-4 flex justify-between gap-2">
+                            <Link href="/sewing-operators">
+                                <Button variant='outline' className="flex gap-2 pr-5 text-red-600">
+                                    Cancel
+                                </Button>
+                            </Link>
+                            <Button
+                                type="submit"
+                                disabled={!isValid || isSubmitting}
+                                className="flex gap-2 pr-5"
+                            >
+                                <Zap className={cn("w-5 h-5", isSubmitting && "hidden")} />
+                                <Loader2 className={cn("animate-spin w-5 h-5 hidden", isSubmitting && "flex")} />
+                                Update
+                            </Button>
+                        </div>
+                    }
                 </form>
             </Form>
         </div>

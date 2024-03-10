@@ -6,12 +6,13 @@ import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { SIDEBAR_ROUTES } from '@/constants';
 import { Separator } from '@/components/ui/separator';
+import { ScrollArea } from '../ui/scroll-area';
 
 const SidebarRoutes = () => {
     const pathname = usePathname();
 
     return (
-        <>
+        <ScrollArea className='h-full'>
             {SIDEBAR_ROUTES.map((catogery, idx) => (
                 <div key={idx}>
                     <div className="flex flex-col w-full gap-3 px-4 my-3" >
@@ -37,7 +38,7 @@ const SidebarRoutes = () => {
                     <Separator className="bg-white/15 h-0.5" />
                 </div>
             ))}
-        </>
+        </ScrollArea>
     )
 }
 

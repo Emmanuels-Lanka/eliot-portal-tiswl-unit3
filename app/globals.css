@@ -75,12 +75,24 @@
   }
 }
 
+.auth-form {
+  height: calc(100vh - 80px);
+}
+
 .bg-dark {
   background-color: #05050b;
 }
 
 .text-dark {
   color: #05050b;
+}
+
+.text-voilet {
+  color: #6c5dd3;
+}
+
+.bg-voilet {
+  background-color: #6c5dd3;
 }
 
 .hover-sidebar-routes {
@@ -92,17 +104,21 @@
 }
 
 .sidebar-routes {
-  height:calc(100vh - 120px);
+  height:calc(100vh - 136px);
 }
 
 .dashboard-main {
   min-height:calc(100vh - 108px);
 }
 
-.text-voilet {
-  color: #6c5dd3;
+.box-shadow {
+  /* box-shadow: inset 0 0 0 1px rgba(66, 133, 156, .12), 0 12px 24px -12px rgba(66, 133, 156, .3); */
+  box-shadow: 0 10px 29px 0 rgba(68, 88, 144, 0.1);
 }
 
-.bg-voilet {
-  background-color: #6c5dd3;
+.hide-steps-number-input {
+  -webkit-appearance: none;     /* Chrome, Safari, Edge, Opera */
+  margin: 0;
+  
+  -moz-appearance: textfield;   /* Firefox */
 }
