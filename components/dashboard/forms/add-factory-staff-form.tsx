@@ -2,9 +2,12 @@
 
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { FieldValues, useForm } from "react-hook-form";
-import { useState } from "react";
-import { Check, Loader2, Plus, Zap } from "lucide-react";
+import { useForm } from "react-hook-form";
+import axios from "axios";
+import { useRouter } from "next/navigation";
+import { Loader2, Zap } from "lucide-react";
+import { Staff } from "@prisma/client";
+import Link from "next/link";
 
 import {
     Form,
@@ -26,6 +29,12 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { cn } from "@/lib/utils";
 
+interface AddSewingOperatorFormProps {
+    initialData?: Staff | null;
+    staffId?: string;
+    mode?: string;
+}
+
 const phoneRegex = new RegExp(
     /^([+]?[\s0-9]+)?(\d{3}|[(]?[0-9]+[)])?([-]?[\s]?[0-9])+$/
 );
@@ -34,66 +43,135 @@ const formSchema = z.object({
     designation: z.string().min(1, {
         message: "Designation is required"
     }),
-    employeeId: z.number({
-        required_error: "Employee ID is required",
-        invalid_type_error: "Employee ID must be a number",
-    }),
+    rfid: z.string().nullable(),
     name: z.string().min(1, {
         message: "Name is required"
     }),
-    rfid: z.string().min(1, {
-        message: "RFID is required"
+    employeeId: z.string().min(1, {
+        message: "Employee ID is required"
     }),
     phone: z.string().regex(phoneRegex, 'Invalid Phone Number!'),
     email: z.string().min(1, {
-        message: "Gender is required"
+        message: "Email is required"
     }).email("This is not a valid email!"),
+    gender: z.string().min(1, {
+        message: "Gender is required"
+    }),
 });
 
-const AddFactoryStaffForm = () => {
+const AddFactoryStaffForm = ({
+    initialData,
+    staffId,
+    mode
+}: AddSewingOperatorFormProps) => {
     const { toast } = useToast();
+    const router = useRouter();
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            designation: "",
-            employeeId: undefined,
-            name: "",
-            rfid: "OP-",
-            phone: "",
-            email: "",
+            designation: initialData?.designation || "",
+            rfid: initialData?.rfid || "",
+            name: initialData?.name || "",
+            employeeId: initialData?.employeeId || "",
+            phone: initialData?.phone || "",
+            email: initialData?.email || "",
+            gender: initialData?.gender || "",
         },
     });
 
     const { isSubmitting, isValid } = form.formState;
 
     const onSubmit = async (data: z.infer<typeof formSchema>) => {
-        try {
-            // Data store api
-            toast({
-                title: "DATA",
-                description: (
-                    <div className='mt-2 bg-slate-200 py-2 px-3 md:w-[336px] rounded-md'>
-                        <code className="text-slate-800">
-                            {JSON.stringify(data, null, 2)}
-                        </code>
-                    </div>
-                ),
-            });
-            // form.reset();
-        } catch (error: any) {
-            toast({
-                title: "Something went wrong!",
-                description: (
-                    <div className='mt-2 bg-slate-200 py-2 px-3 md:w-[336px] rounded-md'>
-                        <code className="text-slate-800">
-                            ERROR: {error.message}
-                        </code>
-                    </div>
-                ),
-            });
+        if (mode && mode === 'create') {
+            try {
+                const res = await axios.post('/api/factory-staff', data);
+                toast({
+                    title: "Successfully created new account",
+                    variant: "success",
+                    description: (
+                        <div className='mt-2 bg-slate-200 py-2 px-3 md:w-[336px] rounded-md'>
+                            <code className="text-slate-800">
+                                Staff name: {res.data.user.name}
+                            </code>
+                        </div>
+                    ),
+                });
+                router.refresh();
+                form.reset();
+            } catch (error: any) {
+                if (error.response && error.response.status === 409) {
+                    toast({
+                        title: error.response.data,
+                        variant: "error"
+                    });
+                } else {
+                    toast({
+                        title: "Something went wrong! Try again",
+                        variant: "error",
+                        description: (
+                            <div className='mt-2 bg-slate-200 py-2 px-3 md:w-[336px] rounded-md'>
+                                <code className="text-slate-800">
+                                    ERROR: {error.message}
+                                </code>
+                            </div>
+                        ),
+                    });
+                }
+            }
+        } else {
+            try {
+                const res = await axios.put(`/api/factory-staff/${staffId}`, data);
+                toast({
+                    title: "Updated successfully",
+                    variant: "success",
+                });
+                router.refresh();
+                router.push('/factory-staffs');
+            } catch (error: any) {
+                if (error.response && error.response.status === 409) {
+                    toast({
+                        title: error.response.data,
+                        variant: "error"
+                    });
+                } else {
+                    toast({
+                        title: "Something went wrong! Try again",
+                        variant: "error",
+                        description: (
+                            <div className='mt-2 bg-slate-200 py-2 px-3 md:w-[336px] rounded-md'>
+                                <code className="text-slate-800">
+                                    ERROR: {error.message}
+                                </code>
+                            </div>
+                        ),
+                    });
+                }
+            }
         }
     }
+
+    // Function to update RFID default value based on designation
+    const updateRFIDDefaultValue = (designation: string) => {
+        let defaultRFID: string = "";
+        switch (designation) {
+            case "supervisor":
+                defaultRFID = "SU-";
+                break;
+            case "mechanics":
+                defaultRFID = "ME-";
+                break;
+            case "quality-inspector":
+                defaultRFID = "QI-";
+                break;
+        }
+        form.setValue("rfid", defaultRFID);
+    };
+
+    // Function to disable RFID input for other options
+    const shouldDisableRFID = (designation: string) => {
+        return !["supervisor", "mechanics", "quality-inspector"].includes(designation);
+    };
 
     return (
         <div className='mx-auto max-w-7xl mt-16 border px-12 pt-6 pb-10 rounded-lg shadow-xl'>
@@ -111,7 +189,13 @@ const AddFactoryStaffForm = () => {
                                     <FormLabel className="text-base">
                                         Designation
                                     </FormLabel>
-                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                    <Select
+                                        onValueChange={(value) => {
+                                            field.onChange(value);
+                                            updateRFIDDefaultValue(value);
+                                        }}
+                                        defaultValue={field.value}
+                                    >
                                         <FormControl>
                                             <SelectTrigger>
                                                 <SelectValue placeholder="Select designation" />
@@ -132,26 +216,22 @@ const AddFactoryStaffForm = () => {
                                 </FormItem>
                             )}
                         />
-                        
+
                         <FormField
                             control={form.control}
-                            name="employeeId"
+                            name="rfid"
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel className="text-base">
-                                        Employee ID
+                                        RFID
                                     </FormLabel>
                                     <FormControl>
                                         <Input
-                                            type="number"
-                                            className="hide-steps-number-input"
-                                            disabled={isSubmitting}
-                                            placeholder="e.g. '1234'"
-                                            {...field}
-                                            onChange={(e) => {
-                                                const employeeId: number = parseInt(e.target.value);
-                                                form.setValue('employeeId', employeeId, { shouldValidate: true, shouldDirty: true });
-                                            }}
+                                            disabled={isSubmitting || shouldDisableRFID(form.getValues("designation"))}
+                                            placeholder="e.g. 'SU-XXXXX'"
+                                            value={field.value ?? ''}
+                                            onChange={field.onChange}
+                                            onBlur={field.onBlur}
                                         />
                                     </FormControl>
                                     <FormMessage />
@@ -178,19 +258,19 @@ const AddFactoryStaffForm = () => {
                                 </FormItem>
                             )}
                         />
-
+                        
                         <FormField
                             control={form.control}
-                            name="rfid"
+                            name="employeeId"
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel className="text-base">
-                                        RFID
+                                        Employee ID
                                     </FormLabel>
                                     <FormControl>
                                         <Input
                                             disabled={isSubmitting}
-                                            placeholder="e.g. 'xxxxxxx'"
+                                            placeholder="Enter employee ID"
                                             {...field}
                                         />
                                     </FormControl>
@@ -240,21 +320,65 @@ const AddFactoryStaffForm = () => {
                                 </FormItem>
                             )}
                         />
+
+                        <FormField
+                            control={form.control}
+                            name="gender"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel className="text-base">
+                                        Gender
+                                    </FormLabel>
+                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                        <FormControl>
+                                            <SelectTrigger>
+                                                <SelectValue placeholder="Select gender" />
+                                            </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                            <SelectItem value="male">Male</SelectItem>
+                                            <SelectItem value="female">Female</SelectItem>
+                                            <SelectItem value="other">Other</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
                     </div>
-                    <div className="mt-4 flex justify-between gap-2">
-                        <Button variant='outline' className="flex gap-2 pr-5" onClick={() => form.reset()}>
-                            Reset
-                        </Button>
-                        <Button
-                            type="submit"
-                            disabled={!isValid || isSubmitting}
-                            className="flex gap-2 pr-5"
-                        >
-                            <Zap className={cn("w-5 h-5", isSubmitting && "hidden")} />
-                            <Loader2 className={cn("animate-spin w-5 h-5 hidden", isSubmitting && "flex")} />
-                            Add Staff
-                        </Button>
-                    </div>
+                    {mode && mode === 'create' ?
+                        <div className="mt-4 flex justify-between gap-2">
+                            <Button variant='outline' className="flex gap-2 pr-5" onClick={() => form.reset()}>
+                                Reset
+                            </Button>
+                            <Button
+                                type="submit"
+                                disabled={!isValid || isSubmitting}
+                                className="flex gap-2 pr-5"
+                            >
+                                <Zap className={cn("w-5 h-5", isSubmitting && "hidden")} />
+                                <Loader2 className={cn("animate-spin w-5 h-5 hidden", isSubmitting && "flex")} />
+                                Add Staff
+                            </Button>
+                        </div>
+                        :
+                        <div className="mt-4 flex justify-between gap-2">
+                            <Link href="/factory-staffs">
+                                <Button variant='outline' className="flex gap-2 pr-5 text-red-600">
+                                    Cancel
+                                </Button>
+                            </Link>
+                            <Button
+                                type="submit"
+                                disabled={!isValid || isSubmitting}
+                                className="flex gap-2 pr-5"
+                            >
+                                <Zap className={cn("w-5 h-5", isSubmitting && "hidden")} />
+                                <Loader2 className={cn("animate-spin w-5 h-5 hidden", isSubmitting && "flex")} />
+                                Update
+                            </Button>
+                        </div>
+                    }
                 </form>
             </Form>
         </div>
