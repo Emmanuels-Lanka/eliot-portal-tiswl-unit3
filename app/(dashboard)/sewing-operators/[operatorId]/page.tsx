@@ -1,7 +1,7 @@
 import AddSewingOperatorForm from "@/components/dashboard/forms/add-sewing-operator-form";
 import { db } from "@/lib/db"
 
-const EliotDeviceId = async ({
+const SewingOperatorId = async ({
     params
 }: {
     params: { operatorId: string }
@@ -15,4 +15,4 @@ const EliotDeviceId = async ({
     return <AddSewingOperatorForm operatorId={params.operatorId} initialData={operator}/>
 }
 
-export default EliotDeviceId
+export default SewingOperatorId
