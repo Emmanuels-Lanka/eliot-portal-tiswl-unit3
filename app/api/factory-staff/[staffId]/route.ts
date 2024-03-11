@@ -37,23 +37,23 @@ export async function PUT(
     try {
         const { designation, name, phone, email, rfid, employeeId, gender } = await req.json();
 
-        const existingMachineById = await db.staff.findUnique({
+        const existingStaffById = await db.staff.findUnique({
             where: {
                 id: params.staffId
             }
         });
 
-        const existingMachineByEmpId = await db.staff.findUnique({
+        const existingStaffByEmpId = await db.staff.findUnique({
             where: {
                 employeeId: params.staffId
             }
         });
 
-        if (!existingMachineById) {
-            return new NextResponse("This machine does not exist", { status: 409 })
+        if (!existingStaffById) {
+            return new NextResponse("The factory staff does not exist", { status: 409 })
         };
 
-        if (existingMachineByEmpId) {
+        if (existingStaffByEmpId) {
             return new NextResponse("Employee ID is already exist for another staff!", { status: 401 })
         };
 

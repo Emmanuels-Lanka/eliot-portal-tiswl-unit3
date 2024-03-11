@@ -1,7 +1,7 @@
 import AddPortalAccountUserForm from "@/components/dashboard/forms/add-portal-account-user-form";
 import { db } from "@/lib/db"
 
-const EliotDeviceId = async ({
+const PortalAccountId = async ({
     params
 }: {
     params: { userId: string }
@@ -15,4 +15,4 @@ const EliotDeviceId = async ({
     return <AddPortalAccountUserForm userId={params.userId} initialData={user}/>
 }
 
-export default EliotDeviceId
+export default PortalAccountId

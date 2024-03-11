@@ -1,7 +1,7 @@
 import AddFactoryStaffForm from "@/components/dashboard/forms/add-factory-staff-form";
 import { db } from "@/lib/db"
 
-const EliotDeviceId = async ({
+const StaffId = async ({
     params
 }: {
     params: { staffId: string }
@@ -15,4 +15,4 @@ const EliotDeviceId = async ({
     return <AddFactoryStaffForm staffId={params.staffId} initialData={staff}/>
 }
 
-export default EliotDeviceId
+export default StaffId

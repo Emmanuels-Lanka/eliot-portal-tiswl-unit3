@@ -82,12 +82,44 @@ const ActionCell = ({ row }: { row: any }) => {
 
 export const columns: ColumnDef<SewingMachine>[] = [
     {
+        accessorKey: "serialNumber",
+        header: "Serial No.",
+    },
+    {
         accessorKey: "brandName",
-        header: "Brand Name",
+        header: ({ column }) => {
+            return (
+                <Button
+                    variant="ghost"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                    className="-ml-4"
+                >
+                    Brand Name
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+            )
+        },
     },
     {
         accessorKey: "machineType",
-        header: "Type",
+        header: ({ column }) => {
+            return (
+                <Button
+                    variant="ghost"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                    className="-ml-3"
+                >
+                    Type
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+            )
+        },
+        cell: ({ row }) => {
+            const value: string = row.getValue("machineType");
+            return (
+                <p className="uppercase">{value}</p>
+            )
+        }
     },
     {
         accessorKey: "machineId",
@@ -103,10 +135,6 @@ export const columns: ColumnDef<SewingMachine>[] = [
                 </Button>
             )
         },
-    },
-    {
-        accessorKey: "serialNumber",
-        header: "Serial No.",
     },
     // {
     //     accessorKey: "isAssigned",
