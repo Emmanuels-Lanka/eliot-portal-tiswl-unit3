@@ -1,8 +1,19 @@
+import { db } from "@/lib/db";
+import { DataTable } from "./_components/data-table";
+import { columns } from "./_components/columns";
 
 
-const ObbSheet = () => {
+const ObbSheet = async () => {
+  const sheets = await db.obbSheet.findMany({
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+
   return (
-    <div>ObbSheet</div>
+    <div className='mx-auto max-w-7xl mt-12'>
+      <DataTable columns={columns} data={sheets} />
+    </div>
   )
 }
 
