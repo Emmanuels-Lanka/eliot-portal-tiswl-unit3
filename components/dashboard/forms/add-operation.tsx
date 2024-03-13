@@ -121,7 +121,7 @@ const AddOperation = ({
     }
 
     return (
-        <div className={cn('mx-auto max-w-7xl mt-16 border px-12 pt-6 pb-10 rounded-lg', mode === 'create' ? "box-shadow" : "shadow-xl")}>
+        <div className={cn('mx-auto max-w-7xl mt-16 border px-12 pt-6 pb-10 rounded-lg', mode === 'create' ? "bg-slate-100" : "shadow-xl")}>
             <Form {...form}>
                 <form
                     onSubmit={form.handleSubmit(onSubmit)}
@@ -140,6 +140,7 @@ const AddOperation = ({
                                         disabled={isSubmitting}
                                         placeholder="Enter the operation name"
                                         {...field}
+                                        className="border-slate-300 bg-white"
                                     />
                                 </FormControl>
                                 <FormMessage />
@@ -148,7 +149,7 @@ const AddOperation = ({
                     />
                     {mode && mode === 'create' ? 
                         <div className="flex justify-between gap-2">
-                            <Button variant='outline' className="flex gap-2 pr-5" onClick={() => form.reset()}>
+                            <Button variant='outline' className="flex gap-2 pr-5 text-slate-600 hover:border-slate-300" onClick={() => form.reset()}>
                                 Reset
                             </Button>
                             <Button
