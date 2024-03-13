@@ -107,8 +107,16 @@
   height:calc(100vh - 136px);
 }
 
-.dashboard-main {
+.loading-body-height {
+  min-height:calc(100vh - 160px);
+}
+
+.dashboard-body-height {
   min-height:calc(100vh - 108px);
+}
+
+.root-body-height {
+  min-height:calc(100vh - 172px);
 }
 
 .box-shadow {

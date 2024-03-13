@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 
 import AuthFooter from "@/components/auth/auth-footer";
 
-const DashboardLayout = ({
+const AuthLayout = ({
     children
 }: {
     children: React.ReactNode;
@@ -25,4 +25,4 @@ const DashboardLayout = ({
     }
 }
 
-export default DashboardLayout;
+export default AuthLayout;

@@ -1,7 +1,11 @@
+import { cn } from "@/lib/utils"
 
-const AuthFooter = () => {
+const AuthFooter = ({ page }: { page?: string }) => {
     return (
-        <footer className='w-full h-[80px] md:h-[50px] max-md:py-2 px-4 bg-white/80 flex justify-between items-center gap-2'>
+        <footer className={cn(
+            'w-full h-[80px] md:h-[50px] max-md:py-2 px-4 flex justify-between items-center gap-2',
+            page !== 'root' && "bg-white/80"
+        )}>
             <p className='text-sm text-slate-600 font-normal'>
                 © 2024, Emmanuel&apos;s Lanka Pvt Ltd. All rights reserved
             </p>
