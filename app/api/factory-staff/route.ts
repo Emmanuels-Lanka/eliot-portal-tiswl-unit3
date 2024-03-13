@@ -36,7 +36,7 @@ export async function POST(
             }
         });
 
-        return NextResponse.json({ user: newStaff, message: 'Factory staff created successfully'}, { status: 201 });
+        return NextResponse.json({ user: newStaff, message: 'Factory staff created successfully' }, { status: 201 });
 
     } catch (error) {
         console.error("[FACTORY_STAFF_ERROR]", error);
