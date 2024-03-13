@@ -37,26 +37,64 @@ const ObbSheetId = async ({
     }
   });
 
-  const obbOperations: ObbOperation[] | null = await db.obbOperation.findMany({
+  // const obbOperations: ObbOperation[] | null = await db.obbOperation.findMany({
+  //   where: {
+  //     obbSheetId: params.obbSheetId
+  //   }
+  // });
+
+  const obbOperations = await db.obbSheet.findUnique({
     where: {
-      obbSheetId: params.obbSheetId
+      id: params.obbSheetId
+    },
+    select: {
+      obbOperations: {
+        include: {
+          operation: {
+            select: {
+              id: true,
+              name: true
+            }
+          },
+          sewingMachine: {
+            select: {
+              id: true,
+              brandName: true,
+              machineType: true,
+              machineId: true
+            }
+          },
+        },
+        orderBy: {
+          createdAt: 'asc',
+        }
+      }
     }
   });
 
   const operations: Operation[] | null = await db.operation.findMany();
 
-  const machines: SewingMachine[] | null = await db.sewingMachine.findMany({
-    where: {
-      isAssigned: true,
-    }
-  });
+  let machines: SewingMachine[] | null = null;
+
+  if (sheets?.productionLineId) {
+    const machinesForLine = await db.productionLine.findUnique({
+      where: {
+        id: sheets?.productionLineId
+      },
+      select: {
+        machines: true
+      }
+    });
+  
+    machines = machinesForLine?.machines.filter(machine => machine.isAssigned) ?? [];
+  }
 
   return (
     <section className="mt-16 mx-auto max-w-7xl space-y-12">
       <AddObbOperationForm 
         operations={operations}
         machines={machines}
-        obbOperations={obbOperations}
+        obbOperations={obbOperations?.obbOperations}
         obbSheetId={params.obbSheetId}
       />
       <div className="space-y-4">
