@@ -22,10 +22,10 @@ const ActionCell = ({ row }: { row: any }) => {
 
     const [isLoading, setIsLoading] = useState(false);
 
-    const onDelete = async (deviceId: string) => {
+    const onDelete = async (operatorId: string) => {
         try {
             setIsLoading(true);
-            await axios.delete(`/api/sewing-operator/${deviceId}`);
+            await axios.delete(`/api/sewing-operator/${operatorId}`);
             router.refresh();
             toast({
                 title: "Successfully removed operator!",

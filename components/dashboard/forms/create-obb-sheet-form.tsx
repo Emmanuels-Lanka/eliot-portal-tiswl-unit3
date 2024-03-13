@@ -3,8 +3,11 @@
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FieldValues, useForm } from "react-hook-form";
-import { useState } from "react";
-import { Check, Loader2, Plus, Zap } from "lucide-react";
+import { ObbSheet, ProductionLine, Staff } from "@prisma/client";
+import { ArrowLeft, Loader2, Zap } from "lucide-react";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 import {
     Form,
@@ -25,39 +28,57 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { cn } from "@/lib/utils";
+import Link from "next/link";
+
+interface CreateObbSheetFormProps {
+    units: {
+        name: string;
+        id: string;
+    }[] | null;
+    mechanics: Staff[] | null;
+    supervisor: Staff[] | null;
+    qualityInspector: Staff[] | null;
+    industrialEngineer: Staff[] | null;
+    accessoriesInputMan: Staff[] | null;
+    fabricInputMan: Staff[] | null;
+    initialData?: ObbSheet | null;
+    obbSheetId?: string;
+    mode?: string;
+}
 
 const formSchema = z.object({
-    productionUnit: z.string().min(1, {
+    unitId: z.string().min(1, {
         message: "Production Unit is required"
     }),
-    productionLine: z.string().min(1, {
+    productionLineId: z.string().min(1, {
         message: "Production Line is required"
     }),
-    industrialEngineer: z.string().min(1, {
+    indEngineer: z.string().min(1, {
         message: "Industrial Engineer is required"
     }),
-    supervisor: z.string().min(1, {
+    supervisor1: z.string().min(1, {
         message: "Supervisor is required"
     }),
+    supervisor2: z.string().nullable(),
     mechanic: z.string().min(1, {
         message: "Mechanic is required"
     }),
-    qualityInspector : z.string().min(1, {
+    qualityIns: z.string().min(1, {
         message: "Quality Inspector is required"
     }),
-    accessoriesInputMan : z.string().min(1, {
+    accInputMan: z.string().min(1, {
         message: "Accessories Input Man is required"
     }),
-    fabricInputMan : z.string().min(1, {
+    fabInputMan: z.string().min(1, {
         message: "Fabric Input Man is required"
     }),
-    buyer : z.string().min(1, {
+    buyer: z.string().min(1, {
         message: "Buyer is required"
     }),
-    style : z.string().min(1, {
+    style: z.string().min(1, {
         message: "Style is required"
     }),
-    item : z.string().min(1),
+    item: z.string().min(1),
     operators: z.number(),
     helpers: z.number(),
     startingDate: z.date(),
@@ -69,93 +90,159 @@ const formSchema = z.object({
     efficiencyLevel2: z.number(),
     efficiencyLevel3: z.number(),
     itemReference: z.string().nullable(),
-    mp: z.number().nullable(),
-    smv: z.number().nullable(),
+    totalMP: z.number().nullable(),
+    totalSMV: z.number().nullable(),
     bottleNeckTarget: z.number().nullable(),
     target100: z.number().nullable(),
     ucl: z.number().nullable(),
     lcl: z.number().nullable(),
     balancingLoss: z.number().nullable(),
     balancingRatio: z.number().nullable(),
-    colour : z.string(),
-    supervisorResponseTime: z.number().nullable(),
-    mechanicResponseTime: z.number().nullable(),
+    colour: z.string(),
+    supResponseTime: z.number().nullable(),
+    mecResponseTime: z.number().nullable(),
     qiResponseTime: z.number().nullable(),
 });
 
-const CreateObbSheetForm = () => {
+const CreateObbSheetForm = ({
+    units,
+    mechanics,
+    supervisor,
+    qualityInspector,
+    industrialEngineer,
+    accessoriesInputMan,
+    fabricInputMan,
+    initialData,
+    obbSheetId,
+    mode
+}: CreateObbSheetFormProps) => {
     const { toast } = useToast();
+    const router = useRouter();
+
+    const startingDateFormated = initialData?.startingDate ? new Date(initialData.startingDate) : undefined
+    const endingDateFormated = initialData?.endingDate ? new Date(initialData.endingDate) : undefined
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            productionUnit: "",
-            productionLine: "",
-            industrialEngineer: "",
-            supervisor: "",
-            mechanic: "",
-            qualityInspector: "",
-            accessoriesInputMan: "",
-            fabricInputMan: "",
-            buyer: "",
-            style: "",
-            item: "",
-            operators: 0,
-            helpers: 0,
-            startingDate: undefined,
-            endingDate: undefined,
-            workingHours: 0,
-            efficiencyLevel1: 0,
-            efficiencyLevel2: 0,
-            efficiencyLevel3: 0,
-            itemReference: "",
-            mp: 0,
-            smv: 0,
-            bottleNeckTarget: 0,
-            target100: 0,
-            ucl: 0,
-            lcl: 0,
-            balancingLoss: 0,
-            balancingRatio: 0,
-            colour: "",
-            supervisorResponseTime: 10,
-            mechanicResponseTime: 15,
-            qiResponseTime: 12,
+            unitId: initialData?.unitId || "",
+            productionLineId: initialData?.productionLineId || "",
+            indEngineer: initialData?.indEngineerId || "",
+            supervisor1: initialData?.supervisor1Id || "",
+            supervisor2: initialData?.supervisor2Id || "",
+            mechanic: initialData?.mechanicId || "",
+            qualityIns: initialData?.qualityInsId || "",
+            accInputMan: initialData?.accInputManId || "",
+            fabInputMan: initialData?.fabInputManId || "",
+            buyer: initialData?.buyer || "",
+            style: initialData?.style || "",
+            item: initialData?.item || "",
+            operators: initialData?.operators || 0,
+            helpers: initialData?.helpers || 0,
+            startingDate: startingDateFormated || undefined,
+            endingDate: endingDateFormated || undefined,
+            workingHours: initialData?.workingHours || 0,
+            efficiencyLevel1: initialData?.efficiencyLevel1 || 0,
+            efficiencyLevel2: initialData?.efficiencyLevel2 || 0,
+            efficiencyLevel3: initialData?.efficiencyLevel3 || 0,
+            itemReference: initialData?.itemReference || "",
+            totalMP: initialData?.totalMP || 0,
+            totalSMV: initialData?.totalSMV || 0,
+            bottleNeckTarget: initialData?.bottleNeckTarget || 0,
+            target100: initialData?.target100 || 0,
+            ucl: initialData?.ucl || 0,
+            lcl: initialData?.lcl || 0,
+            balancingLoss: initialData?.balancingLoss || 0,
+            balancingRatio: initialData?.balancingRatio || 0,
+            colour: initialData?.colour || "",
+            supResponseTime: initialData?.supResponseTime || 10,
+            mecResponseTime: initialData?.mecResponseTime || 15,
+            qiResponseTime: initialData?.qiResponseTime || 12,
         },
     });
 
     const { isSubmitting, isValid } = form.formState;
 
-    const onSubmit = async (data: z.infer<typeof formSchema>) => {
+    const [lines, setLines] = useState<ProductionLine[]>([]);
+
+    const handleUnitChange = async (selectedUnitId: string) => {
         try {
-            // Data store api
-            toast({
-                title: "DATA",
-                description: (
-                    <div className='mt-2 bg-slate-200 py-2 px-3 md:w-[336px] rounded-md'>
-                        <code className="text-slate-800">
-                            {JSON.stringify(data, null, 2)}
-                        </code>
-                    </div>
-                ),
-            });
-            // form.reset();
-        } catch (error: any) {
-            toast({
-                title: "Something went wrong!",
-                description: (
-                    <div className='mt-2 bg-slate-200 py-2 px-3 md:w-[336px] rounded-md'>
-                        <code className="text-slate-800">
-                            ERROR: {error.message}
-                        </code>
-                    </div>
-                ),
-            });
+            const response = await axios.get(`/api/production-line/${selectedUnitId}`);
+            setLines(response.data.data);
+        } catch (error) {
+            console.error("Error fetching production lines:", error);
+        }
+    };
+
+    useEffect(() => {
+        if (mode !== 'create') {
+            handleUnitChange(initialData?.unitId as string);
+        };
+    });
+
+    const onSubmit = async (data: z.infer<typeof formSchema>) => {
+        if (mode && mode === 'create') {
+            try {
+                const res = await axios.post('/api/obb-sheet', data);
+                toast({
+                    title: "Successfully created new OBB sheet",
+                    variant: "success",
+                    description: (
+                        <div className='mt-2 bg-slate-200 py-2 px-3 md:w-[336px] rounded-md'>
+                            <code className="text-slate-800">
+                                Style: {res.data.data.style}
+                            </code>
+                        </div>
+                    ),
+                });
+                router.push(`/obb-sheets/${res.data.data.id}`);
+                router.refresh();
+            } catch (error: any) {
+                toast({
+                    title: "Something went wrong! Try again",
+                    variant: "error",
+                    description: (
+                        <div className='mt-2 bg-slate-200 py-2 px-3 md:w-[336px] rounded-md'>
+                            <code className="text-slate-800">
+                                ERROR: {error.message}
+                            </code>
+                        </div>
+                    ),
+                });
+            }
+        } else {
+            try {
+                const res = await axios.put(`/api/obb-sheet/${obbSheetId}`, data);
+                toast({
+                    title: "Updated successfully",
+                    variant: "success",
+                });
+                router.refresh();
+            } catch (error: any) {
+                if (error.response && error.response.status === 409) {
+                    toast({
+                        title: error.response.data,
+                        variant: "error"
+                    });
+                } else {
+                    toast({
+                        title: "Something went wrong! Try again",
+                        variant: "error",
+                        description: (
+                            <div className='mt-2 bg-slate-200 py-2 px-3 md:w-[336px] rounded-md'>
+                                <code className="text-slate-800">
+                                    ERROR: {error.message}
+                                </code>
+                            </div>
+                        ),
+                    });
+                }
+            }
         }
     }
 
     return (
-        <div className='mx-auto max-w-7xl my-16 border px-12 pt-6 pb-10 rounded-lg shadow-xl'>
+        <div className={cn('mx-auto max-w-7xl border rounded-lg', mode === 'create' ? 'shadow-xl my-16 px-12 pt-6 pb-10 max-xl:px-8 max-xl:pt-4' : 'bg-slate-100 px-8 pt-4 pb-8')}>
             <Form {...form}>
                 <form
                     onSubmit={form.handleSubmit(onSubmit)}
@@ -165,24 +252,22 @@ const CreateObbSheetForm = () => {
                         <div className="flex flex-col gap-y-6">
                             <FormField
                                 control={form.control}
-                                name="productionUnit"
+                                name="unitId"
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel className="text-sm">
                                             Production Unit
                                         </FormLabel>
-                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                        <Select onValueChange={(value) => { field.onChange(value); handleUnitChange(value); }} defaultValue={field.value}>
                                             <FormControl>
                                                 <SelectTrigger>
-                                                    <SelectValue placeholder="Select production unit" />
+                                                    <SelectValue placeholder="Select a unit" />
                                                 </SelectTrigger>
                                             </FormControl>
                                             <SelectContent>
-                                                <SelectItem value="unit1">Unit 1</SelectItem>
-                                                <SelectItem value="unit2">Unit 2</SelectItem>
-                                                <SelectItem value="unit3">Unit 3</SelectItem>
-                                                <SelectItem value="unit4">Unit 4</SelectItem>
-                                                <SelectItem value="unit5">Unit 5</SelectItem>
+                                                {units && units.map((unit) => (
+                                                    <SelectItem key={unit.id} value={unit.id}>{unit.name}</SelectItem>
+                                                ))}
                                             </SelectContent>
                                         </Select>
                                         <FormMessage />
@@ -191,7 +276,7 @@ const CreateObbSheetForm = () => {
                             />
                             <FormField
                                 control={form.control}
-                                name="productionLine"
+                                name="productionLineId"
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel className="text-sm">
@@ -204,11 +289,9 @@ const CreateObbSheetForm = () => {
                                                 </SelectTrigger>
                                             </FormControl>
                                             <SelectContent>
-                                                <SelectItem value="unit1">Unit 1</SelectItem>
-                                                <SelectItem value="unit2">Unit 2</SelectItem>
-                                                <SelectItem value="unit3">Unit 3</SelectItem>
-                                                <SelectItem value="unit4">Unit 4</SelectItem>
-                                                <SelectItem value="unit5">Unit 5</SelectItem>
+                                                {lines.length > 0 && lines.map((line) => (
+                                                    <SelectItem key={line.id} value={line.id}>{line.name}</SelectItem>
+                                                ))}
                                             </SelectContent>
                                         </Select>
                                         <FormMessage />
@@ -217,7 +300,7 @@ const CreateObbSheetForm = () => {
                             />
                             <FormField
                                 control={form.control}
-                                name="industrialEngineer"
+                                name="indEngineer"
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel className="text-sm">
@@ -230,11 +313,9 @@ const CreateObbSheetForm = () => {
                                                 </SelectTrigger>
                                             </FormControl>
                                             <SelectContent>
-                                                <SelectItem value="unit1">Unit 1</SelectItem>
-                                                <SelectItem value="unit2">Unit 2</SelectItem>
-                                                <SelectItem value="unit3">Unit 3</SelectItem>
-                                                <SelectItem value="unit4">Unit 4</SelectItem>
-                                                <SelectItem value="unit5">Unit 5</SelectItem>
+                                                {industrialEngineer && industrialEngineer.map((eng) => (
+                                                    <SelectItem key={eng.id} value={eng.id}>{eng.name}</SelectItem>
+                                                ))}
                                             </SelectContent>
                                         </Select>
                                         <FormMessage />
@@ -243,11 +324,11 @@ const CreateObbSheetForm = () => {
                             />
                             <FormField
                                 control={form.control}
-                                name="supervisor"
+                                name="supervisor1"
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel className="text-sm">
-                                            Responsible Supervisor
+                                            Responsible Supervisor 1
                                         </FormLabel>
                                         <Select onValueChange={field.onChange} defaultValue={field.value}>
                                             <FormControl>
@@ -256,11 +337,33 @@ const CreateObbSheetForm = () => {
                                                 </SelectTrigger>
                                             </FormControl>
                                             <SelectContent>
-                                                <SelectItem value="unit1">Unit 1</SelectItem>
-                                                <SelectItem value="unit2">Unit 2</SelectItem>
-                                                <SelectItem value="unit3">Unit 3</SelectItem>
-                                                <SelectItem value="unit4">Unit 4</SelectItem>
-                                                <SelectItem value="unit5">Unit 5</SelectItem>
+                                                {supervisor && supervisor.map((sup) => (
+                                                    <SelectItem key={sup.id} value={sup.id}>{sup.name}</SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="supervisor2"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel className="text-sm">
+                                            Responsible Supervisor 2
+                                        </FormLabel>
+                                        <Select onValueChange={field.onChange}>
+                                            <FormControl>
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Select an option" />
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                                {supervisor && supervisor.map((sup) => (
+                                                    <SelectItem key={sup.id} value={sup.id}>{sup.name}</SelectItem>
+                                                ))}
                                             </SelectContent>
                                         </Select>
                                         <FormMessage />
@@ -282,11 +385,9 @@ const CreateObbSheetForm = () => {
                                                 </SelectTrigger>
                                             </FormControl>
                                             <SelectContent>
-                                                <SelectItem value="unit1">Unit 1</SelectItem>
-                                                <SelectItem value="unit2">Unit 2</SelectItem>
-                                                <SelectItem value="unit3">Unit 3</SelectItem>
-                                                <SelectItem value="unit4">Unit 4</SelectItem>
-                                                <SelectItem value="unit5">Unit 5</SelectItem>
+                                                {mechanics && mechanics.map((mech) => (
+                                                    <SelectItem key={mech.id} value={mech.id}>{mech.name}</SelectItem>
+                                                ))}
                                             </SelectContent>
                                         </Select>
                                         <FormMessage />
@@ -295,7 +396,7 @@ const CreateObbSheetForm = () => {
                             />
                             <FormField
                                 control={form.control}
-                                name="qualityInspector"
+                                name="qualityIns"
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel className="text-sm">
@@ -308,11 +409,9 @@ const CreateObbSheetForm = () => {
                                                 </SelectTrigger>
                                             </FormControl>
                                             <SelectContent>
-                                                <SelectItem value="unit1">Unit 1</SelectItem>
-                                                <SelectItem value="unit2">Unit 2</SelectItem>
-                                                <SelectItem value="unit3">Unit 3</SelectItem>
-                                                <SelectItem value="unit4">Unit 4</SelectItem>
-                                                <SelectItem value="unit5">Unit 5</SelectItem>
+                                                {qualityInspector && qualityInspector.map((qi) => (
+                                                    <SelectItem key={qi.id} value={qi.id}>{qi.name}</SelectItem>
+                                                ))}
                                             </SelectContent>
                                         </Select>
                                         <FormMessage />
@@ -321,7 +420,7 @@ const CreateObbSheetForm = () => {
                             />
                             <FormField
                                 control={form.control}
-                                name="accessoriesInputMan"
+                                name="accInputMan"
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel className="text-sm">
@@ -334,11 +433,9 @@ const CreateObbSheetForm = () => {
                                                 </SelectTrigger>
                                             </FormControl>
                                             <SelectContent>
-                                                <SelectItem value="unit1">Unit 1</SelectItem>
-                                                <SelectItem value="unit2">Unit 2</SelectItem>
-                                                <SelectItem value="unit3">Unit 3</SelectItem>
-                                                <SelectItem value="unit4">Unit 4</SelectItem>
-                                                <SelectItem value="unit5">Unit 5</SelectItem>
+                                                {accessoriesInputMan && accessoriesInputMan.map((acc) => (
+                                                    <SelectItem key={acc.id} value={acc.id}>{acc.name}</SelectItem>
+                                                ))}
                                             </SelectContent>
                                         </Select>
                                         <FormMessage />
@@ -347,7 +444,7 @@ const CreateObbSheetForm = () => {
                             />
                             <FormField
                                 control={form.control}
-                                name="fabricInputMan"
+                                name="fabInputMan"
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel className="text-sm">
@@ -360,11 +457,9 @@ const CreateObbSheetForm = () => {
                                                 </SelectTrigger>
                                             </FormControl>
                                             <SelectContent>
-                                                <SelectItem value="unit1">Unit 1</SelectItem>
-                                                <SelectItem value="unit2">Unit 2</SelectItem>
-                                                <SelectItem value="unit3">Unit 3</SelectItem>
-                                                <SelectItem value="unit4">Unit 4</SelectItem>
-                                                <SelectItem value="unit5">Unit 5</SelectItem>
+                                                {fabricInputMan && fabricInputMan.map((fab) => (
+                                                    <SelectItem key={fab.id} value={fab.id}>{fab.name}</SelectItem>
+                                                ))}
                                             </SelectContent>
                                         </Select>
                                         <FormMessage />
@@ -657,7 +752,7 @@ const CreateObbSheetForm = () => {
                             />
                             <FormField
                                 control={form.control}
-                                name="mp"
+                                name="totalMP"
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>
@@ -672,7 +767,7 @@ const CreateObbSheetForm = () => {
                                                 value={field.value ?? 0}   // Nullable input
                                                 onChange={(e) => {
                                                     const newValue: number = parseInt(e.target.value);
-                                                    form.setValue('mp', newValue, { shouldValidate: true, shouldDirty: true });
+                                                    form.setValue('totalMP', newValue, { shouldValidate: true, shouldDirty: true });
                                                 }}
                                                 onBlur={field.onBlur}
                                             />
@@ -683,7 +778,7 @@ const CreateObbSheetForm = () => {
                             />
                             <FormField
                                 control={form.control}
-                                name="smv"
+                                name="totalSMV"
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>
@@ -698,7 +793,7 @@ const CreateObbSheetForm = () => {
                                                 value={field.value ?? 0}   // Nullable input
                                                 onChange={(e) => {
                                                     const newValue: number = parseInt(e.target.value);
-                                                    form.setValue('smv', newValue, { shouldValidate: true, shouldDirty: true });
+                                                    form.setValue('totalSMV', newValue, { shouldValidate: true, shouldDirty: true });
                                                 }}
                                                 onBlur={field.onBlur}
                                             />
@@ -887,7 +982,7 @@ const CreateObbSheetForm = () => {
                             />
                             <FormField
                                 control={form.control}
-                                name="supervisorResponseTime"
+                                name="supResponseTime"
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>
@@ -902,7 +997,7 @@ const CreateObbSheetForm = () => {
                                                 value={field.value ?? 0}   // Nullable input
                                                 onChange={(e) => {
                                                     const newValue: number = parseInt(e.target.value);
-                                                    form.setValue('supervisorResponseTime', newValue, { shouldValidate: true, shouldDirty: true });
+                                                    form.setValue('supResponseTime', newValue, { shouldValidate: true, shouldDirty: true });
                                                 }}
                                                 onBlur={field.onBlur}
                                             />
@@ -913,7 +1008,7 @@ const CreateObbSheetForm = () => {
                             />
                             <FormField
                                 control={form.control}
-                                name="mechanicResponseTime"
+                                name="mecResponseTime"
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>
@@ -928,7 +1023,7 @@ const CreateObbSheetForm = () => {
                                                 value={field.value ?? 0}   // Nullable input
                                                 onChange={(e) => {
                                                     const newValue: number = parseInt(e.target.value);
-                                                    form.setValue('mechanicResponseTime', newValue, { shouldValidate: true, shouldDirty: true });
+                                                    form.setValue('mecResponseTime', newValue, { shouldValidate: true, shouldDirty: true });
                                                 }}
                                                 onBlur={field.onBlur}
                                             />
@@ -965,20 +1060,40 @@ const CreateObbSheetForm = () => {
                             />
                         </div>
                     </div>
-                    <div className="mt-4 flex justify-between gap-2">
-                        <Button variant='outline' className="flex gap-2 pr-5" onClick={() => form.reset()}>
-                            Reset
-                        </Button>
-                        <Button
-                            type="submit"
-                            disabled={!isValid || isSubmitting}
-                            className="flex gap-2 pr-5"
-                        >
-                            <Zap className={cn("w-5 h-5", isSubmitting && "hidden")} />
-                            <Loader2 className={cn("animate-spin w-5 h-5 hidden", isSubmitting && "flex")} />
-                            Add Device
-                        </Button>
-                    </div>
+                    {mode && mode === 'create' ?
+                        <div className="mt-4 flex justify-between gap-2">
+                            <Button variant='outline' className="flex gap-2 pr-5" onClick={() => form.reset()}>
+                                Reset
+                            </Button>
+                            <Button
+                                type="submit"
+                                disabled={!isValid || isSubmitting}
+                                className="flex gap-2 pr-5"
+                            >
+                                <Zap className={cn("w-5 h-5", isSubmitting && "hidden")} />
+                                <Loader2 className={cn("animate-spin w-5 h-5 hidden", isSubmitting && "flex")} />
+                                Create OBB Sheet
+                            </Button>
+                        </div>
+                        :
+                        <div className="mt-4 flex justify-between gap-2">
+                            <Link href='/obb-sheets'>
+                                <Button variant='outline' className="flex gap-2 pr-5 hover:border-slate-300 text-slate-600" onClick={() => form.reset()}>
+                                    <ArrowLeft className="w-4 h-4" />
+                                    View all sheets
+                                </Button>
+                            </Link>
+                            <Button
+                                type="submit"
+                                disabled={!isValid || isSubmitting}
+                                className="flex gap-2 pr-5"
+                            >
+                                <Zap className={cn("w-5 h-5", isSubmitting && "hidden")} />
+                                <Loader2 className={cn("animate-spin w-5 h-5 hidden", isSubmitting && "flex")} />
+                                Update Sheet
+                            </Button>
+                        </div>
+                    }
                 </form>
             </Form>
         </div>

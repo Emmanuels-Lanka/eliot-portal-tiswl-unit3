@@ -7,6 +7,7 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import { Loader2, Zap } from "lucide-react";
 import { SewingMachine } from "@prisma/client";
+import Link from "next/link";
 
 import {
     Form,
@@ -358,15 +359,22 @@ const AddSewingMachineForm = ({
                             </Button>
                         </div>
                         :
-                        <Button
-                            type="submit"
-                            disabled={!isValid || isSubmitting}
-                            className="flex gap-2 pr-5"
-                        >
-                            <Zap className={cn("w-5 h-5", isSubmitting && "hidden")} />
-                            <Loader2 className={cn("animate-spin w-5 h-5 hidden", isSubmitting && "flex")} />
-                            Update
-                        </Button>
+                        <div className="mt-4 flex justify-between gap-2">
+                            <Link href="/sewing-machines">
+                                <Button variant='outline' className="flex gap-2 pr-5 text-red-600">
+                                    Cancel
+                                </Button>
+                            </Link>
+                            <Button
+                                type="submit"
+                                disabled={!isValid || isSubmitting}
+                                className="flex gap-2 pr-5"
+                            >
+                                <Zap className={cn("w-5 h-5", isSubmitting && "hidden")} />
+                                <Loader2 className={cn("animate-spin w-5 h-5 hidden", isSubmitting && "flex")} />
+                                Update
+                            </Button>
+                        </div>
                     }
                 </form>
             </Form>

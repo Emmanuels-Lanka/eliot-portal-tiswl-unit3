@@ -1,11 +1,16 @@
 import { 
     Airplay, 
+    AlignHorizontalDistributeCenter, 
+    BarChart3, 
     Blocks, 
     Cog, 
+    FileCog, 
+    FileSpreadsheet, 
     LayoutDashboard, 
     LayoutPanelTop, 
     PlusSquare, 
     ScissorsLineDashed,
+    ServerCog,
     Settings,
     UserRoundCog,
     UserRoundPlus
@@ -19,6 +24,16 @@ export const SIDEBAR_ROUTES = [
                 label: "Dashboard",
                 href: "/dashboard",
                 icon: LayoutDashboard
+            }
+        ]
+    },
+    {
+        categoryName: null,
+        routes: [
+            {
+                label: "Add Production Line",
+                href: "/production-lines/create-new",
+                icon: AlignHorizontalDistributeCenter
             }
         ]
     },
@@ -72,77 +87,76 @@ export const SIDEBAR_ROUTES = [
         routes: [
             {
                 label: "Add",
-                href: "/factory-staff/create-new",
+                href: "/factory-staffs/create-new",
                 icon: UserRoundPlus
             },
             {
                 label: "Manage",
-                href: "/factory-staff",
+                href: "/factory-staffs",
                 icon: UserRoundCog
             },
         ]
     },
     {
-        categoryName: "Portal User Accounts",
+        categoryName: "Portal Account Users",
         routes: [
             {
                 label: "Add",
-                href: "/portal-user/create-new",
+                href: "/portal-accounts/create-new",
                 icon: UserRoundPlus
             },
             {
                 label: "Manage",
-                href: "/portal-user",
-                icon: UserRoundCog
-            },
-        ]
-    },
-
-    {
-        categoryName: "Portal User Accounts",
-        routes: [
-            {
-                label: "Add",
-                href: "/portal-user/create-new",
-                icon: UserRoundPlus
-            },
-            {
-                label: "Manage",
-                href: "/portal-user",
+                href: "/portal-accounts",
                 icon: UserRoundCog
             },
         ]
     },
     {
-        categoryName: "Portal User Accounts",
+        categoryName: "Production Lines & Operations",
         routes: [
             {
-                label: "Add",
-                href: "/portal-user/create-new",
-                icon: UserRoundPlus
+                label: "Manage Operations",
+                href: "/operations",
+                icon: Settings
             },
             {
-                label: "Manage",
-                href: "/portal-user",
-                icon: UserRoundCog
+                label: "Manage Production Lines",
+                href: "/production-lines",
+                icon: ServerCog
             },
         ]
     },
     {
-        categoryName: "Portal User Accounts",
+        categoryName: "Operation BreakDown & Balancing Sheet",
         routes: [
             {
-                label: "Add",
-                href: "/portal-user/create-new",
-                icon: UserRoundPlus
+                label: "Create OBB Sheet",
+                href: "/obb-sheets/create-new",
+                icon: FileSpreadsheet
             },
             {
-                label: "Manage",
-                href: "/portal-user",
-                icon: UserRoundCog
+                label: "Manage OBB Sheet",
+                href: "/obb-sheets",
+                icon: FileCog
             },
         ]
-    }
+    },
+    {
+        categoryName: "ELIoT Analytics",
+        routes: [
+            {
+                label: "Production Flow Across Operations",
+                href: "",
+                icon: BarChart3
+            },
+            {
+                label: "Production Efficiency Across Operations",
+                href: "",
+                icon: BarChart3
+            },
+        ]
+    },
 ];
 
 export const HEADER_INFO = [
@@ -150,6 +164,11 @@ export const HEADER_INFO = [
         label: "Dashboard",
         href: '/dashboard',
         icon: LayoutPanelTop
+    },
+    {
+        label: "Add Production Lines",
+        href: "/production-lines/create-new",
+        icon: AlignHorizontalDistributeCenter
     },
     {
         label: "Add ELIoT Devices",
@@ -181,15 +200,44 @@ export const HEADER_INFO = [
         href: "/sewing-operators",
         icon: UserRoundCog
     },
-    
     {
         label: "Add Factory Staff",
-        href: "/factory-staff/create-new",
+        href: "/factory-staffs/create-new",
         icon: UserRoundPlus
     },
     {
         label: "Manage Factory Staff",
-        href: "/factory-staff",
+        href: "/factory-staffs",
         icon: UserRoundCog
+    },
+    {
+        label: "Add Portal Account User",
+        href: "/portal-accounts/create-new",
+        icon: UserRoundPlus
+    },
+    {
+        label: "Manage Portal Account Users",
+        href: "/portal-accounts",
+        icon: UserRoundCog
+    },
+    {
+        label: "Manage Operations",
+        href: "/operations",
+        icon: Settings
+    },
+    {
+        label: "Manage Production Lines",
+        href: "/production-lines",
+        icon: ServerCog
+    },
+    {
+        label: "Create OBB Sheet",
+        href: "/obb-sheets/create-new", 
+        icon: FileSpreadsheet
+    },
+    {
+        label: "Manage OBB Sheet",
+        href: "/obb-sheets", 
+        icon: FileCog
     },
 ]

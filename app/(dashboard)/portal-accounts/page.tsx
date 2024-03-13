@@ -1,8 +1,18 @@
-import React from 'react'
+import { DataTable } from './_components/data-table'
+import { columns } from './_components/columns'
+import { db } from '@/lib/db';
 
-const PortalUser = () => {
+const PortalUser = async () => {
+  const users = await db.user.findMany({
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+
   return (
-    <div>PortalUser</div>
+    <div className='mx-auto max-w-7xl mt-12'>
+      <DataTable columns={columns} data={users} />
+    </div>
   )
 }
 

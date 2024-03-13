@@ -1,8 +1,19 @@
-import React from 'react'
+import { db } from "@/lib/db";
+import { columns } from "./_components/columns";
+import { DataTable } from "./_components/data-table";
 
-const FactoryStaff = () => {
+
+const FactoryStaff = async () => {
+  const staffs = await db.staff.findMany({
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+
   return (
-    <div>FactoryStaff</div>
+    <div className='mx-auto max-w-7xl mt-12'>
+      <DataTable columns={columns} data={staffs} />
+    </div>
   )
 }
 

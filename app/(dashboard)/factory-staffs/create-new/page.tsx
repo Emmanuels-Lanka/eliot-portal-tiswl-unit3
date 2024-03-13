@@ -1,7 +1,7 @@
 import AddFactoryStaffForm from '@/components/dashboard/forms/add-factory-staff-form'
 
 const CreateNewFactoryStaff = () => {
-  return <AddFactoryStaffForm />
+  return <AddFactoryStaffForm mode="create" />
 }
 
 export default CreateNewFactoryStaff
