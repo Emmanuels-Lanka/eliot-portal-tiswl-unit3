@@ -174,11 +174,11 @@ const CreateObbSheetForm = ({
         }
     };
 
-    if (mode !== 'create') {
-        useEffect(() => {
+    useEffect(() => {
+        if (mode !== 'create') {
             handleUnitChange(initialData?.unitId as string);
-        }, []);
-    };
+        };
+    });
 
     const onSubmit = async (data: z.infer<typeof formSchema>) => {
         if (mode && mode === 'create') {
@@ -258,7 +258,7 @@ const CreateObbSheetForm = ({
                                         <FormLabel className="text-sm">
                                             Production Unit
                                         </FormLabel>
-                                        <Select onValueChange={(value) => {field.onChange(value); handleUnitChange(value);}} defaultValue={field.value}>
+                                        <Select onValueChange={(value) => { field.onChange(value); handleUnitChange(value); }} defaultValue={field.value}>
                                             <FormControl>
                                                 <SelectTrigger>
                                                     <SelectValue placeholder="Select a unit" />
@@ -289,7 +289,7 @@ const CreateObbSheetForm = ({
                                                 </SelectTrigger>
                                             </FormControl>
                                             <SelectContent>
-                                                {lines.length > 0 && lines.map((line) =>(
+                                                {lines.length > 0 && lines.map((line) => (
                                                     <SelectItem key={line.id} value={line.id}>{line.name}</SelectItem>
                                                 ))}
                                             </SelectContent>

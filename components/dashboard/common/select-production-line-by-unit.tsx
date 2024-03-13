@@ -2,7 +2,7 @@
 
 import { ProductionLine, Unit } from "@prisma/client";
 import qs from "query-string";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import axios from "axios";
 import {
     usePathname,
@@ -47,22 +47,27 @@ const SelectProductionLineByUnit = ({
             router.refresh();
         }
     };
-    const fetchLines = async () => {
+    
+    const fetchLines = useCallback(async () => {
         try {
             const response = await axios.get(`/api/production-line/${unitId}`);
             setLines(response.data.data);
         } catch (error) {
             console.error("Error fetching lines:", error);
         }
-    };
+    }, [unitId]);
 
     useEffect(() => {
-        if (unitId !== null) {
-            fetchLines();
-        } else {
-            setLines([]);
-        }
-    }, [unitId]);
+        const fetchData = async () => {
+            if (unitId !== null) {
+                await fetchLines();
+            } else {
+                setLines([]);
+            }
+        };
+
+        fetchData();
+    }, [unitId, fetchLines]);
 
     return (
         <div className="mx-auto max-w-7xl border px-12 pt-8 py-10 rounded-lg bg-slate-100">

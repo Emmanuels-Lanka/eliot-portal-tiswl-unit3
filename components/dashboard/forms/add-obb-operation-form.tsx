@@ -98,7 +98,7 @@ const AddObbOperationForm = ({
             };
             form.reset(mappedData);
         }
-    }, [updatingData]);
+    }, [updatingData, form]);
 
     const onSubmit = async (data: FormValues) => {
         if (!isUpdating) {
