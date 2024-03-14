@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "next build && postcss app/global.css -o app/global.output.css",
     "start": "next start",
     "lint": "next lint",
     "postinstall": "npx prisma generate"
@@ -29,6 +29,7 @@
     "jsonwebtoken": "^9.0.2",
     "lucide-react": "^0.334.0",
     "next": "14.1.0",
+    "next-compose-plugins": "^2.2.1",
     "query-string": "^9.0.0",
     "react": "^18",
     "react-dom": "^18",
