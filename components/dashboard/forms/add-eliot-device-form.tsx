@@ -75,8 +75,8 @@ const AddEliotDeviceForm = ({
                         </div>
                     ),
                 });
-                router.refresh();
                 form.reset();
+                router.refresh();
             } catch (error: any) {
                 if (error.response && error.response.status === 409) {
                     toast({
@@ -104,8 +104,8 @@ const AddEliotDeviceForm = ({
                     title: "Updated successfully",
                     variant: "success",
                 });
-                router.refresh();
                 router.push('/eliot-devices');
+                router.refresh();
             } catch (error: any) {
                 if (error.response && error.response.status === 409) {
                     toast({

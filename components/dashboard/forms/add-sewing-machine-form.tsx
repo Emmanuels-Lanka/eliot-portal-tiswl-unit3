@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { Loader2, Zap } from "lucide-react";
-import { SewingMachine } from "@prisma/client";
+import { EliotDevice, SewingMachine } from "@prisma/client";
 import Link from "next/link";
 
 import {
@@ -39,7 +39,7 @@ interface AddSewingMachineFormProps {
         id: string;
         name: string;
     }[];
-    initialData?: SewingMachine | null;
+    initialData?: any | null;
     machineId?: string;
     mode?: string;
 }
@@ -331,6 +331,9 @@ const AddSewingMachineForm = ({
                                             </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
+                                            {initialData?.eliotDeviceId &&
+                                                <SelectItem value={initialData?.eliotDeviceId}>{initialData.eliotDevice.serialNumber} ~ {initialData.eliotDevice.modelNumber}</SelectItem> 
+                                            }
                                             {devices.length > 0 ? devices.map((device) => (
                                                 <SelectItem key={device.id} value={device.id}>{device.serialNumber} ~ {device.modelNumber}</SelectItem>
                                             )) : (

@@ -33,8 +33,18 @@ const SewingMachineId = async ({
     const machine = await db.sewingMachine.findUnique({
         where: {
             id: params.machineId
+        },
+        include: {
+            eliotDevice: {
+                select: {
+                    id: true,
+                    serialNumber: true,
+                    modelNumber: true,
+                }
+            }
         }
     });
+    // console.log("MACHINE", machine);
 
     return <AddSewingMachineForm devices={devices} units={units} machineId={params.machineId} initialData={machine} />
 }

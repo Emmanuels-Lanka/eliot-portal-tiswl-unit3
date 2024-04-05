@@ -8,9 +8,11 @@ export async function POST(
     try {
         const { name } = await req.json();
 
+        const formattedName: string = name.toUpperCase();
+
         const existingOperationByName = await db.operation.findUnique({
             where: {
-                name
+                name: formattedName
             }
         });
 
@@ -20,7 +22,7 @@ export async function POST(
 
         const newOperation = await db.operation.create({
             data: {
-                name
+                name: formattedName
             }
         });
 

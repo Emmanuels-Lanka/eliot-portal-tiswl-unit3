@@ -164,6 +164,7 @@ const CreateObbSheetForm = ({
     const { isSubmitting, isValid } = form.formState;
 
     const [lines, setLines] = useState<ProductionLine[]>([]);
+    const [selectedSupervisor, setSelectedSupervisor] = useState('');
 
     const handleUnitChange = async (selectedUnitId: string) => {
         try {
@@ -330,7 +331,13 @@ const CreateObbSheetForm = ({
                                         <FormLabel className="text-sm">
                                             Responsible Supervisor 1
                                         </FormLabel>
-                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                        <Select 
+                                            onValueChange={(value) => {
+                                                field.onChange(value);
+                                                setSelectedSupervisor(value);
+                                            }} 
+                                            defaultValue={field.value}
+                                        >
                                             <FormControl>
                                                 <SelectTrigger>
                                                     <SelectValue placeholder="Select an option" />
@@ -361,9 +368,18 @@ const CreateObbSheetForm = ({
                                                 </SelectTrigger>
                                             </FormControl>
                                             <SelectContent>
-                                                {supervisor && supervisor.map((sup) => (
-                                                    <SelectItem key={sup.id} value={sup.id}>{sup.name}</SelectItem>
-                                                ))}
+                                                {supervisor && 
+                                                    supervisor.map((sup) => {
+                                                        if (sup.id === selectedSupervisor) {
+                                                            return null;
+                                                        }
+                                                        return (
+                                                            <SelectItem key={sup.id} value={sup.id}>
+                                                                {sup.name}
+                                                            </SelectItem>
+                                                        )
+                                                    })
+                                                }
                                             </SelectContent>
                                         </Select>
                                         <FormMessage />

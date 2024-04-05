@@ -8,6 +8,16 @@ export async function POST(
     try {
         const { name, unitId } = await req.json();
 
+        const existingLine = await db.productionLine.findUnique({
+            where: {
+                name
+            }
+        });
+
+        if (existingLine) {
+            return new NextResponse("Line name is already exist, please use different one!", { status: 409 })
+        }
+
         const newLine = await db.productionLine.create({
             data: {
                 name,

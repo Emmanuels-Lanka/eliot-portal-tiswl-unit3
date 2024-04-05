@@ -21,6 +21,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { cn } from "@/lib/utils";
+import { useState } from "react";
 
 interface AddOperationProps {
     initialData?: Operation | null;
@@ -50,6 +51,11 @@ const AddOperation = ({
     });
 
     const { isSubmitting, isValid } = form.formState;
+
+    // const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    //     const inputValue = event.target.value.toUpperCase();
+    //     form.setValue("name", inputValue);
+    // };
 
     const onSubmit = async (data: z.infer<typeof formSchema>) => {
         if (mode && mode === 'create') {
@@ -140,6 +146,7 @@ const AddOperation = ({
                                         disabled={isSubmitting}
                                         placeholder="Enter the operation name"
                                         {...field}
+                                        // onChange={handleChange}
                                         className="border-slate-300 bg-white"
                                     />
                                 </FormControl>
@@ -147,7 +154,7 @@ const AddOperation = ({
                             </FormItem>
                         )}
                     />
-                    {mode && mode === 'create' ? 
+                    {mode && mode === 'create' ?
                         <div className="flex justify-between gap-2">
                             <Button variant='outline' className="flex gap-2 pr-5 text-slate-600 hover:border-slate-300" onClick={() => form.reset()}>
                                 Reset
