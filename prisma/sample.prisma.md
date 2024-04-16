@@ -73,7 +73,7 @@ model ProductionLine {
     // sewingMachineId String?
     // sewingMachine   SewingMachine? @relation(fields: [sewingMachineId], references: [id])
     machines SewingMachine[]
-
+    
     unitId String
     unit   Unit   @relation(fields: [unitId], references: [id], onDelete: Cascade)
 
@@ -214,11 +214,4 @@ model ObbOperation {
     updatedAt DateTime @updatedAt
 
     @@index([operationId, sewingMachineId, obbSheetId])
-}
-
-model SampleTable {
-    id        String   @id @unique
-    sampleId  String   @unique @default(uuid())
-    name      String
-    createdAt DateTime @default(now())
 }
