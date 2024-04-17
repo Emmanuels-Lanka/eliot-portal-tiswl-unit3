@@ -1,12 +1,15 @@
 import { NextResponse } from "next/server";
 
 import { db } from "@/lib/db";
+import { generateUniqueId } from "@/actions/generate-unique-id";
 
 export async function POST(
     req: Request,
 ) {
     try {
         const { name, employeeId, rfid, gender, designation } = await req.json();
+
+        let id = generateUniqueId();
 
         const existingOperatorByRFID = await db.operator.findUnique({
             where: {
@@ -24,8 +27,9 @@ export async function POST(
             return new NextResponse("Operator is already registered", { status: 409 })
         }
 
-        const newStaff = await db.operator.create({
+        const newOperator = await db.operator.create({
             data: {
+                id,
                 name,
                 employeeId,
                 rfid,
@@ -34,7 +38,7 @@ export async function POST(
             }
         });
 
-        return NextResponse.json({ data: newStaff, message: 'Sewing operator created successfully'}, { status: 201 });
+        return NextResponse.json({ data: newOperator, message: 'Sewing operator created successfully'}, { status: 201 });
 
     } catch (error) {
         console.error("[SEWING_OPERATOR_ERROR]", error);

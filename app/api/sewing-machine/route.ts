@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { db } from "@/lib/db";
+import { generateUniqueId } from "@/actions/generate-unique-id";
 
 export async function POST(
     req: Request,
@@ -8,25 +9,34 @@ export async function POST(
     try {
         const { unitId, machineType, brandName, serialNumber, machineId, eliotDeviceId, ownership } = await req.json();
 
+        let id = generateUniqueId();
+
         const existingMachineByID = await db.sewingMachine.findUnique({
             where: {
-                serialNumber
+                id
             }
         });
 
-        const existingMachineBySerialNo = await db.sewingMachine.findUnique({
+        const existingMachineByMachineID = await db.sewingMachine.findUnique({
             where: {
                 machineId
             }
         });
 
-        if (existingMachineByID || existingMachineBySerialNo) {
+        const existingMachineBySerialNo = await db.sewingMachine.findUnique({
+            where: {
+                serialNumber
+            }
+        });
+
+        if (existingMachineByID || existingMachineByMachineID || existingMachineBySerialNo) {
             return new NextResponse("Sewing machine is already registered", { status: 409 })
         }
 
         // Create a new machine
         const newMachine = await db.sewingMachine.create({
             data: {
+                id,
                 brandName,
                 machineType,
                 machineId,
