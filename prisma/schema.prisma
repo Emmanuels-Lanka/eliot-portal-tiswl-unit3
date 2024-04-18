@@ -21,7 +21,7 @@ model User {
 }
 
 model Staff {
-    id          String  @id @default(uuid())
+    id          String  @id
     employeeId  String  @unique
     name        String
     email       String  @unique
@@ -43,12 +43,15 @@ model Staff {
 }
 
 model Operator {
-    id          String @id @default(uuid())
+    id          String @id
     name        String
     employeeId  String @unique
     rfid        String @unique
     gender      String
     designation String
+
+    operatorSessions OperatorSession[]
+    productionData   ProductionData[]
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
@@ -86,20 +89,21 @@ model ProductionLine {
 }
 
 model EliotDevice {
-    id            String  @id @default(uuid())
+    id            String  @id
     serialNumber  String  @unique
     modelNumber   String
     installedDate String
     isAssigned    Boolean @default(false)
 
     sewingMachines SewingMachine[]
+    productionData ProductionData[]
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 }
 
 model SewingMachine {
-    id           String  @id @default(uuid())
+    id           String  @id
     brandName    String
     machineType  String
     machineId    String  @unique
@@ -124,7 +128,7 @@ model SewingMachine {
 }
 
 model ObbSheet {
-    id   String @id @default(uuid())
+    id   String @id
     name String
 
     productionLineId String
@@ -192,7 +196,7 @@ model Operation {
 }
 
 model ObbOperation {
-    id    String @id @default(uuid())
+    id    String @id
     seqNo Int    @unique @default(autoincrement())
 
     operationId String
@@ -210,15 +214,45 @@ model ObbOperation {
     length        Int
     totalStitches Int
 
+    productionData   ProductionData[]
+    operatorSessions OperatorSession[]
+
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
     @@index([operationId, sewingMachineId, obbSheetId])
 }
 
-model SampleTable {
-    id        String   @id @unique
-    sampleId  String   @unique @default(uuid())
-    name      String
-    createdAt DateTime @default(now())
+model OperatorSession {
+    id String @id
+
+    operatorRfid String
+    operator     Operator @relation(fields: [operatorRfid], references: [rfid], onDelete: Cascade)
+
+    obbOperationId String
+    obbOperation   ObbOperation @relation(fields: [obbOperationId], references: [id], onDelete: Cascade)
+
+    isLoggedIn       Boolean @default(true)
+    LoginTimestamp  String
+    LogoutTimestamp String?
+
+    @@index([operatorRfid, obbOperationId])
+}
+
+model ProductionData {
+    id String @id
+
+    operatorRfid String
+    operator     Operator @relation(fields: [operatorRfid], references: [rfid], onDelete: Cascade)
+
+    eliotSerialNo String
+    eliotDevice   EliotDevice @relation(fields: [eliotSerialNo], references: [serialNumber])
+
+    obbOperationId String
+    obbOperation   ObbOperation @relation(fields: [obbOperationId], references: [id], onDelete: Cascade)
+
+    productionCount Int
+    timestamp       String
+
+    @@index([operatorRfid, eliotSerialNo, obbOperationId])
 }
