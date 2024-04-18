@@ -1,12 +1,15 @@
 import { NextResponse } from "next/server";
 
 import { db } from "@/lib/db";
+import { generateUniqueId } from "@/actions/generate-unique-id";
 
 export async function POST(
     req: Request,
 ) {
     try {
         const { serialNumber, modelNumber, installedDate } = await req.json();
+
+        let id = generateUniqueId();
 
         const existingDeviceBySerialNo = await db.eliotDevice.findUnique({
             where: {
@@ -20,6 +23,7 @@ export async function POST(
 
         const newDevice = await db.eliotDevice.create({
             data: {
+                id,
                 serialNumber,
                 modelNumber,
                 installedDate

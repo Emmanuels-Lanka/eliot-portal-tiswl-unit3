@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { db } from "@/lib/db";
+import { generateUniqueId } from "@/actions/generate-unique-id";
 
 export async function POST(
     req: Request,
@@ -13,6 +14,18 @@ export async function POST(
             ucl, lcl, balancingLoss, balancingRatio, colour, supResponseTime, mecResponseTime, qiResponseTime, 
         } = await req.json();
 
+        let id = generateUniqueId();
+
+        const existingSheetByID = await db.obbSheet.findUnique({
+            where: {
+                id
+            }
+        });
+
+        if (existingSheetByID) {
+            return new NextResponse("Obb sheet is already exist!", { status: 409 })
+        }
+
         // Fetch the line name
         const line = await db.productionLine.findUnique({
             where: {
@@ -24,7 +37,7 @@ export async function POST(
 
         const newSheet = await db.obbSheet.create({
             data: {
-                name, unitId, productionLineId, 
+                id, name, unitId, productionLineId, 
                 indEngineerId: indEngineer, 
                 supervisor1Id: supervisor1, 
                 supervisor2Id: supervisor2,

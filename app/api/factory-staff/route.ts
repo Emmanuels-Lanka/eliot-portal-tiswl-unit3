@@ -1,12 +1,15 @@
 import { NextResponse } from "next/server";
 
 import { db } from "@/lib/db";
+import { generateUniqueId } from "@/actions/generate-unique-id";
 
 export async function POST(
     req: Request,
 ) {
     try {
         const { designation, name, phone, email, rfid, employeeId, gender } = await req.json();
+
+        let id = generateUniqueId();
 
         const existingStaffByEmail = await db.staff.findUnique({
             where: {
@@ -26,6 +29,7 @@ export async function POST(
 
         const newStaff = await db.staff.create({
             data: {
+                id,
                 designation,
                 rfid,
                 name,
