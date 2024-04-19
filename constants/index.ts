@@ -2,14 +2,17 @@ import {
     Airplay, 
     AlignHorizontalDistributeCenter, 
     BarChart3, 
+    BarChartHorizontal, 
     Blocks, 
     Cog, 
     FileCog, 
     FileSpreadsheet, 
     LayoutDashboard, 
     LayoutPanelTop, 
+    Mail, 
     PlusSquare, 
     ScissorsLineDashed,
+    Send,
     ServerCog,
     Settings,
     UserRoundCog,
@@ -143,17 +146,42 @@ export const SIDEBAR_ROUTES = [
         ]
     },
     {
-        categoryName: "ELIoT Analytics",
+        categoryName: "SMS & Email Alerts",
         routes: [
             {
-                label: "Production Flow Across Operations",
+                label: "Alert logs",
+                href: "/alert-logs",
+                icon: Send
+            },
+        ]
+    },
+    {
+        categoryName: "Production Efficiency Analytics",
+        routes: [
+            {
+                label: "Production Efficiency (60min)",
                 href: "",
-                icon: BarChart3
+                icon: BarChartHorizontal
             },
             {
-                label: "Production Efficiency Across Operations",
+                label: "Production Efficiency (15min)",
                 href: "",
-                icon: BarChart3
+                icon: BarChartHorizontal
+            },
+        ]
+    },
+    {
+        categoryName: "Operator Efficiency Analytics",
+        routes: [
+            {
+                label: "Operator Efficiency (60min)",
+                href: "",
+                icon: BarChartHorizontal
+            },
+            {
+                label: "Operator Efficiency (15min)",
+                href: "",
+                icon: BarChartHorizontal
             },
         ]
     },
@@ -229,6 +257,11 @@ export const HEADER_INFO = [
         label: "Manage Production Lines",
         href: "/production-lines",
         icon: ServerCog
+    },
+    {
+        label: "SMS & Email Alert Logs",
+        href: "/alert-logs", 
+        icon: Mail
     },
     {
         label: "Create OBB Sheet",

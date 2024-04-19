@@ -25,8 +25,8 @@ const SidebarRoutes = () => {
                                     href={route.href}
                                     key={route.label}
                                     className={cn(
-                                        "flex flex-row items-center px-3 py-2.5 gap-3 text-slate-200/80 hover:text-slate-200 hover:bg-white/10 rounded-sm cursor-pointer transition",
-                                        route.href === pathname && "text-slate-200 bg-white/10"
+                                        "flex flex-row items-center px-3 py-2.5 gap-3 text-slate-200/80 border border-transparent hover:text-slate-200 hover:bg-white/10 rounded-sm cursor-pointer transition",
+                                        route.href === pathname && "text-slate-200 bg-white/10 border-white/10"
                                     )}
                                 >
                                     <route.icon className="w-5 h-5" />
