@@ -4,7 +4,7 @@ import React from 'react'
 const AlertLogs = () => {
   return (
     <div>
-        <EmailTemplate />
+        <EmailTemplate name='Vinojan' />
     </div>
   )
 }
