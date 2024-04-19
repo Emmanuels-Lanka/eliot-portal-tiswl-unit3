@@ -3,7 +3,19 @@ import dynamic from 'next/dynamic';
 
 const ReactApexChart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
-const HeatmapChart = () => {
+interface HeatmapChartProps {
+    title: string;
+    xAxisLabel: string;
+    yAxisLabel: string;
+    height: number;
+}
+
+const HeatmapChart = ({
+    title,
+    xAxisLabel,
+    yAxisLabel,
+    height
+}: HeatmapChartProps) => {
     const series = [
         { name: 'Jan', data: [10, 20, 30] },
         { name: 'Feb', data: [20, 30, 40] },
@@ -18,13 +30,12 @@ const HeatmapChart = () => {
 
     const options = {
         chart: {
-            // height: 350,
             type: 'heatmap' as const,
         },
         plotOptions: {
             heatmap: {
                 shadeIntensity: 0.5,
-                radius: 20,
+                radius: 25,
                 useFillColorAsStroke: false,
                 colorScale: {
                     ranges: [
@@ -46,7 +57,7 @@ const HeatmapChart = () => {
             width: 1,
         },
         title: {
-            text: 'HeatMap Chart with Color Range',
+            text: title,
             style: {
                 color: '#ff0000',
                 fontSize: '18px',
@@ -56,7 +67,7 @@ const HeatmapChart = () => {
         },
         xaxis: {
             title: {
-                text: 'Y Axis Label',
+                text: xAxisLabel,
                 style: {
                     color: '#ff0000',
                     fontSize: '14px',
@@ -71,11 +82,11 @@ const HeatmapChart = () => {
                     fontFamily: 'Inter, sans-serif',
                 },
             },
-            categories: ['1', '2', '3', '4'],
+            categories: ['1', '2', '3'],
         },
         yaxis: {
             title: {
-                text: 'Y Axis Label',
+                text: yAxisLabel,
                 style: {
                     color: '#ff0000',
                     fontSize: '14px',
@@ -95,9 +106,9 @@ const HeatmapChart = () => {
     };
 
     return (
-        <div>
+        <div className='bg-slate-100 pt-5 px-4 rounded-lg border w-full'>
             <div id="chart">
-                <ReactApexChart options={options} series={series} type="heatmap" height={450} width={800} />
+                <ReactApexChart options={options} series={series} type="heatmap" height={height} width='100%' />
             </div>
             <div id="html-dist"></div>
         </div>
