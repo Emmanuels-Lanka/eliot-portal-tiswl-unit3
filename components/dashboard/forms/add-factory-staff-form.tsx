@@ -291,7 +291,7 @@ const AddFactoryStaffForm = ({
                                         <Input
                                             type="tel"
                                             disabled={isSubmitting}
-                                            placeholder="e.g. '0771234567'"
+                                            placeholder="e.g. '8801XXXNNNNNN'"
                                             {...field}
                                         />
                                     </FormControl>
