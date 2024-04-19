@@ -1,8 +1,11 @@
+import EmailTemplate from '@/components/dashboard/templates/email-template'
 import React from 'react'
 
 const AlertLogs = () => {
   return (
-    <div>AlertLogs</div>
+    <div>
+        <EmailTemplate />
+    </div>
   )
 }
 
