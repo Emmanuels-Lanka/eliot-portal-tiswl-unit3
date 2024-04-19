@@ -34,7 +34,7 @@ const EmailTemplate = ({
                         Yes, we know. An email to confirm an email. 🤪
                     </p>
                     <p className="mb-5 text-sm text-gray-600">
-                        Please validate your email address in order to get started using `Product`.
+                        Please validate your email address in order to get started using Product.
                     </p>
 
                     {/* Confirm Button */}
@@ -58,7 +58,7 @@ const EmailTemplate = ({
                 {/* Footer */}
                 <div className="mx-auto max-w-3xl py-5 text-center text-sm">
                     <Link href='https://emmanuelslanka.com/' className="text-gray-600 font-medium text-base underline underline-offset-2">
-                        Emmanuel's Lanka Pvt Ltd.
+                        Emmanuel&apos;s Lanka Pvt Ltd.
                     </Link>
                     <p className="text-gray-500">
                         10 Wewala Rd, Ja-Ela, Sri Lanka.
