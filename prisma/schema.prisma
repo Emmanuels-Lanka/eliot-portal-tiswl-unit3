@@ -37,6 +37,7 @@ model Staff {
     qualityIns  ObbSheet[] @relation("QI")
     accInputMan ObbSheet[] @relation("AccInputMan")
     fabInputMan ObbSheet[] @relation("FabricInputMan")
+    alertLogs   AlertLog[]
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
@@ -50,6 +51,7 @@ model Operator {
     gender      String
     designation String
 
+    alertLogs        AlertLog[]
     operatorSessions OperatorSession[]
     productionData   ProductionData[]
 
@@ -117,6 +119,7 @@ model SewingMachine {
     unitId String
     unit   Unit   @relation(fields: [unitId], references: [id], onDelete: Cascade)
 
+    alertLogs       AlertLog[]
     obbOperations   ObbOperation[]
     productionLines ProductionLine[]
 
@@ -232,7 +235,7 @@ model OperatorSession {
     obbOperationId String
     obbOperation   ObbOperation @relation(fields: [obbOperationId], references: [id], onDelete: Cascade)
 
-    isLoggedIn       Boolean @default(true)
+    isLoggedIn      Boolean @default(true)
     LoginTimestamp  String
     LogoutTimestamp String?
 
@@ -245,8 +248,8 @@ model ProductionData {
     operatorRfid String
     operator     Operator @relation(fields: [operatorRfid], references: [rfid], onDelete: Cascade)
 
-    eliotSerialNo String
-    eliotDevice   EliotDevice @relation(fields: [eliotSerialNo], references: [serialNumber])
+    eliotSerialNumber String
+    eliotDevice       EliotDevice @relation(fields: [eliotSerialNumber], references: [serialNumber])
 
     obbOperationId String
     obbOperation   ObbOperation @relation(fields: [obbOperationId], references: [id], onDelete: Cascade)
@@ -254,5 +257,25 @@ model ProductionData {
     productionCount Int
     timestamp       String
 
-    @@index([operatorRfid, eliotSerialNo, obbOperationId])
+    @@index([operatorRfid, eliotSerialNumber, obbOperationId])
+}
+
+model AlertLog {
+    id String @id
+
+    machineId     String
+    sewingMachine SewingMachine @relation(fields: [machineId], references: [machineId], onDelete: Cascade)
+
+    operatorRfid String
+    operator     Operator @relation(fields: [operatorRfid], references: [rfid], onDelete: Cascade)
+
+    employeeId String
+    employee   Staff  @relation(fields: [employeeId], references: [employeeId], onDelete: Cascade)
+
+    alertType   String
+    smsStatus   String @default("SENDING")
+    emailStatus String @default("SENDING")
+    timestamp   String
+
+    @@index([machineId, operatorRfid, employeeId])
 }

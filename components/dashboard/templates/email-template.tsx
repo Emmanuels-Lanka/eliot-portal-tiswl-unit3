@@ -1,71 +1,194 @@
-import Image from "next/image"
-import Link from "next/link"
-
 interface EmailTemplateProps {
-    name: string
+    recipient: {
+        name: string;
+    };
+    machine: {
+        machineType: string;
+        brandName: string;
+        machineId: string;
+        serialNumber: string;
+    };
+    operatorName: string;
 }
 
 const EmailTemplate = ({
-    name
+    recipient,
+    machine,
+    operatorName
 }: EmailTemplateProps) => {
     return (
-        <div className="bg-gray-100 py-8">
-            <div className="mx-auto max-w-3xl bg-white rounded-xl">
+        <div style={{ backgroundColor: '#f3f4f6', padding: '2rem 0' }}>
+            <div
+                style={{
+                    margin: '0 auto',
+                    maxWidth: '768px',
+                    backgroundColor: '#fff',
+                    borderRadius: '0.9rem',
+                    border: '1px solid #2d3748',
+                    fontFamily: 'Inter, sans-serif'
+                }}
+            >
                 {/* Header */}
-                <div className="border-t-4 border-gray-900 rounded-xl">
-                    <div className="py-5 text-center">
-                        {/* Logo */}
-                        <Image
-                            src="/eliot-logo.png"
+                <div
+                    style={{
+                        textAlign: 'center',
+                        padding: '1rem',
+                        backgroundColor: '#2d3748',
+                        borderRadius: '0.75rem 0.75rem 0 0'
+                    }}
+                >
+                    <div
+                        style={{
+                            borderRadius: '0.5rem 0.5rem 0 0',
+                            backgroundColor: 'rgba(255, 255, 255, 0.05)'
+                        }}
+                    >
+                        <img
+                            src="https://ik.imagekit.io/eliotglobal/eliot-logo.png?updatedAt=1713631556206"
                             alt="logo"
-                            className="mx-auto h-auto w-48 mt-3"
-                            width={200}
-                            height={200}
+                            style={{
+                                display: 'block',
+                                margin: '0 auto',
+                                height: 'auto',
+                                width: '10rem'
+                            }}
                         />
                     </div>
                 </div>
 
                 {/* Body */}
-                <div className="p-6 text-center">
-                    <h1 className="mb-5 text-3xl font-bold text-gray-700">
-                        Hello {name}, How are you!
+                <div
+                    style={{
+                        padding: '3rem 1.5rem 2.5rem 1.5rem',
+                        textAlign: 'center',
+                    }}
+                >
+                    <h1
+                        style={{
+                            marginBottom: '1.25rem',
+                            fontSize: '2rem',
+                            fontWeight: 'bold',
+                            color: '#374151',
+                        }}
+                    >
+                        Hello {recipient.name} 👋,
                     </h1>
-                    <p className="text-sm text-gray-600">
-                        Yes, we know. An email to confirm an email. 🤪
-                    </p>
-                    <p className="mb-5 text-sm text-gray-600">
-                        Please validate your email address in order to get started using Product.
+                    <p style={{ fontSize: '1rem', color: '#4a5568', marginBottom: '1.5rem' }}>
+                        We received a request from <span style={{ textDecoration: 'underline', fontWeight: '600' }}>{operatorName}</span> regarding the following machine.
                     </p>
 
-                    {/* Confirm Button */}
-                    <a href="#" className="inline-block rounded bg-blue-600 px-6 py-3 text-sm font-medium text-white">
-                        Confirm Your Email
-                    </a>
+                    <table
+                        style={{
+                            width: '100%',
+                            borderCollapse: 'collapse',
+                            marginBottom: '1.5rem',
+                            backgroundColor: '#edf2f7',
+                            borderRadius: '0.5rem',
+                            overflow: 'hidden',
+                        }}
+                    >
+                        <thead>
+                            <tr>
+                                <th
+                                    style={{
+                                        padding: '0.75rem',
+                                        backgroundColor: '#2d3748',
+                                        color: '#ffffff',
+                                        textAlign: 'center',
+                                        fontSize: '14px'
+                                    }}
+                                >
+                                    Detail
+                                </th>
+                                <th
+                                    style={{
+                                        padding: '0.75rem',
+                                        backgroundColor: '#2d3748',
+                                        color: '#ffffff',
+                                        textAlign: 'center',
+                                        fontSize: '0.875rem'
+                                    }}
+                                >
+                                    Value
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style={{ padding: '0.75rem', color: '#4a5568' }}>Machine Type</td>
+                                <td style={{ padding: '0.75rem', color: '#4a5568', textTransform: 'uppercase' }}>{machine.machineType}</td>
+                            </tr>
+                            <tr>
+                                <td style={{ padding: '0.75rem', color: '#4a5568' }}>Brand Name</td>
+                                <td style={{ padding: '0.75rem', color: '#4a5568' }}>{machine.brandName}</td>
+                            </tr>
+                            <tr>
+                                <td style={{ padding: '0.75rem', color: '#4a5568' }}>Machine ID</td>
+                                <td style={{ padding: '0.75rem', color: '#4a5568' }}>{machine.machineId}</td>
+                            </tr>
+                            <tr>
+                                <td style={{ padding: '0.75rem', color: '#4a5568' }}>Serial Number</td>
+                                <td style={{ padding: '0.75rem', color: '#4a5568' }}>{machine.serialNumber}</td>
+                            </tr>
+                        </tbody>
+                    </table>
 
-                    <p className="mt-5 mb-10 text-sm text-gray-600">
-                        Or verify using this link:
-                        <a href="https://www.htmlemailtemplates.net/free-html-emails-for-startups" className="text-blue-600">https://www.htmlemailtemplates.net/free-html-emails-for-startups</a>
-                    </p>
-
-                    <h2 className="mb-5 text-xl font-bold text-gray-700">
+                    <h2
+                        style={{
+                            fontSize: '1.25rem',
+                            fontWeight: 'bold',
+                            color: '#374151',
+                            marginBottom: '1.25rem',
+                        }}
+                    >
                         Need Help?
                     </h2>
-                    <p className="text-sm text-gray-600">
-                        Please send any feedback or bug info to <a href="mailto:info@example.com" className="text-blue-600">info@example.com</a>
+                    <p
+                        style={{
+                            fontSize: '0.875rem',
+                            color: '#4b5563',
+                            marginTop: '-1rem',
+                        }}
+                    >
+                        Please send any feedback or bug info to{' '}
+                        <a
+                            href="mailto:help@eliot.global"
+                            style={{
+                                color: '#2563eb',
+                                textDecoration: 'underline',
+                            }}
+                        >
+                            help@eliot.global
+                        </a>
                     </p>
                 </div>
 
                 {/* Footer */}
-                <div className="mx-auto max-w-3xl py-5 text-center text-sm">
-                    <Link href='https://emmanuelslanka.com/' className="text-gray-600 font-medium text-base underline underline-offset-2">
+                <div
+                    style={{
+                        textAlign: 'center',
+                        fontSize: '1rem',
+                        color: '#6b7280',
+                        padding: '1.25rem',
+                        backgroundColor: '#2d3748',
+                        borderRadius: '0 0 0.75rem 0.75rem'
+                    }}
+                >
+                    <a
+                        href="https://emmanuelslanka.com/"
+                        style={{
+                            color: '#cbd5e0',
+                            textDecoration: 'underline',
+                            fontWeight: '500',
+                        }}
+                    >
                         Emmanuel&apos;s Lanka Pvt Ltd.
-                    </Link>
-                    <p className="text-gray-500">
-                        10 Wewala Rd, Ja-Ela, Sri Lanka.
-                    </p>
+                    </a>
+                    <p style={{ color: '#cbd5e0' }}>10 Wewala Rd, Ja-Ela, Sri Lanka.</p>
                 </div>
             </div>
         </div>
+
     )
 }
 
