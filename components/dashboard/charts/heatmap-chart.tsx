@@ -4,28 +4,27 @@ import dynamic from 'next/dynamic';
 const ReactApexChart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
 interface HeatmapChartProps {
-    title: string;
     xAxisLabel: string;
-    yAxisLabel: string;
     height: number;
 }
 
 const HeatmapChart = ({
-    title,
     xAxisLabel,
-    yAxisLabel,
     height
 }: HeatmapChartProps) => {
     const series = [
-        { name: 'Jan', data: [10, 20, 30] },
-        { name: 'Feb', data: [20, 30, 40] },
-        { name: 'Mar', data: [30, 40, 50] },
-        { name: 'Apr', data: [40, 50, 60] },
-        { name: 'May', data: [50, 60, 70] },
-        { name: 'Jun', data: [60, 70, 80] },
-        { name: 'Jul', data: [70, 80, 90] },
-        { name: 'Aug', data: [80, 90, 100] },
-        { name: 'Sep', data: [90, 100, 110] }
+        { name: '1st Hour', data: [0, 1, 30] },
+        { name: '2nd Hour', data: [20, 30, 41] },
+        { name: '3rd Hour', data: [30, 40, 50] },
+        { name: '4th Hour', data: [40, 50, 60] },
+        { name: '5th Hour', data: [50, 60, 70] },
+        { name: '6th Hour', data: [60, 70, 80] },
+        { name: '7th Hour', data: [70, 0, 90] },
+        { name: '8th Hour', data: [80, 90, 100] },
+        { name: '9th Hour', data: [90, 100, 55] },
+        { name: '10th Hour', data: [90, 46, 100] },
+        { name: '11th Hour', data: [90, 100, 11] },
+        { name: '12th Hour', data: [90, 100, 10] }
     ];
 
     const options = {
@@ -34,15 +33,15 @@ const HeatmapChart = ({
         },
         plotOptions: {
             heatmap: {
-                shadeIntensity: 0.5,
-                radius: 25,
+                enableShades: false,
+                radius: 30,
                 useFillColorAsStroke: false,
                 colorScale: {
                     ranges: [
-                        { from: 10, to: 50, name: 'low', color: '#00A100' },
-                        { from: 51, to: 100, name: 'medium', color: '#128FD9' },
-                        { from: 101, to: 150, name: 'high', color: '#FFB200' },
-                        { from: 151, to: 200, name: 'extreme', color: '#FF0000' },
+                        { from: -1, to: 0, name: 'No Data', color: '#374151' },
+                        { from: 1, to: 40, name: 'Low', color: '#ef4444' },
+                        { from: 41, to: 70, name: 'Medium', color: '#f97316' },
+                        { from: 71, to: 100, name: 'Hige', color: '#16a34a' },
                     ],
                 },
             },
@@ -56,22 +55,13 @@ const HeatmapChart = ({
         stroke: {
             width: 1,
         },
-        title: {
-            text: title,
-            style: {
-                color: '#ff0000',
-                fontSize: '18px',
-                fontWeight: 600,
-                fontFamily: 'Inter, sans-serif',
-            }
-        },
         xaxis: {
             title: {
                 text: xAxisLabel,
                 style: {
-                    color: '#ff0000',
+                    color: '#0070c0',
                     fontSize: '14px',
-                    fontWeight: 700,
+                    fontWeight: 600,
                     fontFamily: 'Inter, sans-serif',
                 }
             },
@@ -85,15 +75,6 @@ const HeatmapChart = ({
             categories: ['1', '2', '3'],
         },
         yaxis: {
-            title: {
-                text: yAxisLabel,
-                style: {
-                    color: '#ff0000',
-                    fontSize: '14px',
-                    fontWeight: 700,
-                    fontFamily: 'Inter, sans-serif',
-                }
-            },
             labels: {
                 style: {
                     colors: '#0070c0',

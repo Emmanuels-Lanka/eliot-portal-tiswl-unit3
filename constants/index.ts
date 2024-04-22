@@ -160,12 +160,12 @@ export const SIDEBAR_ROUTES = [
         routes: [
             {
                 label: "Production Efficiency (60min)",
-                href: "",
+                href: "/analytics/production-efficiency-60",
                 icon: BarChartHorizontal
             },
             {
                 label: "Production Efficiency (15min)",
-                href: "",
+                href: "/analytics/production-efficiency-15",
                 icon: BarChartHorizontal
             },
         ]
@@ -175,12 +175,12 @@ export const SIDEBAR_ROUTES = [
         routes: [
             {
                 label: "Operator Efficiency (60min)",
-                href: "",
+                href: "/analytics/operator-efficiency-60",
                 icon: BarChartHorizontal
             },
             {
                 label: "Operator Efficiency (15min)",
-                href: "",
+                href: "/analytics/operator-efficiency-15",
                 icon: BarChartHorizontal
             },
         ]
@@ -272,5 +272,10 @@ export const HEADER_INFO = [
         label: "Manage OBB Sheet",
         href: "/obb-sheets", 
         icon: FileCog
+    },
+    {
+        label: "Analytic charts",
+        href: "/analytics/production-efficiency-60" || "/analytics/production-efficiency-15" || "/analytics/operator-efficiency-60" || "/analytics/operator-efficiency-15", 
+        icon: BarChartHorizontal
     },
 ]
