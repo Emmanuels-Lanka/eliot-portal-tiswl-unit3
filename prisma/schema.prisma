@@ -73,7 +73,7 @@ model Unit {
 
 model ProductionLine {
     id   String @id @default(uuid())
-    name String @unique
+    name String
 
     // sewingMachineId String?
     // sewingMachine   SewingMachine? @relation(fields: [sewingMachineId], references: [id])

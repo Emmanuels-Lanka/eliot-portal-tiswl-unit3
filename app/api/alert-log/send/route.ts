@@ -9,10 +9,10 @@ export async function POST(
     req: Request,
 ) {
     try {
-        const { verifiedKey, machineId, operatorRfid, employeeId, alertType, message } = await req.json();
+        const { verifiedKey, machineId, operatorRfid, employeeId, alertType, timestamp } = await req.json();
 
         let id = generateUniqueId();
-        const timestamp = new Date();
+        // const timestamp = new Date();
         const authorizedKey = process.env.AUTHORIZED_IOT_KEY;
 
         if (authorizedKey !== verifiedKey) {
@@ -37,11 +37,13 @@ export async function POST(
             where: {
                 rfid: operatorRfid
             }
-        })
+        });
         
         if (recipient && machine && operator) {
             let recipientEmail:string[] = [];
             recipientEmail.push(recipient?.email);
+
+            const message: string = `Hello ${recipient.name} 👋, We received a ${alertType} request from ${operator.name} regarding the following machine. Machine ID: ${machine.machineId}, Machine Type: ${machine.machineType}, Brand Name: ${machine.brandName}, Serial Number: ${machine.serialNumber}`
 
             const smsResponse = await sendSmsAlert({
                 message,
@@ -52,12 +54,29 @@ export async function POST(
                 to: recipientEmail,
                 recipient,
                 machine,
-                operator
+                operator,
+                alertType
             });
             
             if (smsResponse.status === 200 && emailResponse.status === 200) {
-                // TODO: Store the alert information to the database
-                return new NextResponse("Successfully send SMS alert!", { status: 200 });
+                try {
+                    const alertLog = await db.alertLog.create({
+                        data: {
+                            id,
+                            machineId,
+                            operatorRfid,
+                            employeeId,
+                            alertType,
+                            smsStatus: 'SENT',
+                            emailStatus: 'SENT',
+                            timestamp
+                        }
+                    });
+                    return NextResponse.json({ data: alertLog, message: 'SMS & Email alert sent successfully'}, { status: 201 });
+                } catch (error) {
+                    console.log("ERROR:", error);
+                    return new NextResponse("Error to store the data in DB", { status: 409 });
+                }
             }
             else if (smsResponse.status === 409) {
                 return new NextResponse("SMS service unavailable!", { status: 503 });
@@ -65,9 +84,10 @@ export async function POST(
             else if (smsResponse.status === 502 || smsResponse.status === 500 || emailResponse.status === 500) {
                 return new NextResponse("Internal Service error!", { status: 500 });
             }
+        } else {
+            return new NextResponse("Bad request! Please send the correct request body.", { status: 400 });
         }
-        // return NextResponse.json({ data: createdSession, message: 'Session created successfully'}, { status: 201 });
-
+        
     } catch (error) {
         console.error("[SEND_ALERT_ERROR]", error);
         return new NextResponse("Internal Error", { status: 500 });

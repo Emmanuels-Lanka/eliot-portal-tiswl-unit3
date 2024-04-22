@@ -1,7 +1,5 @@
 interface EmailTemplateProps {
-    recipient: {
-        name: string;
-    };
+    recipientName: string;
     machine: {
         machineType: string;
         brandName: string;
@@ -9,12 +7,14 @@ interface EmailTemplateProps {
         serialNumber: string;
     };
     operatorName: string;
+    alertType: string;
 }
 
 const EmailTemplate = ({
-    recipient,
+    recipientName,
     machine,
-    operatorName
+    operatorName,
+    alertType
 }: EmailTemplateProps) => {
     return (
         <div style={{ backgroundColor: '#f3f4f6', padding: '2rem 0' }}>
@@ -71,10 +71,10 @@ const EmailTemplate = ({
                             color: '#374151',
                         }}
                     >
-                        Hello {recipient.name} 👋,
+                        Hello {recipientName} 👋,
                     </h1>
                     <p style={{ fontSize: '1rem', color: '#4a5568', marginBottom: '1.5rem' }}>
-                        We received a request from <span style={{ textDecoration: 'underline', fontWeight: '600' }}>{operatorName}</span> regarding the following machine.
+                        We received a <span style={{ fontWeight: '600' }}>{alertType}</span> request from <span style={{ textDecoration: 'underline', fontWeight: '600' }}>{operatorName}</span> regarding the following machine.
                     </p>
 
                     <table
