@@ -11,6 +11,8 @@ interface SendEmailAlertProps {
     machine: SewingMachine;
     operator: Operator;
     alertType: string;
+    unit: string;
+    line: string;
 };
 
 type SendEmailAlertResponseProps = {
@@ -23,13 +25,15 @@ const sendEmailAlert = async ({
     recipient,
     machine,
     operator,
-    alertType
+    alertType,
+    unit,
+    line
 }: SendEmailAlertProps): Promise<SendEmailAlertResponseProps> => {
     try {
         const data = await resend.emails.send({
             from: 'ELIoT Global <notifications@eliot.global>',
             to: to,
-            subject: "ELIoT Alert Notification ⚠️",
+            subject: `⚠️ ELIoT Alert Notification for ${alertType}`,
             react: EmailTemplate({ 
                 recipientName: recipient.name,
                 machine: {
@@ -38,6 +42,8 @@ const sendEmailAlert = async ({
                     machineId: machine.machineId,
                     serialNumber: machine.serialNumber,
                 },
+                unit,
+                line,
                 operatorName: operator.name,
                 alertType: alertType,
             }),

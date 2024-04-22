@@ -73,7 +73,7 @@ model Unit {
 
 model ProductionLine {
     id   String @id @default(uuid())
-    name String
+    name String @unique @db.Text
 
     // sewingMachineId String?
     // sewingMachine   SewingMachine? @relation(fields: [sewingMachineId], references: [id])
@@ -276,6 +276,8 @@ model AlertLog {
     smsStatus   String @default("SENDING")
     emailStatus String @default("SENDING")
     timestamp   String
+
+    createdAt DateTime @default(now())
 
     @@index([machineId, operatorRfid, employeeId])
 }

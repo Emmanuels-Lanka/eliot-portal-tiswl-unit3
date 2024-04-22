@@ -30,6 +30,18 @@ export async function POST(
         const machine = await db.sewingMachine.findUnique({
             where: {
                 machineId
+            },
+            include: {
+                unit: {
+                    select: {
+                        name: true
+                    }
+                },
+                productionLines: {
+                    select: {
+                        name: true
+                    }
+                }
             }
         });
 
@@ -38,12 +50,17 @@ export async function POST(
                 rfid: operatorRfid
             }
         });
-        
+
         if (recipient && machine && operator) {
-            let recipientEmail:string[] = [];
+            let recipientEmail: string[] = [];
             recipientEmail.push(recipient?.email);
 
-            const message: string = `Hello ${recipient.name} 👋, We received a ${alertType} request from ${operator.name} regarding the following machine. Machine ID: ${machine.machineId}, Machine Type: ${machine.machineType}, Brand Name: ${machine.brandName}, Serial Number: ${machine.serialNumber}`
+            const message: string = `-ELIoT Global SMS Alert-
+    REQ: ${alertType},
+    Unit: ${machine.unit.name},
+    Line: ${machine.productionLines[0].name},
+    Machine ID: ${machineId},
+    Time: ${timestamp}`
 
             const smsResponse = await sendSmsAlert({
                 message,
@@ -55,9 +72,11 @@ export async function POST(
                 recipient,
                 machine,
                 operator,
-                alertType
+                alertType,
+                unit: machine.unit.name,
+                line: machine.productionLines[0].name
             });
-            
+
             if (smsResponse.status === 200 && emailResponse.status === 200) {
                 try {
                     const alertLog = await db.alertLog.create({
@@ -72,7 +91,7 @@ export async function POST(
                             timestamp
                         }
                     });
-                    return NextResponse.json({ data: alertLog, message: 'SMS & Email alert sent successfully'}, { status: 201 });
+                    return NextResponse.json({ data: alertLog, message: 'SMS & Email alert sent successfully' }, { status: 201 });
                 } catch (error) {
                     console.log("ERROR:", error);
                     return new NextResponse("Error to store the data in DB", { status: 409 });
@@ -80,14 +99,14 @@ export async function POST(
             }
             else if (smsResponse.status === 409) {
                 return new NextResponse("SMS service unavailable!", { status: 503 });
-            } 
+            }
             else if (smsResponse.status === 502 || smsResponse.status === 500 || emailResponse.status === 500) {
                 return new NextResponse("Internal Service error!", { status: 500 });
             }
         } else {
             return new NextResponse("Bad request! Please send the correct request body.", { status: 400 });
         }
-        
+
     } catch (error) {
         console.error("[SEND_ALERT_ERROR]", error);
         return new NextResponse("Internal Error", { status: 500 });

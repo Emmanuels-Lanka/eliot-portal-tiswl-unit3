@@ -3,9 +3,11 @@ import { columns } from './_components/columns'
 import { DataTable } from './_components/data-table'
 
 const AlertLogs = async () => {
-  const alertLogs = await db.alertLog.findMany();
-  console.log(alertLogs);
-  
+  const alertLogs = await db.alertLog.findMany({
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
 
   return (
     <div className='mx-auto max-w-7xl mt-12'>

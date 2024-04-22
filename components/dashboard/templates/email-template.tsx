@@ -6,6 +6,8 @@ interface EmailTemplateProps {
         machineId: string;
         serialNumber: string;
     };
+    unit: string;
+    line: string;
     operatorName: string;
     alertType: string;
 }
@@ -13,6 +15,8 @@ interface EmailTemplateProps {
 const EmailTemplate = ({
     recipientName,
     machine,
+    unit,
+    line,
     operatorName,
     alertType
 }: EmailTemplateProps) => {
@@ -129,6 +133,28 @@ const EmailTemplate = ({
                             <tr>
                                 <td style={{ padding: '0.75rem', color: '#4a5568' }}>Serial Number</td>
                                 <td style={{ padding: '0.75rem', color: '#4a5568' }}>{machine.serialNumber}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <table
+                        style={{
+                            width: '100%',
+                            borderCollapse: 'collapse',
+                            marginBottom: '1.5rem',
+                            backgroundColor: '#edf2f7',
+                            borderRadius: '0.5rem',
+                            overflow: 'hidden',
+                        }}
+                    >
+                        <tbody>
+                            <tr>
+                                <td style={{ padding: '0.75rem', color: '#4a5568' }}>Unit</td>
+                                <td style={{ padding: '0.75rem', color: '#4a5568' }}>{unit}</td>
+                            </tr>
+                            <tr>
+                                <td style={{ padding: '0.75rem', color: '#4a5568' }}>Production Line</td>
+                                <td style={{ padding: '0.75rem', color: '#4a5568' }}>{line}</td>
                             </tr>
                         </tbody>
                     </table>
