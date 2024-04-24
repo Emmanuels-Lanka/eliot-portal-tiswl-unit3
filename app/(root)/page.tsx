@@ -18,7 +18,7 @@ const RootPage = () => {
         <div className="root-body-height flex justify-center items-center">
             <div>
                 {email ? 
-                    <p>Your email address: <span className="text-slate-600 italic underline hover:text-blue-600 cursor-pointer">{email}</span></p>
+                    <p>You logged email address: <span className="text-slate-600 italic underline hover:text-blue-600 cursor-pointer">{email}</span></p>
                 : 
                     <p>You are not logged in yet, please login the account and continue to dashboard!</p>
                 }

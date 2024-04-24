@@ -12,7 +12,7 @@ const RootHeader = ({
 }: RootHeaderProps) => {
   return (
     <nav className="pt-8">
-        <div className="flex justify-between items-center px-6 py-2 bg-white/80 rounded-full border">
+        <div className="max-h-20 flex justify-between items-center pl-6 pr-5 py-1 bg-white/80 rounded-full border">
             <Image
                 src="/eliot-logo.png"
                 alt="logo"
