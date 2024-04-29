@@ -7,19 +7,19 @@ export async function POST(
     req: Request,
 ) {
     try {
-        const { operatorRfid, eliotSerialNo, obbOperationId } = await req.json();
+        const { operatorRfid, eliotSerialNumber, obbOperationId } = await req.json();
 
         let id = generateUniqueId();
-        const timestamp = new Date()
+        const timestamp = "2024-04-21 11:38:44"
 
         const createdSession = await db.productionData.create({
             data: {
                 id,
                 operatorRfid,
-                eliotSerialNo,
+                eliotSerialNumber,
                 obbOperationId,
                 productionCount: 10,
-                timestamp: timestamp.toISOString() as string
+                timestamp
             }
         });
         return NextResponse.json({ data: createdSession, message: 'Session created successfully'}, { status: 201 });

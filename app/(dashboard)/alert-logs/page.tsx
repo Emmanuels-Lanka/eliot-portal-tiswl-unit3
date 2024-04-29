@@ -1,10 +1,17 @@
-import EmailTemplate from '@/components/dashboard/templates/email-template'
-import React from 'react'
+import { db } from '@/lib/db'
+import { columns } from './_components/columns'
+import { DataTable } from './_components/data-table'
 
-const AlertLogs = () => {
+const AlertLogs = async () => {
+  const alertLogs = await db.alertLog.findMany({
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+
   return (
-    <div>
-        <EmailTemplate name='Vinojan' />
+    <div className='mx-auto max-w-7xl mt-12'>
+      <DataTable columns={columns} data={alertLogs} />
     </div>
   )
 }

@@ -10,7 +10,7 @@ export async function POST(
         const { operatorRfid, obbOperationId } = await req.json();
 
         let id = generateUniqueId();
-        const timestamp = new Date()
+        const timestamp = "2024-04-21 11:38:44"
 
         const LogedInOperator = await db.operatorSession.findMany({
             where: {
@@ -27,7 +27,8 @@ export async function POST(
                 },
                 data: {
                     isLoggedIn: false,
-                    LogoutTimestamp: timestamp.toISOString() as string,
+                    // LogoutTimestamp: timestamp.toISOString() as string,
+                    LogoutTimestamp: timestamp,
                 }
             });
             return NextResponse.json({ data: updatedSession, message: 'Session updated successfully'}, { status: 201 });
@@ -38,7 +39,7 @@ export async function POST(
                 data: {
                     id,
                     operatorRfid,
-                    LoginTimestamp: timestamp.toISOString() as string,
+                    LoginTimestamp: timestamp,
                     isLoggedIn: true,
                     obbOperationId
                 }

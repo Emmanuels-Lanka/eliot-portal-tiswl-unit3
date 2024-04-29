@@ -30,4 +30,10 @@ type ObbOperationData = {
     machineType: string;
     machineId: string;
   } | null;
+  supervisor?: {
+    id: string;
+    name: string;
+    employeeId: string;
+  } | null;
+  supervisorId: string | null;
 };

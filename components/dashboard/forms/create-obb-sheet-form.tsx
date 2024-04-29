@@ -368,7 +368,7 @@ const CreateObbSheetForm = ({
                                         <FormLabel className="text-sm">
                                             Responsible Supervisor 2
                                         </FormLabel>
-                                        <Select onValueChange={field.onChange}>
+                                        <Select onValueChange={field.onChange} defaultValue={field.value || undefined}>
                                             <FormControl>
                                                 <SelectTrigger>
                                                     <SelectValue placeholder="Select an option" />

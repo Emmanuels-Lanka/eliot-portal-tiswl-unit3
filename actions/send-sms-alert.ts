@@ -2,7 +2,7 @@ import axios from "axios";
 
 interface SendSmsAlertProps {
     message: string;
-    phoneNumbers: string[];
+    recipient: string;
     scheduledDate?: string;     // y-m-d H:i:s | eg. 2024-04-19 12:50:06
 }
 
@@ -13,18 +13,18 @@ type SendSmsAlertResponseProps = {
 
 export const sendSmsAlert = async ({
     message,
-    phoneNumbers,
+    recipient,
     scheduledDate
 }: SendSmsAlertProps): Promise<SendSmsAlertResponseProps> => {
     const apiKey = process.env.SMS_API_KEY;
     const apiEndpoint = process.env.SMS_ENDPOINT;
 
-    const recipients = phoneNumbers.join(',');
+    // const recipients = phoneNumbers.join(',');
 
     const data = {
         api_key: apiKey,
         msg: message,
-        to: recipients,
+        to: recipient,
         ...(scheduledDate && { schedule: scheduledDate }), // Include schedule only if provided
     };
 
@@ -49,7 +49,7 @@ export const sendSmsAlert = async ({
         if (axios.isAxiosError(error)) {
             console.error('AXIOS_ERROR:', error);
             return {
-                status: 501,
+                status: 502,
                 message: 'Axios error to send SMS: ' + error
             }
         } else {
