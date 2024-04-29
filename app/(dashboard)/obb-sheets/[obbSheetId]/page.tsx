@@ -37,12 +37,6 @@ const ObbSheetId = async ({
     }
   });
 
-  // const obbOperations: ObbOperation[] | null = await db.obbOperation.findMany({
-  //   where: {
-  //     obbSheetId: params.obbSheetId
-  //   }
-  // });
-
   const obbOperations = await db.obbSheet.findUnique({
     where: {
       id: params.obbSheetId
@@ -64,13 +58,23 @@ const ObbSheetId = async ({
               machineId: true
             }
           },
+          supervisor: {
+            select: {
+              id: true,
+              name: true,
+              employeeId: true
+            }
+          }
         },
         orderBy: {
           createdAt: 'asc',
         }
-      }
+      },
+      supervisor1: true,
+      supervisor2: true
     }
   });
+  console.log("OBB", obbOperations);
 
   const operations: Operation[] | null = await db.operation.findMany();
 
@@ -96,6 +100,8 @@ const ObbSheetId = async ({
         machines={machines}
         obbOperations={obbOperations?.obbOperations}
         obbSheetId={params.obbSheetId}
+        supervisor1={obbOperations?.supervisor1 || null}
+        supervisor2={obbOperations?.supervisor2 || null}
       />
       <div className="space-y-4">
         <div>

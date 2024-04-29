@@ -3,7 +3,7 @@
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { ObbOperation, Operation, SewingMachine } from "@prisma/client";
+import { ObbOperation, Operation, SewingMachine, Staff } from "@prisma/client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Loader2, PlusCircle, Zap } from "lucide-react";
@@ -36,6 +36,8 @@ interface AddObbOperationFormProps {
     machines: SewingMachine[] | null;
     obbOperations: ObbOperationData[] | undefined;
     obbSheetId: string;
+    supervisor1: Staff | null;
+    supervisor2: Staff | null;
 }
 
 type FormValues = z.infer<typeof formSchema>;
@@ -53,13 +55,18 @@ const formSchema = z.object({
     length: z.number(),
     totalStitches: z.number(),
     obbSheetId: z.string(),
+    supervisorId: z.string().min(1, {
+        message: "Responsive supervisor is required",
+    }),
 });
 
 const AddObbOperationForm = ({
     operations,
     machines,
     obbOperations,
-    obbSheetId
+    obbSheetId,
+    supervisor1,
+    supervisor2,
 }: AddObbOperationFormProps) => {
     const { toast } = useToast();
     const router = useRouter();
@@ -78,7 +85,8 @@ const AddObbOperationForm = ({
             spi: undefined,
             length: undefined,
             totalStitches: undefined,
-            obbSheetId: obbSheetId
+            obbSheetId: obbSheetId,
+            supervisorId: ""
         },
     });
 
@@ -88,13 +96,14 @@ const AddObbOperationForm = ({
         if (updatingData) {
             const mappedData: FormValues = {
                 operationId: updatingData.operationId,
-                sewingMachineId: updatingData.sewingMachineId ? updatingData.sewingMachineId : '',
+                sewingMachineId: updatingData.sewingMachineId ||  '',
                 smv: updatingData.smv,
                 target: updatingData.target,
                 spi: updatingData.spi,
                 length: updatingData.length,
                 totalStitches: updatingData.totalStitches,
-                obbSheetId: updatingData.obbSheetId
+                obbSheetId: updatingData.obbSheetId,
+                supervisorId: updatingData.supervisorId || '',
             };
             form.reset(mappedData);
         }
@@ -189,7 +198,8 @@ const AddObbOperationForm = ({
             spi: undefined,
             length: undefined,
             totalStitches: undefined,
-            obbSheetId: obbSheetId
+            obbSheetId: obbSheetId,
+            supervisorId: "",
         });
     }
 
@@ -214,7 +224,7 @@ const AddObbOperationForm = ({
                         className="w-full space-y-6 mt-4"
                     >
                         <div className="flex flex-row gap-x-2">
-                            <div className="w-12">
+                            <div className="w-14">
                                 <FormItem>
                                     <FormLabel>
                                         Seq
@@ -265,7 +275,7 @@ const AddObbOperationForm = ({
                                             <FormLabel>
                                                 Machine
                                             </FormLabel>
-                                            <Select onValueChange={field.onChange} defaultValue={updatingData?.sewingMachineId ? updatingData.sewingMachineId : field.value}>
+                                            <Select onValueChange={field.onChange} defaultValue={updatingData?.sewingMachineId || field.value}>
                                                 <FormControl>
                                                     <SelectTrigger>
                                                         <SelectValue placeholder="Select machine" />
@@ -275,6 +285,31 @@ const AddObbOperationForm = ({
                                                     {machines && machines.map((machine) => (
                                                         <SelectItem key={machine.id} value={machine.id}>{machine.brandName}-{machine.machineType}-{machine.machineId}</SelectItem>
                                                     ))}
+                                                </SelectContent>
+                                            </Select>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                            </div>
+                            <div className="w-3/12">
+                                <FormField
+                                    control={form.control}
+                                    name="supervisorId"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>
+                                                Responsible Supervisor
+                                            </FormLabel>
+                                            <Select onValueChange={field.onChange} defaultValue={updatingData?.supervisorId ? updatingData.supervisorId : field.value}>
+                                                <FormControl>
+                                                    <SelectTrigger>
+                                                        <SelectValue placeholder="Select supervisor" />
+                                                    </SelectTrigger>
+                                                </FormControl>
+                                                <SelectContent>
+                                                    {supervisor1 && <SelectItem value={supervisor1.id}>{supervisor1.name} - {supervisor1.employeeId}</SelectItem>}
+                                                    {supervisor2 && <SelectItem value={supervisor2.id}>{supervisor2.name} - {supervisor2.employeeId}</SelectItem>}
                                                 </SelectContent>
                                             </Select>
                                             <FormMessage />
@@ -386,7 +421,7 @@ const AddObbOperationForm = ({
                                     )}
                                 />
                             </div>
-                            <div className="w-2/12">
+                            <div className="w-44">
                                 <FormField
                                     control={form.control}
                                     name="totalStitches"

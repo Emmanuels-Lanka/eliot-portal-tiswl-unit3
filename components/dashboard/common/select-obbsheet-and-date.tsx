@@ -35,7 +35,9 @@ interface SelectObbSheetAndDateProps {
 };
 
 const formSchema = z.object({
-    obbSheetId: z.string(),
+    obbSheetId: z.string().min(1, {
+        message: "OBB Sheet is required"
+    }),
     date: z.date()
 });
 
@@ -55,10 +57,6 @@ const SelectObbSheetAndDate = ({
     });
 
     const { isSubmitting, isValid } = form.formState;
-
-    const onSubmit = async (data: z.infer<typeof formSchema>) => {
-        console.log(JSON.stringify(data));
-    }
 
     return (
         <div className='mt-16 border px-12 pt-6 pb-10 rounded-lg bg-slate-100'>

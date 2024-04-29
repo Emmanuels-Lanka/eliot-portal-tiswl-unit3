@@ -30,26 +30,29 @@ model Staff {
     gender      String
     rfid        String?
 
-    indEngineer ObbSheet[] @relation("IndEngineer")
-    supervisor1 ObbSheet[] @relation("Supervisor1")
-    supervisor2 ObbSheet[] @relation("Supervisor2")
-    mechanic    ObbSheet[] @relation("Mechanic")
-    qualityIns  ObbSheet[] @relation("QI")
-    accInputMan ObbSheet[] @relation("AccInputMan")
-    fabInputMan ObbSheet[] @relation("FabricInputMan")
-    alertLogs   AlertLog[]
+    indEngineer   ObbSheet[]     @relation("IndEngineer")
+    supervisor1   ObbSheet[]     @relation("Supervisor1")
+    supervisor2   ObbSheet[]     @relation("Supervisor2")
+    mechanic      ObbSheet[]     @relation("Mechanic")
+    qualityIns    ObbSheet[]     @relation("QI")
+    accInputMan   ObbSheet[]     @relation("AccInputMan")
+    fabInputMan   ObbSheet[]     @relation("FabricInputMan")
+    alertLogs     AlertLog[]
+    staffSessions StaffSession[]
+    obbOperations ObbOperation[]
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 }
 
 model Operator {
-    id          String @id
+    id          String  @id
     name        String
-    employeeId  String @unique
-    rfid        String @unique
+    employeeId  String  @unique
+    rfid        String  @unique
     gender      String
     designation String
+    isLoggedIn  Boolean @default(false)
 
     alertLogs        AlertLog[]
     operatorSessions OperatorSession[]
@@ -200,7 +203,7 @@ model Operation {
 
 model ObbOperation {
     id    String @id
-    seqNo Int    @unique @default(autoincrement())
+    seqNo Int    @default(0)
 
     operationId String
     operation   Operation @relation(fields: [operationId], references: [id], onDelete: Cascade)
@@ -211,6 +214,9 @@ model ObbOperation {
     obbSheetId String
     obbSheet   ObbSheet @relation(fields: [obbSheetId], references: [id], onDelete: Cascade)
 
+    supervisorId String?
+    supervisor   Staff?  @relation(fields: [supervisorId], references: [id])
+
     smv           Int
     target        Int
     spi           Int
@@ -219,6 +225,7 @@ model ObbOperation {
 
     productionData   ProductionData[]
     operatorSessions OperatorSession[]
+    staffSessions    StaffSession[]
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
@@ -239,7 +246,27 @@ model OperatorSession {
     LoginTimestamp  String
     LogoutTimestamp String?
 
+    createdAt DateTime @default(now())
+
     @@index([operatorRfid, obbOperationId])
+}
+
+model StaffSession {
+    id String @id
+
+    staffEmpId String
+    staff      Staff  @relation(fields: [staffEmpId], references: [employeeId], onDelete: Cascade)
+
+    obbOperationId String
+    obbOperation   ObbOperation @relation(fields: [obbOperationId], references: [id], onDelete: Cascade)
+
+    isLoggedIn      Boolean @default(true)
+    LoginTimestamp  String
+    LogoutTimestamp String?
+
+    createdAt DateTime @default(now())
+
+    @@index([staffEmpId, obbOperationId])
 }
 
 model ProductionData {
@@ -256,6 +283,8 @@ model ProductionData {
 
     productionCount Int
     timestamp       String
+
+    createdAt DateTime @default(now())
 
     @@index([operatorRfid, eliotSerialNumber, obbOperationId])
 }

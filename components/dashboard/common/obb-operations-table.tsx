@@ -72,6 +72,7 @@ const ObbOperationsTable = ({
                     <TableHead className="w-12">Seq&nbsp;No</TableHead>
                     <TableHead className="w-4/12">Operation</TableHead>
                     <TableHead className="w-2/12">Mechine</TableHead>
+                    <TableHead className="w-2/12">Supervisor</TableHead>
                     <TableHead className="w-16 text-center">SMV</TableHead>
                     <TableHead className="w-16 text-center">Target</TableHead>
                     <TableHead className="w-16 text-center">spi</TableHead>
@@ -86,6 +87,7 @@ const ObbOperationsTable = ({
                         <TableCell className="font-medium">{data.seqNo}</TableCell>
                         <TableCell>{data.operation.name}</TableCell>
                         <TableCell className="uppercase">{data.sewingMachine?.brandName}-{data.sewingMachine?.machineType}- {data.sewingMachine?.machineId}</TableCell>
+                        <TableCell>{data.supervisor?.name}</TableCell>
                         <TableCell className="text-center">{data.smv}</TableCell>
                         <TableCell className="text-center">{data.target}</TableCell>
                         <TableCell className="text-center">{data.spi}</TableCell>
