@@ -44,7 +44,7 @@ export async function POST(
         // Serialize the token to cookie
         const serialized = serialize("AUTH_TOKEN", token, {
             httpOnly: true,
-            secure: process.env.NODE_ENV !== 'development' ? true : false,
+            secure: true,
             sameSite: "strict",
             maxAge: MAX_AGE,
             path: "/",

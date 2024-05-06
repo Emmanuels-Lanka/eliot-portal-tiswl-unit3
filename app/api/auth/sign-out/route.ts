@@ -6,7 +6,7 @@ export async function POST() {
         // Clear the cookie
         const serialized = serialize("AUTH_TOKEN", "", {
             httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
+            secure: true,
             sameSite: "strict",
             maxAge: -1,
             path: "/",
