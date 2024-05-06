@@ -4,9 +4,10 @@ import { ArrowUpDown } from "lucide-react";
 import { AlertLog } from "@prisma/client"
 import { ColumnDef } from "@tanstack/react-table"
 
-import { cn } from "@/lib/utils";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { cn } from "../../../../lib/utils";
+import { Badge } from "../../../../components/ui/badge";
+import { Button } from "../../../../components/ui/button";
+// import { Button } from "../../../../components/ui/button";
 
 export const columns: ColumnDef<AlertLog>[] = [
     {
