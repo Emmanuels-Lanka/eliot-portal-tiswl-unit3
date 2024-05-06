@@ -33,7 +33,7 @@ export async function POST(
         }
         
         // Get the secret
-        const secret = process.env.JWT_SECRET || "";
+        const secret = process.env.JWT_SECRET || "eyJhbGciOiJIUzI1NiJ9.eyJSb2xlIjoiQWRtaW4iLCJJc3N1ZXIiOiJJc3N1ZXIiLCJVc2VybmFtZSI6IkphdmFJblVzZSIsImV4cCI6MTcwNjc2ODE4NCwiaWF0IjoxNzA2NzY4MTg0fQ.IORglRukNdhQ8XpHF1QwDt-_ZF92O71nA8oGkQFTx1s";
 
         // Sign the token
         const token = sign(
@@ -45,7 +45,7 @@ export async function POST(
         // Serialize the token to cookie
         const serialized = serialize("AUTH_TOKEN", token, {
             httpOnly: true,
-            secure: process.env.NODE_ENV !== 'development',
+            secure: process.env.NODE_ENV !== 'development' ? true : false,
             sameSite: "strict",
             maxAge: MAX_AGE,
             path: "/",
