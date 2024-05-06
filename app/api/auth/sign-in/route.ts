@@ -12,6 +12,7 @@ export async function POST(
 ) {
     try {
         const { email, password } = await req.json();
+        console.log("Database URL:", process.env.DATABASE_URL);
 
         // Check if the email is already exist
         const existingUserByEmail = await db.user.findUnique({
@@ -56,6 +57,7 @@ export async function POST(
         });
         
     } catch (error) {
+        console.log("Database URL:", process.env.DATABASE_URL);
         console.error("[SIGNIN_ERROR]", error);
         return new NextResponse("Internal Login Error", { status: 500 });
     }
