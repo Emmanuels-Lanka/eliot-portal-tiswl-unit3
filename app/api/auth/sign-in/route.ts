@@ -57,7 +57,7 @@ export async function POST(
         });
         
     } catch (error) {
-        console.error("[SIGNIN_ERROR]", error, process.env.DATABASE_URL);
+        console.error("[SIGNIN_ERROR]", error);
         return new NextResponse("Internal Login Error", { status: 500 });
     }
 }
