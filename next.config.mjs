@@ -7,12 +7,7 @@ const nextConfig = {
     },
     env: {
         DATABASE_URL: process.env.DATABASE_URL,
-        NODE_ENV: process.env.NODE_ENV,
         JWT_SECRET: process.env.JWT_SECRET,
-        SMS_API_KEY: process.env.SMS_API_KEY,
-        SMS_ENDPOINT: process.env.SMS_ENDPOINT,
-        RESEND_API_KEY: process.env.RESEND_API_KEY,
-        AUTHORIZED_IOT_KEY: process.env.AUTHORIZED_IOT_KEY
     }
 };
 
