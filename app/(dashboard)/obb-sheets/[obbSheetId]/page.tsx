@@ -74,7 +74,6 @@ const ObbSheetId = async ({
       supervisor2: true
     }
   });
-  console.log("OBB", obbOperations);
 
   const operations: Operation[] | null = await db.operation.findMany();
 
