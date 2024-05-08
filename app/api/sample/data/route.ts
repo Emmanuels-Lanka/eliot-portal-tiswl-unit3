@@ -7,6 +7,7 @@ export async function POST(
     req: Request,
 ) {
     try {
+        // Testing merge
         const { operatorRfid, eliotSerialNumber, obbOperationId } = await req.json();
 
         let id = generateUniqueId();
