@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-
 import { db } from "@/lib/db";
 import { generateUniqueId } from "@/actions/generate-unique-id";
 
@@ -12,22 +11,16 @@ const formatDateToString = (date: Date) => {
     return date.getFullYear() + '-' + z(date.getMonth() + 1) + '-' + z(date.getDate()) + ' ' + z(date.getHours()) + ':' + z(date.getMinutes()) + ':' + z(date.getSeconds());
 }
 
-export async function POST(
-    req: Request,
-) {
+export async function POST(req: Request) {
     try {
-        // Testing merge
-        const { operatorRfid, eliotSerialNumber, obbOperationId, initialCount, iterations } = await req.json();
+        const { operatorRfid, eliotSerialNumber, obbOperationId, iterations } = await req.json();
 
-        let id = generateUniqueId();
-        let timestamp = new Date("2024-04-21T04:50:00Z");
-        let productionCount = parseInt(initialCount, 10);
+        let timestamp = new Date("2024-04-21T04:00:00Z");
         const data = [];
-        const increment = 6;
 
         for (let i = 0; i < iterations; i++) {
             let id = generateUniqueId();
-            productionCount += increment;
+            let productionCount = Math.floor(Math.random() * 11) + 5; // Random number between 5 and 15
             timestamp = addMinutes(timestamp, 5);
 
             data.push({

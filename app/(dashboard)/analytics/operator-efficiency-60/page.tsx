@@ -1,4 +1,4 @@
-import AnalyticsChart from '@/components/dashboard/common/analytics-chart';
+import AnalyticsChart from '@/app/(dashboard)/analytics/production-efficiency-60/_components/analytics-chart';
 import { db } from '@/lib/db';
 
 const OperatorEfficiency60 = async () => {
