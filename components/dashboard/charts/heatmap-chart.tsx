@@ -104,9 +104,9 @@ const HeatmapChart = ({
                 colorScale: {
                     ranges: [
                         // { from: -1, to: 0, name: 'No Data', color: '#374151' },
-                        { from: 0, to: efficiencyLow || 40, name: 'Low', color: '#ef4444' },
-                        { from: efficiencyLow || 41, to: efficiencyHigh || 70, name: 'Medium', color: '#f97316' },
-                        { from: efficiencyHigh || 71, to: 1000, name: 'Hige', color: '#16a34a' },
+                        { from: 0, to: efficiencyLow || 44, name: 'Low', color: '#ef4444' },
+                        { from: efficiencyLow || 45, to: efficiencyHigh || 74, name: 'Medium', color: '#f97316' },
+                        { from: efficiencyHigh || 75, to: 1000, name: 'Hige', color: '#16a34a' },
                     ],
                 },
             },
