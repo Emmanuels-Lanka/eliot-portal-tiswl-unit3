@@ -17,11 +17,13 @@ interface AnalyticsChartProps {
     title: string;
 }
 
-type HourGroup = {
-    [key: string]: {
-        totalProduction: number;
-        target: number;
-        xAxis: number;
+interface OperatorGroup {
+    totalProduction: number;
+    operations: {
+        [key: string]: {
+            productionCount: number;
+            target: number;
+        };
     };
 }
 
@@ -36,55 +38,67 @@ const AnalyticsChart = ({
     const [heatmapCategories, setHeatmapCategories] = useState<string[] | null>(null);
     const [obbSheet, setObbSheet] = useState<ObbSheet | null>(null);
 
-    function processForHeatmap(productionData: ProductionData[]) {
-        // Create an array to store hour groups, each as a map of operation IDs to production totals and targets
-        const hourlyOperations: HourGroup[] = Array.from({ length: 12 }, () => ({}));
-        const xAxisCategories: string[] = [];
+    function processForHeatmap(productionData: any): { efficiencies: number[][], xAxisCategories: string[] } {
+        const quarterHourOperators: { [index: number]: { [rfid: string]: OperatorGroup } } = Array.from({ length: 48 }, () => ({})); // 4 quarters per hour * 12 hours
+        const xAxisCategories = new Set<string>();
 
         productionData.forEach((item: any) => {
             const date = new Date(item.timestamp);
-            const hourIndex = date.getHours() - 7; // Adjust the base hour as needed
-    
-            if (hourIndex >= 0 && hourIndex < 12) { // Ensure within the desired time range
-                const hourGroup = hourlyOperations[hourIndex];
-                const operation = hourGroup[item.obbOperationId] || { 
-                    totalProduction: 0, 
-                    target: item.obbOperation.target, 
-                    xAxis: item.obbOperation.operation.name 
+            const quarterIndex = (date.getHours() - 7) * 4 + Math.floor(date.getMinutes() / 15); // Calculate the quarter index within the day
+
+            if (quarterIndex >= 0 && quarterIndex < 48) {
+                const operators = quarterHourOperators[quarterIndex] || {};
+                const operator = operators[item.operatorRfid] || {
+                    totalProduction: 0,
+                    operations: {}
                 };
-    
-                operation.totalProduction += item.productionCount;
-                hourGroup[item.obbOperationId] = operation; // Store back to the group
+
+                const operation = operator.operations[item.obbOperationId] || {
+                    productionCount: 0,
+                    target: item.obbOperation.target / 4 // Divide the target by 4 for quarter-hour
+                };
+                operation.productionCount += item.productionCount;
+                operator.operations[item.obbOperationId] = operation;
+
+                operator.totalProduction += item.productionCount;
+                operators[item.operatorRfid] = operator;
+                quarterHourOperators[quarterIndex] = operators;
+
+                xAxisCategories.add(item.operator.name); // Assume the name is available in item.operator
             }
-        });
-    
-        // Calculate efficiencies for each operation in each hour and store only the data arrays
-        const efficiencyData: number[][] = hourlyOperations.map(hourGroup => {
-            const operations = Object.values(hourGroup);
-            if (operations.length) {
-                operations.forEach((op, index) => {
-                    // This condition ensures we only add sequence numbers once per unique operation across all hours
-                    if (xAxisCategories.length <= index) {
-                        xAxisCategories.push(`op1: ${op.xAxis}`);
-                    }
-                });
-            }
-            return operations.map(op => Number(((op.totalProduction / op.target) * 100).toFixed(1)));
         });
 
-        return { efficiencyData, xAxisCategories };
+        // Calculate efficiencies
+        const efficiencies = Object.values(quarterHourOperators).map(operators => {
+            return Object.values(operators).map(operator => {
+                let totalProduction = 0;
+                let weightedEfficiencySum = 0;
+
+                Object.values(operator.operations).forEach(op => {
+                    totalProduction += op.productionCount;
+                    weightedEfficiencySum += op.productionCount * (op.productionCount / op.target * 100);
+                });
+
+                return totalProduction > 0 ? Number((weightedEfficiencySum / totalProduction).toFixed(1)) : 0;
+            });
+        });
+
+        return { 
+            efficiencies, 
+            xAxisCategories: Array.from(xAxisCategories) 
+        };
     }
 
-    const handleFetchProductions = async (data: {obbSheetId: string; date: Date }) => {
+    const handleFetchProductions = async (data: { obbSheetId: string; date: Date }) => {
         try {
             const formattedDate = data.date.toISOString().split('T')[0];
             const response = await axios.get(`/api/efficiency/production?obbSheetId=${data.obbSheetId}&date=${formattedDate}`);
-            
-            const heatmapData = processForHeatmap(response.data.data);
-            setHeatmapData(heatmapData.efficiencyData);
-            setHeatmapCategories(heatmapData.xAxisCategories);
+            const { efficiencies, xAxisCategories } = processForHeatmap(response.data.data);
+
+            setHeatmapData(efficiencies);
+            setHeatmapCategories(xAxisCategories);
             setObbSheet(response.data.obbSheet);
-            
+
             router.refresh();
         } catch (error: any) {
             console.error("Error fetching production data:", error);
@@ -101,27 +115,27 @@ const AnalyticsChart = ({
             });
         }
     }
-    
+
     return (
         <div className="mx-auto max-w-7xl">
-            <SelectObbSheetAndDate 
+            <SelectObbSheetAndDate
                 obbSheets={obbSheets}
                 handleSubmit={handleFetchProductions}
             />
-            {heatmapData !== null && heatmapCategories !== null ? 
+            {heatmapData !== null && heatmapCategories !== null ?
                 <div className="mt-12">
                     <h2 className="text-lg mb-2 font-medium text-slate-700">{title}</h2>
                     <HeatmapChart
                         xAxisLabel='Operations'
-                        height={580}
-                        type="60min"
+                        height={1800}
+                        type="15min"
                         efficiencyLow={obbSheet?.efficiencyLevel1}
                         efficiencyHigh={obbSheet?.efficiencyLevel3}
                         heatmapData={heatmapData}
                         heatmapCategories={heatmapCategories}
                     />
                 </div>
-            :
+                :
                 <div className="mt-12 w-full">
                     <p className="text-center text-slate-500">Please select the OBB sheet and date ☝️</p>
                 </div>

@@ -51,7 +51,11 @@ const AnalyticsChart = ({
     
             if (intervalIndex >= 0 && intervalIndex < 48) { // Ensure within the 7:00 AM to 6:59 PM range
                 const intervalGroup = intervalOperations[intervalIndex];
-                const operation = intervalGroup[item.obbOperationId] || { totalProduction: 0, target: item.obbOperation.target / 4, xAxis: item.obbOperation.operation.name };
+                const operation = intervalGroup[item.obbOperationId] || { 
+                    totalProduction: 0, 
+                    target: item.obbOperation.target / 4, 
+                    xAxis: item.obbOperation.operation.name 
+                };
     
                 operation.totalProduction += item.productionCount;
                 intervalGroup[item.obbOperationId] = operation;
