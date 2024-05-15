@@ -37,15 +37,18 @@ export async function PUT(
     try {
         const { operationId, sewingMachineId, smv, target, spi, length, totalStitches, obbSheetId, supervisorId } = await req.json();
 
-        const existingOperationById = await db.obbOperation.findUnique({
+        const existingMachine = await db.sewingMachine.findUnique({
             where: {
-                id: params.obbOperationId
+                id: sewingMachineId
+            },
+            include: {
+                obbOperation: true
             }
-        });
+        })
 
-        if (!existingOperationById) {
-            return new NextResponse("The OBB operation does not exist", { status: 409 })
-        };
+        if (existingMachine && existingMachine.obbOperation) {
+            return new NextResponse("This sewing machine is already assigned to another operation.", { status: 409 })
+        }
 
         const updatedOperation = await db.obbOperation.update({
             where: {
@@ -53,14 +56,18 @@ export async function PUT(
             },
             data: {
                 operationId, 
-                sewingMachineId, 
+                obbSheetId,
                 smv, 
                 target, 
                 spi, 
                 length, 
                 totalStitches, 
-                obbSheetId,
-                supervisorId
+                supervisorId,
+                sewingMachine: {
+                    connect: {
+                        id: sewingMachineId
+                    }
+                }
             }
         });
 

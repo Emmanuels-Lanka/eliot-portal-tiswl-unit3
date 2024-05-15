@@ -11,7 +11,6 @@ type ObbOperationData = {
   id: string;
   seqNo: number;
   operationId: string;
-  sewingMachineId: string | null;
   obbSheetId: string;
   smv: number;
   target: number;
@@ -37,3 +36,15 @@ type ObbOperationData = {
   } | null;
   supervisorId: string | null;
 };
+
+type SendEmailAlertResponseProps = {
+    status: number;
+    message: string;
+}
+
+type MachineDataWithObbOperation = {
+  obbOperation: {
+      id: string;
+      target: number;
+  } | null;
+}

@@ -15,11 +15,6 @@ interface SendEmailAlertProps {
     line: string;
 };
 
-type SendEmailAlertResponseProps = {
-    status: number;
-    message: string;
-}
-
 const sendEmailAlert = async ({
     to,
     recipient,

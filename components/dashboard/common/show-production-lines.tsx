@@ -23,7 +23,7 @@ const ShowProductionLines = ({
         const fetchLines = async () => {
             if (selectedUnit) {
                 try {
-                    const response = await axios.get(`/api/production-line/${selectedUnit}`);
+                    const response = await axios.get(`/api/production-line?unitId=${selectedUnit}`);
                     setLines(response.data.data);
                 } catch (error) {
                     console.error("Error fetching lines:", error);

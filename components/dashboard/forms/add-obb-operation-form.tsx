@@ -34,6 +34,7 @@ import { Separator } from "@/components/ui/separator";
 interface AddObbOperationFormProps {
     operations: Operation[] | null;
     machines: SewingMachine[] | null;
+    assignedMachinesToOperations: (string | undefined)[] | undefined;
     obbOperations: ObbOperationData[] | undefined;
     obbSheetId: string;
     supervisor1: Staff | null;
@@ -63,6 +64,7 @@ const formSchema = z.object({
 const AddObbOperationForm = ({
     operations,
     machines,
+    assignedMachinesToOperations,
     obbOperations,
     obbSheetId,
     supervisor1,
@@ -96,7 +98,7 @@ const AddObbOperationForm = ({
         if (updatingData) {
             const mappedData: FormValues = {
                 operationId: updatingData.operationId,
-                sewingMachineId: updatingData.sewingMachineId ||  '',
+                sewingMachineId: updatingData.sewingMachine?.id || '',
                 smv: updatingData.smv,
                 target: updatingData.target,
                 spi: updatingData.spi,
@@ -187,8 +189,8 @@ const AddObbOperationForm = ({
     }
 
     const handleCancel = () => {
-        setIsUpdating(false); 
-        setIsEditing(false); 
+        setIsUpdating(false);
+        setIsEditing(false);
         setUpdatingData(undefined);
         form.reset({
             operationId: "",
@@ -275,16 +277,28 @@ const AddObbOperationForm = ({
                                             <FormLabel>
                                                 Machine
                                             </FormLabel>
-                                            <Select onValueChange={field.onChange} defaultValue={updatingData?.sewingMachineId || field.value}>
+                                            <Select onValueChange={field.onChange} defaultValue={updatingData?.sewingMachine?.id || field.value}>
                                                 <FormControl>
                                                     <SelectTrigger>
                                                         <SelectValue placeholder="Select machine" />
                                                     </SelectTrigger>
                                                 </FormControl>
                                                 <SelectContent>
-                                                    {machines && machines.map((machine) => (
-                                                        <SelectItem key={machine.id} value={machine.id}>{machine.brandName}-{machine.machineType}-{machine.machineId}</SelectItem>
-                                                    ))}
+                                                    {assignedMachinesToOperations !== undefined ?
+                                                        <>
+                                                        {machines && machines.filter(machine => !assignedMachinesToOperations.includes(machine.id)).map((machine) => (
+                                                            <SelectItem key={machine.id} value={machine.id}>
+                                                                {machine.brandName}-{machine.machineType}-{machine.machineId}
+                                                            </SelectItem>
+                                                        ))}
+                                                        </>
+                                                    : 
+                                                        <>
+                                                        {machines && machines.map((machine) => (
+                                                            <SelectItem key={machine.id} value={machine.id}>{machine.brandName}-{machine.machineType}-{machine.machineId}</SelectItem>
+                                                        ))}
+                                                        </>
+                                                    }
                                                 </SelectContent>
                                             </Select>
                                             <FormMessage />
@@ -466,22 +480,22 @@ const AddObbOperationForm = ({
                 </Form>
             )}
 
-            {isUpdating && 
+            {isUpdating &&
                 <Separator className="mt-8 h-0.5 bg-slate-300/80" />
             }
 
             {!isEditing && (
                 <div className="space-y-2">
                     {obbOperations && obbOperations?.length > 0 ?
-                        <ObbOperationsTable 
+                        <ObbOperationsTable
                             tableData={obbOperations}
-                            handleEdit={handleEdit} 
+                            handleEdit={handleEdit}
                         />
-                    : (
-                        <p className="text-sm mt-2 text-slate-500 italic">
-                            No operations available
-                        </p>
-                    )}
+                        : (
+                            <p className="text-sm mt-2 text-slate-500 italic">
+                                No operations available
+                            </p>
+                        )}
                 </div>
             )}
         </div>
