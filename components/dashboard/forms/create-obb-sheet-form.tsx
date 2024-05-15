@@ -168,7 +168,7 @@ const CreateObbSheetForm = ({
 
     const handleUnitChange = async (selectedUnitId: string) => {
         try {
-            const response = await axios.get(`/api/production-line/${selectedUnitId}`);
+            const response = await axios.get(`/api/production-line?unitId=${selectedUnitId}`);
             setLines(response.data.data);
         } catch (error) {
             console.error("Error fetching production lines:", error);

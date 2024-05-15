@@ -74,7 +74,11 @@ const ObbSheetId = async ({
       supervisor2: true
     }
   });
-
+  
+  const assignedMachinesToOperations = obbOperations?.obbOperations
+    .filter(item => item.sewingMachine !== null)
+    .map(item => item.sewingMachine?.id);
+  
   const operations: Operation[] | null = await db.operation.findMany();
 
   let machines: SewingMachine[] | null = null;
@@ -88,7 +92,7 @@ const ObbSheetId = async ({
         machines: true
       }
     });
-  
+
     machines = machinesForLine?.machines.filter(machine => machine.isAssigned) ?? [];
   }
 
@@ -97,6 +101,7 @@ const ObbSheetId = async ({
       <AddObbOperationForm 
         operations={operations}
         machines={machines}
+        assignedMachinesToOperations={assignedMachinesToOperations}
         obbOperations={obbOperations?.obbOperations}
         obbSheetId={params.obbSheetId}
         supervisor1={obbOperations?.supervisor1 || null}

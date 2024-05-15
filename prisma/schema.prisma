@@ -17,6 +17,8 @@ model User {
     password   String
     employeeId String
 
+    tslRecords TrafficLightSystem[]
+
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 }
@@ -58,6 +60,7 @@ model Operator {
     alertLogs        AlertLog[]
     operatorSessions OperatorSession[]
     productionData   ProductionData[]
+    tslRecords       TrafficLightSystem[]
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
@@ -79,8 +82,6 @@ model ProductionLine {
     id   String @id @default(uuid())
     name String @unique @db.Text
 
-    // sewingMachineId String?
-    // sewingMachine   SewingMachine? @relation(fields: [sewingMachineId], references: [id])
     machines SewingMachine[]
 
     unitId String
@@ -123,15 +124,18 @@ model SewingMachine {
     unitId String
     unit   Unit   @relation(fields: [unitId], references: [id], onDelete: Cascade)
 
+    obbOperationId String?       @unique
+    obbOperation   ObbOperation? @relation(fields: [obbOperationId], references: [id])
+
     alertLogs       AlertLog[]
-    obbOperations   ObbOperation[]
     productionLines ProductionLine[]
+    tslRecords      TrafficLightSystem[]
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
     @@unique([eliotDeviceId])
-    @@index([eliotDeviceId, unitId])
+    @@index([eliotDeviceId, unitId, obbOperationId])
 }
 
 model ObbSheet {
@@ -209,9 +213,6 @@ model ObbOperation {
     operationId String
     operation   Operation @relation(fields: [operationId], references: [id], onDelete: Cascade)
 
-    sewingMachineId String?
-    sewingMachine   SewingMachine? @relation(fields: [sewingMachineId], references: [id])
-
     obbSheetId String
     obbSheet   ObbSheet @relation(fields: [obbSheetId], references: [id], onDelete: Cascade)
 
@@ -224,14 +225,16 @@ model ObbOperation {
     length        Int
     totalStitches Int
 
+    sewingMachine    SewingMachine?
     productionData   ProductionData[]
     operatorSessions OperatorSession[]
     staffSessions    StaffSession[]
+    tslRecords       TrafficLightSystem[]
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
-    @@index([operationId, sewingMachineId, obbSheetId])
+    @@index([operationId, obbSheetId])
 }
 
 model OperatorSession {
@@ -310,4 +313,26 @@ model AlertLog {
     createdAt DateTime @default(now())
 
     @@index([machineId, operatorRfid, employeeId])
+}
+
+model TrafficLightSystem {
+    id    String @id
+    roundNo Int    @default(1)
+
+    machineId     String
+    sewingMachine SewingMachine @relation(fields: [machineId], references: [id], onDelete: Cascade)
+
+    operatorRfid String
+    operator     Operator @relation(fields: [operatorRfid], references: [rfid], onDelete: Cascade)
+
+    obbOperationId String
+    obbOperation   ObbOperation @relation(fields: [obbOperationId], references: [id], onDelete: Cascade)
+
+    qcEmail String?
+    qc      User?   @relation(fields: [qcEmail], references: [email])
+
+    colour  String
+    timestamp    String
+
+    createdAt DateTime @default(now())
 }

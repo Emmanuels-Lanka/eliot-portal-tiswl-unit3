@@ -1,4 +1,4 @@
-import { verify } from "jsonwebtoken";
+import { JwtPayload, verify } from "jsonwebtoken";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
@@ -18,18 +18,14 @@ const DashboardLayout = ({
         return redirect('/sign-in');
     }
 
-    try {
-        const { value } = token;
-        const secret = process.env.JWT_SECRET || "";
-
-        verify(value, secret);
-        // const verified = verify(value, secret);
-        // console.log("VERIFIED",verified);           // output: email
-        // Fetch user data based on email from your database
-    } catch (error) {
-        console.log("AUTHORIZATION_ERROR:", error);
-        return redirect('/sign-in');
-    } finally {
+    const { value } = token;
+    const secret = process.env.JWT_SECRET || "";
+    
+    const verified = verify(value, secret) as JwtPayload;
+        
+    if (verified.role === 'quality-controller') {
+        return redirect('/qc-dashboard');
+    } else {
         return (
             <div className="h-screen w-full">
                 <div className="flex felx-col h-full w-64 fixed inset-y-0 z-50">
@@ -49,6 +45,7 @@ const DashboardLayout = ({
             </div>
         )
     }
+
 }
 
 export default DashboardLayout;

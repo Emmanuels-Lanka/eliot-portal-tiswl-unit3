@@ -50,7 +50,7 @@ const SelectProductionLineByUnit = ({
     
     const fetchLines = useCallback(async () => {
         try {
-            const response = await axios.get(`/api/production-line/${unitId}`);
+            const response = await axios.get(`/api/production-line?unitId=${unitId}`);
             setLines(response.data.data);
         } catch (error) {
             console.error("Error fetching lines:", error);
@@ -71,7 +71,7 @@ const SelectProductionLineByUnit = ({
 
     return (
         <div className="mx-auto max-w-7xl border px-12 pt-8 py-10 rounded-lg bg-slate-100">
-            <h2 className="text-lg font-medium text-slate-900">Select the unit & production line to assign the sewing machine 🧵🪡</h2>
+            <h2 className="text-lg font-medium text-slate-900">Select the unit & production line 🧵🪡</h2>
             <div className="mt-8 w-full grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10 lg:gap-14">
                 <div className="flex flex-col gap-2">
                     <h3 className="font-medium text-slate-600">Select a unit</h3>
