@@ -15,6 +15,7 @@ import {
     Send,
     ServerCog,
     Settings,
+    Sliders,
     UserRoundCog,
     UserRoundPlus
 } from "lucide-react";
@@ -185,6 +186,21 @@ export const SIDEBAR_ROUTES = [
             },
         ]
     },
+    {
+        categoryName: "Traffic Light System Analytics",
+        routes: [
+            {
+                label: "TLS of Productions",
+                href: "/analytics/tls-productions",
+                icon: BarChartHorizontal
+            },
+            {
+                label: "TLS of Operators",
+                href: "/analytics/tls-operators",
+                icon: BarChartHorizontal
+            },
+        ]
+    },
 ];
 
 export const HEADER_INFO = [
@@ -274,8 +290,33 @@ export const HEADER_INFO = [
         icon: FileCog
     },
     {
-        label: "Analytic charts",
-        href: "/analytics/production-efficiency-60" || "/analytics/production-efficiency-15" || "/analytics/operator-efficiency-60" || "/analytics/operator-efficiency-15", 
+        label: "Operator Analytic chart",
+        href: "/analytics/operator-efficiency-60", 
         icon: BarChartHorizontal
+    },
+    {
+        label: "Operator Analytic chart",
+        href: "/analytics/operator-efficiency-15", 
+        icon: BarChartHorizontal
+    },
+    {
+        label: "Production Analytic charts",
+        href: "/analytics/production-efficiency-60", 
+        icon: BarChartHorizontal
+    },
+    {
+        label: "Production Analytic charts",
+        href: "/analytics/production-efficiency-15", 
+        icon: BarChartHorizontal
+    },
+    {
+        label: "Analytic charts for TLS",
+        href: "/analytics/tls-productions", 
+        icon: Sliders
+    },
+    {
+        label: "Analytic charts for TLS",
+        href: "/analytics/tls-operators", 
+        icon: Sliders
     },
 ]

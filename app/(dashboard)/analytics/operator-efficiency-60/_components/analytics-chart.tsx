@@ -38,7 +38,7 @@ const AnalyticsChart = ({
     const [heatmapCategories, setHeatmapCategories] = useState<string[] | null>(null);
     const [obbSheet, setObbSheet] = useState<ObbSheet | null>(null);
 
-    function processForHeatmap(productionData: any): { efficiencies: number[][], xAxisCategories: string[] } {
+    function processForHeatmap(productionData: ProductionData[]): { efficiencies: number[][], xAxisCategories: string[] } {
         const hourlyOperators: { [hour: number]: { [rfid: string]: OperatorGroup } } = Array.from({ length: 12 }, () => ({}));
         const xAxisCategories = new Set<string>();
 
@@ -121,7 +121,7 @@ const AnalyticsChart = ({
                 <div className="mt-12">
                     <h2 className="text-lg mb-2 font-medium text-slate-700">{title}</h2>
                     <HeatmapChart
-                        xAxisLabel='Operations'
+                        xAxisLabel='Operators'
                         height={580}
                         type="60min"
                         efficiencyLow={obbSheet?.efficiencyLevel1}
