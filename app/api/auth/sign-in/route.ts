@@ -36,7 +36,7 @@ export async function POST(
 
         // Sign the token
         const token = sign(
-            { email },
+            { email, role: existingUserByEmail.role },
             secret,
             { expiresIn: MAX_AGE },
         );

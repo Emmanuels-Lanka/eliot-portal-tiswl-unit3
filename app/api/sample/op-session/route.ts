@@ -10,7 +10,7 @@ export async function POST(
         const { operatorRfid, obbOperationId } = await req.json();
 
         let id = generateUniqueId();
-        const timestamp = "2024-04-21 11:38:44"
+        const timestamp = "2024-05-14 09:38:44"
 
         const LogedInOperator = await db.operatorSession.findMany({
             where: {

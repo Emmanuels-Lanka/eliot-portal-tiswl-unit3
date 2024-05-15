@@ -135,3 +135,9 @@
   -webkit-appearance: none;
   margin: 0;
 }
+
+/* QC Combobox style */
+.YO3Nla_spectrum-Textfield-input, .Dniwja_spectrum-FieldButton {
+  height: 40px !important;
+  /* border-color: hsl(var(--input)) !important; */
+}

@@ -199,6 +199,7 @@ const AddPortalAccountUserForm = ({
                                         </FormControl>
                                         <SelectContent>
                                             <SelectItem value="admin">Admin</SelectItem>
+                                            <SelectItem value="quality-controller">Quality Controller</SelectItem>
                                             <SelectItem value="industrial-engineer">Industrial Engineer</SelectItem>
                                             <SelectItem value="end-quality-inspector">End Quality Inspector</SelectItem>
                                             <SelectItem value="roming-quality-inspector">Roming Quality Inspector</SelectItem>

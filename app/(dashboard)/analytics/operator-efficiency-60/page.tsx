@@ -1,5 +1,5 @@
-import AnalyticsChart from '@/components/dashboard/common/analytics-chart';
 import { db } from '@/lib/db';
+import AnalyticsChart from './_components/analytics-chart';
 
 const OperatorEfficiency60 = async () => {
     const obbSheets = await db.obbSheet.findMany({

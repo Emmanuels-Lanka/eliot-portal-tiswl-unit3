@@ -11,28 +11,35 @@ export async function POST(
         
         let id = generateUniqueId();
 
-        const existingOperationByID = await db.obbOperation.findUnique({
+        const existingMachine = await db.sewingMachine.findUnique({
             where: {
-                id
+                id: sewingMachineId
+            },
+            include: {
+                obbOperation: true
             }
-        });
+        })
 
-        if (existingOperationByID) {
-            return new NextResponse("Obb Operation is already exist!", { status: 409 })
+        if (existingMachine && existingMachine.obbOperation) {
+            return new NextResponse("This sewing machine is already assigned to another operation.", { status: 409 })
         }
 
         const newObbOperation = await db.obbOperation.create({
             data: {
                 id,
                 operationId, 
-                sewingMachineId, 
+                obbSheetId,
                 smv, 
                 target, 
                 spi, 
                 length, 
                 totalStitches, 
-                obbSheetId,
-                supervisorId
+                supervisorId,
+                sewingMachine: {
+                    connect: {
+                        id: sewingMachineId
+                    }
+                }
             }
         });
 

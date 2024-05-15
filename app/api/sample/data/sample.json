@@ -1,0 +1,71 @@
+[
+    {
+        "operatorRfid": "OP-00001",
+        "eliotSerialNumber": "ELIoT-112",
+        "obbOperationId": "9b533f1c-af6a-4210-ba7d-425d862cf073",
+        "iterations": "30"
+    },
+    {
+        "operatorRfid": "OP-02",
+        "eliotSerialNumber": "ELIoT-112",
+        "obbOperationId": "c2b984be-1fa9-4685-aebe-b5b9cf466a27",
+        "iterations": "30"
+    },
+    {
+        "operatorRfid": "OP-02",
+        "eliotSerialNumber": "ELIoT-112",
+        "obbOperationId": "9b533f1c-af6a-4210-ba7d-425d862cf073",
+        "iterations": "30"
+    },
+    {
+        "operatorRfid": "OP-00001",
+        "eliotSerialNumber": "ELIoT-112",
+        "obbOperationId": "c2b984be-1fa9-4685-aebe-b5b9cf466a27",
+        "iterations": "30"
+    },
+    
+    {
+        "id": "lvyunkev-6lgaWlsyfAI9",
+        "operatorRfid": "OP-00001",
+        "eliotSerialNumber": "ELIoT-00001",
+        "obbOperationId": "9b533f1c-af6a-4210-ba7d-425d862cf073",
+        "productionCount": 6,
+        "timestamp": "2024-04-21 07:05:00",
+        "createdAt": "2024-05-09T06:10:36.449Z",
+        "operator": {
+            "id": "f27c067a-cf62-4645-8808-cf46e3e78ff3",
+            "name": "Adisha Mendis",
+            "employeeId": "253546",
+            "rfid": "OP-00001",
+            "gender": "male",
+            "designation": "operator",
+            "isLoggedIn": false,
+            "createdAt": "2024-03-17T22:13:10.352Z",
+            "updatedAt": "2024-03-17T22:13:10.352Z"
+        },
+        "eliotDevice": {
+            "id": "e67f7af5-7be6-4977-aa38-af0bccdad89b",
+            "serialNumber": "ELIoT-00001",
+            "modelNumber": "ELIOT-PRO-V1",
+            "installedDate": "2024-03-18T00:00:00.000Z",
+            "isAssigned": true,
+            "createdAt": "2024-03-17T21:55:01.707Z",
+            "updatedAt": "2024-03-17T22:04:08.118Z"
+        },
+        "obbOperation": {
+            "id": "9b533f1c-af6a-4210-ba7d-425d862cf073",
+            "seqNo": 8,
+            "operationId": "bc63ab6f-f58b-42ab-b01a-51761b48e0e2",
+            "sewingMachineId": "9d5c8bae-72b5-4bb7-a876-f17900bf0450",
+            "obbSheetId": "31ba32e9-1710-43f2-be79-b71ef60faf8a",
+            "supervisorId": "629e54f2-bdaa-49c5-a44a-a2ba991c356a",
+            "smv": 12,
+            "target": 23,
+            "spi": 223,
+            "length": 12,
+            "totalStitches": 13,
+            "createdAt": "2024-03-17T22:46:46.051Z",
+            "updatedAt": "2024-04-29T07:07:15.931Z"
+        }
+    }
+]
