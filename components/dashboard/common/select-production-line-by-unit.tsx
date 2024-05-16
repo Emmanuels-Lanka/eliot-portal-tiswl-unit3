@@ -35,38 +35,33 @@ const SelectProductionLineByUnit = ({
     const selectedLineId = searchParams.get("lineId");
 
     const handleSearchParams = (lineId: string) => {
-        if (unitId !== null) {
+        if (unitId) {
             const url = qs.stringifyUrl({
                 url: pathname,
-                query: {
-                    lineId: lineId
-                }
+                query: { unitId, lineId }
             }, { skipNull: true, skipEmptyString: true });
-    
+
             router.push(url);
             router.refresh();
         }
     };
     
     const fetchLines = useCallback(async () => {
-        try {
-            const response = await axios.get(`/api/production-line?unitId=${unitId}`);
-            setLines(response.data.data);
-        } catch (error) {
-            console.error("Error fetching lines:", error);
+        if (unitId) {
+            try {
+                const response = await axios.get(`/api/production-line?unitId=${unitId}`);
+                setLines(response.data.data);
+            } catch (error) {
+                console.error("Error fetching lines:", error);
+                setLines([]);
+            }
+        } else {
+            setLines([]);
         }
     }, [unitId]);
 
     useEffect(() => {
-        const fetchData = async () => {
-            if (unitId !== null) {
-                await fetchLines();
-            } else {
-                setLines([]);
-            }
-        };
-
-        fetchData();
+        fetchLines();
     }, [unitId, fetchLines]);
 
     return (
@@ -80,10 +75,8 @@ const SelectProductionLineByUnit = ({
                             <SelectValue placeholder="Select unit" />
                         </SelectTrigger>
                         <SelectContent>
-                            {units && units.map((unit) => (
-                                <SelectItem key={unit.id} value={unit.id}>
-                                    {unit.name}
-                                </SelectItem>
+                            {units && units.map(unit => (
+                                <SelectItem key={unit.id} value={unit.id}>{unit.name}</SelectItem>
                             ))}
                         </SelectContent>
                     </Select>
@@ -95,7 +88,7 @@ const SelectProductionLineByUnit = ({
                             <SelectValue placeholder="Select production line" />
                         </SelectTrigger>
                         <SelectContent>
-                            {lines && lines.map((line) => (
+                            {lines.map(line => (
                                 <SelectItem key={line.id} value={line.id}>{line.name}</SelectItem>
                             ))}
                         </SelectContent>
@@ -103,7 +96,7 @@ const SelectProductionLineByUnit = ({
                 </div>
             </div>
         </div>
-    )
+    );
 }
 
-export default SelectProductionLineByUnit
+export default SelectProductionLineByUnit;
