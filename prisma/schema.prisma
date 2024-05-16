@@ -1,5 +1,6 @@
 generator client {
-    provider = "prisma-client-js"
+    provider      = "prisma-client-js"
+    binaryTargets = ["native", "rhel-openssl-1.0.x"]
 }
 
 datasource db {
@@ -304,10 +305,12 @@ model AlertLog {
     employeeId String
     employee   Staff  @relation(fields: [employeeId], references: [employeeId], onDelete: Cascade)
 
-    alertType   String
-    smsStatus   String @default("SENDING")
-    emailStatus String @default("SENDING")
-    timestamp   String
+    alertType       String
+    smsStatus       String  @default("SENDING")
+    emailStatus     String  @default("SENDING")
+    reqTimestamp    String
+    loginTimestamp  String?
+    logoutTimestamp String?
 
     createdAt DateTime @default(now())
 
@@ -315,7 +318,7 @@ model AlertLog {
 }
 
 model TrafficLightSystem {
-    id    String @id
+    id      String @id
     roundNo Int    @default(1)
 
     machineId     String
@@ -330,8 +333,8 @@ model TrafficLightSystem {
     qcEmail String?
     qc      User?   @relation(fields: [qcEmail], references: [email])
 
-    colour  String
-    timestamp    String
+    colour    String
+    timestamp String
 
     createdAt DateTime @default(now())
 }

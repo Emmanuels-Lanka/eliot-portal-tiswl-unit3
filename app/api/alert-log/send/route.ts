@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import moment from "moment-timezone";
 
 import { db } from "@/lib/db";
 import { generateUniqueId } from "@/actions/generate-unique-id";
@@ -9,10 +10,14 @@ export async function POST(
     req: Request,
 ) {
     try {
-        const { verifiedKey, machineId, operatorRfid, employeeId, alertType, timestamp } = await req.json();
+        const { verifiedKey, machineId, operatorRfid, employeeId, alertType } = await req.json();
 
         let id = generateUniqueId();
-        // const timestamp = new Date();
+        
+        const date = new Date;
+        const timezone: string = process.env.NODE_ENV === 'development' ? 'Asia/Colombo' : 'Asia/Dhaka'
+        const timestamp = moment(date).tz(timezone).format('YYYY-MM-DD HH:mm:ss');
+
         const authorizedKey = process.env.AUTHORIZED_IOT_KEY;
 
         if (authorizedKey !== verifiedKey) {
@@ -88,7 +93,7 @@ export async function POST(
                             alertType,
                             smsStatus: 'SENT',
                             emailStatus: 'SENT',
-                            timestamp
+                            reqTimestamp: timestamp,
                         }
                     });
                     return NextResponse.json({ data: alertLog, message: 'SMS & Email alert sent successfully' }, { status: 201 });
@@ -109,6 +114,65 @@ export async function POST(
 
     } catch (error) {
         console.error("[SEND_ALERT_ERROR]", error);
+        return new NextResponse("Internal Error", { status: 500 });
+    }
+}
+
+export async function PATCH(
+    req: Request
+) {
+    const { verifiedKey, machineId, employeeId, reqType } = await req.json();
+
+    try {
+        const authorizedKey = process.env.AUTHORIZED_IOT_KEY;
+
+        if (authorizedKey !== verifiedKey) {
+            return new NextResponse("Unauthorized!", { status: 401 })
+        }
+        
+        const date = new Date;
+        const formattedDate = moment(date).format('YYYY-MM-DD');
+        const timezone: string = process.env.NODE_ENV === 'development' ? 'Asia/Colombo' : 'Asia/Dhaka';
+        const timestamp = moment(date).tz(timezone).format('YYYY-MM-DD HH:mm:ss');
+        
+        const startDate = `${formattedDate} 00:00:00`;
+        const endDate = `${formattedDate} 23:59:59`;
+
+        if (reqType === 'login') {
+            const updatedAlertLog = await db.alertLog.updateMany({
+                where: {
+                    machineId,
+                    employeeId,
+                    reqTimestamp: {
+                        gte: startDate,
+                        lte: endDate
+                    }
+                },
+                data: {
+                    loginTimestamp: timestamp
+                }
+            });
+            
+            return NextResponse.json({ data: updatedAlertLog, message: 'Employee login successfully' }, { status: 201 });
+        } else if (reqType === 'logout') {
+            const updatedAlertLog = await db.alertLog.updateMany({
+                where: {
+                    machineId,
+                    employeeId,
+                    reqTimestamp: {
+                        gte: startDate,
+                        lte: endDate
+                    }
+                },
+                data: {
+                    logoutTimestamp: timestamp
+                }
+            });
+            return NextResponse.json({ data: updatedAlertLog, message: 'Employee logout successfully' }, { status: 201 });
+        }
+        return new NextResponse("Request type is undefined", { status: 502 });
+    } catch (error) {
+        console.error("[UPDATE_ALERT_LOG_ERROR]", error);
         return new NextResponse("Internal Error", { status: 500 });
     }
 }
