@@ -2,6 +2,7 @@ import { SewingMachine, Unit } from '@prisma/client';
 import { JwtPayload, verify } from "jsonwebtoken";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import moment from 'moment-timezone';
 
 import { db } from '@/lib/db';
 import SelectProductionLineByUnit from '@/components/dashboard/common/select-production-line-by-unit';
@@ -49,9 +50,11 @@ const QCDashboard = async ({
         }
     }
 
-    const fetchTLSRecords = (machineId: string) => {
+    const date = new Date;
+    const timezone: string = process.env.NODE_ENV === 'development' ? 'Asia/Colombo' : 'Asia/Dhaka'
+    const timestamp = moment(date).tz(timezone).format('YYYY-MM-DD HH:mm:ss');
 
-    }
+    console.log("TIME:", timestamp);
 
     return (
         <section className="mt-16 space-y-12 mb-2">
