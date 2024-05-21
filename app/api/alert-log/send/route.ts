@@ -118,7 +118,7 @@ export async function POST(
     }
 }
 
-export async function PATCH(
+export async function PUT(
     req: Request
 ) {
     const { verifiedKey, machineId, employeeId, reqType } = await req.json();
