@@ -90,6 +90,21 @@ const HeatmapChart = ({
             { name: '18:30 - 18:44', data: heatmapData[46] },
             { name: '18:45 - 18:59', data: heatmapData[47] }
         ];        
+    } else if (type === 'tls') {
+        series = [
+            { name: 'Round 1', data: heatmapData[0] },
+            { name: 'Round 2', data: heatmapData[1] },
+            { name: 'Round 3', data: heatmapData[2] },
+            { name: 'Round 4', data: heatmapData[3] },
+            { name: 'Round 5', data: heatmapData[4] },
+            { name: 'Round 6', data: heatmapData[5] },
+            { name: 'Round 7', data: heatmapData[6] },
+            { name: 'Round 8', data: heatmapData[7] },
+            { name: 'Round 9', data: heatmapData[8] },
+            { name: 'Round 10', data: heatmapData[9] },
+            { name: 'Round 11', data: heatmapData[10] },
+            { name: 'Round 12', data: heatmapData[11] }
+        ];
     }
 
     const options = {
@@ -99,26 +114,40 @@ const HeatmapChart = ({
         plotOptions: {
             heatmap: {
                 enableShades: false,
-                radius: 30,
+                radius: type === 'tls' ? 10 : 30,
                 useFillColorAsStroke: false,
                 colorScale: {
                     ranges: [
-                        // { from: -1, to: 0, name: 'No Data', color: '#374151' },
-                        { from: 0, to: efficiencyLow || 44, name: 'Low', color: '#ef4444' },
-                        { from: efficiencyLow || 45, to: efficiencyHigh || 74, name: 'Medium', color: '#f97316' },
-                        { from: efficiencyHigh || 75, to: 1000, name: 'Hige', color: '#16a34a' },
+                        { 
+                            from: 0, 
+                            to: efficiencyLow || 44, 
+                            name: type === 'tls' ? 'Red' : 'Low', 
+                            color: '#ef4444' 
+                        },
+                        { 
+                            from: efficiencyLow || 45, 
+                            to: efficiencyHigh || 74, 
+                            name: type === 'tls' ? 'Orange' :  'Medium', 
+                            color: '#f97316' 
+                        },
+                        { 
+                            from: efficiencyHigh || 75, 
+                            to: 1000, 
+                            name: type === 'tls' ? 'Green' :  'High', 
+                            color: '#16a34a' 
+                        },
                     ],
                 },
             },
         },
         dataLabels: {
-            enabled: true,
+            enabled: type !== 'tls',
             style: {
                 colors: ['#fff']
             }
         },
         stroke: {
-            width: 1,
+            width: type === 'tls' ? 5 : 1,
         },
         xaxis: {
             title: {
@@ -132,7 +161,7 @@ const HeatmapChart = ({
             },
             labels: {
                 style: {
-                    colors: '#0070c0',
+                    colors: type === 'tls' ? '#334155' : '#0070c0',
                     fontSize: '12px',
                     fontFamily: 'Inter, sans-serif',
                 },
@@ -142,7 +171,7 @@ const HeatmapChart = ({
         yaxis: {
             labels: {
                 style: {
-                    colors: '#0070c0',
+                    colors: type === 'tls' ? '#334155' : '#0070c0',
                     fontSize: '12px',
                     fontFamily: 'Inter, sans-serif',
                 },

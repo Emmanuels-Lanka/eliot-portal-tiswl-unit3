@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import moment from 'moment';
+import moment from 'moment-timezone';
 import { SewingMachine } from "@prisma/client";
 
 import { db } from "@/lib/db";
@@ -14,7 +14,8 @@ export async function POST(
         let id = generateUniqueId();
 
         const date = new Date;
-        const formattedDate = moment(date).format('YYYY-MM-DD HH:mm:ss')
+        const timezone: string = process.env.NODE_ENV === 'development' ? 'Asia/Colombo' : 'Asia/Dhaka'
+        const formattedDate = moment(date).tz(timezone).format('YYYY-MM-DD HH:mm:ss');
 
         const newTLSRecord = await db.trafficLightSystem.create({
             data: {

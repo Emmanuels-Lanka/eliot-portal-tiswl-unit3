@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import moment from 'moment-timezone';
 
 import { db } from "@/lib/db";
 import { generateUniqueId } from "@/actions/generate-unique-id";
@@ -10,7 +11,10 @@ export async function POST(
         const { operatorRfid, obbOperationId } = await req.json();
 
         let id = generateUniqueId();
-        const timestamp = "2024-05-14 09:38:44"
+        // const timestamp = "2024-05-14 09:38:44"
+        const date = new Date;
+        const timezone: string = process.env.NODE_ENV === 'development' ? 'Asia/Colombo' : 'Asia/Dhaka'
+        const timestamp = moment(date).tz(timezone).format('YYYY-MM-DD HH:mm:ss');
 
         const LogedInOperator = await db.operatorSession.findMany({
             where: {

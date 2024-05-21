@@ -156,7 +156,7 @@ const AddQCRecordForm = ({
                 
         form.setValue('obbOperationId', obbOperationId);
 
-        const currentRound: number = tslRecords[0].roundNo + 1;
+        const currentRound: number = tslRecords.length !== 0 ? tslRecords[0].roundNo + 1 : 1;
         form.setValue('roundNo', currentRound);
     }
 

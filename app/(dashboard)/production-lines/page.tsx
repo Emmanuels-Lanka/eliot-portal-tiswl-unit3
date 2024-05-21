@@ -6,6 +6,7 @@ import { db } from "@/lib/db";
 
 interface ProductionLinesProps {
   searchParams: {
+    unitId: string;
     lineId: string;
   }
 }
@@ -18,11 +19,12 @@ const ProductionLines = async ({
   let assignedMachines: SewingMachine[] | null = null;
   let unassignedMachines: SewingMachine[] | null = null;
 
-  if (searchParams.lineId) {
+  if (searchParams.lineId && searchParams.unitId) {
     try {
       unassignedMachines = await db.sewingMachine.findMany({
         where: {
           isAssigned: false,
+          unitId: searchParams.unitId,
         }
       });
 

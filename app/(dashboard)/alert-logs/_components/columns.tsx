@@ -4,18 +4,28 @@ import { ArrowUpDown } from "lucide-react";
 import { AlertLog } from "@prisma/client"
 import { ColumnDef } from "@tanstack/react-table"
 
-import { cn } from "@/lib/utils";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { cn } from "../../../../lib/utils";
+import { Badge } from "../../../../components/ui/badge";
+import { Button } from "../../../../components/ui/button";
+
+function calculateTimeDifference(startTime: string, endTime: string) {
+    if (startTime && endTime) {
+        const start = new Date(startTime);
+        const end = new Date(endTime);
+        // Calculate the difference in milliseconds and convert to minutes
+        const difference = (end.getTime() - start.getTime()) / 1000 / 60; // Milliseconds to seconds to minutes
+        return Math.abs(Math.round(difference)); // Return the absolute rounded value
+    }
+}
 
 export const columns: ColumnDef<AlertLog>[] = [
     {
         accessorKey: "operatorRfid",
-        header: "Alert From (RFID)",
+        header: "Operator",
     },
     {
         accessorKey: "employeeId",
-        header: "Alert To (ID)",
+        header: "Employee",
     },
     {
         accessorKey: "machineId",
@@ -51,7 +61,7 @@ export const columns: ColumnDef<AlertLog>[] = [
                     onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
                     className="-ml-6"
                 >
-                    SMS Status
+                    Alert Status
                     <ArrowUpDown className="ml-2 h-4 w-4" />
                 </Button>
             )
@@ -70,34 +80,41 @@ export const columns: ColumnDef<AlertLog>[] = [
         }
     },
     {
-        accessorKey: "emailStatus",
-        header: ({ column }) => {
-            return (
-                <Button
-                    variant="ghost"
-                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                    className="-ml-6"
-                >
-                    Email Status
-                    <ArrowUpDown className="ml-2 h-4 w-4" />
-                </Button>
-            )
-        },
+        accessorKey: "loginTimestamp",
+        header: "Response Time",
         cell: ({ row }) => {
-            const status: string = row.getValue("emailStatus");
+            const reqTime: string = row.getValue("reqTimestamp");
+            const loginTime: string = row.getValue("loginTimestamp");
+            const responseTime = calculateTimeDifference(reqTime, loginTime);
 
             return (
                 <Badge className={cn(
-                    "bg-green-600 font-normal",
-                    status === 'SENDING' ? "bg-orange-600" : status === 'FAILED' && "bg-red-600"
+                    "bg-[#0374BB] rounded-sm text-sm font-normal ml-3"
                 )}>
-                    {status}
+                    {responseTime} min
                 </Badge>
             )
         }
     },
     {
-        accessorKey: "timestamp",
+        accessorKey: "logoutTimestamp",
+        header: "Working Time",
+        cell: ({ row }) => {
+            const loginTime: string = row.getValue("loginTimestamp");
+            const logoutTime: string = row.getValue("logoutTimestamp");
+            const workingTime = calculateTimeDifference(loginTime, logoutTime);
+
+            return (
+                <Badge className={cn(
+                    "bg-[#0374BB] rounded-sm text-sm font-normal ml-2"
+                )}>
+                    {workingTime} min
+                </Badge>
+            )
+        }
+    },
+    {
+        accessorKey: "reqTimestamp",
         header: "Date & Time",
     },
 ]

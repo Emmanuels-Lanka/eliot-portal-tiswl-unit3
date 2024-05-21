@@ -1,24 +1,138 @@
-{
-    "id": "9b0b348b-b9be-4eed-9aa2-4cc5deda32e4",
-    "seqNo": 4,
-    "operationId": "bc63ab6f-f58b-42ab-b01a-51761b48e0e2",
-    "sewingMachineId": "a6c16ece-c98a-4d69-a912-a50250cec68c",
-    "obbSheetId": "47dd7ce4-f2df-4ac5-9f0b-6303a434e680",
-    "smv": 34,
-    "target": 32,
-    "spi": 2,
-    "length": 34,
-    "totalStitches": 999,
-    "createdAt": "2024-03-13T09:05:38.753Z",
-    "updatedAt": "2024-03-13T09:05:38.753Z",
-    "operation": {
-        "id": "bc63ab6f-f58b-42ab-b01a-51761b48e0e2",
-        "name": "Huuwww"
+[
+    {
+        "id": "lw7ezcau-AIdgyQW4xLMI",
+        "roundNo": 1,
+        "operatorRfid": "OP-00001",
+        "obbOperationId": "9b533f1c-af6a-4210-ba7d-425d862cf073",
+        "colour": "green",
+        "operator": {
+            "name": "Adisha Mendis",
+            "rfid": "OP-00001"
+        },
+        "obbOperation": {
+            "id": "9b533f1c-af6a-4210-ba7d-425d862cf073",
+            "operation": {
+                "name": "Huuwww"
+            }
+        }
     },
-    "sewingMachine": {
-        "id": "a6c16ece-c98a-4d69-a912-a50250cec68c",
-        "brandName": "JUKI",
-        "machineType": "foa",
-        "machineId": "003"
+    {
+        "id": "lw7fjd4n-r2x0Cn8hfNIM",
+        "roundNo": 2,
+        "operatorRfid": "OP-00001",
+        "obbOperationId": "9b533f1c-af6a-4210-ba7d-425d862cf073",
+        "colour": "orange",
+        "operator": {
+            "name": "Adisha Mendis",
+            "rfid": "OP-00001"
+        },
+        "obbOperation": {
+            "id": "9b533f1c-af6a-4210-ba7d-425d862cf073",
+            "operation": {
+                "name": "Huuwww"
+            }
+        }
+    },
+    {
+        "id": "lw7hbfw2-GrIRXQhpayGe",
+        "roundNo": 3,
+        "operatorRfid": "OP-00001",
+        "obbOperationId": "9b533f1c-af6a-4210-ba7d-425d862cf073",
+        "colour": "red",
+        "operator": {
+            "name": "Adisha Mendis",
+            "rfid": "OP-00001"
+        },
+        "obbOperation": {
+            "id": "9b533f1c-af6a-4210-ba7d-425d862cf073",
+            "operation": {
+                "name": "Huuwww"
+            }
+        }
+    },
+    {
+        "id": "lw7hekjm-PMOnsSiuOGw1",
+        "roundNo": 4,
+        "operatorRfid": "OP-00001",
+        "obbOperationId": "9b533f1c-af6a-4210-ba7d-425d862cf073",
+        "colour": "green",
+        "operator": {
+            "name": "Adisha Mendis",
+            "rfid": "OP-00001"
+        },
+        "obbOperation": {
+            "id": "9b533f1c-af6a-4210-ba7d-425d862cf073",
+            "operation": {
+                "name": "Huuwww"
+            }
+        }
+    },
+    {
+        "id": "lw7hnas5-XQhMNleOOC2s",
+        "roundNo": 5,
+        "operatorRfid": "OP-00001",
+        "obbOperationId": "9b533f1c-af6a-4210-ba7d-425d862cf073",
+        "colour": "green",
+        "operator": {
+            "name": "Adisha Mendis",
+            "rfid": "OP-00001"
+        },
+        "obbOperation": {
+            "id": "9b533f1c-af6a-4210-ba7d-425d862cf073",
+            "operation": {
+                "name": "Huuwww"
+            }
+        }
+    },
+    {
+        "id": "lw7hsngw-3-p3T0hEB9qD",
+        "roundNo": 6,
+        "operatorRfid": "OP-00001",
+        "obbOperationId": "9b533f1c-af6a-4210-ba7d-425d862cf073",
+        "colour": "orange",
+        "operator": {
+            "name": "Adisha Mendis",
+            "rfid": "OP-00001"
+        },
+        "obbOperation": {
+            "id": "9b533f1c-af6a-4210-ba7d-425d862cf073",
+            "operation": {
+                "name": "Huuwww"
+            }
+        }
+    },
+    {
+        "id": "lw7hu8yu-DIlSVhkgRpXh",
+        "roundNo": 7,
+        "operatorRfid": "OP-00001",
+        "obbOperationId": "9b533f1c-af6a-4210-ba7d-425d862cf073",
+        "colour": "red",
+        "operator": {
+            "name": "Adisha Mendis",
+            "rfid": "OP-00001"
+        },
+        "obbOperation": {
+            "id": "9b533f1c-af6a-4210-ba7d-425d862cf073",
+            "operation": {
+                "name": "Huuwww"
+            }
+        }
+    },
+    {
+        "id": "lw7jeto8-LFMQQBm8JH0E",
+        "roundNo": 8,
+        "operatorRfid": "OP-00001",
+        "obbOperationId": "9b533f1c-af6a-4210-ba7d-425d862cf073",
+        "colour": "green",
+        "operator": {
+            "name": "Adisha Mendis",
+            "rfid": "OP-00001"
+        },
+        "obbOperation": {
+            "id": "9b533f1c-af6a-4210-ba7d-425d862cf073",
+            "operation": {
+                "name": "Huuwww"
+            }
+        }
     }
-}
+]

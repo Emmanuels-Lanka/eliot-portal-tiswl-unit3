@@ -105,8 +105,6 @@ const AnalyticsChart = ({
             });
         }
     }
-    console.log("DATA:", heatmapData);
-    console.log("CAT:", heatmapCategories);
     
     return (
         <div className="mx-auto max-w-7xl">
