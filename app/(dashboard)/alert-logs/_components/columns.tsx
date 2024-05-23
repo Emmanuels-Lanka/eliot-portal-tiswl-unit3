@@ -14,7 +14,16 @@ function calculateTimeDifference(startTime: string, endTime: string) {
         const end = new Date(endTime);
         // Calculate the difference in milliseconds and convert to minutes
         const difference = (end.getTime() - start.getTime()) / 1000 / 60; // Milliseconds to seconds to minutes
-        return Math.abs(Math.round(difference)); // Return the absolute rounded value
+        const hours = Math.floor(difference / 60);
+        const minutes = Math.round(difference % 60);
+
+        if (hours > 0 && minutes > 0) {
+            return `${hours}hour ${minutes}min`;
+        } else if (hours > 0) {
+            return `${hours}hour`;
+        } else {
+            return `${minutes}min`;
+        }
     }
 }
 
@@ -91,7 +100,7 @@ export const columns: ColumnDef<AlertLog>[] = [
                 <Badge className={cn(
                     "bg-[#0374BB] rounded-sm text-sm font-normal ml-3"
                 )}>
-                    {responseTime} min
+                    {responseTime}
                 </Badge>
             )
         }
@@ -105,16 +114,22 @@ export const columns: ColumnDef<AlertLog>[] = [
             const workingTime = calculateTimeDifference(loginTime, logoutTime);
 
             return (
-                <Badge className={cn(
-                    "bg-[#0374BB] rounded-sm text-sm font-normal ml-2"
-                )}>
-                    {workingTime} min
-                </Badge>
+                <>
+                    {workingTime ?
+                        <Badge className={cn(
+                            "bg-[#0374BB] rounded-sm text-sm font-normal ml-2"
+                        )}>
+                            {workingTime}
+                        </Badge>
+                        :
+                        <p>-{logoutTime}</p>
+                    }
+                </>
             )
         }
     },
     {
         accessorKey: "reqTimestamp",
-        header: "Date & Time",
+        header: "Request Time",
     },
 ]
