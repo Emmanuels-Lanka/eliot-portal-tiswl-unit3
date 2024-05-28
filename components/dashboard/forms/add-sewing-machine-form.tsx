@@ -160,7 +160,11 @@ const AddSewingMachineForm = ({
                 }
             }
         }
-    }
+    };
+
+    const updateMachineIdDefaultValue = (type: string) => {
+        form.setValue("machineId", type);
+    };
 
     return (
         <div className='mx-auto max-w-7xl mt-16 border px-12 pt-6 pb-10 rounded-lg shadow-xl'>
@@ -223,28 +227,34 @@ const AddSewingMachineForm = ({
                                     <FormLabel className="text-base">
                                         Machine Type
                                     </FormLabel>
-                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                    <Select 
+                                        onValueChange={(value) => {
+                                            field.onChange(value);
+                                            updateMachineIdDefaultValue(value);
+                                        }} 
+                                        defaultValue={field.value}
+                                    >
                                         <FormControl>
                                             <SelectTrigger>
                                                 <SelectValue placeholder="Select machine type" />
                                             </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
-                                            <SelectItem value="ol5t">OL5T</SelectItem>
-                                            <SelectItem value="dnls">DNLS</SelectItem>
-                                            <SelectItem value="snls">SNLS</SelectItem>
-                                            <SelectItem value="ol3t">OL3T</SelectItem>
-                                            <SelectItem value="fl">FL</SelectItem>
-                                            <SelectItem value="ks">KS</SelectItem>
-                                            <SelectItem value="hw">HW</SelectItem>
-                                            <SelectItem value="snap">SNAP</SelectItem>
-                                            <SelectItem value="foa">FOA</SelectItem>
-                                            <SelectItem value="iron">IRON</SelectItem>
-                                            <SelectItem value="snec">SNEC</SelectItem>
-                                            <SelectItem value="sncs">SNCS</SelectItem>
-                                            <SelectItem value="eh">EH</SelectItem>
-                                            <SelectItem value="dna">DNA</SelectItem>
-                                            <SelectItem value="bt">BT</SelectItem>
+                                            <SelectItem value="OL5T">OL5T</SelectItem>
+                                            <SelectItem value="DNLS">DNLS</SelectItem>
+                                            <SelectItem value="SNLS">SNLS</SelectItem>
+                                            <SelectItem value="OL3T">OL3T</SelectItem>
+                                            <SelectItem value="FL">FL</SelectItem>
+                                            <SelectItem value="KS">KS</SelectItem>
+                                            <SelectItem value="HW">HW</SelectItem>
+                                            <SelectItem value="SNAP">SNAP</SelectItem>
+                                            <SelectItem value="FOA">FOA</SelectItem>
+                                            <SelectItem value="IRON">IRON</SelectItem>
+                                            <SelectItem value="SNEC">SNEC</SelectItem>
+                                            <SelectItem value="SNCS">SNCS</SelectItem>
+                                            <SelectItem value="EH">EH</SelectItem>
+                                            <SelectItem value="DNA">DNA</SelectItem>
+                                            <SelectItem value="BT">BT</SelectItem>
                                         </SelectContent>
                                     </Select>
                                     <FormMessage />
