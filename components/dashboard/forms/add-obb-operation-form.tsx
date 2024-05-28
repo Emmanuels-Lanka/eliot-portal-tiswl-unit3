@@ -82,11 +82,11 @@ const AddObbOperationForm = ({
         defaultValues: {
             operationId: "",
             sewingMachineId: "",
-            smv: undefined,
+            smv: 0,
             target: undefined,
-            spi: undefined,
-            length: undefined,
-            totalStitches: undefined,
+            spi: 0,
+            length: 0,
+            totalStitches: 0,
             obbSheetId: obbSheetId,
             supervisorId: ""
         },
@@ -331,7 +331,7 @@ const AddObbOperationForm = ({
                                     )}
                                 />
                             </div>
-                            <div className="w-16">
+                            {/* <div className="w-16">
                                 <FormField
                                     control={form.control}
                                     name="smv"
@@ -356,8 +356,8 @@ const AddObbOperationForm = ({
                                         </FormItem>
                                     )}
                                 />
-                            </div>
-                            <div className="w-16">
+                            </div> */}
+                            <div className="w-1/12">
                                 <FormField
                                     control={form.control}
                                     name="target"
@@ -383,7 +383,7 @@ const AddObbOperationForm = ({
                                     )}
                                 />
                             </div>
-                            <div className="w-16">
+                            {/* <div className="w-16">
                                 <FormField
                                     control={form.control}
                                     name="spi"
@@ -460,7 +460,7 @@ const AddObbOperationForm = ({
                                         </FormItem>
                                     )}
                                 />
-                            </div>
+                            </div> */}
                         </div>
                         <div className="mt-4 flex justify-between gap-2">
                             <Button variant='outline' className="flex gap-2 pr-5 text-red-600" onClick={handleCancel}>
