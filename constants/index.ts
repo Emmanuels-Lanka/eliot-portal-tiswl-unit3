@@ -35,7 +35,7 @@ export const SIDEBAR_ROUTES = [
         categoryName: null,
         routes: [
             {
-                label: "Add Production Line",
+                label: "Add Production Lines",
                 href: "/production-lines/create-new",
                 icon: AlignHorizontalDistributeCenter
             }
@@ -157,16 +157,16 @@ export const SIDEBAR_ROUTES = [
         ]
     },
     {
-        categoryName: "Production Efficiency Analytics",
+        categoryName: "Operation Efficiency Analytics",
         routes: [
             {
-                label: "Production Efficiency (60min)",
-                href: "/analytics/production-efficiency-60",
+                label: "Operation Efficiency (60min)",
+                href: "/analytics/operation-efficiency-60",
                 icon: BarChartHorizontal
             },
             {
-                label: "Production Efficiency (15min)",
-                href: "/analytics/production-efficiency-15",
+                label: "Operation Efficiency (15min)",
+                href: "/analytics/operation-efficiency-15",
                 icon: BarChartHorizontal
             },
         ]
@@ -187,7 +187,7 @@ export const SIDEBAR_ROUTES = [
         ]
     },
     {
-        categoryName: "Traffic Light System Analytics",
+        categoryName: "Traffic Light System 7-0",
         routes: [
             {
                 label: "TLS of Productions",
@@ -301,12 +301,12 @@ export const HEADER_INFO = [
     },
     {
         label: "Production Analytic charts",
-        href: "/analytics/production-efficiency-60", 
+        href: "/analytics/operation-efficiency-60", 
         icon: BarChartHorizontal
     },
     {
         label: "Production Analytic charts",
-        href: "/analytics/production-efficiency-15", 
+        href: "/analytics/operation-efficiency-15", 
         icon: BarChartHorizontal
     },
     {

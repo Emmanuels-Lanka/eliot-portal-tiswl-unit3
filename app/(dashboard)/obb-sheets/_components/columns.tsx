@@ -85,6 +85,14 @@ export const columns: ColumnDef<ObbSheet>[] = [
         header: "Name (line-style)",
     },
     {
+        accessorKey: "unit.name",
+        header: "Unit",
+    },
+    {
+        accessorKey: "productionLine.name",
+        header: "Line",
+    },
+    {
         accessorKey: "buyer",
         header: "Buyer",
     },
