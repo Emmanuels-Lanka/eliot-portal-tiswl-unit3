@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ArrowUpDown, Loader2, Trash2, Edit } from "lucide-react";
+import { ArrowUpDown, Loader2, Trash2, Edit, Eye } from "lucide-react";
 import axios from "axios";
 import { EliotDevice, Operator } from "@prisma/client"
 import { useRouter } from "next/navigation";
@@ -57,7 +57,16 @@ const ActionCell = ({ row }: { row: any }) => {
 
     return (
         <div className="flex gap-2">
-            <Link href={`/sewing-operators/${id}`}>
+            <Link href={`/sewing-operators/${id}/efficiency`}>
+                <Button
+                    size='sm'
+                    disabled={isLoading}
+                    variant='outline'
+                >
+                    <Eye className="w-4 h-4" />
+                </Button>
+            </Link>
+            <Link href={`/sewing-operators/${id}/edit`}>
                 <Button
                     size='sm'
                     disabled={isLoading}
