@@ -1,7 +1,5 @@
 import Image from 'next/image';
 
-import FeedDataFromExcel from '@/components/dashboard/feed-data-from-excel';
-
 const Dashboard = () => {
     return (
         <section className='flex flex-col justify-center items-center'>
