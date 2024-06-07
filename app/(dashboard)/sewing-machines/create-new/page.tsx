@@ -1,5 +1,6 @@
 import AddSewingMachineForm from '@/components/dashboard/forms/add-sewing-machine-form';
 import { db } from '@/lib/db';
+import FeedMachineDataFromExcel from '../_components/feed-data-from-excel';
 
 const CreateNewSewingMachine = async () => {
   const devices = await db.eliotDevice.findMany({
@@ -26,7 +27,17 @@ const CreateNewSewingMachine = async () => {
     }
   })
   
-  return <AddSewingMachineForm devices={devices} units={units} mode='create' />
+  return (
+    <>
+    <AddSewingMachineForm devices={devices} units={units} mode='create' />
+
+    {/* Feeding the data to database from Excel */}
+    <div className='mt-12 lg:mt-20 mx-auto max-w-7xl w-full max-lg:p-4'>
+      <h2 className='font-medium text-slate-700 mb-2'>Upload Bulk Machine Data</h2>
+      <FeedMachineDataFromExcel />
+    </div>
+    </>
+  )
 }
 
 export default CreateNewSewingMachine
