@@ -1,9 +1,11 @@
-import Image from 'next/image'
+import Image from 'next/image';
+
+import FeedDataFromExcel from '@/components/dashboard/feed-data-from-excel';
 
 const Dashboard = () => {
     return (
         <section className='flex flex-col justify-center items-center'>
-            <Image 
+            <Image
                 src="/eliot-logo.png"
                 alt='logo'
                 width={1000}

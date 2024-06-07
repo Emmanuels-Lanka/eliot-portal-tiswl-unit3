@@ -15,7 +15,7 @@ export async function POST(req: Request) {
     try {
         const { operatorRfid, eliotSerialNumber, obbOperationId, iterations } = await req.json();
 
-        let timestamp = new Date("2024-04-21T04:00:00Z");
+        let timestamp = new Date("2024-06-05T04:00:00Z");
         const data = [];
 
         for (let i = 0; i < iterations; i++) {

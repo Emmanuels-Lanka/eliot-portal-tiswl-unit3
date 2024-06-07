@@ -1,16 +1,16 @@
-import { 
-    Airplay, 
-    AlignHorizontalDistributeCenter, 
-    BarChart3, 
-    BarChartHorizontal, 
-    Blocks, 
-    Cog, 
-    FileCog, 
-    FileSpreadsheet, 
-    LayoutDashboard, 
-    LayoutPanelTop, 
-    Mail, 
-    PlusSquare, 
+import {
+    Airplay,
+    AlignHorizontalDistributeCenter,
+    BarChart3,
+    BarChartHorizontal,
+    Blocks,
+    Cog,
+    FileCog,
+    FileSpreadsheet,
+    LayoutDashboard,
+    LayoutPanelTop,
+    Mail,
+    PlusSquare,
     ScissorsLineDashed,
     Send,
     ServerCog,
@@ -19,6 +19,54 @@ import {
     UserRoundCog,
     UserRoundPlus
 } from "lucide-react";
+
+export const MACHINE_TYPES = [
+    { name: "CHAIN STITCH MACHINE", code: "CSM" },
+    { name: "APW MACHINE", code: "APW" },
+    { name: "POCKET SETTER MACHINE", code: "PKT" },
+    { name: "SINGLE NEEDLE LOCK STITCH", code: "SNL" },
+    { name: "VELCRO ATTACH", code: "VEL" },
+    { name: "FLAT LOCK LOOP MAKER", code: "FLM" },
+    { name: "B-Lind Stitch", code: "BLS" },
+    { name: "4TH OVER LOCK MACHINE", code: "4OL" },
+    { name: "TOP COVER STITCH", code: "CVR" },
+    { name: "FEED OF THE ARM R PULLER", code: "FAP" },
+    { name: "KANSAI SPECIEAL", code: "KAN" },
+    { name: "VERTICAL MACHINE", code: "SNV" },
+    { name: "6th OVER LOCK MACHINE", code: "6OL" },
+    { name: "KNOCK DRWN KANSAI", code: "KKS" },
+    { name: "BUTTON HOLE", code: "BHM" },
+    { name: "DOUBLE NEEDLE LOCK STITCH", code: "DNL" },
+    { name: "BARTECK MACHINE", code: "BTM" },
+    { name: "BUTTON STITCH", code: "BSM" },
+    { name: "EYELET HOLE", code: "EHM" },
+    { name: "5th OVER LOCK MACHINE", code: "5OL" },
+    { name: "SHADDLE STICH MACHINE", code: "SDL" },
+    { name: "FEED OF THE ARM", code: "FOA" },
+    { name: "BOTTOM HEM MACHINE", code: "HEM" },
+    { name: "LOOP ATTACH", code: "LST" },
+    { name: "LONG ARM MC (vitoni)", code: "PSV" },
+    { name: "SMOKING KANSAI MACHINE", code: "SMK" }
+];
+
+export const MACHINE_BRANDS = [
+    { name: "JUKI" },
+    { name: "JACK" },
+    { name: "DURKOPP ADLER" },
+    { name: "VIBE MAC" },
+    { name: "KANSAI" },
+    { name: "BROTHER" },
+    { name: "BOSS" },
+    { name: "TREASURE" },
+    { name: "ZUSUN" },
+    { name: "GOLDEN WHEEL" },
+    { name: "TYPICAL" },
+    { name: "MORILA" },
+    { name: "VI.BE.MAC" },
+    { name: "SGGEMSY" },
+    { name: "VITONI" },
+    { name: "MORATA" },
+];
 
 export const SIDEBAR_ROUTES = [
     {
@@ -276,47 +324,47 @@ export const HEADER_INFO = [
     },
     {
         label: "SMS & Email Alert Logs",
-        href: "/alert-logs", 
+        href: "/alert-logs",
         icon: Mail
     },
     {
         label: "Create OBB Sheet",
-        href: "/obb-sheets/create-new", 
+        href: "/obb-sheets/create-new",
         icon: FileSpreadsheet
     },
     {
         label: "Manage OBB Sheet",
-        href: "/obb-sheets", 
+        href: "/obb-sheets",
         icon: FileCog
     },
     {
         label: "Operator Analytic chart",
-        href: "/analytics/operator-efficiency-60", 
+        href: "/analytics/operator-efficiency-60",
         icon: BarChartHorizontal
     },
     {
         label: "Operator Analytic chart",
-        href: "/analytics/operator-efficiency-15", 
+        href: "/analytics/operator-efficiency-15",
         icon: BarChartHorizontal
     },
     {
         label: "Production Analytic charts",
-        href: "/analytics/operation-efficiency-60", 
+        href: "/analytics/operation-efficiency-60",
         icon: BarChartHorizontal
     },
     {
         label: "Production Analytic charts",
-        href: "/analytics/operation-efficiency-15", 
+        href: "/analytics/operation-efficiency-15",
         icon: BarChartHorizontal
     },
     {
         label: "Analytic charts for TLS",
-        href: "/analytics/tls-productions", 
+        href: "/analytics/tls-productions",
         icon: Sliders
     },
     {
         label: "Analytic charts for TLS",
-        href: "/analytics/tls-operators", 
+        href: "/analytics/tls-operators",
         icon: Sliders
     },
 ]

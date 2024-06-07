@@ -110,16 +110,17 @@ model EliotDevice {
 }
 
 model SewingMachine {
-    id           String  @id
+    id           String  @id @default(uuid())
     brandName    String
     machineType  String
     machineId    String  @unique
     serialNumber String  @unique
+    modelNumber  String?
     ownership    String
     isAssigned   Boolean @default(false)
 
-    eliotDeviceId String
-    eliotDevice   EliotDevice @relation(fields: [eliotDeviceId], references: [id], onDelete: Cascade)
+    eliotDeviceId String?
+    eliotDevice   EliotDevice? @relation(fields: [eliotDeviceId], references: [id], onDelete: Cascade)
 
     unitId String
     unit   Unit   @relation(fields: [unitId], references: [id], onDelete: Cascade)
@@ -274,7 +275,7 @@ model StaffSession {
 }
 
 model ProductionData {
-    id String @id
+    id String @id @default(uuid())
 
     operatorRfid String
     operator     Operator @relation(fields: [operatorRfid], references: [rfid], onDelete: Cascade)
@@ -335,6 +336,21 @@ model TrafficLightSystem {
 
     colour    String
     timestamp String
+
+    createdAt DateTime @default(now())
+}
+
+model SampleTable {
+    id            String  @id @default(uuid())
+    machineId     String
+    machineType   String
+    brandName     String
+    modelNumber   String
+    serialNumber  String
+    unitId        String
+    ownership     String
+    isAssigned    Boolean @default(false)
+    eliotDeviceId String?
 
     createdAt DateTime @default(now())
 }

@@ -28,6 +28,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { cn } from "@/lib/utils";
+import { MACHINE_BRANDS, MACHINE_TYPES } from "@/constants";
 
 interface AddSewingMachineFormProps {
     devices: {
@@ -57,6 +58,7 @@ const formSchema = z.object({
     serialNumber: z.string().min(1, {
         message: "Sewing Machine Serial Number is required"
     }),
+    modelNumber: z.string().nullable(),
     machineId: z.string().min(1, {
         message: "Sewing Machine ID is required"
     }),
@@ -85,6 +87,7 @@ const AddSewingMachineForm = ({
             machineType: initialData?.machineType || "",
             brandName: initialData?.brandName || "",
             serialNumber: initialData?.serialNumber || "",
+            modelNumber: initialData?.modelNumber || "",
             machineId: initialData?.machineId || "",
             eliotDeviceId: initialData?.eliotDeviceId || "",
             ownership: initialData?.ownership || "",
@@ -207,13 +210,18 @@ const AddSewingMachineForm = ({
                                     <FormLabel className="text-base">
                                         Brand Name
                                     </FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            disabled={isSubmitting}
-                                            placeholder="e.g. 'JUKI'"
-                                            {...field}
-                                        />
-                                    </FormControl>
+                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                        <FormControl>
+                                            <SelectTrigger>
+                                                <SelectValue placeholder="Select machine brand" />
+                                            </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                            {MACHINE_BRANDS.map((brand) => (
+                                                <SelectItem key={brand.name} value={brand.name}>{brand.name}</SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
                                     <FormMessage />
                                 </FormItem>
                             )}
@@ -227,11 +235,11 @@ const AddSewingMachineForm = ({
                                     <FormLabel className="text-base">
                                         Machine Type
                                     </FormLabel>
-                                    <Select 
+                                    <Select
                                         onValueChange={(value) => {
                                             field.onChange(value);
                                             updateMachineIdDefaultValue(value);
-                                        }} 
+                                        }}
                                         defaultValue={field.value}
                                     >
                                         <FormControl>
@@ -240,21 +248,9 @@ const AddSewingMachineForm = ({
                                             </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
-                                            <SelectItem value="OL5T">OL5T</SelectItem>
-                                            <SelectItem value="DNLS">DNLS</SelectItem>
-                                            <SelectItem value="SNLS">SNLS</SelectItem>
-                                            <SelectItem value="OL3T">OL3T</SelectItem>
-                                            <SelectItem value="FL">FL</SelectItem>
-                                            <SelectItem value="KS">KS</SelectItem>
-                                            <SelectItem value="HW">HW</SelectItem>
-                                            <SelectItem value="SNAP">SNAP</SelectItem>
-                                            <SelectItem value="FOA">FOA</SelectItem>
-                                            <SelectItem value="IRON">IRON</SelectItem>
-                                            <SelectItem value="SNEC">SNEC</SelectItem>
-                                            <SelectItem value="SNCS">SNCS</SelectItem>
-                                            <SelectItem value="EH">EH</SelectItem>
-                                            <SelectItem value="DNA">DNA</SelectItem>
-                                            <SelectItem value="BT">BT</SelectItem>
+                                            {MACHINE_TYPES.map((type) => (
+                                                <SelectItem key={type.code} value={type.code}>{type.name} - {type.code}</SelectItem>
+                                            ))}
                                         </SelectContent>
                                     </Select>
                                     <FormMessage />
@@ -268,7 +264,7 @@ const AddSewingMachineForm = ({
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel className="text-base">
-                                    Sewing Machine ID
+                                        Sewing Machine ID
                                     </FormLabel>
                                     <FormControl>
                                         <Input
@@ -288,13 +284,35 @@ const AddSewingMachineForm = ({
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel className="text-base">
-                                        Sewing Machine Serial Number / Model Number
+                                        Serial Number
                                     </FormLabel>
                                     <FormControl>
                                         <Input
                                             disabled={isSubmitting}
                                             placeholder="e.g. 'xxxxxxx'"
                                             {...field}
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+
+                        <FormField
+                            control={form.control}
+                            name="modelNumber"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel className="text-base">
+                                        Model Number
+                                    </FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            disabled={isSubmitting}
+                                            placeholder="e.g. 'xxxxx'"
+                                            value={field.value ?? ''} // Ensure value is always a string
+                                            onChange={field.onChange}
+                                            onBlur={field.onBlur}
                                         />
                                     </FormControl>
                                     <FormMessage />
@@ -342,7 +360,7 @@ const AddSewingMachineForm = ({
                                         </FormControl>
                                         <SelectContent>
                                             {initialData?.eliotDeviceId &&
-                                                <SelectItem value={initialData?.eliotDeviceId}>{initialData.eliotDevice.serialNumber} ~ {initialData.eliotDevice.modelNumber}</SelectItem> 
+                                                <SelectItem value={initialData?.eliotDeviceId}>{initialData.eliotDevice.serialNumber} ~ {initialData.eliotDevice.modelNumber}</SelectItem>
                                             }
                                             {devices.length > 0 ? devices.map((device) => (
                                                 <SelectItem key={device.id} value={device.id}>{device.serialNumber} ~ {device.modelNumber}</SelectItem>
@@ -356,7 +374,7 @@ const AddSewingMachineForm = ({
                             )}
                         />
                     </div>
-                    {mode && mode === 'create' ? 
+                    {mode && mode === 'create' ?
                         <div className="mt-4 flex justify-between gap-2">
                             <Button variant='outline' className="flex gap-2 pr-5" onClick={() => form.reset()}>
                                 Reset

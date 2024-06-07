@@ -9,13 +9,6 @@ export async function POST(
     try {
         const { unitId, machineType, brandName, serialNumber, machineId, eliotDeviceId, ownership } = await req.json();
 
-        let id = generateUniqueId();
-
-        const existingMachineByID = await db.sewingMachine.findUnique({
-            where: {
-                id
-            }
-        });
 
         const existingMachineByMachineID = await db.sewingMachine.findUnique({
             where: {
@@ -29,14 +22,13 @@ export async function POST(
             }
         });
 
-        if (existingMachineByID || existingMachineByMachineID || existingMachineBySerialNo) {
+        if (existingMachineByMachineID || existingMachineBySerialNo) {
             return new NextResponse("Sewing machine is already registered", { status: 409 })
         }
 
         // Create a new machine
         const newMachine = await db.sewingMachine.create({
             data: {
-                id,
                 brandName,
                 machineType,
                 machineId,
