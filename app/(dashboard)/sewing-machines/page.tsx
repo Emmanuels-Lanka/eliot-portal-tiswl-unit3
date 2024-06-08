@@ -8,6 +8,14 @@ const EliotDevices = async () => {
     orderBy: {
       createdAt: "desc",
     },
+    include: {
+      eliotDevice: {
+        select: {
+          serialNumber: true,
+          modelNumber: true
+        }
+      }
+    }
   });
 
   return (
