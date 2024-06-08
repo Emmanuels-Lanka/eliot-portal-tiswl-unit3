@@ -136,33 +136,48 @@ export const columns: ColumnDef<SewingMachine>[] = [
             )
         },
     },
-    // {
-    //     accessorKey: "isAssigned",
-    //     header: ({ column }) => {
-    //         return (
-    //             <Button
-    //                 variant="ghost"
-    //                 onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-    //                 className="-ml-3"
-    //             >
-    //                 Status
-    //                 <ArrowUpDown className="ml-2 h-4 w-4" />
-    //             </Button>
-    //         )
-    //     },
-    //     cell: ({ row }) => {
-    //         const isAssigned = row.getValue("isAssigned") || false;
+    {
+        accessorKey: "eliotDevice.serialNumber",
+        header: ({ column }) => {
+            return (
+                <Button
+                    variant="ghost"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                    className="-ml-3"
+                >
+                    ELOiT Device
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+            )
+        }
+    },
+    {
+        accessorKey: "isAssigned",
+        header: ({ column }) => {
+            return (
+                <Button
+                    variant="ghost"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                    className="-ml-3"
+                >
+                    Status
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+            )
+        },
+        cell: ({ row }) => {
+            const isAssigned = row.getValue("isAssigned") || false;
 
-    //         return (
-    //             <Badge className={cn(
-    //                 "bg-green-600 font-normal",
-    //                 isAssigned && "bg-orange-600"
-    //             )}>
-    //                 {isAssigned ? "Assigned" : "Available"}
-    //             </Badge>
-    //         )
-    //     }
-    // },
+            return (
+                <Badge className={cn(
+                    "bg-green-600 font-normal",
+                    isAssigned && "bg-orange-600"
+                )}>
+                    {isAssigned ? "Assigned" : "Available"}
+                </Badge>
+            )
+        }
+    },
     {
         id: "actions",
         header: "Action",
