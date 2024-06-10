@@ -83,7 +83,18 @@ const ActionCell = ({ row }: { row: any }) => {
 export const columns: ColumnDef<EliotDevice>[] = [
     {
         accessorKey: "serialNumber",
-        header: "Serial No.",
+        header: ({ column }) => {
+            return (
+                <Button
+                    variant="ghost"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                    className="-ml-3"
+                >
+                    Serial No.
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+            )
+        }
     },
     {
         accessorKey: "modelNumber",

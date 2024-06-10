@@ -169,6 +169,29 @@ const AddSewingMachineForm = ({
         form.setValue("machineId", type);
     };
 
+    const handleUnassign = async (deviveId: string) => {
+        try {
+            const res = await axios.post(`/api/sewing-machine/${machineId}/unassign?deviceId=${deviveId}`);
+            toast({
+                title: "Unassigned the device",
+                variant: "success"
+            });
+            router.refresh();
+        } catch (error: any) {
+            toast({
+                title: "Something went wrong! Try again",
+                variant: "error",
+                description: (
+                    <div className='mt-2 bg-slate-200 py-2 px-3 md:w-[336px] rounded-md'>
+                        <code className="text-slate-800">
+                            ERROR: {error.message}
+                        </code>
+                    </div>
+                ),
+            });
+        }
+    }
+
     return (
         <div className='mx-auto max-w-7xl mt-16 border px-12 pt-6 pb-10 rounded-lg shadow-xl'>
             <Form {...form}>
@@ -344,35 +367,46 @@ const AddSewingMachineForm = ({
                             )}
                         />
 
-                        <FormField
-                            control={form.control}
-                            name="eliotDeviceId"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel className="text-base">
-                                        ELIoT Device (Unassigned)
-                                    </FormLabel>
-                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                        <FormControl>
-                                            <SelectTrigger>
-                                                <SelectValue placeholder="Select ELIoT device" />
-                                            </SelectTrigger>
-                                        </FormControl>
-                                        <SelectContent>
-                                            {initialData?.eliotDeviceId &&
-                                                <SelectItem value={initialData?.eliotDeviceId}>{initialData.eliotDevice.serialNumber} ~ {initialData.eliotDevice.modelNumber}</SelectItem>
-                                            }
-                                            {devices.length > 0 ? devices.map((device) => (
-                                                <SelectItem key={device.id} value={device.id}>{device.serialNumber} ~ {device.modelNumber}</SelectItem>
-                                            )) : (
-                                                <p className="text-slate-500 italic text-sm px-2">No devices available. Please create new</p>
-                                            )}
-                                        </SelectContent>
-                                    </Select>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
+                        <div className="w-full flex flex-row gap-3 justify-between items-end">
+                            <div className="w-full">
+                                <FormField
+                                    control={form.control}
+                                    name="eliotDeviceId"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel className="text-base">
+                                                ELIoT Device (Unassigned)
+                                            </FormLabel>
+                                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                <FormControl>
+                                                    <SelectTrigger>
+                                                        <SelectValue placeholder="Select ELIoT device" />
+                                                    </SelectTrigger>
+                                                </FormControl>
+                                                <SelectContent>
+                                                    {initialData?.eliotDeviceId &&
+                                                        <SelectItem value={initialData?.eliotDeviceId}>{initialData.eliotDevice.serialNumber} ~ {initialData.eliotDevice.modelNumber}</SelectItem>
+                                                    }
+                                                    {devices.length > 0 ? devices.map((device) => (
+                                                        <SelectItem key={device.id} value={device.id}>{device.serialNumber} ~ {device.modelNumber}</SelectItem>
+                                                    )) : (
+                                                        <p className="text-slate-500 italic text-sm px-2">No devices available. Please create new</p>
+                                                    )}
+                                                </SelectContent>
+                                            </Select>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                            </div>
+                            {initialData.eliotDeviceId && 
+                            <div 
+                                onClick={() => handleUnassign(initialData.eliotDeviceId)}
+                                className="cursor-pointer py-2.5 px-4 bg-[#0070c0] rounded-md  text-white text-sm opacity-80 hover:opacity-100 transition-opacity"
+                            >
+                                Unassign
+                            </div>}
+                        </div>
                     </div>
                     {mode && mode === 'create' ?
                         <div className="mt-4 flex justify-between gap-2">
