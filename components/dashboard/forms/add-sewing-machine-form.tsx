@@ -176,6 +176,7 @@ const AddSewingMachineForm = ({
                 title: "Unassigned the device",
                 variant: "success"
             });
+            form.setValue("eliotDeviceId", "");
             router.refresh();
         } catch (error: any) {
             toast({
@@ -375,7 +376,7 @@ const AddSewingMachineForm = ({
                                     render={({ field }) => (
                                         <FormItem>
                                             <FormLabel className="text-base">
-                                                ELIoT Device (Unassigned)
+                                                ELIoT Device {!initialData?.eliotDeviceId && "(Unassigned)"}
                                             </FormLabel>
                                             <Select onValueChange={field.onChange} defaultValue={field.value}>
                                                 <FormControl>
@@ -399,7 +400,7 @@ const AddSewingMachineForm = ({
                                     )}
                                 />
                             </div>
-                            {initialData.eliotDeviceId && 
+                            {initialData?.eliotDeviceId && 
                             <div 
                                 onClick={() => handleUnassign(initialData.eliotDeviceId)}
                                 className="cursor-pointer py-2.5 px-4 bg-[#0070c0] rounded-md  text-white text-sm opacity-80 hover:opacity-100 transition-opacity"
