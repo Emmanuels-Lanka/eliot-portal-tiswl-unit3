@@ -7,6 +7,7 @@ import {
 } from "@/components/ui/table"
 import AnalyticsChart from '../../_components/analytics-chart';
 import { Separator } from '@/components/ui/separator';
+import axios from 'axios';
 
 const OperatorEfficiencyPage = async ({
     params
@@ -33,7 +34,7 @@ const OperatorEfficiencyPage = async ({
         <section className='w-full flex flex-col mx-auto max-w-7xl'>
             {operator && 
                 <div className='mt-16'>
-                    <h2 className='text-lg font-medium mb-2'>🙍‍♂️Operator&apos;s Details</h2>
+                    <h2 className='text-lg font-medium mb-2'>Operator&apos;s Details</h2>
                     <Table className='border md:w-1/2'>
                         <TableBody className='text-base'>
                             <TableRow>

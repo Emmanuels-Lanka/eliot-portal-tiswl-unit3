@@ -192,8 +192,6 @@ const HeatmapChart = ({
             width = '200%';
             break;
     };
-    console.log(heatmapCategories);
-    
 
     return (
         <div className='bg-slate-100 pt-5 -pl-8 rounded-lg border w-full mb-16 overflow-x-auto'>
