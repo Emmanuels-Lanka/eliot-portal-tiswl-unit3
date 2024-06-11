@@ -78,11 +78,10 @@ const AnalyticsChart = ({
 
     const handleFetchProductions = async (data: {obbSheetId: string; date: Date }) => {
         try {
+            data.date.setDate(data.date.getDate() + 1);
             const formattedDate = data.date.toISOString().split('T')[0];
 
             const response = await axios.get(`/api/efficiency/production?obbSheetId=${data.obbSheetId}&date=${formattedDate}`);
-
-            console.log("DATA", response.data.data);
             
             const heatmapData = processForHeatmap(response.data.data);
             setHeatmapData(heatmapData.efficiencyData);
