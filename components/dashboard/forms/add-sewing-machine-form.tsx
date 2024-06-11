@@ -28,6 +28,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { cn } from "@/lib/utils";
+import { MACHINE_BRANDS, MACHINE_TYPES } from "@/constants";
 
 interface AddSewingMachineFormProps {
     devices: {
@@ -57,6 +58,7 @@ const formSchema = z.object({
     serialNumber: z.string().min(1, {
         message: "Sewing Machine Serial Number is required"
     }),
+    modelNumber: z.string().nullable(),
     machineId: z.string().min(1, {
         message: "Sewing Machine ID is required"
     }),
@@ -85,6 +87,7 @@ const AddSewingMachineForm = ({
             machineType: initialData?.machineType || "",
             brandName: initialData?.brandName || "",
             serialNumber: initialData?.serialNumber || "",
+            modelNumber: initialData?.modelNumber || "",
             machineId: initialData?.machineId || "",
             eliotDeviceId: initialData?.eliotDeviceId || "",
             ownership: initialData?.ownership || "",
@@ -160,6 +163,34 @@ const AddSewingMachineForm = ({
                 }
             }
         }
+    };
+
+    const updateMachineIdDefaultValue = (type: string) => {
+        form.setValue("machineId", type);
+    };
+
+    const handleUnassign = async (deviveId: string) => {
+        try {
+            const res = await axios.post(`/api/sewing-machine/${machineId}/unassign?deviceId=${deviveId}`);
+            toast({
+                title: "Unassigned the device",
+                variant: "success"
+            });
+            form.setValue("eliotDeviceId", "");
+            router.refresh();
+        } catch (error: any) {
+            toast({
+                title: "Something went wrong! Try again",
+                variant: "error",
+                description: (
+                    <div className='mt-2 bg-slate-200 py-2 px-3 md:w-[336px] rounded-md'>
+                        <code className="text-slate-800">
+                            ERROR: {error.message}
+                        </code>
+                    </div>
+                ),
+            });
+        }
     }
 
     return (
@@ -203,13 +234,18 @@ const AddSewingMachineForm = ({
                                     <FormLabel className="text-base">
                                         Brand Name
                                     </FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            disabled={isSubmitting}
-                                            placeholder="e.g. 'JUKI'"
-                                            {...field}
-                                        />
-                                    </FormControl>
+                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                        <FormControl>
+                                            <SelectTrigger>
+                                                <SelectValue placeholder="Select machine brand" />
+                                            </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                            {MACHINE_BRANDS.map((brand) => (
+                                                <SelectItem key={brand.name} value={brand.name}>{brand.name}</SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
                                     <FormMessage />
                                 </FormItem>
                             )}
@@ -223,28 +259,22 @@ const AddSewingMachineForm = ({
                                     <FormLabel className="text-base">
                                         Machine Type
                                     </FormLabel>
-                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                    <Select
+                                        onValueChange={(value) => {
+                                            field.onChange(value);
+                                            updateMachineIdDefaultValue(value);
+                                        }}
+                                        defaultValue={field.value}
+                                    >
                                         <FormControl>
                                             <SelectTrigger>
                                                 <SelectValue placeholder="Select machine type" />
                                             </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
-                                            <SelectItem value="ol5t">OL5T</SelectItem>
-                                            <SelectItem value="dnls">DNLS</SelectItem>
-                                            <SelectItem value="snls">SNLS</SelectItem>
-                                            <SelectItem value="ol3t">OL3T</SelectItem>
-                                            <SelectItem value="fl">FL</SelectItem>
-                                            <SelectItem value="ks">KS</SelectItem>
-                                            <SelectItem value="hw">HW</SelectItem>
-                                            <SelectItem value="snap">SNAP</SelectItem>
-                                            <SelectItem value="foa">FOA</SelectItem>
-                                            <SelectItem value="iron">IRON</SelectItem>
-                                            <SelectItem value="snec">SNEC</SelectItem>
-                                            <SelectItem value="sncs">SNCS</SelectItem>
-                                            <SelectItem value="eh">EH</SelectItem>
-                                            <SelectItem value="dna">DNA</SelectItem>
-                                            <SelectItem value="bt">BT</SelectItem>
+                                            {MACHINE_TYPES.map((type) => (
+                                                <SelectItem key={type.code} value={type.code}>{type.name} - {type.code}</SelectItem>
+                                            ))}
                                         </SelectContent>
                                     </Select>
                                     <FormMessage />
@@ -258,7 +288,7 @@ const AddSewingMachineForm = ({
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel className="text-base">
-                                    Sewing Machine ID
+                                        Sewing Machine ID
                                     </FormLabel>
                                     <FormControl>
                                         <Input
@@ -278,13 +308,35 @@ const AddSewingMachineForm = ({
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel className="text-base">
-                                        Sewing Machine Serial Number / Model Number
+                                        Serial Number
                                     </FormLabel>
                                     <FormControl>
                                         <Input
                                             disabled={isSubmitting}
                                             placeholder="e.g. 'xxxxxxx'"
                                             {...field}
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+
+                        <FormField
+                            control={form.control}
+                            name="modelNumber"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel className="text-base">
+                                        Model Number
+                                    </FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            disabled={isSubmitting}
+                                            placeholder="e.g. 'xxxxx'"
+                                            value={field.value ?? ''} // Ensure value is always a string
+                                            onChange={field.onChange}
+                                            onBlur={field.onBlur}
                                         />
                                     </FormControl>
                                     <FormMessage />
@@ -316,37 +368,48 @@ const AddSewingMachineForm = ({
                             )}
                         />
 
-                        <FormField
-                            control={form.control}
-                            name="eliotDeviceId"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel className="text-base">
-                                        ELIoT Device (Unassigned)
-                                    </FormLabel>
-                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                        <FormControl>
-                                            <SelectTrigger>
-                                                <SelectValue placeholder="Select ELIoT device" />
-                                            </SelectTrigger>
-                                        </FormControl>
-                                        <SelectContent>
-                                            {initialData?.eliotDeviceId &&
-                                                <SelectItem value={initialData?.eliotDeviceId}>{initialData.eliotDevice.serialNumber} ~ {initialData.eliotDevice.modelNumber}</SelectItem> 
-                                            }
-                                            {devices.length > 0 ? devices.map((device) => (
-                                                <SelectItem key={device.id} value={device.id}>{device.serialNumber} ~ {device.modelNumber}</SelectItem>
-                                            )) : (
-                                                <p className="text-slate-500 italic text-sm px-2">No devices available. Please create new</p>
-                                            )}
-                                        </SelectContent>
-                                    </Select>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
+                        <div className="w-full flex flex-row gap-3 justify-between items-end">
+                            <div className="w-full">
+                                <FormField
+                                    control={form.control}
+                                    name="eliotDeviceId"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel className="text-base">
+                                                ELIoT Device {!initialData?.eliotDeviceId && "(Unassigned)"}
+                                            </FormLabel>
+                                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                <FormControl>
+                                                    <SelectTrigger>
+                                                        <SelectValue placeholder="Select ELIoT device" />
+                                                    </SelectTrigger>
+                                                </FormControl>
+                                                <SelectContent>
+                                                    {initialData?.eliotDeviceId &&
+                                                        <SelectItem value={initialData?.eliotDeviceId}>{initialData.eliotDevice.serialNumber} ~ {initialData.eliotDevice.modelNumber}</SelectItem>
+                                                    }
+                                                    {devices.length > 0 ? devices.map((device) => (
+                                                        <SelectItem key={device.id} value={device.id}>{device.serialNumber} ~ {device.modelNumber}</SelectItem>
+                                                    )) : (
+                                                        <p className="text-slate-500 italic text-sm px-2">No devices available. Please create new</p>
+                                                    )}
+                                                </SelectContent>
+                                            </Select>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                            </div>
+                            {initialData?.eliotDeviceId && 
+                            <div 
+                                onClick={() => handleUnassign(initialData.eliotDeviceId)}
+                                className="cursor-pointer py-2.5 px-4 bg-[#0070c0] rounded-md  text-white text-sm opacity-80 hover:opacity-100 transition-opacity"
+                            >
+                                Unassign
+                            </div>}
+                        </div>
                     </div>
-                    {mode && mode === 'create' ? 
+                    {mode && mode === 'create' ?
                         <div className="mt-4 flex justify-between gap-2">
                             <Button variant='outline' className="flex gap-2 pr-5" onClick={() => form.reset()}>
                                 Reset

@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import { ObbOperation, Operation, SewingMachine, Staff } from "@prisma/client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Loader2, PlusCircle, Zap } from "lucide-react";
+import { Check, ChevronsUpDown, Loader2, PlusCircle, Zap } from "lucide-react";
 import axios from "axios";
 
 import {
@@ -24,6 +24,19 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+    Command,
+    CommandEmpty,
+    CommandGroup,
+    CommandInput,
+    CommandItem,
+    CommandList,
+} from "@/components/ui/command";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
@@ -73,20 +86,25 @@ const AddObbOperationForm = ({
     const { toast } = useToast();
     const router = useRouter();
 
+    const [open, setOpen] = useState(false);
+    const [operationId, setOperationId] = useState("");
     const [isEditing, setIsEditing] = useState(false);
     const [isUpdating, setIsUpdating] = useState(false);
     const [updatingData, setUpdatingData] = useState<ObbOperationData | undefined>();
+
+    console.log("operationId", operationId);
+    
 
     const form = useForm<FormValues>({
         resolver: zodResolver(formSchema),
         defaultValues: {
             operationId: "",
             sewingMachineId: "",
-            smv: undefined,
+            smv: 0,
             target: undefined,
-            spi: undefined,
-            length: undefined,
-            totalStitches: undefined,
+            spi: 0,
+            length: 0,
+            totalStitches: 0,
             obbSheetId: obbSheetId,
             supervisorId: ""
         },
@@ -251,7 +269,7 @@ const AddObbOperationForm = ({
                                             <FormLabel>
                                                 Operation
                                             </FormLabel>
-                                            <Select onValueChange={field.onChange} defaultValue={updatingData?.operationId ? updatingData.operationId : field.value}>
+                                            {/* <Select onValueChange={field.onChange} defaultValue={updatingData?.operationId ? updatingData.operationId : field.value}>
                                                 <FormControl>
                                                     <SelectTrigger>
                                                         <SelectValue placeholder="Select operation" />
@@ -262,7 +280,56 @@ const AddObbOperationForm = ({
                                                         <SelectItem key={operation.id} value={operation.id}>{operation.name}</SelectItem>
                                                     ))}
                                                 </SelectContent>
-                                            </Select>
+                                            </Select> */}
+                                            <Popover open={open} onOpenChange={setOpen}>
+                                                <PopoverTrigger asChild>
+                                                    <Button
+                                                        variant="outline"
+                                                        role="combobox"
+                                                        aria-expanded={open}
+                                                        className="w-full justify-between font-normal"
+                                                    >
+                                                        {operations ?
+                                                            <>
+                                                                {field.value
+                                                                    ? operations.find((operation) => operation.id === field.value)?.name
+                                                                    : "Select Operation..."}
+                                                                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                                            </>
+                                                            :
+                                                            "No operation available!"
+                                                        }
+                                                    </Button>
+                                                </PopoverTrigger>
+                                                <PopoverContent className="p-0">
+                                                    <Command>
+                                                        <CommandInput placeholder="Search operation..." />
+                                                        <CommandList>
+                                                            <CommandEmpty>No operation found!</CommandEmpty>
+                                                            <CommandGroup>
+                                                                {operations && operations.map((operation) => (
+                                                                    <CommandItem
+                                                                        key={operation.id}
+                                                                        value={operation.name}
+                                                                        onSelect={() => {
+                                                                            form.setValue("operationId", operation.id)
+                                                                            setOpen(false)
+                                                                        }}
+                                                                    >
+                                                                        <Check
+                                                                            className={cn(
+                                                                                "mr-2 h-4 w-4",
+                                                                                field.value === operation.id ? "opacity-100" : "opacity-0"
+                                                                            )}
+                                                                        />
+                                                                        {operation.name}
+                                                                    </CommandItem>
+                                                                ))}
+                                                            </CommandGroup>
+                                                        </CommandList>
+                                                    </Command>
+                                                </PopoverContent>
+                                            </Popover>
                                             <FormMessage />
                                         </FormItem>
                                     )}
@@ -286,17 +353,17 @@ const AddObbOperationForm = ({
                                                 <SelectContent>
                                                     {assignedMachinesToOperations !== undefined ?
                                                         <>
-                                                        {machines && machines.filter(machine => !assignedMachinesToOperations.includes(machine.id)).map((machine) => (
-                                                            <SelectItem key={machine.id} value={machine.id}>
-                                                                {machine.brandName}-{machine.machineType}-{machine.machineId}
-                                                            </SelectItem>
-                                                        ))}
+                                                            {machines && machines.filter(machine => !assignedMachinesToOperations.includes(machine.id)).map((machine) => (
+                                                                <SelectItem key={machine.id} value={machine.id}>
+                                                                    {machine.brandName}-{machine.machineType}-{machine.machineId}
+                                                                </SelectItem>
+                                                            ))}
                                                         </>
-                                                    : 
+                                                        :
                                                         <>
-                                                        {machines && machines.map((machine) => (
-                                                            <SelectItem key={machine.id} value={machine.id}>{machine.brandName}-{machine.machineType}-{machine.machineId}</SelectItem>
-                                                        ))}
+                                                            {machines && machines.map((machine) => (
+                                                                <SelectItem key={machine.id} value={machine.id}>{machine.brandName}-{machine.machineType}-{machine.machineId}</SelectItem>
+                                                            ))}
                                                         </>
                                                     }
                                                 </SelectContent>
@@ -331,7 +398,7 @@ const AddObbOperationForm = ({
                                     )}
                                 />
                             </div>
-                            <div className="w-16">
+                            {/* <div className="w-16">
                                 <FormField
                                     control={form.control}
                                     name="smv"
@@ -356,8 +423,8 @@ const AddObbOperationForm = ({
                                         </FormItem>
                                     )}
                                 />
-                            </div>
-                            <div className="w-16">
+                            </div> */}
+                            <div className="w-1/12">
                                 <FormField
                                     control={form.control}
                                     name="target"
@@ -383,7 +450,7 @@ const AddObbOperationForm = ({
                                     )}
                                 />
                             </div>
-                            <div className="w-16">
+                            {/* <div className="w-16">
                                 <FormField
                                     control={form.control}
                                     name="spi"
@@ -460,7 +527,7 @@ const AddObbOperationForm = ({
                                         </FormItem>
                                     )}
                                 />
-                            </div>
+                            </div> */}
                         </div>
                         <div className="mt-4 flex justify-between gap-2">
                             <Button variant='outline' className="flex gap-2 pr-5 text-red-600" onClick={handleCancel}>

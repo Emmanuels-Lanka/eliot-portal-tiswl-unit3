@@ -5,6 +5,10 @@ import { columns } from "./_components/columns";
 
 const ObbSheet = async () => {
   const sheets = await db.obbSheet.findMany({
+    include: {
+      unit: true,
+      productionLine: true
+    },
     orderBy: {
       createdAt: "desc",
     },

@@ -26,69 +26,69 @@ const HeatmapChart = ({
 
     if (type === '60min') {
         series = [
-            { name: '7:00 - 7:59', data: heatmapData[0] },
-            { name: '8:00 - 8:59', data: heatmapData[1] },
-            { name: '9:00 - 9:59', data: heatmapData[2] },
-            { name: '10:00 - 10:59', data: heatmapData[3] },
-            { name: '11:00 - 11:59', data: heatmapData[4] },
-            { name: '12:00 - 12:59', data: heatmapData[5] },
-            { name: '13:00 - 13:59', data: heatmapData[6] },
-            { name: '14:00 - 14:59', data: heatmapData[7] },
-            { name: '15:00 - 15:59', data: heatmapData[8] },
-            { name: '16:00 - 16:59', data: heatmapData[9] },
-            { name: '17:00 - 17:59', data: heatmapData[10] },
-            { name: '18:00 - 18:59', data: heatmapData[11] }
+            { name: '7:00 AM - 8:00 AM', data: heatmapData[0] },
+            { name: '8:00 AM - 9:00 AM', data: heatmapData[1] },
+            { name: '9:00 AM - 10:00 AM', data: heatmapData[2] },
+            { name: '10:00 AM - 11:00 AM', data: heatmapData[3] },
+            { name: '11:00 AM - 12:00 PM', data: heatmapData[4] },
+            { name: '12:00 PM - 1:00 PM', data: heatmapData[5] },
+            { name: '1:00 PM - 2:00 PM', data: heatmapData[6] },
+            { name: '2:00 PM - 3:00 PM', data: heatmapData[7] },
+            { name: '3:00 PM - 4:00 PM', data: heatmapData[8] },
+            { name: '4:00 PM - 5:00 PM', data: heatmapData[9] },
+            { name: '5:00 PM - 6:00 PM', data: heatmapData[10] },
+            { name: '6:00 PM - 7:00 PM', data: heatmapData[11] }
         ];
     } else if (type === '15min') {
         series = [
-            { name: '7:00 - 7:14', data: heatmapData[0] },
-            { name: '7:15 - 7:29', data: heatmapData[1] },
-            { name: '7:30 - 7:44', data: heatmapData[2] },
-            { name: '7:45 - 7:59', data: heatmapData[3] },
-            { name: '8:00 - 8:14', data: heatmapData[4] },
-            { name: '8:15 - 8:29', data: heatmapData[5] },
-            { name: '8:30 - 8:44', data: heatmapData[6] },
-            { name: '8:45 - 8:59', data: heatmapData[7] },
-            { name: '9:00 - 9:14', data: heatmapData[8] },
-            { name: '9:15 - 9:29', data: heatmapData[9] },
-            { name: '9:30 - 9:44', data: heatmapData[10] },
-            { name: '9:45 - 9:59', data: heatmapData[11] },
-            { name: '10:00 - 10:14', data: heatmapData[12] },
-            { name: '10:15 - 10:29', data: heatmapData[13] },
-            { name: '10:30 - 10:44', data: heatmapData[14] },
-            { name: '10:45 - 10:59', data: heatmapData[15] },
-            { name: '11:00 - 11:14', data: heatmapData[16] },
-            { name: '11:15 - 11:29', data: heatmapData[17] },
-            { name: '11:30 - 11:44', data: heatmapData[18] },
-            { name: '11:45 - 11:59', data: heatmapData[19] },
-            { name: '12:00 - 12:14', data: heatmapData[20] },
-            { name: '12:15 - 12:29', data: heatmapData[21] },
-            { name: '12:30 - 12:44', data: heatmapData[22] },
-            { name: '12:45 - 12:59', data: heatmapData[23] },
-            { name: '13:00 - 13:14', data: heatmapData[24] },
-            { name: '13:15 - 13:29', data: heatmapData[25] },
-            { name: '13:30 - 13:44', data: heatmapData[26] },
-            { name: '13:45 - 13:59', data: heatmapData[27] },
-            { name: '14:00 - 14:14', data: heatmapData[28] },
-            { name: '14:15 - 14:29', data: heatmapData[29] },
-            { name: '14:30 - 14:44', data: heatmapData[30] },
-            { name: '14:45 - 14:59', data: heatmapData[31] },
-            { name: '15:00 - 15:14', data: heatmapData[32] },
-            { name: '15:15 - 15:29', data: heatmapData[33] },
-            { name: '15:30 - 15:44', data: heatmapData[34] },
-            { name: '15:45 - 15:59', data: heatmapData[35] },
-            { name: '16:00 - 16:14', data: heatmapData[36] },
-            { name: '16:15 - 16:29', data: heatmapData[37] },
-            { name: '16:30 - 16:44', data: heatmapData[38] },
-            { name: '16:45 - 16:59', data: heatmapData[39] },
-            { name: '17:00 - 17:14', data: heatmapData[40] },
-            { name: '17:15 - 17:29', data: heatmapData[41] },
-            { name: '17:30 - 17:44', data: heatmapData[42] },
-            { name: '17:45 - 17:59', data: heatmapData[43] },
-            { name: '18:00 - 18:14', data: heatmapData[44] },
-            { name: '18:15 - 18:29', data: heatmapData[45] },
-            { name: '18:30 - 18:44', data: heatmapData[46] },
-            { name: '18:45 - 18:59', data: heatmapData[47] }
+            { name: '7:00AM - 7:15AM', data: heatmapData[0] },
+            { name: '7:15AM - 7:30AM', data: heatmapData[1] },
+            { name: '7:30AM - 7:45AM', data: heatmapData[2] },
+            { name: '7:45AM - 8:00AM', data: heatmapData[3] },
+            { name: '8:00AM - 8:15AM', data: heatmapData[4] },
+            { name: '8:15AM - 8:30AM', data: heatmapData[5] },
+            { name: '8:30AM - 8:45AM', data: heatmapData[6] },
+            { name: '8:45AM - 9:00AM', data: heatmapData[7] },
+            { name: '9:00AM - 9:15AM', data: heatmapData[8] },
+            { name: '9:15AM - 9:30AM', data: heatmapData[9] },
+            { name: '9:30AM - 9:45AM', data: heatmapData[10] },
+            { name: '9:45AM - 10:00AM', data: heatmapData[11] },
+            { name: '10:00AM - 10:15AM', data: heatmapData[12] },
+            { name: '10:15AM - 10:30AM', data: heatmapData[13] },
+            { name: '10:30AM - 10:45AM', data: heatmapData[14] },
+            { name: '10:45AM - 11:00AM', data: heatmapData[15] },
+            { name: '11:00AM - 11:15AM', data: heatmapData[16] },
+            { name: '11:15AM - 11:30AM', data: heatmapData[17] },
+            { name: '11:30AM - 11:45AM', data: heatmapData[18] },
+            { name: '11:45AM - 12:00PM', data: heatmapData[19] },
+            { name: '12:00PM - 12:15PM', data: heatmapData[20] },
+            { name: '12:15PM - 12:30PM', data: heatmapData[21] },
+            { name: '12:30PM - 12:45PM', data: heatmapData[22] },
+            { name: '12:45PM - 1:00PM', data: heatmapData[23] },
+            { name: '1:00PM - 1:15PM', data: heatmapData[24] },
+            { name: '1:15PM - 1:30PM', data: heatmapData[25] },
+            { name: '1:30PM - 1:45PM', data: heatmapData[26] },
+            { name: '1:45PM - 2:00PM', data: heatmapData[27] },
+            { name: '2:00PM - 2:15PM', data: heatmapData[28] },
+            { name: '2:15PM - 2:30PM', data: heatmapData[29] },
+            { name: '2:30PM - 2:45PM', data: heatmapData[30] },
+            { name: '2:45PM - 3:00PM', data: heatmapData[31] },
+            { name: '3:00PM - 3:15PM', data: heatmapData[32] },
+            { name: '3:15PM - 3:30PM', data: heatmapData[33] },
+            { name: '3:30PM - 3:45PM', data: heatmapData[34] },
+            { name: '3:45PM - 4:00PM', data: heatmapData[35] },
+            { name: '4:00PM - 4:15PM', data: heatmapData[36] },
+            { name: '4:15PM - 4:30PM', data: heatmapData[37] },
+            { name: '4:30PM - 4:45PM', data: heatmapData[38] },
+            { name: '4:45PM - 5:00PM', data: heatmapData[39] },
+            { name: '5:00PM - 5:15PM', data: heatmapData[40] },
+            { name: '5:15PM - 5:30PM', data: heatmapData[41] },
+            { name: '5:30PM - 5:45PM', data: heatmapData[42] },
+            { name: '5:45PM - 6:00PM', data: heatmapData[43] },
+            { name: '6:00PM - 6:15PM', data: heatmapData[44] },
+            { name: '6:15PM - 6:30PM', data: heatmapData[45] },
+            { name: '6:30PM - 6:45PM', data: heatmapData[46] },
+            { name: '6:45PM - 7:00PM', data: heatmapData[47] }
         ];        
     } else if (type === 'tls') {
         series = [
@@ -180,10 +180,23 @@ const HeatmapChart = ({
         },
     };
 
+    let width: string = '100%';
+    switch (true) {
+        case heatmapCategories.length < 20:
+            width = '100%';
+            break;
+        case heatmapCategories.length >= 20 && heatmapCategories.length < 28:
+            width = '100%';
+            break;
+        case heatmapCategories.length >= 28:
+            width = '200%';
+            break;
+    };
+
     return (
-        <div className='bg-slate-100 pt-5 px-4 rounded-lg border w-full'>
+        <div className='bg-slate-100 pt-5 -pl-8 rounded-lg border w-full mb-16 overflow-x-auto'>
             <div id="chart">
-                <ReactApexChart options={options} series={series} type="heatmap" height={height} width='100%' />
+                <ReactApexChart options={options} series={series} type="heatmap" height={height} width={width} />
             </div>
             <div id="html-dist"></div>
         </div>

@@ -256,7 +256,7 @@ const CreateObbSheetForm = ({
                     onSubmit={form.handleSubmit(onSubmit)}
                     className="w-full space-y-6 mt-4"
                 >
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-8">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-8">
                         <div className="flex flex-col gap-y-6">
                             <FormField
                                 control={form.control}
@@ -441,9 +441,6 @@ const CreateObbSheetForm = ({
                                     </FormItem>
                                 )}
                             />
-                        </div>
-
-                        <div className="flex flex-col gap-y-6">
                             <FormField
                                 control={form.control}
                                 name="accInputMan"
@@ -492,6 +489,9 @@ const CreateObbSheetForm = ({
                                     </FormItem>
                                 )}
                             />
+                        </div>
+
+                        <div className="flex flex-col gap-y-6">
                             <FormField
                                 control={form.control}
                                 name="buyer"
@@ -551,6 +551,56 @@ const CreateObbSheetForm = ({
                             />
                             <FormField
                                 control={form.control}
+                                name="operators"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>
+                                            Operators
+                                        </FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                type="number"
+                                                className="hide-steps-number-input"
+                                                disabled={isSubmitting}
+                                                placeholder="Enter the number"
+                                                {...field}
+                                                onChange={(e) => {
+                                                    const newValue: number = parseInt(e.target.value);
+                                                    form.setValue('operators', newValue, { shouldValidate: true, shouldDirty: true });
+                                                }}
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="helpers"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>
+                                            Helpers
+                                        </FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                type="number"
+                                                className="hide-steps-number-input"
+                                                disabled={isSubmitting}
+                                                placeholder="Enter the number"
+                                                {...field}
+                                                onChange={(e) => {
+                                                    const newValue: number = parseInt(e.target.value);
+                                                    form.setValue('helpers', newValue, { shouldValidate: true, shouldDirty: true });
+                                                }}
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
                                 name="startingDate"
                                 render={({ field }: { field: FieldValues['fields']['date'] }) => (
                                     <FormItem>
@@ -599,9 +649,6 @@ const CreateObbSheetForm = ({
                                     </FormItem>
                                 )}
                             />
-                        </div>
-
-                        <div className="flex flex-col gap-y-6">
                             <FormField
                                 control={form.control}
                                 name="workingHours"
@@ -627,6 +674,9 @@ const CreateObbSheetForm = ({
                                     </FormItem>
                                 )}
                             />
+                        </div>
+
+                        <div className="flex flex-col gap-y-6">
                             <FormField
                                 control={form.control}
                                 name="efficiencyLevel1"
@@ -645,6 +695,31 @@ const CreateObbSheetForm = ({
                                                 onChange={(e) => {
                                                     const newValue: number = parseInt(e.target.value);
                                                     form.setValue('efficiencyLevel1', newValue, { shouldValidate: true, shouldDirty: true });
+                                                }}
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="efficiencyLevel2"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>
+                                            Efficiency Set Level 2 (Mid)
+                                        </FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                type="number"
+                                                className="hide-steps-number-input"
+                                                disabled={isSubmitting}
+                                                placeholder="Enter the number"
+                                                {...field}
+                                                onChange={(e) => {
+                                                    const newValue: number = parseInt(e.target.value);
+                                                    form.setValue('efficiencyLevel2', newValue, { shouldValidate: true, shouldDirty: true });
                                                 }}
                                             />
                                         </FormControl>
@@ -691,6 +766,217 @@ const CreateObbSheetForm = ({
                                                 placeholder="Enter the value"
                                                 value={field.value ?? ''} // Ensure value is always a string
                                                 onChange={field.onChange}
+                                                onBlur={field.onBlur}
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="totalMP"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>
+                                            Total MP
+                                        </FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                type="number"
+                                                className="hide-steps-number-input"
+                                                disabled={isSubmitting}
+                                                placeholder="Enter the value"
+                                                value={field.value ?? 0}   // Nullable input
+                                                onChange={(e) => {
+                                                    const newValue: number = parseInt(e.target.value);
+                                                    form.setValue('totalMP', newValue, { shouldValidate: true, shouldDirty: true });
+                                                }}
+                                                onBlur={field.onBlur}
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="totalSMV"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>
+                                            Total SMV
+                                        </FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                type="number"
+                                                className="hide-steps-number-input"
+                                                disabled={isSubmitting}
+                                                placeholder="Enter the value"
+                                                value={field.value ?? 0}   // Nullable input
+                                                onChange={(e) => {
+                                                    const newValue: number = parseInt(e.target.value);
+                                                    form.setValue('totalSMV', newValue, { shouldValidate: true, shouldDirty: true });
+                                                }}
+                                                onBlur={field.onBlur}
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="bottleNeckTarget"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>
+                                            Bottle Neck Target
+                                        </FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                type="number"
+                                                className="hide-steps-number-input"
+                                                disabled={isSubmitting}
+                                                placeholder="Enter the value"
+                                                value={field.value ?? 0}   // Nullable input
+                                                onChange={(e) => {
+                                                    const newValue: number = parseInt(e.target.value);
+                                                    form.setValue('bottleNeckTarget', newValue, { shouldValidate: true, shouldDirty: true });
+                                                }}
+                                                onBlur={field.onBlur}
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="target100"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>
+                                            Target 100%
+                                        </FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                type="number"
+                                                className="hide-steps-number-input"
+                                                disabled={isSubmitting}
+                                                placeholder="Enter the value"
+                                                value={field.value ?? 0}   // Nullable input
+                                                onChange={(e) => {
+                                                    const newValue: number = parseInt(e.target.value);
+                                                    form.setValue('target100', newValue, { shouldValidate: true, shouldDirty: true });
+                                                }}
+                                                onBlur={field.onBlur}
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
+
+                        <div className="flex flex-col gap-y-6">
+                            <FormField
+                                control={form.control}
+                                name="ucl"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>
+                                            UCL
+                                        </FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                type="number"
+                                                className="hide-steps-number-input"
+                                                disabled={isSubmitting}
+                                                placeholder="Enter the value"
+                                                value={field.value ?? 0}   // Nullable input
+                                                onChange={(e) => {
+                                                    const newValue: number = parseInt(e.target.value);
+                                                    form.setValue('ucl', newValue, { shouldValidate: true, shouldDirty: true });
+                                                }}
+                                                onBlur={field.onBlur}
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="lcl"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>
+                                            LCL
+                                        </FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                type="number"
+                                                className="hide-steps-number-input"
+                                                disabled={isSubmitting}
+                                                placeholder="Enter the value"
+                                                value={field.value ?? 0}   // Nullable input
+                                                onChange={(e) => {
+                                                    const newValue: number = parseInt(e.target.value);
+                                                    form.setValue('lcl', newValue, { shouldValidate: true, shouldDirty: true });
+                                                }}
+                                                onBlur={field.onBlur}
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="balancingLoss"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>
+                                            Balancing Loss
+                                        </FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                type="number"
+                                                className="hide-steps-number-input"
+                                                disabled={isSubmitting}
+                                                placeholder="Enter the value"
+                                                value={field.value ?? 0}   // Nullable input
+                                                onChange={(e) => {
+                                                    const newValue: number = parseInt(e.target.value);
+                                                    form.setValue('balancingLoss', newValue, { shouldValidate: true, shouldDirty: true });
+                                                }}
+                                                onBlur={field.onBlur}
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="balancingRatio"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>
+                                            Balancing Ratio
+                                        </FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                type="number"
+                                                className="hide-steps-number-input"
+                                                disabled={isSubmitting}
+                                                placeholder="Enter the value"
+                                                value={field.value ?? 0}   // Nullable input
+                                                onChange={(e) => {
+                                                    const newValue: number = parseInt(e.target.value);
+                                                    form.setValue('balancingRatio', newValue, { shouldValidate: true, shouldDirty: true });
+                                                }}
                                                 onBlur={field.onBlur}
                                             />
                                         </FormControl>

@@ -50,12 +50,6 @@ const QCDashboard = async ({
         }
     }
 
-    const date = new Date;
-    const timezone: string = process.env.NODE_ENV === 'development' ? 'Asia/Colombo' : 'Asia/Dhaka'
-    const timestamp = moment(date).tz(timezone).format('YYYY-MM-DD HH:mm:ss');
-
-    console.log("TIME:", timestamp);
-
     return (
         <section className="mt-16 space-y-12 mb-2">
             <SelectProductionLineByUnit units={units} />

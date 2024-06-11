@@ -27,15 +27,17 @@ export async function DELETE(
             }
         })
 
-        // Change the isAssigned status on EliotDevice table
-        const changedStatus = await db.eliotDevice.update({
-            where: {
-                id: data?.eliotDeviceId
-            },
-            data: {
-                isAssigned: false
-            }
-        })
+        if (data?.eliotDeviceId) {
+            // Change the isAssigned status on EliotDevice table
+            const changedStatus = await db.eliotDevice.update({
+                where: {
+                    id: data?.eliotDeviceId
+                },
+                data: {
+                    isAssigned: false
+                }
+            })
+        }
 
         const deletedMachine = await db.sewingMachine.delete({
             where: {
@@ -67,18 +69,31 @@ export async function PUT(
             return new NextResponse("This machine does not exist", { status: 409 })
         };
 
-        if (existingMachineById.eliotDeviceId !== eliotDeviceId) {
-            // Re-assigned the device to the machine
-            await db.eliotDevice.update({
-                where: {
-                    id: existingMachineById.eliotDeviceId
-                },
-                data: {
-                    isAssigned: false
-                }
-            });
-
-            // Assign new device
+        // If the existing machine already has eliotDeviceId
+        if (existingMachineById.eliotDeviceId) {
+            if (existingMachineById.eliotDeviceId !== eliotDeviceId) {
+                // Change the ELIOT device status available
+                await db.eliotDevice.update({
+                    where: {
+                        id: existingMachineById.eliotDeviceId
+                    },
+                    data: {
+                        isAssigned: false
+                    }
+                });
+    
+                // Assign new device
+                await db.eliotDevice.update({
+                    where: {
+                        id: eliotDeviceId
+                    },
+                    data: {
+                        isAssigned: true
+                    }
+                });
+            }
+        } else {
+            // Change the ELIOT device status
             await db.eliotDevice.update({
                 where: {
                     id: eliotDeviceId
@@ -86,7 +101,7 @@ export async function PUT(
                 data: {
                     isAssigned: true
                 }
-            });
+            })
         };
 
         const updatedMachine = await db.sewingMachine.update({

@@ -172,7 +172,7 @@ const AddQCRecordForm = ({
                         <div 
                             className={cn(
                                 'h-4 w-4 rounded-full border',
-                                lastRoundColour === 'red' ? 'bg-[#FF3333]/80 border-red-600' : lastRoundColour === 'orange' ? 'bg-[#FD853A] border-orange-500' : lastRoundColour === 'green' && 'bg-[#17dcb5] border-green-600'
+                                lastRoundColour === 'red' ? 'bg-[#FF3333]/70 border-red-500' : lastRoundColour === 'orange' ? 'bg-[#FD853A] border-orange-500' : lastRoundColour === 'green' && 'bg-[#17dcb5] border-green-600'
                             )} 
                         />
                     </div>
@@ -283,7 +283,7 @@ const AddQCRecordForm = ({
 
                                 <div className={cn(
                                     "w-14 h-14 bg-slate-500 rounded-lg absolute",
-                                    selectedColour === 'red' ? 'bg-red-600' : selectedColour === 'orange' ? 'bg-orange-600' : selectedColour === 'green' && 'bg-green-600'
+                                    selectedColour === 'red' ? 'bg-red-500' : selectedColour === 'orange' ? 'bg-[#FD853A]' : selectedColour === 'green' && 'bg-green-500'
                                 )}/>
                             </div>
                             <div className="mt-4 flex justify-between gap-2">

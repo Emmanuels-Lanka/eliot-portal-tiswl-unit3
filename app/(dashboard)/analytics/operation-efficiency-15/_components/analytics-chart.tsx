@@ -78,11 +78,10 @@ const AnalyticsChart = ({
 
     const handleFetchProductions = async (data: {obbSheetId: string; date: Date }) => {
         try {
+            data.date.setDate(data.date.getDate() + 1);
             const formattedDate = data.date.toISOString().split('T')[0];
 
             const response = await axios.get(`/api/efficiency/production?obbSheetId=${data.obbSheetId}&date=${formattedDate}`);
-
-            console.log("DATA", response.data.data);
             
             const heatmapData = processForHeatmap(response.data.data);
             setHeatmapData(heatmapData.efficiencyData);
@@ -107,11 +106,14 @@ const AnalyticsChart = ({
     }
     
     return (
+        <>
         <div className="mx-auto max-w-7xl">
             <SelectObbSheetAndDate 
                 obbSheets={obbSheets}
                 handleSubmit={handleFetchProductions}
             />
+        </div>
+        <div className="mx-auto max-w-[1680px]">
             {heatmapData !== null && heatmapCategories !== null ? 
                 <div className="mt-12">
                     <h2 className="text-lg mb-2 font-medium text-slate-700">{title}</h2>
@@ -131,6 +133,7 @@ const AnalyticsChart = ({
                 </div>
             }
         </div>
+        </>
     )
 }
 
