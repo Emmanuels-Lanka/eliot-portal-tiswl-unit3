@@ -53,7 +53,6 @@ const SelectObbSheetAndDate = ({
     handleSubmit
 }: SelectObbSheetAndDateProps) => {
     const [open, setOpen] = useState(false)
-    const [sheetId, setSheetId] = useState("");
 
 
     const form = useForm<z.infer<typeof formSchema>>({
@@ -93,8 +92,8 @@ const SelectObbSheetAndDate = ({
                                                 >
                                                     {obbSheets ?
                                                         <>
-                                                            {sheetId
-                                                                ? obbSheets.find((sheet) => sheet.id === sheetId)?.name
+                                                            {field.value
+                                                                ? obbSheets.find((sheet) => sheet.id === field.value)?.name
                                                                 : "Select OBB Sheets..."}
                                                             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                                                         </>
@@ -112,9 +111,8 @@ const SelectObbSheetAndDate = ({
                                                             {obbSheets && obbSheets.map((sheet) => (
                                                                 <CommandItem
                                                                     key={sheet.id}
-                                                                    value={sheet.id}
-                                                                    onSelect={(currentValue) => {
-                                                                        setSheetId(currentValue === sheetId ? "" : currentValue)
+                                                                    value={sheet.name}
+                                                                    onSelect={() => {
                                                                         form.setValue("obbSheetId", sheet.id)
                                                                         setOpen(false)
                                                                     }}
@@ -122,7 +120,7 @@ const SelectObbSheetAndDate = ({
                                                                     <Check
                                                                         className={cn(
                                                                             "mr-2 h-4 w-4",
-                                                                            sheetId === sheet.id ? "opacity-100" : "opacity-0"
+                                                                            field.value === sheet.id ? "opacity-100" : "opacity-0"
                                                                         )}
                                                                     />
                                                                     {sheet.name}

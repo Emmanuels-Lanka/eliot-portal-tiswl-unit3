@@ -69,7 +69,7 @@ const ObbOperationsTable = ({
             <TableCaption className="text-slate-400">If you wanna create new OBB operation, please click &apos;Create new&apos;</TableCaption>
             <TableHeader>
                 <TableRow>
-                    <TableHead className="w-12">Seq&nbsp;No</TableHead>
+                    {/* <TableHead className="w-12">Seq&nbsp;No</TableHead> */}
                     <TableHead className="w-4/12">Operation</TableHead>
                     <TableHead className="w-2/12">Mechine</TableHead>
                     <TableHead className="w-2/12">Supervisor</TableHead>
@@ -84,7 +84,7 @@ const ObbOperationsTable = ({
             <TableBody>
                 {tableData && tableData.map((data) => (
                     <TableRow key={data.id}>
-                        <TableCell className="font-medium">{data.seqNo}</TableCell>
+                        {/* <TableCell className="font-medium">{data.seqNo}</TableCell> */}
                         <TableCell>{data.operation.name}</TableCell>
                         <TableCell className="uppercase">{data.sewingMachine?.brandName}-{data.sewingMachine?.machineType}- {data.sewingMachine?.machineId}</TableCell>
                         <TableCell>{data.supervisor?.name}</TableCell>
