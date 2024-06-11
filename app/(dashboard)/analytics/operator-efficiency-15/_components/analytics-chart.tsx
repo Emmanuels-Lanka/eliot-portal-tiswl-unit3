@@ -83,9 +83,9 @@ const AnalyticsChart = ({
             });
         });
 
-        return { 
-            efficiencies, 
-            xAxisCategories: Array.from(xAxisCategories) 
+        return {
+            efficiencies,
+            xAxisCategories: Array.from(xAxisCategories)
         };
     }
 
@@ -117,30 +117,34 @@ const AnalyticsChart = ({
     }
 
     return (
-        <div className="mx-auto max-w-7xl">
-            <SelectObbSheetAndDate
-                obbSheets={obbSheets}
-                handleSubmit={handleFetchProductions}
-            />
-            {heatmapData !== null && heatmapCategories !== null ?
-                <div className="mt-12">
-                    <h2 className="text-lg mb-2 font-medium text-slate-700">{title}</h2>
-                    <HeatmapChart
-                        xAxisLabel='Operators'
-                        height={1800}
-                        type="15min"
-                        efficiencyLow={obbSheet?.efficiencyLevel1}
-                        efficiencyHigh={obbSheet?.efficiencyLevel3}
-                        heatmapData={heatmapData}
-                        heatmapCategories={heatmapCategories}
-                    />
-                </div>
-                :
-                <div className="mt-12 w-full">
-                    <p className="text-center text-slate-500">Please select the OBB sheet and date ☝️</p>
-                </div>
-            }
-        </div>
+        <>
+            <div className="mx-auto max-w-7xl">
+                <SelectObbSheetAndDate
+                    obbSheets={obbSheets}
+                    handleSubmit={handleFetchProductions}
+                />
+            </div>
+            <div className="mx-auto max-w-[1680px]">
+                {heatmapData !== null && heatmapCategories !== null ?
+                    <div className="mt-12">
+                        <h2 className="text-lg mb-2 font-medium text-slate-700">{title}</h2>
+                        <HeatmapChart
+                            xAxisLabel='Operators'
+                            height={1800}
+                            type="15min"
+                            efficiencyLow={obbSheet?.efficiencyLevel1}
+                            efficiencyHigh={obbSheet?.efficiencyLevel3}
+                            heatmapData={heatmapData}
+                            heatmapCategories={heatmapCategories}
+                        />
+                    </div>
+                    :
+                    <div className="mt-12 w-full">
+                        <p className="text-center text-slate-500">Please select the OBB sheet and date ☝️</p>
+                    </div>
+                }
+            </div>
+        </>
     )
 }
 

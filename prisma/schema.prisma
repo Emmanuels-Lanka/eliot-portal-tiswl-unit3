@@ -341,16 +341,7 @@ model TrafficLightSystem {
 }
 
 model SampleTable {
-    id            String  @id @default(uuid())
-    machineId     String
-    machineType   String
-    brandName     String
-    modelNumber   String
-    serialNumber  String
-    unitId        String
-    ownership     String
-    isAssigned    Boolean @default(false)
-    eliotDeviceId String?
-
+    id        String   @id @default(uuid())
+    tagId     String
     createdAt DateTime @default(now())
 }

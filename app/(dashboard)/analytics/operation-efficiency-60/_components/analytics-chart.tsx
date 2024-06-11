@@ -44,20 +44,20 @@ const AnalyticsChart = ({
         productionData.forEach((item: any) => {
             const date = new Date(item.timestamp);
             const hourIndex = date.getHours() - 7; // Adjust the base hour as needed
-    
+
             if (hourIndex >= 0 && hourIndex < 12) { // Ensure within the desired time range
                 const hourGroup = hourlyOperations[hourIndex];
-                const operation = hourGroup[item.obbOperationId] || { 
-                    totalProduction: 0, 
-                    target: item.obbOperation.target, 
-                    xAxis: item.obbOperation.operation.name 
+                const operation = hourGroup[item.obbOperationId] || {
+                    totalProduction: 0,
+                    target: item.obbOperation.target,
+                    xAxis: item.obbOperation.operation.name
                 };
-    
+
                 operation.totalProduction += item.productionCount;
                 hourGroup[item.obbOperationId] = operation; // Store back to the group
             }
         });
-    
+
         // Calculate efficiencies for each operation in each hour and store only the data arrays
         const efficiencyData: number[][] = hourlyOperations.map(hourGroup => {
             const operations = Object.values(hourGroup);
@@ -65,7 +65,7 @@ const AnalyticsChart = ({
                 operations.forEach((op, index) => {
                     // This condition ensures we only add sequence numbers once per unique operation across all hours
                     if (xAxisCategories.length <= index) {
-                        xAxisCategories.push(`op1: ${op.xAxis}`);
+                        xAxisCategories.push(`${op.xAxis}`);
                     }
                 });
             }
@@ -75,16 +75,16 @@ const AnalyticsChart = ({
         return { efficiencyData, xAxisCategories };
     }
 
-    const handleFetchProductions = async (data: {obbSheetId: string; date: Date }) => {
+    const handleFetchProductions = async (data: { obbSheetId: string; date: Date }) => {
         try {
             const formattedDate = data.date.toISOString().split('T')[0];
             const response = await axios.get(`/api/efficiency/production?obbSheetId=${data.obbSheetId}&date=${formattedDate}`);
-            
+
             const heatmapData = processForHeatmap(response.data.data);
             setHeatmapData(heatmapData.efficiencyData);
             setHeatmapCategories(heatmapData.xAxisCategories);
             setObbSheet(response.data.obbSheet);
-            
+
             router.refresh();
         } catch (error: any) {
             console.error("Error fetching production data:", error);
@@ -101,32 +101,36 @@ const AnalyticsChart = ({
             });
         }
     }
-    
+
     return (
-        <div className="mx-auto max-w-7xl">
-            <SelectObbSheetAndDate 
-                obbSheets={obbSheets}
-                handleSubmit={handleFetchProductions}
-            />
-            {heatmapData !== null && heatmapCategories !== null ? 
-                <div className="mt-12">
-                    <h2 className="text-lg mb-2 font-medium text-slate-700">{title}</h2>
-                    <HeatmapChart
-                        xAxisLabel='Operations'
-                        height={580}
-                        type="60min"
-                        efficiencyLow={obbSheet?.efficiencyLevel1}
-                        efficiencyHigh={obbSheet?.efficiencyLevel3}
-                        heatmapData={heatmapData}
-                        heatmapCategories={heatmapCategories}
-                    />
-                </div>
-            :
-                <div className="mt-12 w-full">
-                    <p className="text-center text-slate-500">Please select the OBB sheet and date ☝️</p>
-                </div>
-            }
-        </div>
+        <>
+            <div className="mx-auto max-w-7xl">
+                <SelectObbSheetAndDate
+                    obbSheets={obbSheets}
+                    handleSubmit={handleFetchProductions}
+                />
+            </div>
+            <div className="mx-auto max-w-[1680px]">
+                {heatmapData !== null && heatmapCategories !== null ?
+                    <div className="mt-12">
+                        <h2 className="text-lg mb-2 font-medium text-slate-700">{title}</h2>
+                        <HeatmapChart
+                            xAxisLabel='Operations'
+                            height={580}
+                            type="60min"
+                            efficiencyLow={obbSheet?.efficiencyLevel1}
+                            efficiencyHigh={obbSheet?.efficiencyLevel3}
+                            heatmapData={heatmapData}
+                            heatmapCategories={heatmapCategories}
+                        />
+                    </div>
+                    :
+                    <div className="mt-12 w-full">
+                        <p className="text-center text-slate-500">Please select the OBB sheet and date ☝️</p>
+                    </div>
+                }
+            </div>
+        </>
     )
 }
 
