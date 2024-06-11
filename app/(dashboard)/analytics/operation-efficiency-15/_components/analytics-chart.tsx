@@ -107,11 +107,14 @@ const AnalyticsChart = ({
     }
     
     return (
+        <>
         <div className="mx-auto max-w-7xl">
             <SelectObbSheetAndDate 
                 obbSheets={obbSheets}
                 handleSubmit={handleFetchProductions}
             />
+        </div>
+        <div className="mx-auto max-w-[1680px]">
             {heatmapData !== null && heatmapCategories !== null ? 
                 <div className="mt-12">
                     <h2 className="text-lg mb-2 font-medium text-slate-700">{title}</h2>
@@ -131,6 +134,7 @@ const AnalyticsChart = ({
                 </div>
             }
         </div>
+        </>
     )
 }
 

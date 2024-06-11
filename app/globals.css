@@ -141,3 +141,27 @@
   height: 40px !important;
   /* border-color: hsl(var(--input)) !important; */
 }
+
+/* Analytics chart's toolbar menu button style */
+.apexcharts-toolbar {
+  margin-right: 10px !important;
+}
+.apexcharts-menu {
+  width: 140px !important;
+  border-radius: 8px !important;
+}
+.apexcharts-menu-item {
+  width: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+}
+.apexcharts-legend-marker {
+  margin-top: -3px !important;
+}
+.apexcharts-legend-text {
+  font-family: Inter !important;
+}
+.apexcharts-xaxis-label tspan {
+  z-index: 99 !important;
+}
