@@ -47,7 +47,8 @@ const FeedMachineDataFromExcel = () => {
                         modelNumber: String(row[3]),
                         serialNumber: String(row[4]),
                         unitId: String(row[5]),
-                        ownership: String(row[6])
+                        ownership: String(row[6]),
+                        eliotDeviceId: String(row[7])
                     }));
                     setPreviewData(JSON.stringify(json, null, 2));
                 }
@@ -86,7 +87,8 @@ const FeedMachineDataFromExcel = () => {
                         modelNumber: String(row[3]),
                         serialNumber: String(row[4]),
                         unitId: String(row[5]),
-                        ownership: String(row[6])
+                        ownership: String(row[6]),
+                        eliotDeviceId: String(row[7])
                     }));
                     setJsonData(JSON.stringify(dataRows, null, 2));
                 }
