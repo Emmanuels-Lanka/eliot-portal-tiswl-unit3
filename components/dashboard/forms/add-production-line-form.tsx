@@ -124,7 +124,7 @@ const AddProductionLineForm = ({
                         Add Production Line
                     </DialogTitle>
                     <DialogDescription className="text-sm">
-                        Add new temperature for the unit. Click save when you&apos;re done.
+                        Add new poduction line for the unit. Click save when you&apos;re done.
                     </DialogDescription>
                 </DialogHeader>
                 <Form {...form}>

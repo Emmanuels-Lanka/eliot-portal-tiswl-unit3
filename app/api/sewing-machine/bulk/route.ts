@@ -13,7 +13,7 @@ export async function POST(
         const machines = await db.sewingMachine.createMany({
             data: body,
             skipDuplicates: true
-        })
+        });
 
         return NextResponse.json({ data: machines, message: 'Bulk machine data created successfully'}, { status: 201 });
     } catch (error) {
