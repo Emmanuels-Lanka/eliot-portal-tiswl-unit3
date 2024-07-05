@@ -86,14 +86,15 @@ const AddObbOperationForm = ({
     const { toast } = useToast();
     const router = useRouter();
 
-    const [open, setOpen] = useState(false);
+    const [open1, setOpen1] = useState(false);
+    const [open2, setOpen2] = useState(false);
     const [operationId, setOperationId] = useState("");
     const [isEditing, setIsEditing] = useState(false);
     const [isUpdating, setIsUpdating] = useState(false);
     const [updatingData, setUpdatingData] = useState<ObbOperationData | undefined>();
 
     console.log("operationId", operationId);
-    
+
 
     const form = useForm<FormValues>({
         resolver: zodResolver(formSchema),
@@ -269,24 +270,12 @@ const AddObbOperationForm = ({
                                             <FormLabel>
                                                 Operation
                                             </FormLabel>
-                                            {/* <Select onValueChange={field.onChange} defaultValue={updatingData?.operationId ? updatingData.operationId : field.value}>
-                                                <FormControl>
-                                                    <SelectTrigger>
-                                                        <SelectValue placeholder="Select operation" />
-                                                    </SelectTrigger>
-                                                </FormControl>
-                                                <SelectContent>
-                                                    {operations && operations.map((operation) => (
-                                                        <SelectItem key={operation.id} value={operation.id}>{operation.name}</SelectItem>
-                                                    ))}
-                                                </SelectContent>
-                                            </Select> */}
-                                            <Popover open={open} onOpenChange={setOpen}>
+                                            <Popover open={open1} onOpenChange={setOpen1}>
                                                 <PopoverTrigger asChild>
                                                     <Button
                                                         variant="outline"
                                                         role="combobox"
-                                                        aria-expanded={open}
+                                                        aria-expanded={open1}
                                                         className="w-full justify-between font-normal"
                                                     >
                                                         {operations ?
@@ -313,7 +302,7 @@ const AddObbOperationForm = ({
                                                                         value={operation.name}
                                                                         onSelect={() => {
                                                                             form.setValue("operationId", operation.id)
-                                                                            setOpen(false)
+                                                                            setOpen1(false)
                                                                         }}
                                                                     >
                                                                         <Check
@@ -344,7 +333,7 @@ const AddObbOperationForm = ({
                                             <FormLabel>
                                                 Machine
                                             </FormLabel>
-                                            <Select onValueChange={field.onChange} defaultValue={updatingData?.sewingMachine?.id || field.value}>
+                                            {/* <Select onValueChange={field.onChange} defaultValue={updatingData?.sewingMachine?.id || field.value}>
                                                 <FormControl>
                                                     <SelectTrigger>
                                                         <SelectValue placeholder="Select machine" />
@@ -367,7 +356,56 @@ const AddObbOperationForm = ({
                                                         </>
                                                     }
                                                 </SelectContent>
-                                            </Select>
+                                            </Select> */}
+                                            <Popover open={open2} onOpenChange={setOpen2}>
+                                                <PopoverTrigger asChild>
+                                                    <Button
+                                                        variant="outline"
+                                                        role="combobox"
+                                                        aria-expanded={open2}
+                                                        className="w-full justify-between font-normal"
+                                                    >
+                                                        {machines ?
+                                                            <>
+                                                                {field.value
+                                                                    ? machines.find((machine) => machine.id === field.value)?.machineId
+                                                                    : "Select machine ID..."}
+                                                                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                                            </>
+                                                            :
+                                                            "No machine available!"
+                                                        }
+                                                    </Button>
+                                                </PopoverTrigger>
+                                                <PopoverContent className="p-0">
+                                                    <Command>
+                                                        <CommandInput placeholder="Search machine..." />
+                                                        <CommandList>
+                                                            <CommandEmpty>No machine found!</CommandEmpty>
+                                                            <CommandGroup>
+                                                                {machines && machines.map((machine) => (
+                                                                    <CommandItem
+                                                                        key={machine.id}
+                                                                        value={machine.machineId}
+                                                                        onSelect={() => {
+                                                                            form.setValue("sewingMachineId", machine.id)
+                                                                            setOpen2(false)
+                                                                        }}
+                                                                    >
+                                                                        <Check
+                                                                            className={cn(
+                                                                                "mr-2 h-4 w-4",
+                                                                                field.value === machine.id ? "opacity-100" : "opacity-0"
+                                                                            )}
+                                                                        />
+                                                                        {machine.brandName}-{machine.machineType}-{machine.machineId}
+                                                                    </CommandItem>
+                                                                ))}
+                                                            </CommandGroup>
+                                                        </CommandList>
+                                                    </Command>
+                                                </PopoverContent>
+                                            </Popover>
                                             <FormMessage />
                                         </FormItem>
                                     )}
