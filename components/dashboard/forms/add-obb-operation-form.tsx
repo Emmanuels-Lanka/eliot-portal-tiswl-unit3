@@ -93,9 +93,6 @@ const AddObbOperationForm = ({
     const [isUpdating, setIsUpdating] = useState(false);
     const [updatingData, setUpdatingData] = useState<ObbOperationData | undefined>();
 
-    console.log("operationId", operationId);
-
-
     const form = useForm<FormValues>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -436,7 +433,7 @@ const AddObbOperationForm = ({
                                     )}
                                 />
                             </div>
-                            {/* <div className="w-16">
+                            <div className="w-16">
                                 <FormField
                                     control={form.control}
                                     name="smv"
@@ -461,7 +458,7 @@ const AddObbOperationForm = ({
                                         </FormItem>
                                     )}
                                 />
-                            </div> */}
+                            </div>
                             <div className="w-1/12">
                                 <FormField
                                     control={form.control}
@@ -590,17 +587,17 @@ const AddObbOperationForm = ({
             }
 
             {!isEditing && (
-                <div className="space-y-2">
+                <div className="space-y-2 max-h-[640px] overflow-y-auto">
                     {obbOperations && obbOperations?.length > 0 ?
                         <ObbOperationsTable
                             tableData={obbOperations}
                             handleEdit={handleEdit}
                         />
-                        : (
-                            <p className="text-sm mt-2 text-slate-500 italic">
-                                No operations available
-                            </p>
-                        )}
+                    : (
+                        <p className="text-sm mt-2 text-slate-500 italic">
+                            No operations available
+                        </p>
+                    )}
                 </div>
             )}
         </div>

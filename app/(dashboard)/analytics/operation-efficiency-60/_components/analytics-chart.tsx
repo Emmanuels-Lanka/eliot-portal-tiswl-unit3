@@ -21,7 +21,8 @@ type HourGroup = {
     [key: string]: {
         totalProduction: number;
         target: number;
-        xAxis: number;
+        seqNo: number;
+        xAxis: string;
     };
 }
 
@@ -50,6 +51,7 @@ const AnalyticsChart = ({
                 const operation = hourGroup[item.obbOperationId] || {
                     totalProduction: 0,
                     target: item.obbOperation.target,
+                    seqNo: item.obbOperation.seqNo,
                     xAxis: item.obbOperation.operation.name
                 };
 
@@ -65,7 +67,7 @@ const AnalyticsChart = ({
                 operations.forEach((op, index) => {
                     // This condition ensures we only add sequence numbers once per unique operation across all hours
                     if (xAxisCategories.length <= index) {
-                        xAxisCategories.push(`${op.xAxis}`);
+                        xAxisCategories.push(`${op.xAxis}-${op.seqNo}`);
                     }
                 });
             }
