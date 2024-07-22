@@ -18,15 +18,22 @@ export async function POST(
             include: {
                 obbOperation: true
             }
-        })
+        });
 
         if (existingMachine && existingMachine.obbOperation) {
             return new NextResponse("This sewing machine is already assigned to another operation.", { status: 409 })
-        }
+        };
+
+        const seqCount = await db.obbOperation.count({
+            where: {
+                obbSheetId
+            }
+        });
 
         const newObbOperation = await db.obbOperation.create({
             data: {
                 id,
+                seqNo: seqCount + 1,
                 operationId, 
                 obbSheetId,
                 smv, 

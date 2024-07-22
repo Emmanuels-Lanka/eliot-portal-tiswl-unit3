@@ -102,7 +102,7 @@ model EliotDevice {
     installedDate String
     isAssigned    Boolean @default(false)
 
-    sewingMachines SewingMachine[]
+    sewingMachines SewingMachine?
     productionData ProductionData[]
 
     createdAt DateTime @default(now())
@@ -337,11 +337,5 @@ model TrafficLightSystem {
     colour    String
     timestamp String
 
-    createdAt DateTime @default(now())
-}
-
-model SampleTable {
-    id        String   @id @default(uuid())
-    tagId     String
     createdAt DateTime @default(now())
 }
