@@ -7,7 +7,8 @@ import { ProductionData } from "@prisma/client";
 
 import { useToast } from "@/components/ui/use-toast";
 import SelectObbSheetDateHour from "@/components/dashboard/common/select-obbsheet-date-hour";
-import BarChartGraph from "./bar-chart";
+import BarChartGraph from "./bar-chart-graph";
+import LineChartGraph from "./line-chart-graph";
 
 interface AnalyticsChartProps {
     obbSheets: {
@@ -115,9 +116,12 @@ const AnalyticsChart = ({
             <div className="mx-auto max-w-[1680px]">
                 {production.length > 0 ?
                     <div className="my-8">
-                        <BarChartGraph
+                        <LineChartGraph 
                             data={production}
                         />
+                        {/* <BarChartGraph
+                            data={production}
+                        /> */}
                     </div>
                     :
                     <div className="mt-12 w-full">
