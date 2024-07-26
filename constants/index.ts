@@ -195,6 +195,16 @@ export const SIDEBAR_ROUTES = [
         ]
     },
     {
+        categoryName: "Production Analytics",
+        routes: [
+            {
+                label: "Hourly Production",
+                href: "/analytics/hourly-production",
+                icon: BarChart3
+            },
+        ]
+    },
+    {
         categoryName: "SMS & Email Alerts",
         routes: [
             {
@@ -212,11 +222,11 @@ export const SIDEBAR_ROUTES = [
                 href: "/analytics/operation-efficiency-60",
                 icon: BarChartHorizontal
             },
-            {
-                label: "Operation Efficiency (15min)",
-                href: "/analytics/operation-efficiency-15",
-                icon: BarChartHorizontal
-            },
+            // {
+            //     label: "Operation Efficiency (15min)",
+            //     href: "/analytics/operation-efficiency-15",
+            //     icon: BarChartHorizontal
+            // },
         ]
     },
     {
@@ -227,11 +237,11 @@ export const SIDEBAR_ROUTES = [
                 href: "/analytics/operator-efficiency-60",
                 icon: BarChartHorizontal
             },
-            {
-                label: "Operator Efficiency (15min)",
-                href: "/analytics/operator-efficiency-15",
-                icon: BarChartHorizontal
-            },
+            // {
+            //     label: "Operator Efficiency (15min)",
+            //     href: "/analytics/operator-efficiency-15",
+            //     icon: BarChartHorizontal
+            // },
         ]
     },
     {

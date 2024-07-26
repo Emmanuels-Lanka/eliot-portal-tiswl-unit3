@@ -1,137 +1,246 @@
 [
     {
-        "id": "lw7ezcau-AIdgyQW4xLMI",
-        "roundNo": 1,
-        "operatorRfid": "OP-00001",
-        "obbOperationId": "9b533f1c-af6a-4210-ba7d-425d862cf073",
-        "colour": "green",
+        "id": "d9882ce9-5a2c-46f3-a389-10bd5e63ad11",
+        "operatorRfid": "OP-00012",
+        "eliotSerialNumber": "ELIoT-00001",
+        "obbOperationId": "ly8p560p-yHYxMzqKSDPI",
+        "productionCount": 0,
+        "timestamp": "2024-07-10 13:55:10",
+        "createdAt": "2024-07-10T07:55:11.446Z",
         "operator": {
-            "name": "Adisha Mendis",
-            "rfid": "OP-00001"
+            "id": "lx4gx9dj-DRZQgNqO9l8f",
+            "name": "MRS. SABINA AKTER",
+            "employeeId": "RGL-SO1000100",
+            "rfid": "OP-00012",
+            "gender": "female",
+            "designation": "junior-operator",
+            "isLoggedIn": true,
+            "createdAt": "2024-06-07T09:12:34.083Z",
+            "updatedAt": "2024-07-04T08:03:31.524Z"
+        },
+        "eliotDevice": {
+            "id": "ly8kbxbz-4Ojagu8uLF7B",
+            "serialNumber": "ELIoT-00001",
+            "modelNumber": "ELIOT-PRO-V1",
+            "installedDate": "2024-07-05T00:00:00.000Z",
+            "isAssigned": true,
+            "createdAt": "2024-07-05T10:38:43.736Z",
+            "updatedAt": "2024-07-05T11:37:11.275Z"
         },
         "obbOperation": {
-            "id": "9b533f1c-af6a-4210-ba7d-425d862cf073",
+            "id": "ly8p560p-yHYxMzqKSDPI",
+            "seqNo": 27,
+            "operationId": "7e6b62b2-b1db-4095-8c46-d2b0d828956e",
+            "obbSheetId": "ly8o5vu8-c9cFZB9SRxjo",
+            "supervisorId": "lwg27oul-AEirXuKfHUo9",
+            "smv": 0,
+            "target": 120,
+            "spi": 0,
+            "length": 0,
+            "totalStitches": 0,
+            "createdAt": "2024-07-05T12:53:26.389Z",
+            "updatedAt": "2024-07-22T06:26:00.165Z",
             "operation": {
-                "name": "Huuwww"
+                "id": "7e6b62b2-b1db-4095-8c46-d2b0d828956e",
+                "name": "WELT PKT FACING JOIN WITH POCKETING (4)",
+                "createdAt": "2024-07-05T05:00:17.220Z",
+                "updatedAt": "2024-07-05T05:00:17.220Z"
             }
         }
     },
     {
-        "id": "lw7fjd4n-r2x0Cn8hfNIM",
-        "roundNo": 2,
-        "operatorRfid": "OP-00001",
-        "obbOperationId": "9b533f1c-af6a-4210-ba7d-425d862cf073",
-        "colour": "orange",
+        "id": "6ae21614-c5d6-457c-8908-aad2a4c99bf2",
+        "operatorRfid": "OP-00003",
+        "eliotSerialNumber": "ELIoT-00013",
+        "obbOperationId": "ly8pao3j-pCBpoy1uM2HO",
+        "productionCount": 0,
+        "timestamp": "2024-07-10 18:50:00",
+        "createdAt": "2024-07-10T12:50:02.457Z",
         "operator": {
-            "name": "Adisha Mendis",
-            "rfid": "OP-00001"
+            "id": "lx4gogsf-9Si6TgqkG-go",
+            "name": "MRS. FORIDA BEGUM",
+            "employeeId": "RGL-SO1000036",
+            "rfid": "OP-00003",
+            "gender": "female",
+            "designation": "junior-operator",
+            "isLoggedIn": false,
+            "createdAt": "2024-06-07T09:05:43.341Z",
+            "updatedAt": "2024-07-04T07:48:09.223Z"
+        },
+        "eliotDevice": {
+            "id": "ly8kfr8s--Y6WDB4VOvIf",
+            "serialNumber": "ELIoT-00013",
+            "modelNumber": "ELIOT-PRO-V1",
+            "installedDate": "2024-07-05T00:00:00.000Z",
+            "isAssigned": true,
+            "createdAt": "2024-07-05T10:41:42.368Z",
+            "updatedAt": "2024-07-05T11:37:11.275Z"
         },
         "obbOperation": {
-            "id": "9b533f1c-af6a-4210-ba7d-425d862cf073",
+            "id": "ly8pao3j-pCBpoy1uM2HO",
+            "seqNo": 32,
+            "operationId": "45bc34a9-50fd-4d7a-8b70-4bbf5386d6cc",
+            "obbSheetId": "ly8o5vu8-c9cFZB9SRxjo",
+            "supervisorId": "lwg27oul-AEirXuKfHUo9",
+            "smv": 0,
+            "target": 109,
+            "spi": 0,
+            "length": 0,
+            "totalStitches": 0,
+            "createdAt": "2024-07-05T12:57:43.106Z",
+            "updatedAt": "2024-07-22T06:26:00.165Z",
             "operation": {
-                "name": "Huuwww"
+                "id": "45bc34a9-50fd-4d7a-8b70-4bbf5386d6cc",
+                "name": "WELT TURN & LOWER T/S",
+                "createdAt": "2024-07-05T05:00:42.031Z",
+                "updatedAt": "2024-07-05T05:00:42.031Z"
             }
         }
     },
     {
-        "id": "lw7hbfw2-GrIRXQhpayGe",
-        "roundNo": 3,
-        "operatorRfid": "OP-00001",
-        "obbOperationId": "9b533f1c-af6a-4210-ba7d-425d862cf073",
-        "colour": "red",
+        "id": "2ff4dcef-f6dd-4533-8a4e-431e33d733c9",
+        "operatorRfid": "OP-00013",
+        "eliotSerialNumber": "ELIoT-00035",
+        "obbOperationId": "ly8ojkz6-zO1Jr2h4Rf47",
+        "productionCount": 0,
+        "timestamp": "2024-07-10 18:50:00",
+        "createdAt": "2024-07-10T12:50:02.216Z",
         "operator": {
-            "name": "Adisha Mendis",
-            "rfid": "OP-00001"
+            "id": "lx4gxrgr-rzAtlKsDdGuV",
+            "name": "MD. ATIKUL ISLAM",
+            "employeeId": "RGL-SO1000104",
+            "rfid": "OP-00013",
+            "gender": "male",
+            "designation": "junior-operator",
+            "isLoggedIn": true,
+            "createdAt": "2024-06-07T09:12:57.080Z",
+            "updatedAt": "2024-07-04T08:04:12.180Z"
+        },
+        "eliotDevice": {
+            "id": "ly8kqrd5-h41kW7OHqRRN",
+            "serialNumber": "ELIoT-00035",
+            "modelNumber": "ELIOT-PRO-V1",
+            "installedDate": "2024-07-05T00:00:00.000Z",
+            "isAssigned": true,
+            "createdAt": "2024-07-05T10:50:15.805Z",
+            "updatedAt": "2024-07-05T11:37:11.275Z"
         },
         "obbOperation": {
-            "id": "9b533f1c-af6a-4210-ba7d-425d862cf073",
+            "id": "ly8ojkz6-zO1Jr2h4Rf47",
+            "seqNo": 7,
+            "operationId": "16d3ff73-abf1-4ddb-b13a-d4691c4b4031",
+            "obbSheetId": "ly8o5vu8-c9cFZB9SRxjo",
+            "supervisorId": "lwg27oul-AEirXuKfHUo9",
+            "smv": 0,
+            "target": 200,
+            "spi": 0,
+            "length": 0,
+            "totalStitches": 0,
+            "createdAt": "2024-07-05T12:36:39.338Z",
+            "updatedAt": "2024-07-22T06:24:53.037Z",
             "operation": {
-                "name": "Huuwww"
+                "id": "16d3ff73-abf1-4ddb-b13a-d4691c4b4031",
+                "name": "INNER FACING CLOSE",
+                "createdAt": "2024-07-05T04:53:40.409Z",
+                "updatedAt": "2024-07-05T04:53:40.409Z"
             }
         }
     },
     {
-        "id": "lw7hekjm-PMOnsSiuOGw1",
-        "roundNo": 4,
-        "operatorRfid": "OP-00001",
-        "obbOperationId": "9b533f1c-af6a-4210-ba7d-425d862cf073",
-        "colour": "green",
+        "id": "f21e0188-a29d-473c-96c7-daa4f95dd028",
+        "operatorRfid": "OP-00017",
+        "eliotSerialNumber": "ELIoT-00054",
+        "obbOperationId": "ly8pr3kx-yKCIye-WDqso",
+        "productionCount": 1,
+        "timestamp": "2024-07-10 18:50:00",
+        "createdAt": "2024-07-10T12:50:02.898Z",
         "operator": {
-            "name": "Adisha Mendis",
-            "rfid": "OP-00001"
+            "id": "lx4h3yts-h7vwtbB0qNp4",
+            "name": "MRS. SHARMIN KHATUN",
+            "employeeId": "RGL-SO1000113",
+            "rfid": "OP-00017",
+            "gender": "female",
+            "designation": "junior-operator",
+            "isLoggedIn": false,
+            "createdAt": "2024-06-07T09:17:46.557Z",
+            "updatedAt": "2024-07-04T08:08:20.221Z"
+        },
+        "eliotDevice": {
+            "id": "ly8kxahk-b0no-ndfjDWS",
+            "serialNumber": "ELIoT-00054",
+            "modelNumber": "ELIOT-PRO-V1",
+            "installedDate": "2024-07-05T00:00:00.000Z",
+            "isAssigned": true,
+            "createdAt": "2024-07-05T10:55:20.511Z",
+            "updatedAt": "2024-07-05T11:37:11.275Z"
         },
         "obbOperation": {
-            "id": "9b533f1c-af6a-4210-ba7d-425d862cf073",
+            "id": "ly8pr3kx-yKCIye-WDqso",
+            "seqNo": 42,
+            "operationId": "bb86ff40-6a64-4e5a-829b-da47531d21f7",
+            "obbSheetId": "ly8o5vu8-c9cFZB9SRxjo",
+            "supervisorId": "lwg27oul-AEirXuKfHUo9",
+            "smv": 0,
+            "target": 120,
+            "spi": 0,
+            "length": 0,
+            "totalStitches": 0,
+            "createdAt": "2024-07-05T13:10:29.681Z",
+            "updatedAt": "2024-07-22T06:28:03.565Z",
             "operation": {
-                "name": "Huuwww"
+                "id": "bb86ff40-6a64-4e5a-829b-da47531d21f7",
+                "name": "IN- SEAM JOIN",
+                "createdAt": "2024-07-05T05:01:55.116Z",
+                "updatedAt": "2024-07-05T05:01:55.116Z"
             }
         }
     },
     {
-        "id": "lw7hnas5-XQhMNleOOC2s",
-        "roundNo": 5,
-        "operatorRfid": "OP-00001",
-        "obbOperationId": "9b533f1c-af6a-4210-ba7d-425d862cf073",
-        "colour": "green",
+        "id": "ca49b3e3-5a72-4e5d-a497-cb6935ae8721",
+        "operatorRfid": "OP-00019",
+        "eliotSerialNumber": "ELIoT-00051",
+        "obbOperationId": "ly9bjzg2-B9Kb7Hle5loH",
+        "productionCount": 1,
+        "timestamp": "2024-07-10 18:50:00",
+        "createdAt": "2024-07-10T12:50:02.498Z",
         "operator": {
-            "name": "Adisha Mendis",
-            "rfid": "OP-00001"
+            "id": "lx4h4yse-YjzXGMisihzH",
+            "name": "MD. MIZANUR RAHMAN",
+            "employeeId": "RGL-SO1000116",
+            "rfid": "OP-00019",
+            "gender": "male",
+            "designation": "junior-operator",
+            "isLoggedIn": true,
+            "createdAt": "2024-06-07T09:18:33.162Z",
+            "updatedAt": "2024-07-04T08:10:48.908Z"
+        },
+        "eliotDevice": {
+            "id": "ly8kwldn-mQgSbmeL7OkU",
+            "serialNumber": "ELIoT-00051",
+            "modelNumber": "ELIOT-PRO-V1",
+            "installedDate": "2024-07-05T00:00:00.000Z",
+            "isAssigned": true,
+            "createdAt": "2024-07-05T10:54:47.919Z",
+            "updatedAt": "2024-07-05T11:37:11.275Z"
         },
         "obbOperation": {
-            "id": "9b533f1c-af6a-4210-ba7d-425d862cf073",
+            "id": "ly9bjzg2-B9Kb7Hle5loH",
+            "seqNo": 47,
+            "operationId": "364bb366-bcf9-41b0-acbf-30bfef628d9b",
+            "obbSheetId": "ly8o5vu8-c9cFZB9SRxjo",
+            "supervisorId": "lwg27oul-AEirXuKfHUo9",
+            "smv": 0,
+            "target": 92,
+            "spi": 0,
+            "length": 0,
+            "totalStitches": 0,
+            "createdAt": "2024-07-05T23:20:49.267Z",
+            "updatedAt": "2024-07-22T06:28:03.565Z",
             "operation": {
-                "name": "Huuwww"
-            }
-        }
-    },
-    {
-        "id": "lw7hsngw-3-p3T0hEB9qD",
-        "roundNo": 6,
-        "operatorRfid": "OP-00001",
-        "obbOperationId": "9b533f1c-af6a-4210-ba7d-425d862cf073",
-        "colour": "orange",
-        "operator": {
-            "name": "Adisha Mendis",
-            "rfid": "OP-00001"
-        },
-        "obbOperation": {
-            "id": "9b533f1c-af6a-4210-ba7d-425d862cf073",
-            "operation": {
-                "name": "Huuwww"
-            }
-        }
-    },
-    {
-        "id": "lw7hu8yu-DIlSVhkgRpXh",
-        "roundNo": 7,
-        "operatorRfid": "OP-00001",
-        "obbOperationId": "9b533f1c-af6a-4210-ba7d-425d862cf073",
-        "colour": "red",
-        "operator": {
-            "name": "Adisha Mendis",
-            "rfid": "OP-00001"
-        },
-        "obbOperation": {
-            "id": "9b533f1c-af6a-4210-ba7d-425d862cf073",
-            "operation": {
-                "name": "Huuwww"
-            }
-        }
-    },
-    {
-        "id": "lw7jeto8-LFMQQBm8JH0E",
-        "roundNo": 8,
-        "operatorRfid": "OP-00001",
-        "obbOperationId": "9b533f1c-af6a-4210-ba7d-425d862cf073",
-        "colour": "green",
-        "operator": {
-            "name": "Adisha Mendis",
-            "rfid": "OP-00001"
-        },
-        "obbOperation": {
-            "id": "9b533f1c-af6a-4210-ba7d-425d862cf073",
-            "operation": {
-                "name": "Huuwww"
+                "id": "364bb366-bcf9-41b0-acbf-30bfef628d9b",
+                "name": "SIDE SEAM JOIN",
+                "createdAt": "2024-06-07T08:50:46.076Z",
+                "updatedAt": "2024-06-07T08:50:46.076Z"
             }
         }
     }
