@@ -13,12 +13,14 @@ export async function GET(
         return new NextResponse("Missing required parameters: obbSheetId or date", { status: 409 })
     }
 
-    const startDate = `${date} 00:00:00`; // Start of the day
-    const endDate = `${date} 23:59:59`; // End of the day
+    const startDate = `${date} 07:00:00`; // Start of the day
+    const endDate = `${date} 07:59:59`; // End of the day
 
     try {
         const productionData = await db.productionData.findMany({
             where: {
+                operatorRfid: "OP-00090",
+                // obbOperationId: "ly8pb4yn-rC6auXtWFDaK",
                 obbOperation: {
                     obbSheetId: obbSheetId
                 },
@@ -37,6 +39,8 @@ export async function GET(
                 }
             }
         });
+        console.log("DATA COUNT:", productionData.length);
+        console.log("DATA:", productionData);
 
         const obbSheet = await db.obbSheet.findUnique({
             where: {

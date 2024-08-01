@@ -43,6 +43,8 @@ import { useToast } from "@/components/ui/use-toast";
 import { cn } from "@/lib/utils";
 import ObbOperationsTable from "@/components/dashboard/common/obb-operations-table";
 import { Separator } from "@/components/ui/separator";
+import { DataTable } from "@/app/(dashboard)/obb-sheets/[obbSheetId]/_components/data-table";
+import { columns } from "@/app/(dashboard)/obb-sheets/[obbSheetId]/_components/columns";
 
 interface AddObbOperationFormProps {
     operations: Operation[] | null;
@@ -224,7 +226,7 @@ const AddObbOperationForm = ({
     return (
         <div className="mx-auto max-w-7xl border px-6 pt-4 pb-6 rounded-lg bg-slate-100">
             <div className="font-medium flex items-center justify-between">
-                <h2 className="text-slate-800 text-lg font-medium">{isEditing ? 'Add OBB Operation' : isUpdating ? 'Update OBB Operations' : 'OBB Operations'}</h2>
+                <h2 className="text-slate-800 text-lg font-medium">{isEditing ? 'Add OBB Operation' : isUpdating ? 'Update OBB Operations' : `OBB Operations (${obbOperations ? obbOperations?.length : '0'})`}</h2>
                 <Button onClick={() => setIsEditing(true)} variant='ghost' className="text-base">
                     {!isUpdating && !isEditing && (
                         <>
@@ -589,10 +591,16 @@ const AddObbOperationForm = ({
             {!isEditing && (
                 <div className="space-y-2 max-h-[640px] overflow-y-auto">
                     {obbOperations && obbOperations?.length > 0 ?
+                        <>
+                        <DataTable 
+                            columns={columns} 
+                            data={obbOperations} 
+                        />
                         <ObbOperationsTable
                             tableData={obbOperations}
                             handleEdit={handleEdit}
                         />
+                        </>
                     : (
                         <p className="text-sm mt-2 text-slate-500 italic">
                             No operations available

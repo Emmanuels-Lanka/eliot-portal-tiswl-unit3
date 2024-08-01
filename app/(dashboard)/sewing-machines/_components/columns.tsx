@@ -130,7 +130,7 @@ export const columns: ColumnDef<SewingMachine>[] = [
                     onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
                     className="-ml-3"
                 >
-                    ID
+                    Machine ID
                     <ArrowUpDown className="ml-2 h-4 w-4" />
                 </Button>
             )
@@ -145,7 +145,7 @@ export const columns: ColumnDef<SewingMachine>[] = [
                     onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
                     className="-ml-3"
                 >
-                    ELOiT Device
+                    ELIoT Device
                     <ArrowUpDown className="ml-2 h-4 w-4" />
                 </Button>
             )
