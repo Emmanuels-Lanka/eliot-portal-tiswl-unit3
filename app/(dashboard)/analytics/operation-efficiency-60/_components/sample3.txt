@@ -19,12 +19,12 @@ interface AnalyticsChartProps {
     title: string;
 }
 
-type EfficiencyResult = {
+type EfficiencyData = {
     data: {
         hourGroup: string,
         operation: {
             name: string,
-            efficiency: number | null
+            efficiency: number
         }[];
     }[];
     categories: string[];
@@ -37,17 +37,20 @@ const AnalyticsChart = ({
     const { toast } = useToast();
     const router = useRouter();
 
-    const [heatmapData, setHeatmapData] = useState<HourlyEfficiencyOutputTypes>();
+    const [heatmapData, setHeatmapData] = useState<HourlyEfficiencyOutputTypes[]>([]);
     const [obbSheet, setObbSheet] = useState<ObbSheet | null>(null);
 
-    function processProductionData(productionData: ProductionDataForChartTypes[]): HourlyEfficiencyOutputTypes {
+    function processProductionData(productionData: ProductionDataForChartTypes[]): EfficiencyData {
+        // Hour group range definition
         const hourGroups = ["7:00 AM - 8:00 AM", "8:00 AM - 9:00 AM", "9:00 AM - 10:00 AM", "10:00 AM - 11:00 AM", "11:00 AM - 12:00 PM", "12:00 PM - 1:00 PM", "1:00 PM - 2:00 PM", "2:00 PM - 3:00 PM", "3:00 PM - 4:00 PM", "4:00 PM - 5:00 PM", "5:00 PM - 6:00 PM", "6:00 PM - 7:00 PM"];
 
+        // Helper function to determine hour group based on timestamp
         const getHourGroup = (timestamp: string): string => {
             const hour = new Date(timestamp).getHours();
             return hourGroups[Math.max(0, Math.min(11, hour - 7))];
         };
 
+        // Step 1: Categorize by obbOperationId
         const operationsMap: { [key: string]: ProductionDataForChartTypes[] } = {};
         productionData.forEach(data => {
             if (!operationsMap[data.obbOperationId]) {
@@ -56,20 +59,23 @@ const AnalyticsChart = ({
             operationsMap[data.obbOperationId].push(data);
         });
 
+        // Sorting operations by seqNo
         const operations = Object.values(operationsMap).map(group => ({
-            obbOperation: group[0].obbOperation,
+            obbOperation: group[0].obbOperation, // taking the first entry as all are the same
             data: group
         })).sort((a, b) => a.obbOperation.seqNo - b.obbOperation.seqNo);
 
+        // Categories array
         const categories = operations.map(op => `${op.obbOperation.seqNo}-${op.obbOperation.operation.name}`);
 
+        // Step 2 and Step 3: Hourly data calculation
         const resultData = hourGroups.map(hourGroup => ({
             hourGroup,
             operation: operations.map(op => {
                 const filteredData = op.data.filter(data => getHourGroup(data.timestamp) === hourGroup);
                 const totalProduction = filteredData.reduce((sum, curr) => sum + curr.productionCount, 0);
-                const efficiency = filteredData.length > 0 ? (totalProduction === 0 ? 0 : (totalProduction / op.obbOperation.target) * 100) : null;
-                return { name: `${op.obbOperation.seqNo}-${op.obbOperation.operation.name}`, efficiency: efficiency !== null ? parseFloat(efficiency.toFixed(1)) : null };
+                const efficiency = (totalProduction / op.obbOperation.target) * 100;
+                return { name: `${op.obbOperation.seqNo}-${op.obbOperation.operation.name}`, efficiency };
             })
         }));
 
@@ -86,10 +92,10 @@ const AnalyticsChart = ({
 
             const response = await axios.get(`/api/efficiency/production?obbSheetId=${data.obbSheetId}&date=${formattedDate}`);
             const heatmapData = processProductionData(response.data.data);
-            // console.log("HEATMAP:", heatmapData.data);
-            // console.log("CATEGORIES:", heatmapData.categories);
+            console.log("HEATMAP:", heatmapData.data);
+            console.log("CATEGORIES:", heatmapData.categories);
 
-            setHeatmapData(heatmapData);
+            // setHeatmapData(heatmapData);
             setObbSheet(response.data.obbSheet);
 
             router.refresh();
@@ -118,16 +124,16 @@ const AnalyticsChart = ({
                 />
             </div>
             <div className="mx-auto max-w-[1680px]">
-                {heatmapData ?
+                {heatmapData.length > 0 ?
                     <div className="mt-12">
                         <h2 className="text-lg mb-2 font-medium text-slate-700">{title}</h2>
-                        <EffiencyHeatmap
+                        {/* <EffiencyHeatmap
                             xAxisLabel='Operations'
                             height={580}
                             efficiencyLow={obbSheet?.efficiencyLevel1}
                             efficiencyHigh={obbSheet?.efficiencyLevel3}
                             heatmapData={heatmapData}
-                        />
+                        /> */}
                     </div>
                     :
                     <div className="mt-12 w-full">

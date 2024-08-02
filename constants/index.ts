@@ -195,22 +195,22 @@ export const SIDEBAR_ROUTES = [
         ]
     },
     {
-        categoryName: "Production Analytics",
-        routes: [
-            {
-                label: "Hourly Production",
-                href: "/analytics/hourly-production",
-                icon: BarChart3
-            },
-        ]
-    },
-    {
         categoryName: "SMS & Email Alerts",
         routes: [
             {
                 label: "Alert logs",
                 href: "/alert-logs",
                 icon: Send
+            },
+        ]
+    },
+    {
+        categoryName: "Production Analytics",
+        routes: [
+            {
+                label: "Hourly Production",
+                href: "/analytics/hourly-production",
+                icon: BarChart3
             },
         ]
     },

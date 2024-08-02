@@ -30,17 +30,33 @@ export async function GET(
                 }
             },
             include: {
-                operator: true,
-                eliotDevice: true,
+                operator: {
+                    select: {
+                        name: true,
+                        employeeId: true,
+                        rfid: true
+                    }
+                },
                 obbOperation: {
-                    include: {
-                        operation: true,
+                    select: {
+                        id: true,
+                        seqNo: true,
+                        target: true,
+                        smv: true,
+                        operation: {
+                            select: {
+                                name: true
+                            }
+                        },
                     }
                 }
+            },
+            orderBy: {
+                createdAt: "desc"
             }
         });
-        // console.log("DATA COUNT:", productionData.length);
-        // console.log("DATA:", productionData);
+        console.log("DATA COUNT:", productionData.length);
+        console.log("DATA:", productionData);
 
         const obbSheet = await db.obbSheet.findUnique({
             where: {

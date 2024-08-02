@@ -19,17 +19,6 @@ interface AnalyticsChartProps {
     title: string;
 }
 
-type EfficiencyResult = {
-    data: {
-        hourGroup: string,
-        operation: {
-            name: string,
-            efficiency: number | null
-        }[];
-    }[];
-    categories: string[];
-};
-
 const AnalyticsChart = ({
     obbSheets,
     title
@@ -37,46 +26,58 @@ const AnalyticsChart = ({
     const { toast } = useToast();
     const router = useRouter();
 
-    const [heatmapData, setHeatmapData] = useState<HourlyEfficiencyOutputTypes>();
+    const [heatmapData, setHeatmapData] = useState<HourlyEfficiencyOutputTypes[]>([]);
     const [obbSheet, setObbSheet] = useState<ObbSheet | null>(null);
 
-    function processProductionData(productionData: ProductionDataForChartTypes[]): HourlyEfficiencyOutputTypes {
+    function processProductionData(productionData: ProductionDataForChartTypes[]): HourlyEfficiencyOutputTypes[] {
+        // Step 1: Categorize by obbOperation
+        const groupedByOperation = productionData.reduce((acc, data) => {
+            (acc[data.obbOperation.id] = acc[data.obbOperation.id] || []).push(data);
+            return acc;
+        }, {} as Record<string, ProductionDataForChartTypes[]>);
+
+        // Define the hourly groups
         const hourGroups = ["7:00 AM - 8:00 AM", "8:00 AM - 9:00 AM", "9:00 AM - 10:00 AM", "10:00 AM - 11:00 AM", "11:00 AM - 12:00 PM", "12:00 PM - 1:00 PM", "1:00 PM - 2:00 PM", "2:00 PM - 3:00 PM", "3:00 PM - 4:00 PM", "4:00 PM - 5:00 PM", "5:00 PM - 6:00 PM", "6:00 PM - 7:00 PM"];
-
-        const getHourGroup = (timestamp: string): string => {
-            const hour = new Date(timestamp).getHours();
-            return hourGroups[Math.max(0, Math.min(11, hour - 7))];
-        };
-
-        const operationsMap: { [key: string]: ProductionDataForChartTypes[] } = {};
-        productionData.forEach(data => {
-            if (!operationsMap[data.obbOperationId]) {
-                operationsMap[data.obbOperationId] = [];
-            }
-            operationsMap[data.obbOperationId].push(data);
-        });
-
-        const operations = Object.values(operationsMap).map(group => ({
-            obbOperation: group[0].obbOperation,
-            data: group
-        })).sort((a, b) => a.obbOperation.seqNo - b.obbOperation.seqNo);
-
-        const categories = operations.map(op => `${op.obbOperation.seqNo}-${op.obbOperation.operation.name}`);
-
-        const resultData = hourGroups.map(hourGroup => ({
-            hourGroup,
-            operation: operations.map(op => {
-                const filteredData = op.data.filter(data => getHourGroup(data.timestamp) === hourGroup);
-                const totalProduction = filteredData.reduce((sum, curr) => sum + curr.productionCount, 0);
-                const efficiency = filteredData.length > 0 ? (totalProduction === 0 ? 0 : (totalProduction / op.obbOperation.target) * 100) : null;
-                return { name: `${op.obbOperation.seqNo}-${op.obbOperation.operation.name}`, efficiency: efficiency !== null ? parseFloat(efficiency.toFixed(1)) : null };
-            })
+        const efficiencyResults: HourlyEfficiencyOutputTypes[] = hourGroups.map(hour => ({
+            hourGroup: hour,
+            operation: []
         }));
 
-        return {
-            data: resultData,
-            categories
-        };
+        // Step 3: Categorize each operation's data by hour group
+        const hourRangeStart = 7; // Start time for the first hour group
+
+        for (const opId in groupedByOperation) {
+            const operations = groupedByOperation[opId];
+            const target = operations[0].obbOperation.target;
+
+            const operationsByHour = operations.reduce((acc, item) => {
+                const hour = new Date(item.timestamp).getHours();
+                const index = hour - hourRangeStart;
+                if (index >= 0 && index < hourGroups.length) {
+                    (acc[index] = acc[index] || []).push(item);
+                }
+                return acc;
+            }, {} as Record<number, ProductionDataForChartTypes[]>);
+
+            // Step 4: Calculate efficiency for each hour group
+            for (const hourIndex in operationsByHour) {
+                const productionCountSum = operationsByHour[hourIndex].reduce((sum, curr) => sum + curr.productionCount, 0);
+                const efficiency = (productionCountSum / target) * 100;
+
+                efficiencyResults[+hourIndex].operation.push({
+                    name: operations[0].obbOperation.operation.name,
+                    seqNo: operations[0].obbOperation.seqNo,
+                    efficiency: parseFloat(efficiency.toFixed(2))
+                });
+            }
+        }
+
+        // Step 5: Sort operations by seqNo for each hour
+        efficiencyResults.forEach(hour => {
+            hour.operation.sort((a, b) => a.seqNo - b.seqNo);
+        });
+
+        return efficiencyResults;
     }
 
     const handleFetchProductions = async (data: { obbSheetId: string; date: Date }) => {
@@ -86,8 +87,7 @@ const AnalyticsChart = ({
 
             const response = await axios.get(`/api/efficiency/production?obbSheetId=${data.obbSheetId}&date=${formattedDate}`);
             const heatmapData = processProductionData(response.data.data);
-            // console.log("HEATMAP:", heatmapData.data);
-            // console.log("CATEGORIES:", heatmapData.categories);
+            console.log("HEATMAP:", heatmapData);
 
             setHeatmapData(heatmapData);
             setObbSheet(response.data.obbSheet);
@@ -118,7 +118,7 @@ const AnalyticsChart = ({
                 />
             </div>
             <div className="mx-auto max-w-[1680px]">
-                {heatmapData ?
+                {heatmapData.length > 0 ?
                     <div className="mt-12">
                         <h2 className="text-lg mb-2 font-medium text-slate-700">{title}</h2>
                         <EffiencyHeatmap
