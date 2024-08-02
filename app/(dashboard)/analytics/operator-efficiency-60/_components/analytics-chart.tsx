@@ -3,11 +3,13 @@
 import axios from "axios";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { ObbSheet, ProductionData } from "@prisma/client";
+import { ObbSheet } from "@prisma/client";
+import { parseISO, getHours } from 'date-fns';
 
 import HeatmapChart from "@/components/dashboard/charts/heatmap-chart";
 import SelectObbSheetAndDate from "@/components/dashboard/common/select-obbsheet-and-date";
 import { useToast } from "@/components/ui/use-toast";
+import EffiencyHeatmap from "@/components/dashboard/charts/efficiency-heatmap";
 
 interface AnalyticsChartProps {
     obbSheets: {
@@ -17,16 +19,6 @@ interface AnalyticsChartProps {
     title: string;
 }
 
-interface OperatorGroup {
-    totalProduction: number;
-    operations: {
-        [key: string]: {
-            productionCount: number;
-            target: number;
-        };
-    };
-}
-
 const AnalyticsChart = ({
     obbSheets,
     title
@@ -34,53 +26,45 @@ const AnalyticsChart = ({
     const { toast } = useToast();
     const router = useRouter();
 
-    const [heatmapData, setHeatmapData] = useState<number[][] | null>(null);
-    const [heatmapCategories, setHeatmapCategories] = useState<string[] | null>(null);
+    const [heatmapData, setHeatmapData] = useState<OperationEfficiencyOutputTypes>();
     const [obbSheet, setObbSheet] = useState<ObbSheet | null>(null);
 
-    function processForHeatmap(productionData: ProductionData[]): { efficiencies: number[][], xAxisCategories: string[] } {
-        const hourlyOperators: { [hour: number]: { [rfid: string]: OperatorGroup } } = Array.from({ length: 12 }, () => ({}));
-        const xAxisCategories = new Set<string>();
+    function processProductionData(productionData: ProductionDataForChartTypes[]): OperationEfficiencyOutputTypes {
+        const hourGroups = ["7:00 AM - 8:00 AM", "8:00 AM - 9:00 AM", "9:00 AM - 10:00 AM", "10:00 AM - 11:00 AM", "11:00 AM - 12:00 PM", "12:00 PM - 1:00 PM", "1:00 PM - 2:00 PM", "2:00 PM - 3:00 PM", "3:00 PM - 4:00 PM", "4:00 PM - 5:00 PM", "5:00 PM - 6:00 PM", "6:00 PM - 7:00 PM"];
 
-        productionData.forEach((item: any) => {
-            const date = new Date(item.timestamp);
-            const hour = date.getHours() - 7; // Hourly grouping
-            const operators = hourlyOperators[hour] || {};
-            const operator = operators[item.operatorRfid] || {
-                totalProduction: 0,
-                operations: {}
-            };
+        const getHourGroup = (timestamp: string): string => {
+            const hour = new Date(timestamp).getHours();
+            return hourGroups[Math.max(0, Math.min(11, hour - 7))];
+        };
 
-            // Sum production count by operation
-            const operation = operator.operations[item.obbOperationId] || {
-                productionCount: 0,
-                target: item.obbOperation.target
-            };
-            operation.productionCount += item.productionCount;
-            operator.operations[item.obbOperationId] = operation;
-
-            // Track total production for combined efficiency calculation
-            operator.totalProduction += item.productionCount;
-            operators[item.operatorRfid] = operator;
-            hourlyOperators[hour] = operators;
-
-            // Collect unique operator names for xAxis categories
-            xAxisCategories.add(item.operator.name);
+        const operatorsMap: { [key: string]: ProductionDataForChartTypes[] } = {};
+        productionData.forEach(data => {
+            if (!operatorsMap[data.operatorRfid]) {
+                operatorsMap[data.operatorRfid] = [];
+            }
+            operatorsMap[data.operatorRfid].push(data);
         });
 
-        // Calculate efficiencies for each operator and each hour
-        const efficiencies = Object.values(hourlyOperators).map(operators => {
-            return Object.values(operators).map(operator => {
-                const combinedEfficiency = Object.values(operator.operations).reduce((total, op) => {
-                    return total + (op.productionCount * (op.productionCount / op.target * 100));
-                }, 0) / operator.totalProduction;
-                return Number(combinedEfficiency.toFixed(1));
-            });
-        });
+        const operations = Object.values(operatorsMap).map(group => ({
+            operator: group[0],
+            data: group
+        })).sort((a, b) => a.operator.obbOperation.seqNo - b.operator.obbOperation.seqNo);
+
+        const categories = operations.map(op => `${op.operator.operator.name}-${op.operator.obbOperation.seqNo}`);
+
+        const resultData = hourGroups.map(hourGroup => ({
+            hourGroup,
+            operation: operations.map(op => {
+                const filteredData = op.data.filter(data => getHourGroup(data.timestamp) === hourGroup);
+                const totalProduction = filteredData.reduce((sum, curr) => sum + curr.productionCount, 0);
+                const efficiency = filteredData.length > 0 ? (totalProduction === 0 ? 0 : (totalProduction / op.operator.obbOperation.target) * 100) : null;
+                return { name: `${op.operator.obbOperation.seqNo}-${op.operator.obbOperation.operation.name}`, efficiency: efficiency !== null ? parseFloat(efficiency.toFixed(1)) : null };
+            })
+        }));
 
         return {
-            efficiencies,
-            xAxisCategories: Array.from(xAxisCategories)
+            data: resultData,
+            categories
         };
     }
 
@@ -88,12 +72,13 @@ const AnalyticsChart = ({
         try {
             data.date.setDate(data.date.getDate() + 1);
             const formattedDate = data.date.toISOString().split('T')[0];
-            const response = await axios.get(`/api/efficiency/production?obbSheetId=${data.obbSheetId}&date=${formattedDate}`);
-            
-            const { efficiencies, xAxisCategories } = processForHeatmap(response.data.data);
 
-            setHeatmapData(efficiencies);
-            setHeatmapCategories(xAxisCategories);
+            const response = await axios.get(`/api/efficiency/production?obbSheetId=${data.obbSheetId}&date=${formattedDate}`);
+            const heatmapData = processProductionData(response.data.data);
+            console.log("HEATMAP:", heatmapData.data);
+            console.log("CATEGORIES:", heatmapData.categories);
+
+            setHeatmapData(heatmapData);
             setObbSheet(response.data.obbSheet);
 
             router.refresh();
@@ -122,17 +107,15 @@ const AnalyticsChart = ({
                 />
             </div>
             <div className="mx-auto max-w-[1680px]">
-                {heatmapData !== null && heatmapCategories !== null ?
+                {heatmapData ?
                     <div className="mt-12">
                         <h2 className="text-lg mb-2 font-medium text-slate-700">{title}</h2>
-                        <HeatmapChart
-                            xAxisLabel='Operators'
+                        <EffiencyHeatmap
+                            xAxisLabel='Operations'
                             height={580}
-                            type="60min"
                             efficiencyLow={obbSheet?.efficiencyLevel1}
                             efficiencyHigh={obbSheet?.efficiencyLevel3}
                             heatmapData={heatmapData}
-                            heatmapCategories={heatmapCategories}
                         />
                     </div>
                     :

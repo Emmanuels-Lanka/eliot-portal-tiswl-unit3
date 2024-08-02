@@ -73,10 +73,21 @@ type ProductionDataForChartTypes = {
     };
 };
 
-type HourlyEfficiencyOutputTypes = {
+type OperationEfficiencyOutputTypes = {
     data: {
         hourGroup: string,
         operation: {
+            name: string,
+            efficiency: number | null
+        }[];
+    }[];
+    categories: string[];
+};
+
+type OperatorEfficiencyOutputTypes = {
+    data: {
+        hourGroup: string,
+        operator: {
             name: string,
             efficiency: number | null
         }[];

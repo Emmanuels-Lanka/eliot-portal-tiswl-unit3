@@ -37,10 +37,10 @@ const AnalyticsChart = ({
     const { toast } = useToast();
     const router = useRouter();
 
-    const [heatmapData, setHeatmapData] = useState<HourlyEfficiencyOutputTypes>();
+    const [heatmapData, setHeatmapData] = useState<OperationEfficiencyOutputTypes>();
     const [obbSheet, setObbSheet] = useState<ObbSheet | null>(null);
 
-    function processProductionData(productionData: ProductionDataForChartTypes[]): HourlyEfficiencyOutputTypes {
+    function processProductionData(productionData: ProductionDataForChartTypes[]): OperationEfficiencyOutputTypes {
         const hourGroups = ["7:00 AM - 8:00 AM", "8:00 AM - 9:00 AM", "9:00 AM - 10:00 AM", "10:00 AM - 11:00 AM", "11:00 AM - 12:00 PM", "12:00 PM - 1:00 PM", "1:00 PM - 2:00 PM", "2:00 PM - 3:00 PM", "3:00 PM - 4:00 PM", "4:00 PM - 5:00 PM", "5:00 PM - 6:00 PM", "6:00 PM - 7:00 PM"];
 
         const getHourGroup = (timestamp: string): string => {
@@ -61,7 +61,7 @@ const AnalyticsChart = ({
             data: group
         })).sort((a, b) => a.obbOperation.seqNo - b.obbOperation.seqNo);
 
-        const categories = operations.map(op => `${op.obbOperation.seqNo}-${op.obbOperation.operation.name}`);
+        const categories = operations.map(op => `${op.obbOperation.operation.name}-${op.obbOperation.seqNo}`);
 
         const resultData = hourGroups.map(hourGroup => ({
             hourGroup,
@@ -86,8 +86,8 @@ const AnalyticsChart = ({
 
             const response = await axios.get(`/api/efficiency/production?obbSheetId=${data.obbSheetId}&date=${formattedDate}`);
             const heatmapData = processProductionData(response.data.data);
-            // console.log("HEATMAP:", heatmapData.data);
-            // console.log("CATEGORIES:", heatmapData.categories);
+            console.log("HEATMAP:", heatmapData.data);
+            console.log("CATEGORIES:", heatmapData.categories);
 
             setHeatmapData(heatmapData);
             setObbSheet(response.data.obbSheet);
