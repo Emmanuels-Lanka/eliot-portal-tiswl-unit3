@@ -8,7 +8,7 @@ interface EffiencyHeatmapProps {
     height: number;
     efficiencyLow?: number;
     efficiencyHigh?: number;
-    heatmapData: HourlyEfficiencyOutputTypes;
+    heatmapData: OperationEfficiencyOutputTypes;
 }
 
 const EffiencyHeatmap = ({
