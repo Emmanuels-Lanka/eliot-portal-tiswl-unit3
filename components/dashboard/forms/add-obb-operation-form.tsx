@@ -1,9 +1,10 @@
 "use client"
 
 import * as z from "zod";
+import React, { useMemo } from 'react';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { ObbOperation, Operation, SewingMachine, Staff } from "@prisma/client";
+import { Operation, SewingMachine, Staff } from "@prisma/client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Check, ChevronsUpDown, Loader2, PlusCircle, Zap } from "lucide-react";
@@ -95,6 +96,10 @@ const AddObbOperationForm = ({
     const [isUpdating, setIsUpdating] = useState(false);
     const [updatingData, setUpdatingData] = useState<ObbOperationData | undefined>();
 
+    const unassignedMachines = useMemo(() => {
+        return machines?.filter(machine => !assignedMachinesToOperations?.includes(machine.id)) || [];
+    }, [machines, assignedMachinesToOperations]);
+
     const form = useForm<FormValues>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -114,7 +119,7 @@ const AddObbOperationForm = ({
 
     useEffect(() => {
         if (updatingData) {
-            const mappedData: FormValues = {
+            form.reset({
                 operationId: updatingData.operationId,
                 sewingMachineId: updatingData.sewingMachine?.id || '',
                 smv: updatingData.smv,
@@ -124,8 +129,7 @@ const AddObbOperationForm = ({
                 totalStitches: updatingData.totalStitches,
                 obbSheetId: updatingData.obbSheetId,
                 supervisorId: updatingData.supervisorId || '',
-            };
-            form.reset(mappedData);
+            });
         }
     }, [updatingData, form]);
 
@@ -382,7 +386,25 @@ const AddObbOperationForm = ({
                                                         <CommandList>
                                                             <CommandEmpty>No machine found!</CommandEmpty>
                                                             <CommandGroup>
-                                                                {machines && machines.map((machine) => (
+                                                                {machines?.filter(machine => !assignedMachinesToOperations?.includes(machine.id)).map((machine) => (
+                                                                    <CommandItem
+                                                                        key={machine.id}
+                                                                        value={machine.machineId}
+                                                                        onSelect={() => {
+                                                                            form.setValue("sewingMachineId", machine.id);
+                                                                            setOpen2(false);
+                                                                        }}
+                                                                    >
+                                                                        <Check
+                                                                            className={cn(
+                                                                                "mr-2 h-4 w-4",
+                                                                                field.value === machine.id ? "opacity-100" : "opacity-0"
+                                                                            )}
+                                                                        />
+                                                                        {`${machine.brandName}-${machine.machineType}-${machine.machineId}`}
+                                                                    </CommandItem>
+                                                                ))}
+                                                                {/* {machines && machines.map((machine) => (
                                                                     <CommandItem
                                                                         key={machine.id}
                                                                         value={machine.machineId}
@@ -399,7 +421,7 @@ const AddObbOperationForm = ({
                                                                         />
                                                                         {machine.brandName}-{machine.machineType}-{machine.machineId}
                                                                     </CommandItem>
-                                                                ))}
+                                                                ))} */}
                                                             </CommandGroup>
                                                         </CommandList>
                                                     </Command>
@@ -589,23 +611,17 @@ const AddObbOperationForm = ({
             }
 
             {!isEditing && (
-                <div className="space-y-2 max-h-[640px] overflow-y-auto">
+                <div className="space-y-2">
                     {obbOperations && obbOperations?.length > 0 ?
-                        <>
-                        <DataTable 
-                            columns={columns} 
-                            data={obbOperations} 
-                        />
-                        <ObbOperationsTable
-                            tableData={obbOperations}
+                        <DataTable
+                            data={obbOperations}
                             handleEdit={handleEdit}
                         />
-                        </>
-                    : (
-                        <p className="text-sm mt-2 text-slate-500 italic">
-                            No operations available
-                        </p>
-                    )}
+                        : (
+                            <p className="text-sm mt-2 text-slate-500 italic">
+                                No operations available
+                            </p>
+                        )}
                 </div>
             )}
         </div>
