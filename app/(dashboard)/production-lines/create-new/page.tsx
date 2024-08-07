@@ -15,7 +15,7 @@ const CreateNewProductionLine = async () => {
             <div className="flex justify-between items-center">
                 <div className="flex flex-col">
                     <h2 className="text-dark font-medium text-xl">Manage the production lines for the Unit</h2>
-                    <p className="mt-1 text-slate-500 text-sm">Select the production unit and manage the lines</p>
+                    <p className="mt-1 text-slate-500 text-sm">Select the production unit and add production lines</p>
                 </div>
                 <AddProductionLineForm units={units} />
             </div>

@@ -55,7 +55,8 @@ const ObbSheetId = async ({
               id: true,
               brandName: true,
               machineType: true,
-              machineId: true
+              machineId: true,
+              activeObbOperationId: true
             }
           },
           supervisor: {
@@ -77,7 +78,10 @@ const ObbSheetId = async ({
   
   const assignedMachinesToOperations = obbOperations?.obbOperations
     .filter(item => item.sewingMachine !== null)
+    .filter(item => item.sewingMachine?.activeObbOperationId !== null)
     .map(item => item.sewingMachine?.id);
+
+  // console.log("AAAA", assignedMachinesToOperations);
   
   const operations: Operation[] | null = await db.operation.findMany();
 

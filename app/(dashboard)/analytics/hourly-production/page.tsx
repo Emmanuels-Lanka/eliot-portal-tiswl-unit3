@@ -4,6 +4,9 @@ import AnalyticsChart from "./_components/analytics-chart";
 
 const HourlyProduction = async () => {
     const obbSheets = await db.obbSheet.findMany({
+        where: {
+            isActive: true,
+        },
         orderBy: {
             createdAt: "desc",
         },

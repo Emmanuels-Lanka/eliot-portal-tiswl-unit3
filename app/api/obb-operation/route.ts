@@ -13,14 +13,12 @@ export async function POST(
 
         const existingMachine = await db.sewingMachine.findUnique({
             where: {
-                id: sewingMachineId
-            },
-            include: {
-                obbOperation: true
+                id: sewingMachineId,
+                activeObbOperationId: { not: null }
             }
         });
 
-        if (existingMachine && existingMachine.obbOperation) {
+        if (existingMachine) {
             return new NextResponse("This sewing machine is already assigned to another operation.", { status: 409 })
         };
 
@@ -42,11 +40,17 @@ export async function POST(
                 length, 
                 totalStitches, 
                 supervisorId,
-                sewingMachine: {
-                    connect: {
-                        id: sewingMachineId
-                    }
-                }
+                sewingMachineId
+            }
+        });
+
+        // Update the active operation on Machine table
+        await db.sewingMachine.update({
+            where: {
+                id: sewingMachineId
+            },
+            data: {
+                activeObbOperationId: newObbOperation.id
             }
         });
 

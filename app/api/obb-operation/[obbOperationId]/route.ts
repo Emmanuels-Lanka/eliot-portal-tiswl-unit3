@@ -17,7 +17,20 @@ export async function DELETE(
             return new NextResponse("OBB operation does not exist!", { status: 409 })
         }
 
-        const deletedOperation = await db.obbOperation.delete({
+        // Set null the active operation in Machine table
+        if (existingOperationById.sewingMachineId) {
+            await db.sewingMachine.update({
+                where: {
+                    id: existingOperationById.sewingMachineId
+                },
+                data: {
+                    activeObbOperationId: null,
+                }
+            });
+        };
+
+        // Delete the OBB operation from the database
+        await db.obbOperation.delete({
             where: {
                 id: params.obbOperationId
             }
@@ -40,13 +53,6 @@ export async function PUT(
         const existingObbOperation = await db.obbOperation.findUnique({
             where: {
                 id: params.obbOperationId
-            },
-            select: {
-                sewingMachine: {
-                    select: {
-                        id: true
-                    }
-                }
             }
         });
 
@@ -54,19 +60,40 @@ export async function PUT(
             return new NextResponse("OBB operation does not exist!", { status: 408 })
         }
 
-        if (existingObbOperation?.sewingMachine?.id !== sewingMachineId) {
-            const existingMachine = await db.sewingMachine.findUnique({
+        if (existingObbOperation?.sewingMachineId !== sewingMachineId) {
+            // Checking the machine is available
+            const availableMachine = await db.sewingMachine.findUnique({
                 where: {
-                    id: sewingMachineId
-                },
-                include: {
-                    obbOperation: true
+                    id: sewingMachineId,
+                    activeObbOperationId: null
                 }
             });
     
-            if (existingMachine && existingMachine.obbOperation) {
+            if (!availableMachine) {
                 return new NextResponse("This sewing machine is already assigned to another operation.", { status: 409 })
             }
+
+            if (existingObbOperation.sewingMachineId) {
+                // Set null the active operation in Machine table
+                await db.sewingMachine.update({
+                    where: {
+                        id: existingObbOperation.sewingMachineId
+                    },
+                    data: {
+                        activeObbOperationId: null,
+                    }
+                });
+            }
+
+            // Update the current active OBB Operation
+            await db.sewingMachine.update({
+                where: {
+                    id: sewingMachineId
+                },
+                data: {
+                    activeObbOperationId: params.obbOperationId
+                }
+            });
         }
 
         const updatedOperation = await db.obbOperation.update({
@@ -82,11 +109,7 @@ export async function PUT(
                 length, 
                 totalStitches, 
                 supervisorId,
-                sewingMachine: {
-                    connect: {
-                        id: sewingMachineId
-                    }
-                }
+                sewingMachineId
             }
         });
 

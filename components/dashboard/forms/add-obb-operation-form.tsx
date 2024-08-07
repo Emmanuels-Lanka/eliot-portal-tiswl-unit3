@@ -45,7 +45,6 @@ import { cn } from "@/lib/utils";
 import ObbOperationsTable from "@/components/dashboard/common/obb-operations-table";
 import { Separator } from "@/components/ui/separator";
 import { DataTable } from "@/app/(dashboard)/obb-sheets/[obbSheetId]/_components/data-table";
-import { columns } from "@/app/(dashboard)/obb-sheets/[obbSheetId]/_components/columns";
 
 interface AddObbOperationFormProps {
     operations: Operation[] | null;
@@ -91,14 +90,9 @@ const AddObbOperationForm = ({
 
     const [open1, setOpen1] = useState(false);
     const [open2, setOpen2] = useState(false);
-    const [operationId, setOperationId] = useState("");
     const [isEditing, setIsEditing] = useState(false);
     const [isUpdating, setIsUpdating] = useState(false);
     const [updatingData, setUpdatingData] = useState<ObbOperationData | undefined>();
-
-    const unassignedMachines = useMemo(() => {
-        return machines?.filter(machine => !assignedMachinesToOperations?.includes(machine.id)) || [];
-    }, [machines, assignedMachinesToOperations]);
 
     const form = useForm<FormValues>({
         resolver: zodResolver(formSchema),
@@ -594,7 +588,7 @@ const AddObbOperationForm = ({
                             </Button>
                             <Button
                                 type="submit"
-                                disabled={!isValid || isSubmitting}
+                                disabled={isSubmitting}
                                 className="flex gap-2 pr-5"
                             >
                                 <Zap className={cn("w-5 h-5", isSubmitting && "hidden")} />

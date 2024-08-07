@@ -3,6 +3,9 @@ import AnalyticsChart from './_components/analytics-chart';
 
 const OperatorEfficiency60 = async () => {
     const obbSheets = await db.obbSheet.findMany({
+        where: {
+            isActive: true,
+        },
         orderBy: {
             createdAt: "desc",
         },

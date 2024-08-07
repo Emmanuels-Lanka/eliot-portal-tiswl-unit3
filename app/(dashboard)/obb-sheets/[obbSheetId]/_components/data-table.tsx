@@ -1,10 +1,10 @@
 "use client"
 
-import * as React from "react"
-import { Edit, Loader2, Trash2 } from "lucide-react"
+import * as React from "react";
+import { Ban, Edit, Loader2, Sparkle, Trash2, MoreHorizontal } from "lucide-react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import { ObbOperation } from "@prisma/client"
+import { ObbOperation } from "@prisma/client";
 import {
     ColumnDef,
     ColumnFiltersState,
@@ -15,7 +15,7 @@ import {
     getPaginationRowModel,
     getSortedRowModel,
     useReactTable,
-} from "@tanstack/react-table"
+} from "@tanstack/react-table";
 
 import {
     Table,
@@ -24,12 +24,20 @@ import {
     TableHead,
     TableHeader,
     TableRow,
-} from "@/components/ui/table"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Checkbox } from "@/components/ui/checkbox"
-import ConfirmModel from "@/components/model/confirm-model"
-import { cn } from "@/lib/utils"
+} from "@/components/ui/table";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
+import ConfirmModel from "@/components/model/confirm-model";
+import { cn } from "@/lib/utils";
 import { useToast } from "@/components/ui/use-toast";
 
 interface DataTableProps<TData, TValue> {
@@ -87,26 +95,94 @@ export function DataTable<TData, TValue>({
             }
         }
 
+        const handleStatus = async (obbOperationId: string) => {
+            if (row.original.isActive === true) {
+                try {
+                    setIsLoading(true);
+                    await axios.patch(`/api/obb-operation/${obbOperationId}/deactive`);
+                    router.refresh();
+                    toast({
+                        title: `Successfully deactivated OBB operation!`,
+                        variant: "success",
+                    });
+                } catch (error: any) {
+                    console.error("STATUS_DEACTIVATE_ERROR", error);
+                    toast({
+                        title: error.response.data || "Something went wrong! Try again",
+                        variant: "error"
+                    });
+                }
+            } else {
+                try {
+                    setIsLoading(true);
+                    await axios.patch(`/api/obb-operation/${obbOperationId}/active`);
+                    router.refresh();
+                    toast({
+                        title: `Successfully activated OBB operation!`,
+                        variant: "success",
+                    });
+                } catch (error: any) {
+                    console.error("STATUS_ACTIVATE_ERROR", error);
+                    toast({
+                        title: error.response.data || "Something went wrong! Try again",
+                        variant: "error"
+                    });
+                }
+            }
+            setIsLoading(false);
+        }
+
         return (
-            <div className="flex gap-2">
-                <Button
-                    size='sm'
-                    disabled={isLoading}
-                    variant='outline'
-                    onClick={() => handleEdit(row.original)}
-                >
-                    <Edit className="w-4 h-4" />
-                </Button>
-                <ConfirmModel onConfirm={() => onDelete(id)}>
-                    <Button
-                        size='sm'
-                        disabled={isLoading}
-                        variant='outline'
-                    >
-                        <Loader2 className={cn("animate-spin w-4 h-4 hidden", isLoading && "flex")} />
-                        <Trash2 className={cn("w-4 h-4 text-destructive", isLoading && 'hidden')} />
-                    </Button>
-                </ConfirmModel>
+            <div className="w-full flex justify-between items-center">
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" className="h-8 w-8 p-0">
+                            <span className="sr-only">Open menu</span>
+                            <MoreHorizontal className="h-4 w-4" />
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                        {/* <DropdownMenuLabel>Actions</DropdownMenuLabel> */}
+                        <DropdownMenuItem
+                            disabled={isLoading}
+                            onClick={() => handleEdit(row.original)}
+                            className="gap-2"
+                        >
+                            <Edit className="w-4 h-4" />
+                            Edit
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem
+                            disabled={isLoading}
+                            onClick={() => handleStatus(id)}
+                            className={cn(
+                                "gap-2 font-medium", 
+                                row.original.isActive === true ? "text-red-500 hover:text-red-500" : "text-green-600"
+                            )}
+                        >
+                            {row.original.isActive === true ?
+                                <Ban className="w-4 h-4" />
+                            :
+                                <Sparkle className="w-4 h-4" />
+                            }
+                            {row.original.isActive === true ? "Deactive" : "Active"}
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <ConfirmModel onConfirm={() => onDelete(id)}>
+                            <Button
+                                size='sm'
+                                disabled={isLoading}
+                                variant='destructive'
+                                className="w-full gap-2 justify-start"
+                            >
+                                <Loader2 className={cn("animate-spin w-4 h-4 hidden", isLoading && "flex")} />
+                                <Trash2 className={cn("w-4 h-4", isLoading && 'hidden')} />
+                                Delete
+                            </Button>
+                        </ConfirmModel>
+                    </DropdownMenuContent>
+                </DropdownMenu>
+                <div className={cn("w-2.5 h-2.5 bg-orange-600 rounded-full", row.original.isActive === true && "w-2 h-2 bg-green-600 animate-ping")}/>
             </div>
         )
     }
@@ -139,12 +215,16 @@ export function DataTable<TData, TValue>({
             header: "Seq No",
         },
         {
-            accessorKey: "operation.name",
+            accessorFn: (row) => row.operation?.name,
+            id: "operation.name",
             header: "Operation",
+            cell: (info) => info.getValue() || "-"
         },
         {
-            accessorKey: "sewingMachine.machineId",
-            header: "Machine"
+            accessorFn: (row) => row.sewingMachine?.machineId,
+            id: 'sewingMachine.machineId',
+            header: "Machine",
+            cell: (info) => info.getValue() || "-"
         },
         {
             accessorKey: "supervisor.name",
@@ -158,21 +238,21 @@ export function DataTable<TData, TValue>({
             accessorKey: "target",
             header: "Target",
         },
-        {
-            accessorKey: "spi",
-            header: "SPI",
-        },
-        {
-            accessorKey: "length",
-            header: "Length",
-        },
-        {
-            accessorKey: "totalStitches",
-            header: "Stitches",
-        },
+        // {
+        //     accessorKey: "spi",
+        //     header: "SPI",
+        // },
+        // {
+        //     accessorKey: "length",
+        //     header: "Length",
+        // },
+        // {
+        //     accessorKey: "totalStitches",
+        //     header: "Stitches",
+        // },
         {
             id: "actions",
-            header: "Action",
+            header: "Actions",
             cell: ({ row }) => <ActionCell row={row} />
         }
     ]
@@ -192,24 +272,38 @@ export function DataTable<TData, TValue>({
             columnFilters,
             rowSelection,
         },
-    })
+        manualPagination: false,
+        initialState: {
+            pagination: {
+                pageSize: 50
+            }
+        }
+    });
 
     return (
         <div>
             {/* Search bar */}
-            {/* <div className="flex items-center py-4">
+            <div className="flex items-center pt-4 space-x-4">
                 <Input
-                    placeholder="Search Seq No..."
-                    value={(table.getColumn("seqNo")?.getFilterValue() as string) ?? ""}
+                    placeholder="Search Operation..."
+                    value={(table.getColumn("operation.name")?.getFilterValue() as string) ?? ""}
                     onChange={(event) =>
-                        table.getColumn("seqNo")?.setFilterValue(event.target.value)
+                        table.getColumn("operation.name")?.setFilterValue(event.target.value)
                     }
                     className="max-w-sm"
                 />
-            </div> */}
+                <Input
+                    placeholder="Search Machine ID..."
+                    value={(table.getColumn("sewingMachine.machineId")?.getFilterValue() as string) ?? ""}
+                    onChange={(event) =>
+                        table.getColumn("sewingMachine.machineId")?.setFilterValue(event.target.value)
+                    }
+                    className="max-w-sm"
+                />
+            </div>
 
             {/* Table */}
-            <div className="rounded-md border bg-white/50 mt-4">
+            <div className="rounded-md border bg-white/50 mt-4 max-h-[600px] overflow-y-auto">
                 <Table>
                     <TableHeader className="bg-slate-50">
                         {table.getHeaderGroups().map((headerGroup) => (
@@ -270,6 +364,9 @@ export function DataTable<TData, TValue>({
                 >
                     Previous
                 </Button>
+                <span className="text-sm text-slate-500">
+                    Page {table.getState().pagination.pageIndex + 1} of {Math.ceil(table.getCoreRowModel().rows.length / table.getState().pagination.pageSize)}
+                </span>
                 <Button
                     variant="outline"
                     size="sm"

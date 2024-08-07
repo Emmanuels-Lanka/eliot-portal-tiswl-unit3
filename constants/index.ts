@@ -208,7 +208,7 @@ export const SIDEBAR_ROUTES = [
         categoryName: "Production Analytics",
         routes: [
             {
-                label: "Hourly Production",
+                label: "Hourly Achievements",
                 href: "/analytics/hourly-production",
                 icon: BarChart3
             },
@@ -245,15 +245,15 @@ export const SIDEBAR_ROUTES = [
         ]
     },
     {
-        categoryName: "Traffic Light System 7-0",
+        categoryName: "DHU Status",
         routes: [
             {
-                label: "TLS of Productions",
+                label: "Real-time DHU",
                 href: "/analytics/tls-productions",
                 icon: BarChartHorizontal
             },
             {
-                label: "TLS of Operators",
+                label: "GMT DHU",
                 href: "/analytics/tls-operators",
                 icon: BarChartHorizontal
             },
