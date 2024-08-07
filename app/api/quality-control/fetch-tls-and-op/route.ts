@@ -47,24 +47,18 @@ export async function GET(
             },
         });
 
-        // Get the ObbOperationId using the machineId
-        const machine: MachineDataWithObbOperation | null = await db.sewingMachine.findUnique({
+        const existingMachine = await db.sewingMachine.findUnique({
             where: {
                 id: machineId
             },
             select: {
-                obbOperation: {
-                    select: {
-                        id: true,
-                        target: true,
-                    }
-                }
+                activeObbOperationId: true
             }
         });
         
-        if (machine?.obbOperation?.id) {
+        if (existingMachine?.activeObbOperationId) {
             // Assign the id to ObbOperationId
-            obbOperationId = machine?.obbOperation?.id
+            obbOperationId = existingMachine?.activeObbOperationId
 
             const obbOperation: ObbOperationData | null = await db.obbOperation.findUnique({
                 where: {

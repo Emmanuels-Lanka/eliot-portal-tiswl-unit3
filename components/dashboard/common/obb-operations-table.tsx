@@ -98,7 +98,7 @@ const ObbOperationsTable = ({
                             <TableCell className="flex justify-end items-center gap-2">
                                 <div
                                     className="flex justify-center items-center w-8 h-7 rounded-md bg-slate-200 text-slate-700 hover:text-slate-900 cursor-pointer"
-                                    onClick={() => handleEdit(data)}
+                                    // onClick={() => handleEdit(data)}
                                 >
                                     <Edit className="w-4 h-4" />
                                 </div>
