@@ -51,16 +51,16 @@ export function DataTable<TData, TValue>({
 }: DataTableProps<TData, TValue>) {
     const [sorting, setSorting] = React.useState<SortingState>([])
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
-    const [rowSelection, setRowSelection] = React.useState({})
-
+    const [rowSelection, setRowSelection] = React.useState({});
+    const [isLoading, setIsLoading] = React.useState(false);
+    const [isBulkUpdating, setIsBulkUpdating] = React.useState(false)
+    
+    const { toast } = useToast();
+    const router = useRouter();
+    
     // From the `columns.tsx` file
     const ActionCell = ({ row }: { row: any }) => {
         const { id } = row.original;
-
-        const { toast } = useToast();
-        const router = useRouter();
-
-        const [isLoading, setIsLoading] = React.useState(false);
 
         const onDelete = async (obbOperationId: string) => {
             try {
@@ -187,6 +187,29 @@ export function DataTable<TData, TValue>({
         )
     }
 
+    const handleBulkStatus = async ({ type }: { type: string }) => {
+        const obbOperationIds: string[] = table.getFilteredSelectedRowModel().rows.map(op => op.original.id);
+
+        try {
+            setIsBulkUpdating(true);
+            await axios.put(`/api/obb-operation/bulk/${type}`, { obbOperationIds });
+            router.refresh();
+            toast({
+                title: `Successfully ${type === "active" ? "activated" : "deactivated"} the selected operations!`,
+                variant: "success",
+            });
+        } catch (error: any) {
+            console.error("BULK_STATUS_ERROR", error);
+            toast({
+                title: error.response.data || "Something went wrong! Try again",
+                variant: "error"
+            });
+        } finally {
+            // table.getFilteredSelectedRowModel().rows.push();
+            setIsBulkUpdating(false);
+        }
+    }
+
     const columns: ColumnDef<ObbOperation | any>[] = [
         {
             id: "select",
@@ -255,7 +278,7 @@ export function DataTable<TData, TValue>({
             header: "Actions",
             cell: ({ row }) => <ActionCell row={row} />
         }
-    ]
+    ];
 
     const table = useReactTable({
         data,
@@ -282,79 +305,111 @@ export function DataTable<TData, TValue>({
 
     return (
         <div>
-            {/* Search bar */}
-            <div className="flex items-center pt-4 space-x-4">
-                <Input
-                    placeholder="Search Operation..."
-                    value={(table.getColumn("operation.name")?.getFilterValue() as string) ?? ""}
-                    onChange={(event) =>
-                        table.getColumn("operation.name")?.setFilterValue(event.target.value)
-                    }
-                    className="max-w-sm"
-                />
-                <Input
-                    placeholder="Search Machine ID..."
-                    value={(table.getColumn("sewingMachine.machineId")?.getFilterValue() as string) ?? ""}
-                    onChange={(event) =>
-                        table.getColumn("sewingMachine.machineId")?.setFilterValue(event.target.value)
-                    }
-                    className="max-w-sm"
-                />
+            <div className="flex justify-between">
+                {/* Search bar */}
+                <div className="flex items-center pt-4 space-x-4">
+                    <Input
+                        placeholder="Search Operation..."
+                        value={(table.getColumn("operation.name")?.getFilterValue() as string) ?? ""}
+                        onChange={(event) =>
+                            table.getColumn("operation.name")?.setFilterValue(event.target.value)
+                        }
+                        className="max-w-sm"
+                    />
+                    <Input
+                        placeholder="Search Machine ID..."
+                        value={(table.getColumn("sewingMachine.machineId")?.getFilterValue() as string) ?? ""}
+                        onChange={(event) =>
+                            table.getColumn("sewingMachine.machineId")?.setFilterValue(event.target.value)
+                        }
+                        className="max-w-sm"
+                    />
+                </div>
+
+                {/* Bulk Update buttons */}
+                {table.getFilteredSelectedRowModel().rows.length > 0 &&
+                    <div className="mt-4 space-x-4">
+                        <Button
+                            onClick={() => handleBulkStatus({ type: "active" })}
+                            className="bg-green-600 hover:bg-green-600 hover:opacity-90"
+                            disabled={isBulkUpdating}
+                        >
+                            <Sparkle className="w-4 h-4" />
+                            Active
+                        </Button>
+                        <Button
+                            variant="destructive"
+                            onClick={() => handleBulkStatus({ type: "deactive" })}
+                            className="gap-1"
+                            disabled={isBulkUpdating}
+                        >
+                            <Ban className="w-4 h-4"/>
+                            Deactive
+                        </Button>
+                    </div>
+                }
             </div>
 
             {/* Table */}
             <div className="rounded-md border bg-white/50 mt-4 max-h-[600px] overflow-y-auto">
-                <Table>
-                    <TableHeader className="bg-slate-50">
-                        {table.getHeaderGroups().map((headerGroup) => (
-                            <TableRow key={headerGroup.id}>
-                                {headerGroup.headers.map((header) => {
-                                    return (
-                                        <TableHead key={header.id}>
-                                            {header.isPlaceholder
-                                                ? null
-                                                : flexRender(
-                                                    header.column.columnDef.header,
-                                                    header.getContext()
-                                                )}
-                                        </TableHead>
-                                    )
-                                })}
-                            </TableRow>
-                        ))}
-                    </TableHeader>
-                    <TableBody>
-                        {table.getRowModel().rows?.length ? (
-                            table.getRowModel().rows.map((row) => (
-                                <TableRow
-                                    key={row.id}
-                                    data-state={row.getIsSelected() && "selected"}
-                                >
-                                    {row.getVisibleCells().map((cell) => (
-                                        <TableCell key={cell.id}>
-                                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                        </TableCell>
-                                    ))}
+                {isBulkUpdating ?
+                    <div className="w-full h-[600px] flex flex-col justify-center items-center gap-2 text-slate-500">
+                        <Loader2 className="animate-spin w-6 h-6" />
+                        Bulk operation in progress...
+                    </div> 
+                : 
+                    <Table>
+                        <TableHeader className="bg-slate-50">
+                            {table.getHeaderGroups().map((headerGroup) => (
+                                <TableRow key={headerGroup.id}>
+                                    {headerGroup.headers.map((header) => {
+                                        return (
+                                            <TableHead key={header.id}>
+                                                {header.isPlaceholder
+                                                    ? null
+                                                    : flexRender(
+                                                        header.column.columnDef.header,
+                                                        header.getContext()
+                                                    )}
+                                            </TableHead>
+                                        )
+                                    })}
                                 </TableRow>
-                            ))
-                        ) : (
-                            <TableRow>
-                                <TableCell colSpan={columns.length} className="h-24 text-center">
-                                    No results.
-                                </TableCell>
-                            </TableRow>
-                        )}
-                    </TableBody>
-                </Table>
+                            ))}
+                        </TableHeader>
+                        <TableBody>
+                            {table.getRowModel().rows?.length ? (
+                                table.getRowModel().rows.map((row) => (
+                                    <TableRow
+                                        key={row.id}
+                                        data-state={row.getIsSelected() && "selected"}
+                                    >
+                                        {row.getVisibleCells().map((cell) => (
+                                            <TableCell key={cell.id}>
+                                                {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                            </TableCell>
+                                        ))}
+                                    </TableRow>
+                                ))
+                            ) : (
+                                <TableRow>
+                                    <TableCell colSpan={columns.length} className="h-24 text-center">
+                                        No results.
+                                    </TableCell>
+                                </TableRow>
+                            )}
+                        </TableBody>
+                    </Table>
+                }
             </div>
 
-            <div className="flex-1 text-sm text-muted-foreground">
+            <div className="mt-1 flex-1 text-sm text-muted-foreground">
                 {table.getFilteredSelectedRowModel().rows.length} of{" "}
                 {table.getFilteredRowModel().rows.length} row(s) selected.
             </div>
 
             {/* Pagination */}
-            <div className="flex items-center justify-end space-x-2 py-4">
+            <div className="flex items-center justify-end space-x-2 pb-4">
                 <Button
                     variant="outline"
                     size="sm"
