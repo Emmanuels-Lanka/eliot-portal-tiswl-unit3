@@ -76,10 +76,10 @@ const ObbSheetId = async ({
     }
   });
   
-  const assignedMachinesToOperations = obbOperations?.obbOperations
-    .filter(item => item.sewingMachine !== null)
-    .filter(item => item.sewingMachine?.activeObbOperationId !== null)
-    .map(item => item.sewingMachine?.id);
+  // const assignedMachinesToOperations = obbOperations?.obbOperations
+  //   .filter(item => item.sewingMachine !== null)
+  //   .filter(item => item.sewingMachine?.activeObbOperationId !== null)
+  //   .map(item => item.sewingMachine?.id);
 
   // console.log("AAAA", assignedMachinesToOperations);
   
@@ -105,7 +105,7 @@ const ObbSheetId = async ({
       <AddObbOperationForm 
         operations={operations}
         machines={machines}
-        assignedMachinesToOperations={assignedMachinesToOperations}
+        // assignedMachinesToOperations={assignedMachinesToOperations}
         obbOperations={obbOperations?.obbOperations}
         obbSheetId={params.obbSheetId}
         supervisor1={obbOperations?.supervisor1 || null}

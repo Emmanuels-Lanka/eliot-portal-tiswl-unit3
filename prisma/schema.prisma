@@ -45,19 +45,21 @@ model Staff {
 }
 
 model Operator {
-  id               String               @id @default(uuid())
-  name             String
-  employeeId       String               @unique
-  rfid             String?              @unique
-  gender           String
-  designation      String
-  createdAt        DateTime             @default(now())
-  updatedAt        DateTime             @updatedAt
-  isLoggedIn       Boolean              @default(false)
-  alertLogs        AlertLog[]
-  operatorSessions OperatorSession[]
-  productionData   ProductionData[]
-  tslRecords       TrafficLightSystem[]
+  id                       String                     @id @default(uuid())
+  name                     String
+  employeeId               String                     @unique
+  rfid                     String?                    @unique
+  gender                   String
+  designation              String
+  createdAt                DateTime                   @default(now())
+  updatedAt                DateTime                   @updatedAt
+  isLoggedIn               Boolean                    @default(false)
+  alertLogs                AlertLog[]
+  operatorSessions         OperatorSession[]
+  productionData           ProductionData[]
+  tslRecords               TrafficLightSystem[]
+  operatorNonEffectiveTime OperatorNonEffectiveTime[]
+  OperatorEffectiveTimeB   OperatorEffectiveTimeB[]
 }
 
 model Unit {
@@ -193,7 +195,7 @@ model ObbOperation {
   createdAt        DateTime             @default(now())
   updatedAt        DateTime             @updatedAt
   supervisorId     String?
-  isActive         Boolean              @default(true)
+  isActive         Boolean              @default(false)
   sewingMachineId  String?
   obbSheet         ObbSheet             @relation(fields: [obbSheetId], references: [id], onDelete: Cascade)
   operation        Operation            @relation(fields: [operationId], references: [id], onDelete: Cascade)
@@ -283,9 +285,24 @@ model TrafficLightSystem {
   obbOperation   ObbOperation  @relation(fields: [obbOperationId], references: [id], onDelete: Cascade)
   operator       Operator      @relation(fields: [operatorRfid], references: [rfid], onDelete: Cascade)
   qc             User?         @relation(fields: [qcEmail], references: [email])
+
+  @@index([machineId, obbOperationId, operatorRfid])
 }
 
-model Offstand {
+model OperatorEffectiveTime {
+  operatorRfid       String  @id @db.VarChar(255)
+  loginTimestamp     String? @db.VarChar(255)
+  logoutTimestamp    String? @db.VarChar(255)
+  availableHrs       String? @db.VarChar(255)
+  effectiveHrs       String? @db.VarChar(255)
+  nonEffectiveHrs    String? @db.VarChar(255)
+  mechanicalDowntime String? @db.VarChar(255)
+  productDowntime    String? @db.VarChar(255)
+  lunchBreaktime     String? @db.VarChar(255)
+  offstdHrs          String? @db.VarChar(255)
+}
+
+model LunchBreaktime {
   id             Int     @id @default(autoincrement())
   status         String? @default("f") @db.VarChar(255)
   operatorRfid   String? @db.VarChar(255)
@@ -294,11 +311,68 @@ model Offstand {
   timeDiff       String? @db.VarChar(255)
 }
 
-model OperatorEffectiveTime {
-  operatorRfid    String  @id @db.VarChar(255)
-  loginTimestamp  String? @db.VarChar(255)
-  logoutTimestamp String? @db.VarChar(255)
-  availableHrs    String? @db.VarChar(255)
-  stdHrs          String? @db.VarChar(255)
-  offStdHrs       String? @db.VarChar(255)
+model MechanicalDowntime {
+  id             Int     @id @default(autoincrement())
+  status         String? @default("f") @db.VarChar(255)
+  operatorRfid   String? @db.VarChar(255)
+  startTimestamp String? @db.VarChar(255)
+  endTimestamp   String? @db.VarChar(255)
+  timeDiff       String? @db.VarChar(255)
+}
+
+model NonEffective {
+  id             Int     @id(map: "Offstand_pkey") @default(autoincrement())
+  status         String? @default("f") @db.VarChar(255)
+  operatorRfid   String? @db.VarChar(255)
+  startTimestamp String? @db.VarChar(255)
+  endTimestamp   String? @db.VarChar(255)
+  timeDiff       String? @db.VarChar(255)
+}
+
+model OffstandTime {
+  id             Int     @id @default(autoincrement())
+  status         String? @default("f") @db.VarChar(255)
+  operatorRfid   String? @db.VarChar(255)
+  startTimestamp String? @db.VarChar(255)
+  endTimestamp   String? @db.VarChar(255)
+  timeDiff       String? @db.VarChar(255)
+}
+
+model ProductionDowntime {
+  id             Int     @id @default(autoincrement())
+  status         String? @default("f") @db.VarChar(255)
+  operatorRfid   String? @db.VarChar(255)
+  startTimestamp String? @db.VarChar(255)
+  endTimestamp   String? @db.VarChar(255)
+  timeDiff       String? @db.VarChar(255)
+}
+
+model OperatorNonEffectiveTime {
+  id             String   @id @default(uuid())
+  type           String
+  operatorRfid   String
+  startTimestamp String
+  endTimestamp   String?
+  timeDifference String?
+  createdAt      DateTime @default(now())
+  operator       Operator @relation(fields: [operatorRfid], references: [rfid], onDelete: Cascade)
+
+  @@index([operatorRfid])
+}
+
+model OperatorEffectiveTimeB {
+  id                 String   @id @default(uuid())
+  operatorRfid       String
+  loginTimestamp     String
+  logoutTimestamp    String?
+  totalTime          String?
+  effectiveTime      String?
+  nonEffectiveTime   String?
+  mechanicDownTime   String?
+  productionDownTime String?
+  lunchBreakTime     String?
+  offStandTime       String?
+  operator           Operator @relation(fields: [operatorRfid], references: [rfid], onDelete: Cascade)
+
+  @@index([operatorRfid])
 }

@@ -43,7 +43,7 @@ const LineChartGraph = ({ data }: LineChartGraphProps) => {
     }));
 
     return (
-        <Card>
+        <Card className="bg-slate-50">
             <CardHeader>
                 <CardTitle>Line Chart - Target vs Actual</CardTitle>
                 {/* <CardDescription>January - June 2024</CardDescription> */}
@@ -54,9 +54,9 @@ const LineChartGraph = ({ data }: LineChartGraphProps) => {
                         accessibilityLayer
                         data={chartData}
                         margin={{
-                            top: 20,
-                            left: 12,
-                            right: 12,
+                            top: 24,
+                            left: 14,
+                            right: 14,
                         }}
                     >
                         <CartesianGrid vertical={false} />

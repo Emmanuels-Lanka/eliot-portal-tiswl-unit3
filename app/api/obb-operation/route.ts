@@ -11,16 +11,16 @@ export async function POST(
         
         let id = generateUniqueId();
 
-        const existingMachine = await db.sewingMachine.findUnique({
-            where: {
-                id: sewingMachineId,
-                activeObbOperationId: { not: null }
-            }
-        });
+        // const existingMachine = await db.sewingMachine.findUnique({
+        //     where: {
+        //         id: sewingMachineId,
+        //         activeObbOperationId: { not: null }
+        //     }
+        // });
 
-        if (existingMachine) {
-            return new NextResponse("This sewing machine is already assigned to another operation.", { status: 409 })
-        };
+        // if (existingMachine) {
+        //     return new NextResponse("This sewing machine is already assigned to another operation.", { status: 409 })
+        // };
 
         const seqCount = await db.obbOperation.count({
             where: {
@@ -45,14 +45,14 @@ export async function POST(
         });
 
         // Update the active operation on Machine table
-        await db.sewingMachine.update({
-            where: {
-                id: sewingMachineId
-            },
-            data: {
-                activeObbOperationId: newObbOperation.id
-            }
-        });
+        // await db.sewingMachine.update({
+        //     where: {
+        //         id: sewingMachineId
+        //     },
+        //     data: {
+        //         activeObbOperationId: newObbOperation.id
+        //     }
+        // });
 
         return NextResponse.json({ data: newObbOperation, message: 'OBB Operation created successfully'}, { status: 201 });
 

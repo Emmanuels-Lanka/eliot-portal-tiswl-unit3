@@ -49,7 +49,7 @@ import { DataTable } from "@/app/(dashboard)/obb-sheets/[obbSheetId]/_components
 interface AddObbOperationFormProps {
     operations: Operation[] | null;
     machines: SewingMachine[] | null;
-    assignedMachinesToOperations: (string | undefined)[] | undefined;
+    // assignedMachinesToOperations: (string | undefined)[] | undefined;
     obbOperations: ObbOperationData[] | undefined;
     obbSheetId: string;
     supervisor1: Staff | null;
@@ -79,7 +79,7 @@ const formSchema = z.object({
 const AddObbOperationForm = ({
     operations,
     machines,
-    assignedMachinesToOperations,
+    // assignedMachinesToOperations,
     obbOperations,
     obbSheetId,
     supervisor1,
@@ -380,7 +380,8 @@ const AddObbOperationForm = ({
                                                         <CommandList>
                                                             <CommandEmpty>No machine found!</CommandEmpty>
                                                             <CommandGroup>
-                                                                {machines?.filter(machine => !assignedMachinesToOperations?.includes(machine.id)).map((machine) => (
+                                                                {/* {machines?.filter(machine => !assignedMachinesToOperations?.includes(machine.id)).map((machine) => ( */}
+                                                                {machines?.map((machine) => (
                                                                     <CommandItem
                                                                         key={machine.id}
                                                                         value={machine.machineId}

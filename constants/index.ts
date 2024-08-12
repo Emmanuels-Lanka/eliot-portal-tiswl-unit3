@@ -215,6 +215,16 @@ export const SIDEBAR_ROUTES = [
         ]
     },
     {
+        categoryName: "Operators SMV",
+        routes: [
+            {
+                label: "Real-time SMV",
+                href: "/analytics/operator-smv",
+                icon: BarChart3
+            }
+        ]
+    },
+    {
         categoryName: "Operation Efficiency Analytics",
         routes: [
             {
@@ -348,14 +358,14 @@ export const HEADER_INFO = [
         icon: FileCog
     },
     {
-        label: "Operator Analytic chart",
-        href: "/analytics/operator-efficiency-60",
-        icon: BarChartHorizontal
+        label: "Hourly Production Achievements",
+        href: "/analytics/hourly-production",
+        icon: BarChart3
     },
     {
-        label: "Operator Analytic chart",
-        href: "/analytics/operator-efficiency-15",
-        icon: BarChartHorizontal
+        label: "Operators SMV",
+        href: "/analytics/operator-smv",
+        icon: BarChart3
     },
     {
         label: "Production Analytic charts",
@@ -365,6 +375,16 @@ export const HEADER_INFO = [
     {
         label: "Production Analytic charts",
         href: "/analytics/operation-efficiency-15",
+        icon: BarChartHorizontal
+    },
+    {
+        label: "Operator Analytic chart",
+        href: "/analytics/operator-efficiency-60",
+        icon: BarChartHorizontal
+    },
+    {
+        label: "Operator Analytic chart",
+        href: "/analytics/operator-efficiency-15",
         icon: BarChartHorizontal
     },
     {
