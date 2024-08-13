@@ -103,7 +103,7 @@ export async function PUT(
             data: {
                 operationId, 
                 obbSheetId,
-                smv, 
+                smv: parseFloat(smv), 
                 target, 
                 spi, 
                 length, 

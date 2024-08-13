@@ -55,11 +55,11 @@ model Operator {
   updatedAt                DateTime                   @updatedAt
   isLoggedIn               Boolean                    @default(false)
   alertLogs                AlertLog[]
+  OperatorEffectiveTimeB   OperatorEffectiveTimeB[]
+  operatorNonEffectiveTime OperatorNonEffectiveTime[]
   operatorSessions         OperatorSession[]
   productionData           ProductionData[]
   tslRecords               TrafficLightSystem[]
-  operatorNonEffectiveTime OperatorNonEffectiveTime[]
-  OperatorEffectiveTimeB   OperatorEffectiveTimeB[]
 }
 
 model Unit {
@@ -187,7 +187,7 @@ model ObbOperation {
   seqNo            Int                  @default(0)
   operationId      String
   obbSheetId       String
-  smv              Int
+  smv              Float
   target           Int
   spi              Int
   length           Int
@@ -375,4 +375,12 @@ model OperatorEffectiveTimeB {
   operator           Operator @relation(fields: [operatorRfid], references: [rfid], onDelete: Cascade)
 
   @@index([operatorRfid])
+}
+
+model ProductionSMV {
+  id           Int     @id @default(autoincrement())
+  operationID  String? @default("f") @db.VarChar(255)
+  operatorRfid String? @db.VarChar(255)
+  smv          String? @db.VarChar(255)
+  timestamp    String? @db.VarChar(255)
 }

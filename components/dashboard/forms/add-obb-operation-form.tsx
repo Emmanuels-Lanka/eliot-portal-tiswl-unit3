@@ -65,7 +65,7 @@ const formSchema = z.object({
     sewingMachineId: z.string().min(1, {
         message: "Sewing machine is required",
     }),
-    smv: z.number(),
+    smv: z.string(),
     target: z.number(),
     spi: z.number(),
     length: z.number(),
@@ -99,7 +99,7 @@ const AddObbOperationForm = ({
         defaultValues: {
             operationId: "",
             sewingMachineId: "",
-            smv: 0,
+            smv: "0.1",
             target: undefined,
             spi: 0,
             length: 0,
@@ -116,7 +116,7 @@ const AddObbOperationForm = ({
             form.reset({
                 operationId: updatingData.operationId,
                 sewingMachineId: updatingData.sewingMachine?.id || '',
-                smv: updatingData.smv,
+                smv: updatingData.smv.toString(),
                 target: updatingData.target,
                 spi: updatingData.spi,
                 length: updatingData.length,
@@ -462,7 +462,7 @@ const AddObbOperationForm = ({
                                                 SMV
                                             </FormLabel>
                                             <FormControl>
-                                                <Input
+                                                {/* <Input
                                                     type="number"
                                                     className="hide-steps-number-input"
                                                     disabled={isSubmitting}
@@ -471,6 +471,11 @@ const AddObbOperationForm = ({
                                                         const newValue: number = parseInt(e.target.value);
                                                         form.setValue('smv', newValue, { shouldValidate: true, shouldDirty: true });
                                                     }}
+                                                /> */}
+                                                <Input
+                                                    disabled={isSubmitting}
+                                                    placeholder="smv"
+                                                    {...field}
                                                 />
                                             </FormControl>
                                             <FormMessage />

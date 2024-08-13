@@ -34,7 +34,7 @@ export async function POST(
                 seqNo: seqCount + 1,
                 operationId, 
                 obbSheetId,
-                smv, 
+                smv: parseFloat(smv), 
                 target, 
                 spi, 
                 length, 
