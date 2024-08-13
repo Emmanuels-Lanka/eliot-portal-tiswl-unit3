@@ -20,6 +20,7 @@ import { ProductionData } from "@prisma/client";
 import { useToast } from "@/components/ui/use-toast";
 import SelectObbSheetAndDate  from "@/components/dashboard/common/select-obbsheet-and-date";
 import BarChartGraph from "./bar-chart-graph";
+import { getData } from "./actions";
 // import LineChartGraph from "./line-chart-graph";
 
 interface AnalyticsChartProps {
@@ -29,7 +30,7 @@ interface AnalyticsChartProps {
     }[] | null;
 }
 
-type ProductionDataType = {
+export type ProductionDataType = {
     name: string;
     count: number;
     target: number;
@@ -125,9 +126,14 @@ const AnalyticsChart = ({
             const d=data.date.getDate().toString().padStart(2,"0")
            
 
-          const response = await axios.get(`/api/obbid-date-ret-prod-data?obbSheetId=${data.obbSheetId}&date=${y}-${m}-${d}`);
-      
-          console.log("Fetched Data:", response.data);
+          //const response = await axios.get(`/api/obbid-date-ret-prod-data?obbSheetId=${data.obbSheetId}&date=${y}-${m}-${d}`);
+          //console.log("Fetched Data:", response.data);
+            // getData(data.obbSheetId, `${y}-${m}-${d}`);
+            // const prod =await  getData("LINE-113/114-ZAGC08R", `2024-08-01%`);
+            console.log("data",data,)
+            const prod = await getData(data.obbSheetId, `${y}-${m}-${d}%`);
+            console.log("prod",prod,)
+            setProduction(prod as ProductionDataType[])
           
         } catch (error) {
           console.error("Error fetching data:", error);

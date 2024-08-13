@@ -50,7 +50,7 @@ const BarChartGraph = ({
     const chartData = data.map((item) => ({
         name: item.name,
         target: item.target,
-        actual: item.count,
+        count: item.count,
     }));
 
     return (
@@ -83,6 +83,7 @@ const BarChartGraph = ({
                             tickLine={false}
                             tickMargin={10}
                             axisLine={false}
+                            angle={40}
                         />
                         <ChartTooltip
                             cursor={false}
@@ -97,7 +98,7 @@ const BarChartGraph = ({
                                 fontSize={14}
                             />
                         </Bar>
-                        <Bar dataKey="actual" fill="var(--color-actual)" radius={5}>
+                        <Bar dataKey="count" fill="var(--color-actual)" radius={5}>
                             <LabelList
                                 position="top"
                                 offset={12}
