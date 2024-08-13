@@ -222,6 +222,12 @@ export const SIDEBAR_ROUTES = [
                 href: "/analytics/operation-efficiency-60",
                 icon: BarChartHorizontal
             },
+            {
+                label: "Daily Achivement ",
+                href: "/analytics/daily-achivement",
+                icon: BarChartHorizontal
+            },
+
             // {
             //     label: "Operation Efficiency (15min)",
             //     href: "/analytics/operation-efficiency-15",
