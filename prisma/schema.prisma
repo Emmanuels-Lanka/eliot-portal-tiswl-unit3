@@ -177,9 +177,9 @@ model ObbSheet {
 model Operation {
   id            String         @id @default(uuid())
   name          String         @unique
-  code          String?        @unique
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
+  code          String?        @unique
   obbOperations ObbOperation[]
 }
 
@@ -356,6 +356,7 @@ model OperatorNonEffectiveTime {
   endTimestamp   String?
   timeDifference String?
   createdAt      DateTime @default(now())
+  status         Boolean  @default(false)
   operator       Operator @relation(fields: [operatorRfid], references: [rfid], onDelete: Cascade)
 
   @@index([operatorRfid])
