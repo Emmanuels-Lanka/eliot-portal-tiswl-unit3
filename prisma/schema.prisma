@@ -55,11 +55,12 @@ model Operator {
   updatedAt                DateTime                   @updatedAt
   isLoggedIn               Boolean                    @default(false)
   alertLogs                AlertLog[]
-  OperatorEffectiveTimeB   OperatorEffectiveTimeB[]
+  OperatorEffectiveTime    OperatorEffectiveTime[]
   operatorNonEffectiveTime OperatorNonEffectiveTime[]
   operatorSessions         OperatorSession[]
   productionData           ProductionData[]
   tslRecords               TrafficLightSystem[]
+  productionSMV            ProductionSMV[]
 }
 
 model Unit {
@@ -206,6 +207,7 @@ model ObbOperation {
   productionData   ProductionData[]
   staffSessions    StaffSession[]
   tslRecords       TrafficLightSystem[]
+  productionSMV    ProductionSMV[]
 
   @@index([operationId, obbSheetId])
 }
@@ -290,64 +292,6 @@ model TrafficLightSystem {
   @@index([machineId, obbOperationId, operatorRfid])
 }
 
-model OperatorEffectiveTime {
-  operatorRfid       String  @id @db.VarChar(255)
-  loginTimestamp     String? @db.VarChar(255)
-  logoutTimestamp    String? @db.VarChar(255)
-  availableHrs       String? @db.VarChar(255)
-  effectiveHrs       String? @db.VarChar(255)
-  nonEffectiveHrs    String? @db.VarChar(255)
-  mechanicalDowntime String? @db.VarChar(255)
-  productDowntime    String? @db.VarChar(255)
-  lunchBreaktime     String? @db.VarChar(255)
-  offstdHrs          String? @db.VarChar(255)
-}
-
-model LunchBreaktime {
-  id             Int     @id @default(autoincrement())
-  status         String? @default("f") @db.VarChar(255)
-  operatorRfid   String? @db.VarChar(255)
-  startTimestamp String? @db.VarChar(255)
-  endTimestamp   String? @db.VarChar(255)
-  timeDiff       String? @db.VarChar(255)
-}
-
-model MechanicalDowntime {
-  id             Int     @id @default(autoincrement())
-  status         String? @default("f") @db.VarChar(255)
-  operatorRfid   String? @db.VarChar(255)
-  startTimestamp String? @db.VarChar(255)
-  endTimestamp   String? @db.VarChar(255)
-  timeDiff       String? @db.VarChar(255)
-}
-
-model NonEffective {
-  id             Int     @id(map: "Offstand_pkey") @default(autoincrement())
-  status         String? @default("f") @db.VarChar(255)
-  operatorRfid   String? @db.VarChar(255)
-  startTimestamp String? @db.VarChar(255)
-  endTimestamp   String? @db.VarChar(255)
-  timeDiff       String? @db.VarChar(255)
-}
-
-model OffstandTime {
-  id             Int     @id @default(autoincrement())
-  status         String? @default("f") @db.VarChar(255)
-  operatorRfid   String? @db.VarChar(255)
-  startTimestamp String? @db.VarChar(255)
-  endTimestamp   String? @db.VarChar(255)
-  timeDiff       String? @db.VarChar(255)
-}
-
-model ProductionDowntime {
-  id             Int     @id @default(autoincrement())
-  status         String? @default("f") @db.VarChar(255)
-  operatorRfid   String? @db.VarChar(255)
-  startTimestamp String? @db.VarChar(255)
-  endTimestamp   String? @db.VarChar(255)
-  timeDiff       String? @db.VarChar(255)
-}
-
 model OperatorNonEffectiveTime {
   id             String   @id @default(uuid())
   type           String
@@ -362,7 +306,7 @@ model OperatorNonEffectiveTime {
   @@index([operatorRfid])
 }
 
-model OperatorEffectiveTimeB {
+model OperatorEffectiveTime {
   id                 String   @id @default(uuid())
   operatorRfid       String
   loginTimestamp     String
@@ -380,9 +324,13 @@ model OperatorEffectiveTimeB {
 }
 
 model ProductionSMV {
-  id           Int     @id @default(autoincrement())
-  operationID  String? @default("f") @db.VarChar(255)
-  operatorRfid String? @db.VarChar(255)
-  smv          String? @db.VarChar(255)
-  timestamp    String? @db.VarChar(255)
+  id             Int          @id @default(autoincrement())
+  obbOperationId String
+  operatorRfid   String
+  smv            String
+  timestamp      String
+  obbOperation   ObbOperation @relation(fields: [obbOperationId], references: [id], onDelete: Cascade)
+  operator       Operator     @relation(fields: [operatorRfid], references: [rfid], onDelete: Cascade)
+
+  @@index([obbOperationId, operatorRfid])
 }

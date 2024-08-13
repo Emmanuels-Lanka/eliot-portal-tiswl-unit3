@@ -45,7 +45,7 @@ const LineChartGraph = ({ data }: LineChartGraphProps) => {
     return (
         <Card className="bg-slate-50">
             <CardHeader>
-                <CardTitle>Line Chart - Target vs Actual</CardTitle>
+                <CardTitle>Target vs Actual - Hourly</CardTitle>
                 {/* <CardDescription>January - June 2024</CardDescription> */}
             </CardHeader>
             <CardContent>

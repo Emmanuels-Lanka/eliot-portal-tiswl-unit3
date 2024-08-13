@@ -25,39 +25,39 @@ import {
     ChartTooltipContent,
 } from "@/components/ui/chart";
 
-const chartConfig = {
-    target: {
-        label: "Target",
-        color: "hsl(var(--chart-1))",
-    },
-    actual: {
-        label: "Actual",
-        color: "hsl(var(--chart-2))",
-    },
-} satisfies ChartConfig
-
-interface BarChartGraphProps {
+interface SmvBarChartProps {
     data: {
-        name: string;
-        count: number;
-        target: number;
+        groupName: string;
+        actualSMV: number;
+        calculatedSMV: number;
     }[]
 }
 
-const BarChartGraph = ({ 
+const chartConfig = {
+    actualSMV: {
+        label: "Target SMV",
+        color: "hsl(var(--chart-1))",
+    },
+    calculatedSMV: {
+        label: "Actual Cycle Time",
+        color: "hsl(var(--chart-2))",
+    }
+} satisfies ChartConfig
+
+const SmvBarChart = ({ 
     data
-}: BarChartGraphProps) => {
+}: SmvBarChartProps) => {
     const chartData = data.map((item) => ({
-        name: item.name,
-        target: item.target,
-        actual: item.count,
+        name: item.groupName,
+        actualSMV: item.actualSMV,
+        calculatedSMV: item.calculatedSMV,
     }));
 
     return (
         <Card className='pr-2 pt-6 pb-4 border rounded-xl bg-slate-50'>
             <div className="px-8">
                 <CardHeader>
-                    <CardTitle>Bar Chart - Target vs Actual</CardTitle>
+                    <CardTitle>Target SMV vs Actual Cycle Time</CardTitle>
                     {/* <CardDescription>Number of items came across each scanning points today</CardDescription> */}
                 </CardHeader>
             </div>
@@ -72,7 +72,7 @@ const BarChartGraph = ({
                     >
                         <CartesianGrid vertical={false} />
                         <YAxis
-                            dataKey="target"
+                            dataKey="actualSMV"
                             type="number"
                             tickLine={true}
                             tickMargin={10}
@@ -89,7 +89,7 @@ const BarChartGraph = ({
                             content={<ChartTooltipContent indicator="line" />}
                         />
                         <ChartLegend content={<ChartLegendContent />} className="mt-2 text-sm"/>
-                        <Bar dataKey="target" fill="var(--color-target)" radius={5}>
+                        <Bar dataKey="actualSMV" fill="var(--color-actualSMV)" radius={5}>
                             <LabelList
                                 position="top"
                                 offset={12}
@@ -97,7 +97,7 @@ const BarChartGraph = ({
                                 fontSize={14}
                             />
                         </Bar>
-                        <Bar dataKey="actual" fill="var(--color-actual)" radius={5}>
+                        <Bar dataKey="calculatedSMV" fill="var(--color-calculatedSMV)" radius={5}>
                             <LabelList
                                 position="top"
                                 offset={12}
@@ -112,4 +112,4 @@ const BarChartGraph = ({
     )
 }
 
-export default BarChartGraph
+export default SmvBarChart

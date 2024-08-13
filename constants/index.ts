@@ -16,6 +16,7 @@ import {
     ServerCog,
     Settings,
     Sliders,
+    Table,
     UserRoundCog,
     UserRoundPlus
 } from "lucide-react";
@@ -208,18 +209,23 @@ export const SIDEBAR_ROUTES = [
         categoryName: "Production Analytics",
         routes: [
             {
-                label: "Hourly Achievements",
+                label: "Hourly Achievement",
                 href: "/analytics/hourly-production",
                 icon: BarChart3
             },
         ]
     },
     {
-        categoryName: "Operators SMV",
+        categoryName: "SMV Analytics",
         routes: [
             {
-                label: "Real-time SMV",
-                href: "/analytics/operator-smv",
+                label: "Hourly Cycle Time",
+                href: "/analytics/operation-smv-hourly",
+                icon: BarChart3
+            },
+            {
+                label: "Target vs Actual SMV",
+                href: "/analytics/operation-smv",
                 icon: BarChart3
             }
         ]
@@ -246,6 +252,11 @@ export const SIDEBAR_ROUTES = [
                 label: "Operator Efficiency (60min)",
                 href: "/analytics/operator-efficiency-60",
                 icon: BarChartHorizontal
+            },
+            {
+                label: "Operator Resource Utilization",
+                href: "/analytics/operator-effective-time",
+                icon: Table
             },
             // {
             //     label: "Operator Efficiency (15min)",
@@ -363,8 +374,13 @@ export const HEADER_INFO = [
         icon: BarChart3
     },
     {
-        label: "Operators SMV",
-        href: "/analytics/operator-smv",
+        label: "Hourly Operation SMV",
+        href: "/analytics/operation-smv-hourly",
+        icon: BarChart3
+    },
+    {
+        label: "Operation SMV",
+        href: "/analytics/operation-smv",
         icon: BarChart3
     },
     {
@@ -386,6 +402,11 @@ export const HEADER_INFO = [
         label: "Operator Analytic chart",
         href: "/analytics/operator-efficiency-15",
         icon: BarChartHorizontal
+    },
+    {
+        label: "Operator Analytic chart",
+        href: "/analytics/operator-effective-time",
+        icon: Table
     },
     {
         label: "Analytic charts for TLS",

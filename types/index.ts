@@ -94,3 +94,18 @@ type OperatorEfficiencyOutputTypes = {
     }[];
     categories: string[];
 };
+
+type ProductionSMVDataTypes = {
+    id: number;
+    obbOperationId: string;
+    operatorRfid: string;
+    obbOperation: {
+        smv: string;
+        operation: {
+            name: string;
+            code: string;
+        }
+    }
+    smv: string;
+    timestamp: string;
+}
