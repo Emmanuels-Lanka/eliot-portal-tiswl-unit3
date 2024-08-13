@@ -212,7 +212,15 @@ export const SIDEBAR_ROUTES = [
                 href: "/analytics/hourly-production",
                 icon: BarChart3
             },
+            {
+                label: "Achievement Rate",
+                href: "/analytics/achievement-rate",
+                icon: BarChart3
+            }
+            
         ]
+        
+        
     },
     {
         categoryName: "Operation Efficiency Analytics",

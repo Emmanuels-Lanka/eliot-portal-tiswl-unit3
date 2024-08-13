@@ -60,6 +60,7 @@ const SignInForm = () => {
             router.push('/dashboard');
             form.reset();
         } catch (error: any) {
+            console.log("qweerrr")
             if (error.response && error.response.status === 409 || error.response.status === 401) {
                 toast({
                     title: error.response.data,
