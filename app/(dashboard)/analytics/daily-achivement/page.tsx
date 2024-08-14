@@ -17,6 +17,7 @@ const page = async() => {
             name: true
         }
     });
+    
 
     return (
         <div>

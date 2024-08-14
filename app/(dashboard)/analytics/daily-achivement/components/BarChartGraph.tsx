@@ -81,7 +81,7 @@ const {toast} = useToast()
             
             const prod = await getData(obbSheetId,date)
             
-            console.log("hekkkk",prod)
+           
             
             setProductionData(prod)
 
