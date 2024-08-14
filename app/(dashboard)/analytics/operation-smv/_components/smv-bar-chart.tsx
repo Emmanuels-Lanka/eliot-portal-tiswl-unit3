@@ -50,7 +50,7 @@ const SmvBarChart = ({
     const chartData = data.map((item) => ({
         name: item.groupName,
         actualSMV: item.actualSMV,
-        calculatedSMV: item.calculatedSMV,
+        calculatedSMV: item.calculatedSMV.toFixed(2),
     }));
 
     return (
