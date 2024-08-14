@@ -54,13 +54,13 @@ interface BarChartGraphProps {
 
     date:string;
     obbSheetId:string
-    filterApplied:boolean
+    
 };
 
 
 
 
-const BarChartGraph = ({date,obbSheetId,filterApplied}: BarChartGraphProps) => {
+const BarChartGraph = ({date,obbSheetId}: BarChartGraphProps) => {
     
 const router = useRouter()
 const {toast} = useToast()
