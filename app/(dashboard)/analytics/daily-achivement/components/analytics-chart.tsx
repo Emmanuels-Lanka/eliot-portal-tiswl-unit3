@@ -43,46 +43,52 @@ const AnalyticsChart = ({
     const [userMessage,setUserMessage] = useState<string>("Please select a style and date ☝️")
     const [filterApplied,setFilterApplied] = useState<boolean>(false)
 
+    const [obbSheetId,setObbSheetId] = useState<string>("")
+    const [date,setDate] = useState<string>("")
 
-    function processProductionData(productionData: ProductionDataForChartTypes[]): OperationEfficiencyOutputTypes {
-        const hourGroups = ["7:00 AM - 8:00 AM", "8:00 AM - 9:00 AM", "9:00 AM - 10:00 AM", "10:00 AM - 11:00 AM", "11:00 AM - 12:00 PM", "12:00 PM - 1:00 PM", "1:00 PM - 2:00 PM", "2:00 PM - 3:00 PM", "3:00 PM - 4:00 PM", "4:00 PM - 5:00 PM", "5:00 PM - 6:00 PM", "6:00 PM - 7:00 PM"];
 
-        const getHourGroup = (timestamp: string): string => {
-            const hour = new Date(timestamp).getHours();
-            return hourGroups[Math.max(0, Math.min(11, hour - 7))];
-        };
+    // function processProductionData(productionData: ProductionDataForChartTypes[]): OperationEfficiencyOutputTypes {
+    //     const hourGroups = ["7:00 AM - 8:00 AM", "8:00 AM - 9:00 AM", "9:00 AM - 10:00 AM", "10:00 AM - 11:00 AM", "11:00 AM - 12:00 PM", "12:00 PM - 1:00 PM", "1:00 PM - 2:00 PM", "2:00 PM - 3:00 PM", "3:00 PM - 4:00 PM", "4:00 PM - 5:00 PM", "5:00 PM - 6:00 PM", "6:00 PM - 7:00 PM"];
 
-        const operatorsMap: { [key: string]: ProductionDataForChartTypes[] } = {};
-        productionData.forEach(data => {
-            if (!operatorsMap[data.operatorRfid]) {
-                operatorsMap[data.operatorRfid] = [];
-            }
-            operatorsMap[data.operatorRfid].push(data);
-        });
+    //     const getHourGroup = (timestamp: string): string => {
+    //         const hour = new Date(timestamp).getHours();
+    //         return hourGroups[Math.max(0, Math.min(11, hour - 7))];
+    //     };
 
-        const operations = Object.values(operatorsMap).map(group => ({
-            operator: group[0],
-            data: group
-        })).sort((a, b) => a.operator.obbOperation.seqNo - b.operator.obbOperation.seqNo);
+    //     const operatorsMap: { [key: string]: ProductionDataForChartTypes[] } = {};
+    //     productionData.forEach(data => {
+    //         if (!operatorsMap[data.operatorRfid]) {
+    //             operatorsMap[data.operatorRfid] = [];
+    //         }
+    //         operatorsMap[data.operatorRfid].push(data);
+    //     });
 
-        const categories = operations.map(op => `${op.operator.operator.name}-${op.operator.obbOperation.seqNo}`);
+    //     const operations = Object.values(operatorsMap).map(group => ({
+    //         operator: group[0],
+    //         data: group
+    //     })).sort((a, b) => a.operator.obbOperation.seqNo - b.operator.obbOperation.seqNo);
 
-        const resultData = hourGroups.map(hourGroup => ({
-            hourGroup,
-            operation: operations.map(op => {
-                const filteredData = op.data.filter(data => getHourGroup(data.timestamp) === hourGroup);
-                const totalProduction = filteredData.reduce((sum, curr) => sum + curr.productionCount, 0);
-                const efficiency = filteredData.length > 0 ? (totalProduction === 0 ? 0 : (totalProduction / op.operator.obbOperation.target) * 100) : null;
-                return { name: `${op.operator.obbOperation.seqNo}-${op.operator.obbOperation.operation.name}`, efficiency: efficiency !== null ? parseFloat(efficiency.toFixed(1)) : null };
-            })
-        }));
+    //     const categories = operations.map(op => `${op.operator.operator.name}-${op.operator.obbOperation.seqNo}`);
 
-        return {
-            data: resultData,
-            categories
-        };
-    }
+    //     const resultData = hourGroups.map(hourGroup => ({
+    //         hourGroup,
+    //         operation: operations.map(op => {
+    //             const filteredData = op.data.filter(data => getHourGroup(data.timestamp) === hourGroup);
+    //             const totalProduction = filteredData.reduce((sum, curr) => sum + curr.productionCount, 0);
+    //             const efficiency = filteredData.length > 0 ? (totalProduction === 0 ? 0 : (totalProduction / op.operator.obbOperation.target) * 100) : null;
+    //             return { name: `${op.operator.obbOperation.seqNo}-${op.operator.obbOperation.operation.name}`, efficiency: efficiency !== null ? parseFloat(efficiency.toFixed(1)) : null };
+    //         })
+    //     }));
 
+    //     return {
+    //         data: resultData,
+    //         categories
+    //     };
+    // }
+
+    useEffect(()=>{
+        
+    },[])
     const handleFetchProductions = async (data: { obbSheetId: string; date: Date }) => {
         try {
             data.date.setDate(data.date.getDate() + 1);
@@ -90,24 +96,15 @@ const AnalyticsChart = ({
 
             // const response = await axios.get(`/api/obb-date-prod-data?obbSheetId=${data.obbSheetId}&date=${formattedDate}`);
 
-             console.log(formattedDate)
-
-            const prod = await getData(data.obbSheetId,formattedDate)
             
-            setProdData(prod)
-
-            console.log("fetched Data",prodData)
+               setObbSheetId(data.obbSheetId) 
+               setDate(formattedDate)
+     
             setFilterApplied(true)
 
-            // console.log("Fetched Dataaaaaaaaaaaaaaaaa:", response.data);
 
-
-            // const heatmapData = processProductionData(response.data.data);
-            // console.log("HEATMAP:", heatmapData.data);
-            // console.log("CATEGORIES:", heatmapData.categories);
-            // setProdData(response.data)
-            // setHeatmapData(heatmapData);
-            // setObbSheet(response.data.obbSheet);
+            console.log(filterApplied)
+            
 
             router.refresh();
         } catch (error: any) {
@@ -146,13 +143,16 @@ const AnalyticsChart = ({
                 />
             </div>
             <div className="mx-auto max-w-[1680px]">
-                {prodData.length > 0 ?
+                {obbSheetId.length > 0 ?
                     <div className="my-8">
                         {/* <LineChartGraph 
                             data={production}
                         />  */}
                         <BarChartGraph
-                            data={prodData}
+                            obbSheetId={obbSheetId}
+                            date={date}
+                            filterApplied={filterApplied}
+
                         />
                     </div>
                     :

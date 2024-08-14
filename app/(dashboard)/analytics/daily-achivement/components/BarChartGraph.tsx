@@ -25,6 +25,10 @@ import {
     ChartTooltipContent,
 } from "@/components/ui/chart";
 import { useEffect, useState } from "react";
+import { getData } from "../actions";
+
+import { useRouter } from "next/navigation";
+import { useToast } from "@/components/ui/use-toast";
 
 const chartConfig = {
     target: {
@@ -47,31 +51,79 @@ type BarchartData = {
     target:number;
 }
 interface BarChartGraphProps {
-    data:  BarchartData[]
-}
+
+    date:string;
+    obbSheetId:string
+    filterApplied:boolean
+};
 
 
 
-const BarChartGraph = ({ 
-    data
-}: BarChartGraphProps) => {
+
+const BarChartGraph = ({date,obbSheetId,filterApplied}: BarChartGraphProps) => {
+    
+const router = useRouter()
+const {toast} = useToast()
     
     
+    const [productionData, setProductionData] =useState<BarchartData[]>([])
     
      const [chartData,setChartData] = useState<BarchartData[]>([])
 
+    
 
-    useEffect(()=>{
+    /////
+    const handleFetchProductions = async () => {
+        try {
 
-        const chartData1:BarchartData[] = data.map((item) => ({
-            name: item.name,
-            target: item.target,
-            count: item.count,
+           
+
             
-        }));
-        setChartData(chartData1)
-        console.log(chartData1)
-    },[data])
+            const prod = await getData(obbSheetId,date)
+            
+            console.log("hekkkk",prod)
+            
+            setProductionData(prod)
+
+            const chartData1:BarchartData[] = prod.map((item) => ({
+                name: item.name,
+                target: item.target,
+                count: item.count,
+                
+            }));
+            setChartData(chartData1)
+            
+
+            router.refresh();
+        } catch (error: any) {
+            console.error("Error fetching production data:", error);
+            toast({
+                title: "Something went wrong! Try again",
+                variant: "error",
+                description: (
+                    <div className='mt-2 bg-slate-200 py-2 px-3 md:w-[336px] rounded-md'>
+                        <code className="text-slate-800">
+                            ERROR: {error.message}
+                        </code>
+                    </div>
+                ),
+            });
+        }
+    }
+    ///
+
+
+    useEffect(()=> {
+        
+        if(date.length>0 && obbSheetId.length>0){
+            
+            handleFetchProductions()
+        }
+
+    },[date,obbSheetId])
+    
+
+
 
     return (
         <Card className='pr-2 pt-6 pb-4 border rounded-xl bg-slate-50'>
