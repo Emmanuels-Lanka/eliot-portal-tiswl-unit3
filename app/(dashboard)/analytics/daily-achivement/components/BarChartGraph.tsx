@@ -76,7 +76,7 @@ const {toast} = useToast()
     const handleFetchProductions = async () => {
         try {
 
-           
+            
 
             
             const prod = await getData(obbSheetId,date)
@@ -126,6 +126,11 @@ const {toast} = useToast()
 
 
     return (
+        <>
+        {
+
+        chartData.length > 0 ? 
+
         <Card className='pr-2 pt-6 pb-4 border rounded-xl bg-slate-50'>
             <div className="px-8">
                 <CardHeader>
@@ -182,6 +187,11 @@ const {toast} = useToast()
                 </ChartContainer>
             </CardContent>
         </Card>
+        :<div className="mt-12 w-full">
+        <p className="text-center text-slate-500">No Data Available...</p>
+    </div>
+}
+        </>
     )
 }
 

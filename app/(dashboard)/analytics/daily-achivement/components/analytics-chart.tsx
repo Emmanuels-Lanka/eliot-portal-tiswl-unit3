@@ -92,20 +92,13 @@ const AnalyticsChart = ({
     const handleFetchProductions = async (data: { obbSheetId: string; date: Date }) => {
         try {
             data.date.setDate(data.date.getDate() + 1);
-            const formattedDate = data.date.toISOString().split('T')[0].toString()+"%";
-
-            // const response = await axios.get(`/api/obb-date-prod-data?obbSheetId=${data.obbSheetId}&date=${formattedDate}`);
-
-            
-               setObbSheetId(data.obbSheetId) 
-               setDate(formattedDate)
-     
-            setFilterApplied(true)
-
-
-            console.log(filterApplied)
-            
-
+            const formattedDate = data.date.toISOString().split('T')[0].toString() + "%";
+    
+            setObbSheetId(data.obbSheetId);
+            setDate(formattedDate);
+            setFilterApplied(true);
+    
+            // Directly refresh the router after updating the state.
             router.refresh();
         } catch (error: any) {
             console.error("Error fetching production data:", error);
@@ -121,7 +114,8 @@ const AnalyticsChart = ({
                 ),
             });
         }
-    }
+    };
+    
 
 
 
@@ -143,7 +137,7 @@ const AnalyticsChart = ({
                 />
             </div>
             <div className="mx-auto max-w-[1680px]">
-                {obbSheetId.length > 0 ?
+                { obbSheetId.length > 0 ?
                     <div className="my-8">
                         {/* <LineChartGraph 
                             data={production}
@@ -153,6 +147,7 @@ const AnalyticsChart = ({
                             date={date}
                             filterApplied={filterApplied}
 
+                            
                         />
                     </div>
                     :
