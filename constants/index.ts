@@ -215,7 +215,7 @@ export const SIDEBAR_ROUTES = [
             },
             {
                 label: "Achievement Rate",
-                href: "/analytics/achievement-rate",
+                href: "/analytics/achievement-rate-operation",
                 icon: BarChart3
             }
             

@@ -1,8 +1,8 @@
 import SelectObbSheetDateHour from "@/components/dashboard/common/select-obbsheet-date-hour"
 import { db } from "@/lib/db";
-import AnalyticsChart from "./_components/analytics-chart";
+import AnalyticsChartOperation from "./_components/analytics-chart";
 
-const AchivementRateOperation = async () => {
+const AchivementRateoperations = async () => {
     const obbSheets = await db.obbSheet.findMany({
         where: {
             isActive: true,
@@ -18,11 +18,11 @@ const AchivementRateOperation = async () => {
 
     return (
         <div>
-            <AnalyticsChart
+            <AnalyticsChartOperation
                 obbSheets={obbSheets}
             />
         </div>
     )
 }
 
-export default AchivementRateOperation
+export default AchivementRateoperations

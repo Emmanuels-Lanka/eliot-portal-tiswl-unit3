@@ -36,7 +36,7 @@ export type ProductionDataType = {
     target: number;
 }
 
-const AnalyticsChart = ({
+const AnalyticsChartOperation = ({
     obbSheets
 }: AnalyticsChartProps) => {
     const { toast } = useToast();
@@ -148,7 +148,6 @@ const AnalyticsChart = ({
     return (
         <>
             <div className="mx-auto max-w-7xl">
-                
                 <SelectObbSheetAndDate 
                     obbSheets={obbSheets}
                     handleSubmit={Fetchdata}
@@ -177,4 +176,4 @@ const AnalyticsChart = ({
     )
 }
 
-export default AnalyticsChart
+export default AnalyticsChartOperation
