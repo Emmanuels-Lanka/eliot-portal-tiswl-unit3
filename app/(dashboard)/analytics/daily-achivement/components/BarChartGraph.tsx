@@ -71,7 +71,7 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
       setProductionData(prod);
 
       const chartData1: BarchartData[] = prod.map((item) => ({
-        name: item.name,
+        name: item.name.split(' ').map((word) => word[0]).join(''),
         target: item.target * 10,
         count: item.count,
       }));
@@ -127,13 +127,13 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
           <CardContent>
             <ChartContainer
               config={chartConfig}
-              className=" max-h-[350px] min-h-[300px] w-full"
+              className=" max-h-[400px] min-h-[300px] w-full"
             >
               <BarChart
                 accessibilityLayer
                 data={chartData}
                 margin={{
-                  top: 30,
+                  top: 15,
                 }}
                 barGap={2}
               >
@@ -148,9 +148,12 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
                 <XAxis
                   dataKey="name"
                   tickLine={false}
-                  tickMargin={2}
+                  tickMargin={10}
                   axisLine={false}
                   angle={40}
+                  fontSize={8}
+                  
+                 
                 />
                 <ChartTooltip
                   cursor={false}
@@ -165,7 +168,7 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
                     position="top"
                     offset={20} // Increase the offset value
                     className="fill-foreground"
-                    fontSize={8}
+                    fontSize={9}
                   />
                 </Bar>
                 <Bar dataKey="count" fill="var(--color-actual)" radius={5}>
@@ -173,7 +176,7 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
                     position="top"
                     offset={20} // Increase the offset value
                     className="fill-foreground"
-                    fontSize={10}
+                    fontSize={9}
                   />
                 </Bar>
               </BarChart>
