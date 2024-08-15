@@ -54,15 +54,17 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
     const Fetchdata = async () => {
         try {
             const getShortName = (name: any) => {
-                const parts = name.split(".");
-                return parts.length > 1 ? parts.slice(1).join(".") : name;
-            }
+                const afterDot = name.split('.')[1]?.trim();
+                return afterDot ? afterDot.split(' ')[0] : null;
+          }
             const prod = await getOperatorEfficiency(obbSheetId, date)
             console.log(date)
+            const workingHrs=(new Date().getHours()-8)+new Date().getMinutes()/60;
+            console.log("workingHrs",workingHrs)
             const chartData: BarChartData[] = prod.map((item) => ({
                 name: getShortName(item.name),
                 count: item.count,
-                target: item.target,
+                target: item.target*workingHrs,
                 ratio: parseFloat((item.count / item.target).toFixed(2)),
 
             }));
@@ -78,6 +80,13 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
         Fetchdata()
     }, [date, obbSheetId])
 
+    useEffect(() => {
+        const interval = setInterval(() => {
+            Fetchdata();
+        }, 60000); 
+    
+        return () => clearInterval(interval);
+    }, [date, obbSheetId]);
 
 
 
@@ -92,7 +101,7 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
                         </CardHeader>
                     </div>
                     <CardContent>
-                        <ChartContainer config={chartConfig} className="min-h-[300px] w-full">
+                    <ChartContainer config={chartConfig} className="min-h-[300px] max-h-[600px] w-full">
                             <BarChart
                                 accessibilityLayer
                                 data={chartData}
@@ -100,7 +109,8 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
                                     top: 0,
                                     bottom:10
                                 }}
-                                className="h-[300px]"
+                                barGap={10}
+                                className="h-[300px] "
                             >
                                 <CartesianGrid vertical={false} />
                                 <YAxis
@@ -113,9 +123,9 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
                                 <XAxis
                                     dataKey="name"
                                     tickLine={false}
-                                    tickMargin={45}
+                                    tickMargin={20}
                                     axisLine={false}
-                                    angle={60}
+                                    angle={80}
 
                                 />
                                 <ChartTooltip

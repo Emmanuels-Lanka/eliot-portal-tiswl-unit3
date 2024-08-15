@@ -16,7 +16,7 @@ export async function getData(linename:string) :Promise<string>{
   console.log("data",data.length)
   
   if(data.length>0){
-    return new Promise((resolve) => resolve(data[0].id))
+    return new Promise((resolve) => resolve(data[1].id))
 
   }
   else{

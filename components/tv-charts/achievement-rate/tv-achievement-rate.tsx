@@ -15,7 +15,7 @@ const AchievementRate = ({ linename }: { linename: string }) => {
   const getObbSheetID = async () => {
     const obbSheetId1 = await getData(linename);
     setobbSheetId(obbSheetId1)
-    console.log(obbSheetId1)
+   
   }
 
   useEffect(() => {
@@ -23,8 +23,11 @@ const AchievementRate = ({ linename }: { linename: string }) => {
     const y = new Date().getFullYear().toString()
     const m = (new Date().getMonth() + 1).toString().padStart(2, "0")
     //const d = new Date().getDate().toString().padStart(2, "0")
-    const d = "14"
-    setdate(`${y}-${m}-${d}%`)
+    const today = new Date();
+    const yyyyMMdd = today.getFullYear() + '-' + (today.getMonth() + 1).toString().padStart(2, '0') + '-' + today.getDate().toString().padStart(2, '0');
+  
+   const date =  yyyyMMdd.toString()+"%"
+    setdate(date)
 
   }, [])
 
