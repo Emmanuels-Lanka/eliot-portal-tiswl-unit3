@@ -5,7 +5,7 @@ import { ProductionDataType } from "./components/analytics-chart";
 export async function getData(obbsheetid:string,date:string) : Promise<ProductionDataType[]>   {
     const sql = neon(process.env.DATABASE_URL || "");
 
-    const data = await sql`SELECT Max(pd."productionCount") as count,o.code as name   ,oo.target
+    const data = await sql`SELECT SUM(pd."productionCount") as count,o.code as name   ,oo.target as target
             FROM "ProductionData" pd
             INNER JOIN "ObbOperation" oo ON pd."obbOperationId" = oo.id
             INNER JOIN "ObbSheet" os ON oo."obbSheetId" = os.id

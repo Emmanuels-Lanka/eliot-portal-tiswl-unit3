@@ -17,7 +17,7 @@ const page = async ({ params }: { params: { linename: string}}) => {
           <div className="flex justify-center items-center gap-3">
             <Cog className="w-16 h-16 text-voilet" />
             <h1 className="text-slate-500 m-4 text-3xl">
-              ELIoT Web Portal - Operator Production Rate for {lineid}
+              ELIoT Web Portal - Target vs Actual  for {lineid}
             </h1>
                   
           </div>

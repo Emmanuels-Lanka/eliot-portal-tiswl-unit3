@@ -134,7 +134,7 @@ const AnalyticsChart = ({
                 :
                 <div className="mt-12 w-full">
                     <p className="text-center text-slate-500">Please select the OBB sheet and date ☝️</p>
-                    <ChartContainerCompo></ChartContainerCompo>
+                 
                 </div>
             }
         </div>

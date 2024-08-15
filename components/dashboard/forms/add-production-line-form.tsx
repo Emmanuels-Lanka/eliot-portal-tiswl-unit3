@@ -47,7 +47,9 @@ interface AddProductionLineFormProps {
 const formSchema = z.object({
     name: z.string().min(1, {
         message: "Production line name is required"
-    }),
+    }).refine((value) => !/[\/@]/.test(value), {
+        message: 'Line Name should not include these characters (? , /, #)',
+      }),
     unitId: z.string().min(1, {
         message: "Production line unit is required"
     }),
@@ -64,7 +66,7 @@ const AddProductionLineForm = ({
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            name: "LINE-",
+            name: "LINE-113-114",
             unitId: "",
         },
     });
@@ -145,7 +147,7 @@ const AddProductionLineForm = ({
                                             <FormControl>
                                                 <Input
                                                     disabled={isSubmitting}
-                                                    placeholder="Enter the line name"
+                                                    placeholder="LINE-113-114"
                                                     {...field}
                                                 />
                                             </FormControl>
