@@ -17,7 +17,7 @@ export async function getObbID(linename: string): Promise<string> {
   console.log("data", data);
   console.log(data.length);
   if (data.length > 0) {
-    return new Promise((resolve) => resolve(data[1].id));
+    return new Promise((resolve) => resolve(data[0].id));
   } else {
     return new Promise((resolve) => resolve("0"));
   }
