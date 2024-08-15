@@ -1,11 +1,11 @@
 "use client"
 
-import { 
-    Bar, 
-    BarChart, 
-    CartesianGrid, 
+import {
+    Bar,
+    BarChart,
+    CartesianGrid,
     LabelList,
-    XAxis, 
+    XAxis,
     YAxis
 } from "recharts";
 
@@ -24,92 +24,140 @@ import {
     ChartTooltip,
     ChartTooltipContent,
 } from "@/components/ui/chart";
+import { useEffect, useState } from "react";
+import { getOperatorEfficiency } from "./actions";
 
 const chartConfig = {
     target: {
-        label: "Target",
+        label: "",
         color: "hsl(var(--chart-1))",
     },
-    actual: {
-        label: "Actual",
-        color: "hsl(var(--chart-2))",
-    },
-} satisfies ChartConfig
 
+} satisfies ChartConfig
+type BarChartData = {
+    name: string;
+    count: number;
+    target: number;
+    ratio: number;
+}
 interface BarChartGraphProps {
-    data: {
-        name: string;
-        count: number;
-        target: number;
-    }[]
+
+    date: string
+    obbSheetId: string
 }
 
-const BarChartGraph = ({ 
-    data
-}: BarChartGraphProps) => {
-    const chartData = data.map((item) => ({
-        name: item.name,
-        target: item.target,
-        count: item.count,
-    }));
+const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
+    const [chartData, setChartData] = useState<BarChartData[]>([])
+
+
+
+    const Fetchdata = async () => {
+        try {
+            const getShortName = (name: any) => {
+                const afterDot = name.split('.')[1]?.trim();
+                return afterDot ? afterDot.split(' ')[0] : null;
+          }
+            const prod = await getOperatorEfficiency(obbSheetId, date)
+            console.log(date)
+            const workingHrs=(new Date().getHours()-8)+new Date().getMinutes()/60;
+            console.log("workingHrs",workingHrs)
+            const chartData: BarChartData[] = prod.map((item) => ({
+                name: getShortName(item.name),
+                count: item.count,
+                target: item.target*workingHrs,
+                ratio: parseFloat((item.count / item.target).toFixed(2)),
+
+            }));
+            setChartData(chartData)
+
+        } catch (error) {
+            console.error("Error fetching data:", error);
+        }
+
+    };
+
+    useEffect(() => {
+        Fetchdata()
+    }, [date, obbSheetId])
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            Fetchdata();
+        }, 60000); 
+    
+        return () => clearInterval(interval);
+    }, [date, obbSheetId]);
+
+
+
 
     return (
-        <Card className='pr-2 pt-6 pb-4 border rounded-xl bg-slate-50'>
-            <div className="px-8">
-                <CardHeader>
-                    <CardTitle>Bar Chart - Target vs Actual</CardTitle>
-                    {/* <CardDescription>Number of items came across each scanning points today</CardDescription> */}
-                </CardHeader>
-            </div>
-            <CardContent>
-                <ChartContainer config={chartConfig} className="min-h-[576px] w-full">
-                    <BarChart 
-                        accessibilityLayer 
-                        data={chartData}
-                        margin={{
-                            top: 30,
-                        }}
-                    >
-                        <CartesianGrid vertical={false} />
-                        <YAxis
-                            dataKey="target"
-                            type="number"
-                            tickLine={true}
-                            tickMargin={10}
-                            axisLine={false}
-                        />
-                        <XAxis
-                            dataKey="name"
-                            tickLine={false}
-                            tickMargin={10}
-                            axisLine={false}
-                            angle={40}
-                        />
-                        <ChartTooltip
-                            cursor={false}
-                            content={<ChartTooltipContent indicator="line" />}
-                        />
-                        <ChartLegend content={<ChartLegendContent />} className="mt-2 text-sm"/>
-                        <Bar dataKey="target" fill="var(--color-target)" radius={5}>
+        <>
+            {chartData.length > 0 ?
+                <Card className='pr-2 pt-1 pb-2 border rounded-xl bg-slate-50 '>
+                    <div className="px-8">
+                        <CardHeader>
+                            <CardTitle>Average Rate</CardTitle>
+                        </CardHeader>
+                    </div>
+                    <CardContent>
+                    <ChartContainer config={chartConfig} className="min-h-[300px] max-h-[600px] w-full">
+                            <BarChart
+                                accessibilityLayer
+                                data={chartData}
+                                margin={{
+                                    top: 0,
+                                    bottom:10
+                                }}
+                                barGap={10}
+                                className="h-[300px] "
+                            >
+                                <CartesianGrid vertical={false} />
+                                <YAxis
+                                    dataKey="ratio"
+                                    type="number"
+                                    tickLine={true}
+                                    tickMargin={10}
+                                    axisLine={false}
+                                />
+                                <XAxis
+                                    dataKey="name"
+                                    tickLine={false}
+                                    tickMargin={20}
+                                    axisLine={false}
+                                    angle={80}
+
+                                />
+                                <ChartTooltip
+                                    cursor={false}
+                                    content={<ChartTooltipContent indicator="line" />}
+                                />
+                                <ChartLegend content={<ChartLegendContent />} className="mt-2 text-sm" />
+                                <Bar dataKey="ratio" fill="blue" radius={5}>
+                                    <LabelList
+                                        position="top"
+                                        offset={12}
+                                        className="fill-foreground"
+                                        fontSize={14}
+                                    />
+                                </Bar>
+                                {/* <Bar dataKey="count" fill="var(--color-actual)" radius={5}>
                             <LabelList
                                 position="top"
                                 offset={12}
                                 className="fill-foreground"
                                 fontSize={14}
                             />
-                        </Bar>
-                        <Bar dataKey="count" fill="var(--color-actual)" radius={5}>
-                            <LabelList
-                                position="top"
-                                offset={12}
-                                className="fill-foreground"
-                                fontSize={14}
-                            />
-                        </Bar>
-                    </BarChart>
-                </ChartContainer>
-            </CardContent>
-        </Card>
+                        </Bar> */}
+                            </BarChart>
+                        </ChartContainer>
+                    </CardContent>
+                </Card>
+                : <div className="mt-12 w-full">
+                    <p className="text-center text-slate-500">No Data Available.</p>
+                </div>
+            }
+        </>
     )
 }
 

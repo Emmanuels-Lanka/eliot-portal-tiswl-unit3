@@ -13,14 +13,14 @@
 "use client"
 
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ProductionData } from "@prisma/client";
 
 import { useToast } from "@/components/ui/use-toast";
 import SelectObbSheetAndDate  from "@/components/dashboard/common/select-obbsheet-and-date";
 import BarChartGraph from "./bar-chart-graph";
-import { getData } from "./actions";
+import { getOperatorEfficiency } from "./actions";
 // import LineChartGraph from "./line-chart-graph";
 
 interface AnalyticsChartProps {
@@ -43,6 +43,11 @@ const AnalyticsChart = ({
     const router = useRouter();
 
     const [production, setProduction] = useState<ProductionDataType[]>([]);
+    const [userMessage,setUserMessage]=useState<string>("Please select style and date")
+    const [filterApplied,setFilterApplied]=useState<boolean>(false)
+    const [obbSheetId,setObbSheetId]=useState<string>("")
+    const[date,setDate]=useState<string>("")
+    
 
     function processForBarchart({ productionData, hourGroup }: { productionData: ProductionData[]; hourGroup: string }) {
         const hourRanges: Record<string, [number, number]> = {
@@ -124,44 +129,46 @@ const AnalyticsChart = ({
             const y=data.date.getFullYear().toString()
             const m=(data.date.getMonth() + 1).toString().padStart(2,"0")
             const d=data.date.getDate().toString().padStart(2,"0")
-           
-
-          //const response = await axios.get(`/api/obbid-date-ret-prod-data?obbSheetId=${data.obbSheetId}&date=${y}-${m}-${d}`);
-          //console.log("Fetched Data:", response.data);
-            // getData(data.obbSheetId, `${y}-${m}-${d}`);
-            // const prod =await  getData("LINE-113/114-ZAGC08R", `2024-08-01%`);
-            console.log("data",data,)
-            const prod = await getData(data.obbSheetId, `${y}-${m}-${d}%`);
-            console.log("prod",prod,)
-            setProduction(prod as ProductionDataType[])
+            setObbSheetId(data.obbSheetId)
+            setDate(`${y}-${m}-${d}%`)
+       
+            setFilterApplied(true)
           
         } catch (error) {
           console.error("Error fetching data:", error);
         }
       };
     
+      useEffect(()=>{
+        if(filterApplied){
+            setUserMessage("No data available.")
+        }
+        
+      },[filterApplied])
     return (
         <>
             <div className="mx-auto max-w-7xl">
-              Avishka
                 <SelectObbSheetAndDate 
                     obbSheets={obbSheets}
                     handleSubmit={Fetchdata}
                 />
             </div>
             <div className="mx-auto max-w-[1680px]">
-                {production.length > 0 ?
+                {obbSheetId.length > 0 ?
                     <div className="my-8">
                         {/* <LineChartGraph 
                             data={production}
                         />  */}
                         <BarChartGraph
-                            data={production}
+                            obbSheetId={obbSheetId}
+                            date={date}
+                           
+                            
                         />
                     </div>
                     :
                     <div className="mt-12 w-full">
-                        <p className="text-center text-slate-500">Please select a style and date ☝️</p>
+                        <p className="text-center text-slate-500">{userMessage}</p>
                     </div>
                 }
             </div>
