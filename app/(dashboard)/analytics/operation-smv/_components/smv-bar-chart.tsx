@@ -68,7 +68,9 @@ const SmvBarChart = ({
                         data={chartData}
                         margin={{
                             top: 30,
+                            bottom: 200
                         }}
+                        startAngle={10}
                     >
                         <CartesianGrid vertical={false} />
                         <YAxis
@@ -81,20 +83,30 @@ const SmvBarChart = ({
                         <XAxis
                             dataKey="name"
                             tickLine={false}
-                            tickMargin={10}
+                            tickMargin={100}
                             axisLine={false}
+                            angle={-45}
+                            fontSize={11}
+                            fontFamily="Inter"
+                            fontWeight={600}
+                            className="z-[999]"
                         />
                         <ChartTooltip
                             cursor={false}
                             content={<ChartTooltipContent indicator="line" />}
                         />
-                        <ChartLegend content={<ChartLegendContent />} className="mt-2 text-sm"/>
+                        <ChartLegend 
+                            content={<ChartLegendContent />} 
+                            className="-mb-10 text-xs text-blue-500 font-bold" 
+                            margin={{top:10}}
+                        />
                         <Bar dataKey="actualSMV" fill="var(--color-actualSMV)" radius={5}>
                             <LabelList
                                 position="top"
                                 offset={12}
                                 className="fill-foreground"
-                                fontSize={14}
+                                fontSize={11}
+                                fontFamily="Inter"
                             />
                         </Bar>
                         <Bar dataKey="calculatedSMV" fill="var(--color-calculatedSMV)" radius={5}>
@@ -102,7 +114,8 @@ const SmvBarChart = ({
                                 position="top"
                                 offset={12}
                                 className="fill-foreground"
-                                fontSize={14}
+                                fontSize={11}
+                                fontFamily="Inter"
                             />
                         </Bar>
                     </BarChart>
