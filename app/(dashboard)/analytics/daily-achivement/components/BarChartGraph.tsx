@@ -134,18 +134,19 @@ const {toast} = useToast()
         <Card className='pr-2 pt-6 pb-4 border rounded-xl bg-slate-50'>
             <div className="px-8">
                 <CardHeader>
-                    <CardTitle>Bar Chart - Target vs Actual</CardTitle>
+                    <CardTitle className="text-center">Bar Chart - Target vs Actual</CardTitle>
                     {/* <CardDescription>Number of items came across each scanning points today</CardDescription> */}
                 </CardHeader>
             </div>
             <CardContent>
-                <ChartContainer config={chartConfig} className="min-h-[576px] w-full">
+                <ChartContainer config={chartConfig} className=" max-h-[350px] min-h-[300px] w-full">
                     <BarChart 
                         accessibilityLayer 
                         data={chartData}
                         margin={{
                             top: 30,
                         }}
+                        barGap={2}
                     >
                         <CartesianGrid vertical={false} />
                         <YAxis
