@@ -1,15 +1,15 @@
 "use server";
 import { neon } from "@neondatabase/serverless";
 
-export async function getData(linename:string){
+export async function getData(linename:string) :Promise<string>{
   const sql = neon(process.env.DATABASE_URL || "");
-
+  console.log("linename",linename,)
   const data = await sql`
   SELECT oo.id
   FROM "ProductionLine" pl 
   INNER JOIN "ObbSheet" oo 
   ON pl.id = oo."productionLineId"
-  WHERE oo."isActive"=true and pl.id=${linename}
+  WHERE oo."isActive"=true and pl.name=${linename}
   order by oo."updatedAt" asc
 `;
 
@@ -20,7 +20,7 @@ export async function getData(linename:string){
 
   }
   else{
-  return new Promise((resolve) => resolve("0"))
+  return new Promise((resolve) => resolve(""))
    
   }
 }
