@@ -13,7 +13,7 @@ const TableComponent = ({data}:{data:any}) => {
     <div><Table>
     <TableHeader>
       <TableRow>
-        <TableHead>Name of operator</TableHead>
+        <TableHead>Operator Name</TableHead>
         <TableHead className="hidden sm:table-cell">
         Employee ID
         </TableHead>
@@ -40,7 +40,7 @@ const TableComponent = ({data}:{data:any}) => {
         Logout Time
         </TableHead>
         <TableHead className="">
-        Target/Hr
+        Target
         </TableHead>
        
       </TableRow>
