@@ -2,6 +2,8 @@
 
 import { TrendingUp } from "lucide-react";
 import { Line, LineChart,} from "recharts";
+import { Button } from "@/components/ui/button";
+import { FaPlus, FaMinus } from 'react-icons/fa';
 import {
     Bar,
     BarChart,
@@ -26,6 +28,7 @@ import {
     ChartTooltip,
     ChartTooltipContent,
 } from "@/components/ui/chart";
+import { useState } from "react";
 
 const chartConfig = {
     target: {
@@ -45,21 +48,27 @@ interface LineChartGraphProps {
     }[]
 }
 
+const getShortName = (name: any) => {
+    return name.substring(1, 10) + "..."
+
+}
 const LineChartGraph = ({ data }: LineChartGraphProps) => {
-    const chartData = data.map((item) => ({
-        name: item.name,
+    const [chartWidth, setChartWidth] = useState<number>(150);
+    const chartData = data.map((item,index) => ({
+        name: (index+1+"-")+getShortName(item.name),
         target: item.target,
         actual: item.count,
     }));
 
     return (
+        <>
         <Card className="bg-slate-50">
             <CardHeader>
                 <CardTitle>Hourly Production - Target vs Actual</CardTitle>
                 {/* <CardDescription>January - June 2024</CardDescription> */}
             </CardHeader>
             <CardContent>
-                <ChartContainer config={chartConfig}>
+                <ChartContainer config={chartConfig}  style={{ width: chartWidth + "%" , height: chartWidth + "%" }}>
                     {/* <LineChart
                         accessibilityLayer
                         data={chartData}
@@ -129,6 +138,7 @@ const LineChartGraph = ({ data }: LineChartGraphProps) => {
                 data={chartData}
                 margin={{
                   top: 20,
+                  bottom:60
                 }}
 
               >
@@ -145,7 +155,7 @@ const LineChartGraph = ({ data }: LineChartGraphProps) => {
                   tickLine={true}
                   tickMargin={45}
                   axisLine={true}
-                  angle={40}
+                  angle={86}
                   fontSize={8}
                   interval={0}
 
@@ -180,6 +190,14 @@ const LineChartGraph = ({ data }: LineChartGraphProps) => {
                 </ChartContainer>
             </CardContent>
         </Card>
+        
+        <div className="flex justify-center gap-2 mt-5 ">
+
+            <Button onClick={() => setChartWidth((p) => p + 20)} className="rounded-full bg-gray-300"><FaPlus size={12} color="#007bff" /></Button>
+            <Button onClick={() => setChartWidth((p) => p - 20)} className="rounded-full bg-gray-300"> <FaMinus size={12} color="#007bff" /></Button>
+
+        </div>
+        </>
     )
 }
 

@@ -116,7 +116,7 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
                     </div>
                     <CardContent>
                         {/* <ChartContainer config={chartConfig} className={`min-h-[300px] max-h-[600px] w-[${chartWidth.toString()}%]`}> */}
-                        <ChartContainer config={chartConfig} className={`min-h-[300px] max-h-[600px] `} style={{ width: chartWidth + "%" }}>
+                        <ChartContainer config={chartConfig} className={`min-h-[300px] max-h-[600px] `} style={{ width: chartWidth + "%", height: chartWidth + "%" }}>
 
                             <BarChart
                                 accessibilityLayer
