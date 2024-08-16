@@ -29,6 +29,7 @@ import { getData } from "../actions";
 
 import { useRouter } from "next/navigation";
 import { useToast } from "@/components/ui/use-toast";
+import { Button } from "@/components/ui/button";
 
 const chartConfig = {
   target: {
@@ -71,9 +72,10 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
       const prod = await getData(obbSheetId, date);
 
       setProductionData(prod);
-
-      const chartData1: BarchartData[] = prod.map((item) => ({
-        name: item.name.trim().substring(0,14)+"...",
+      const seq=1;
+      const chartData1: BarchartData[] = prod.map((item,index) => ({
+        
+        name: (index+1+"-")+item.name.trim().substring(0,10)+"...",
         target: item.target * 10,
         count: item.count,
       }));
@@ -114,10 +116,7 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
   }, [date, obbSheetId]);
 
 
-  const getShortName = (name:any)=>{
-    return name.subString
-
-  }
+  
 
   return (
     <>
@@ -136,14 +135,14 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
             <ChartContainer
               config={chartConfig}
               className=" max-h-screen  min-h-[300px] w-full " 
-              style={{width:chartWidth+"%"}} 
+              style={{width:chartWidth+"%", height:chartWidth+"%"}} 
             >
               <BarChart
                 accessibilityLayer
                 data={chartData}
                 margin={{
                   top: 20,
-                  bottom: 30,
+                  bottom: 70,
                 }}
 
               >
@@ -158,10 +157,10 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
                 <XAxis
                   dataKey="name"
                   tickLine={true}
-                  tickMargin={20}
+                  tickMargin={50}
                   axisLine={true}
-                  angle={40}
-                  fontSize={8}
+                  angle={90}
+                  fontSize={10}
                   interval={0}
 
 
@@ -199,7 +198,15 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
         <div className="mt-12 w-full">
           <p className="text-center text-slate-500">No Data Available...</p>
         </div>
-      )}
+      )
+      }
+      {<div className="flex justify-center gap-2 mt-5 2xl:hidden block">
+
+<Button onClick={() => setChartWidth((p) => p + 20)} className="rounded-full bg-gray-300">+</Button>
+<Button onClick={() => setChartWidth((p) => p - 20)} className="rounded-full bg-gray-300"> -</Button>
+
+</div>
+}
     </>
   );
 };
