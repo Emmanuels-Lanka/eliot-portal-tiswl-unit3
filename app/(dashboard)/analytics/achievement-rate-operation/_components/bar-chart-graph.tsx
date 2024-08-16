@@ -49,40 +49,40 @@ interface BarChartGraphProps {
 
 const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
     const [chartData, setChartData] = useState<BarChartData[]>([])
-    const[chartWidth,setChartWidth]=useState<number>(150);
+    const [chartWidth, setChartWidth] = useState<number>(150);
 
 
     const Fetchdata = async () => {
         try {
-        //     const getShortName = (name: any) => {
-        //         const afterDot = name.split('.')[1]?.trim();
-        //         return afterDot ? afterDot.split(' ')[0] : null;
-              
-        //   }
-        const getShortName = (name: any) => {
-           return name.substring(1,10)+"..."
-          
-        }
+            //     const getShortName = (name: any) => {
+            //         const afterDot = name.split('.')[1]?.trim();
+            //         return afterDot ? afterDot.split(' ')[0] : null;
+
+            //   }
+            const getShortName = (name: any) => {
+                return name.substring(1, 10) + "..."
+
+            }
             const prod = await getOperatorEfficiency(obbSheetId, date)
             console.log(date)
-            let workingHrs=(new Date().getHours()-8)+new Date().getMinutes()/60;
-            workingHrs > 10? 10 :  workingHrs
-              
-            console.log("workingHrs",workingHrs)
+            let workingHrs = (new Date().getHours() - 8) + new Date().getMinutes() / 60;
+            workingHrs > 10 ? 10 : workingHrs
+
+            console.log("workingHrs", workingHrs)
             const chartData: BarChartData[] = prod.map((item) => ({
                 name: getShortName(item.name),
                 count: item.count,
-                target: item.target*workingHrs,
-                ratio: parseFloat((item.count / (item.target*workingHrs)).toFixed(2)),
+                target: item.target * workingHrs,
+                ratio: parseFloat((item.count / (item.target * workingHrs)).toFixed(2)),
 
             })
             );
-            console.log("chart data",chartData)
+            console.log("chart data", chartData)
             setChartData(chartData)
-            
-            } 
-            
-            catch (error) {
+
+        }
+
+        catch (error) {
             console.error("Error fetching data:", error);
         }
 
@@ -97,8 +97,8 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
     useEffect(() => {
         const interval = setInterval(() => {
             Fetchdata();
-        }, 60000); 
-    
+        }, 60000);
+
         return () => clearInterval(interval);
     }, [date, obbSheetId]);
 
@@ -111,23 +111,23 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
                 <Card className='pr-2 pt-1 pb-2 border rounded-xl bg-slate-50 '>
                     <div className="px-8">
                         <CardHeader>
-                            <CardTitle>Average Rate</CardTitle>
+                            <CardTitle>Operation - Achievement Rate</CardTitle>
                         </CardHeader>
                     </div>
                     <CardContent>
-                    {/* <ChartContainer config={chartConfig} className={`min-h-[300px] max-h-[600px] w-[${chartWidth.toString()}%]`}> */}
-                    <ChartContainer config={chartConfig} className={`min-h-[300px] max-h-[600px]`} style={{width:chartWidth+"%"}}>
+                        {/* <ChartContainer config={chartConfig} className={`min-h-[300px] max-h-[600px] w-[${chartWidth.toString()}%]`}> */}
+                        <ChartContainer config={chartConfig} className={`min-h-[300px] max-h-[600px]`} style={{ width: chartWidth + "%" }}>
 
                             <BarChart
                                 accessibilityLayer
                                 data={chartData}
                                 margin={{
                                     top: 0,
-                                    bottom:10
+                                    bottom: 10
                                 }}
                                 barGap={10}
                                 className="h-[300px] "
-                                >
+                            >
                                 <CartesianGrid vertical={false} />
                                 <YAxis
                                     dataKey="ratio"
@@ -147,7 +147,7 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
                                     cursor={false}
                                     content={<ChartTooltipContent indicator="line" />}
                                 />
-                              
+
                                 <Bar dataKey="ratio" fill="orange" radius={5}>
                                     <LabelList
                                         position="top"
@@ -173,12 +173,12 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
                 </div>
             }
             {<div className="flex justify-center gap-2 mt-5 2xl:hidden block">
-                 
-                  <Button onClick={()=>setChartWidth((p)=>p+20)} className="rounded-full bg-gray-300"><FaPlus size={12} color="#007bff"  /></Button>
-                  <Button onClick={()=>setChartWidth((p)=>p-20)} className="rounded-full bg-gray-300"> <FaMinus size={12} color="#007bff" /></Button>
-                 
+
+                <Button onClick={() => setChartWidth((p) => p + 20)} className="rounded-full bg-gray-300"><FaPlus size={12} color="#007bff" /></Button>
+                <Button onClick={() => setChartWidth((p) => p - 20)} className="rounded-full bg-gray-300"> <FaMinus size={12} color="#007bff" /></Button>
+
             </div>
-        }
+            }
         </>
     )
 }

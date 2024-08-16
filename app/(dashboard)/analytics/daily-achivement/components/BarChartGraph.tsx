@@ -98,18 +98,18 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
     if (date.length > 0 && obbSheetId.length > 0) {
       handleFetchProductions();
     }
-  const intervalId = setInterval(() => {
-    
+    const intervalId = setInterval(() => {
+
       handleFetchProductions();
-    
-  }, 60000);
 
-  return () => {
-    clearInterval(intervalId);
-  };
+    }, 60000);
+
+    return () => {
+      clearInterval(intervalId);
+    };
 
 
-}, [date, obbSheetId]);
+  }, [date, obbSheetId]);
 
   return (
     <>
@@ -135,7 +135,7 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
                 margin={{
                   top: 20,
                 }}
-               
+
               >
                 <CartesianGrid vertical={false} />
                 <YAxis
@@ -143,18 +143,18 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
                   type="number"
                   tickLine={true}
                   tickMargin={10}
-                  axisLine={false}
+                  axisLine={true}
                 />
                 <XAxis
                   dataKey="name"
                   tickLine={true}
-                  tickMargin={25}
-                  axisLine={false}
+                  tickMargin={45}
+                  axisLine={true}
                   angle={40}
                   fontSize={8}
                   interval={0}
-                  
-                 
+
+
                 />
                 <ChartTooltip
                   cursor={false}
