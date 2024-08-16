@@ -63,6 +63,8 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
 
   const [chartData, setChartData] = useState<BarchartData[]>([]);
 
+  const[chartWidth,setChartWidth] = useState<number>(100)
+
   /////
   const handleFetchProductions = async () => {
     try {
@@ -71,7 +73,7 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
       setProductionData(prod);
 
       const chartData1: BarchartData[] = prod.map((item) => ({
-        name: item.name,
+        name: item.name.trim().substring(0,14)+"...",
         target: item.target * 10,
         count: item.count,
       }));
@@ -111,10 +113,16 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
 
   }, [date, obbSheetId]);
 
+
+  const getShortName = (name:any)=>{
+    return name.subString
+
+  }
+
   return (
     <>
       {chartData.length > 0 ? (
-        <Card className="pr-2 pt-6 pb-8 border rounded-xl bg-slate-50">
+        <Card className="pr-2 pt-6  border rounded-xl bg-slate-50">
           <div className="px-8">
             <CardHeader>
               <CardTitle className="text-center">
@@ -127,13 +135,15 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
           <CardContent>
             <ChartContainer
               config={chartConfig}
-              className=" max-h-screen min-h-[300px] w-full"
+              className=" max-h-screen  min-h-[300px] w-full " 
+              style={{width:chartWidth+"%"}} 
             >
               <BarChart
                 accessibilityLayer
                 data={chartData}
                 margin={{
                   top: 20,
+                  bottom: 30,
                 }}
 
               >
@@ -148,7 +158,7 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
                 <XAxis
                   dataKey="name"
                   tickLine={true}
-                  tickMargin={45}
+                  tickMargin={20}
                   axisLine={true}
                   angle={40}
                   fontSize={8}
