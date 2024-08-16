@@ -65,10 +65,10 @@ const TableComponent = ({data}:{data:any}) => {
         </TableCell>
         <TableCell className="text-right">{d.code}</TableCell>
         <TableCell className="text-right">{d.operationname}</TableCell>
-        <TableCell className="text-right">{d.totprod}</TableCell>
+        <TableCell className="text-center">{d.totprod}</TableCell>
         <TableCell className="text-right">{d.LoginTimestamp}</TableCell>
         <TableCell className="text-right">{d.LogoutTimestamp}</TableCell>
-        <TableCell className="text-right">{d.target}</TableCell>
+        <TableCell className="text-left">{d.target}</TableCell>
         
       </TableRow>
       ))}
