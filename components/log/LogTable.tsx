@@ -32,15 +32,15 @@ export type ProductionDataType = {
   name: string;
   count: number;
   target: number;
-  employeeId:string;
-  machineId:string;
-  eliotSerialNumber:string;
-  code:string;
-  operationname:string;
-  totprod:number;
-  LoginTimestamp:string;
-  LogoutTimestamp:string;
-  
+  employeeId: string;
+  machineId: string;
+  eliotSerialNumber: string;
+  code: string;
+  operationname: string;
+  totprod: number;
+  LoginTimestamp: string;
+  LogoutTimestamp: string;
+
 };
 
 const LogTable = ({
@@ -64,15 +64,15 @@ const LogTable = ({
 
     console.log("obb", obbSheetId);
 
-    
+
   };
 
   const getDetails = async () => {
-   
-      const details = await getData(obbSheetId, date);
-      console.log("details", details);
-      setData(details)
-   
+
+    const details = await getData(obbSheetId, date);
+    console.log("details", details);
+    setData(details)
+
   };
 
   useEffect(() => {
@@ -82,32 +82,32 @@ const LogTable = ({
   }, [date, obbSheetId]);
 
   return (
-    <div>LogTable
-        <div>
-        <div className="mx-auto max-w-7xl">
-                
-            </div>
-            <Card x-chunk="dashboard-05-chunk-3">
-                  <CardHeader className="px-7">
-                    <CardTitle>Logs</CardTitle>
-                    <CardDescription>
-                      Logs of ELIoT
-                    </CardDescription>
-                    <SelectObbSheetAndDate 
-                    obbSheets={obbSheets}
-                    handleSubmit={handleFetchProductions}
-                />                    
 
-                  </CardHeader>
+    <div>
+      <div className="mx-auto max-w-7xl">
 
-                 
-                  <CardContent>
-                    <TableComponent data={data}></TableComponent>
-                    
-                  </CardContent>
-                </Card>
-            </div>
+      </div>
+      <Card x-chunk="dashboard-05-chunk-3">
+        <CardHeader className="px-7">
+          <CardTitle> </CardTitle>
+          <CardDescription>
+
+          </CardDescription>
+          <SelectObbSheetAndDate
+            obbSheets={obbSheets}
+            handleSubmit={handleFetchProductions}
+          />
+
+        </CardHeader>
+
+
+        <CardContent>
+          <TableComponent data={data}></TableComponent>
+
+        </CardContent>
+      </Card>
     </div>
+
   )
 }
 

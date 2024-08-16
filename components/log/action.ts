@@ -15,8 +15,8 @@ export async function getData(obbsheetid:string,date:string)  : Promise<Producti
   SUM(pd."productionCount") AS totprod, 
   obbopn.target, 
   sm."machineId", 
-  opses."LoginTimestamp", 
-  opses."LogoutTimestamp"
+  null as "LoginTimestamp", 
+  null  as "LogoutTimestamp"
 FROM 
   "ProductionData" pd
   INNER JOIN "ObbOperation" obbopn ON pd."obbOperationId" = obbopn.id
@@ -28,6 +28,7 @@ FROM
 WHERE 
   pd.timestamp LIKE ${date} 
   AND obbs.id = ${obbsheetid}
+  AND  opses."LoginTimestamp" LIKE ${date} 
 GROUP BY 
   sm."machineId", 
   pd."eliotSerialNumber", 
@@ -36,10 +37,8 @@ GROUP BY
   obbopn."seqNo", 
   obbopn.target, 
   oprt.name, 
-  oprt."employeeId", 
-  opses."LoginTimestamp", 
-  opses."LogoutTimestamp"
-ORDER BY 
+  oprt."employeeId"
+  ORDER BY 
   obbopn."seqNo";`;
 
     console.log("data fetchedddddd",data,)

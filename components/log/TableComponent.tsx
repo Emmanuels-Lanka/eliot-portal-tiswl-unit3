@@ -15,32 +15,32 @@ const TableComponent = ({data}:{data:any}) => {
       <TableRow>
         <TableHead>Name of operator</TableHead>
         <TableHead className="hidden sm:table-cell">
-        EMPLOYEE ID
+        Employee ID
         </TableHead>
         <TableHead className="hidden sm:table-cell">
-        MACHINE ID
+        Machine ID
         </TableHead>
         <TableHead className="">
         ELIOT ID
         </TableHead>
         <TableHead className="">
-        OPERATION code
+        Operation Code
         </TableHead>
         <TableHead className="">
         Operation Name
         </TableHead>
         
         <TableHead className="">
-        LIVE TOTAL PRODUCTION
+        Live Total Production
         </TableHead>
         <TableHead className="">
-        LOG IN TIME
+        Login Time
         </TableHead>
         <TableHead className="">
-        LOG OUT TIME
+        Logout Time
         </TableHead>
         <TableHead className="">
-        target/Hr
+        Target/Hr
         </TableHead>
        
       </TableRow>
