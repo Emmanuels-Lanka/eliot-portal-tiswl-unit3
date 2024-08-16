@@ -114,7 +114,7 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
   return (
     <>
       {chartData.length > 0 ? (
-        <Card className="pr-2 pt-6 pb-4 border rounded-xl bg-slate-50">
+        <Card className="pr-2 pt-6 pb-8 border rounded-xl bg-slate-50">
           <div className="px-8">
             <CardHeader>
               <CardTitle className="text-center">
@@ -127,15 +127,15 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
           <CardContent>
             <ChartContainer
               config={chartConfig}
-              className=" max-h-[350px] min-h-[300px] w-full"
+              className=" max-h-screen min-h-[300px] w-full"
             >
               <BarChart
                 accessibilityLayer
                 data={chartData}
                 margin={{
-                  top: 30,
+                  top: 20,
                 }}
-                barGap={2}
+               
               >
                 <CartesianGrid vertical={false} />
                 <YAxis
@@ -147,25 +147,30 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
                 />
                 <XAxis
                   dataKey="name"
-                  tickLine={false}
-                  tickMargin={20}
+                  tickLine={true}
+                  tickMargin={25}
                   axisLine={false}
                   angle={40}
+                  fontSize={8}
+                  interval={0}
+                  
+                 
                 />
                 <ChartTooltip
                   cursor={false}
                   content={<ChartTooltipContent indicator="line" />}
                 />
                 <ChartLegend
+                  verticalAlign="top"
                   content={<ChartLegendContent />}
                   className="mt-2 text-sm"
                 />
                 <Bar dataKey="target" fill="var(--color-target)" radius={5}>
                   <LabelList
                     position="top"
-                    offset={20} // Increase the offset value
+                    offset={7} // Increase the offset value
                     className="fill-foreground"
-                    fontSize={8}
+                    fontSize={9}
                   />
                 </Bar>
                 <Bar dataKey="count" fill="var(--color-actual)" radius={5}>
@@ -173,7 +178,7 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
                     position="top"
                     offset={20} // Increase the offset value
                     className="fill-foreground"
-                    fontSize={10}
+                    fontSize={9}
                   />
                 </Bar>
               </BarChart>

@@ -86,9 +86,6 @@ const AnalyticsChart = ({
     //     };
     // }
 
-    useEffect(()=>{
-        
-    },[])
     const handleFetchProductions = async (data: { obbSheetId: string; date: Date }) => {
         try {
             data.date.setDate(data.date.getDate() + 1);
