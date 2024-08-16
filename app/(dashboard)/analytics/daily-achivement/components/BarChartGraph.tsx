@@ -127,7 +127,7 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
             <CardHeader>
               <CardTitle className="text-center">
                 {" "}
-                Daily Target vs Actual Values
+                Daily Target vs Actual Productions
               </CardTitle>
               {/* <CardDescription>Number of items came across each scanning points today</CardDescription> */}
             </CardHeader>
