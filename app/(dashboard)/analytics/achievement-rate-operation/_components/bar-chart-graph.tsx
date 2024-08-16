@@ -123,7 +123,7 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
                                 data={chartData}
                                 margin={{
                                     top: 0,
-                                    bottom: 10
+                                    bottom: 20
                                 }}
                                 barGap={10}
                                 className="h-[300px] "
@@ -172,7 +172,7 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
                     <p className="text-center text-slate-500">No Data Available.</p>
                 </div>
             }
-            {<div className="flex justify-center gap-2 mt-5 2xl:hidden block">
+            {<div className="flex justify-center gap-2 mt-5  ">
 
                 <Button onClick={() => setChartWidth((p) => p + 20)} className="rounded-full bg-gray-300"><FaPlus size={12} color="#007bff" /></Button>
                 <Button onClick={() => setChartWidth((p) => p - 20)} className="rounded-full bg-gray-300"> <FaMinus size={12} color="#007bff" /></Button>
