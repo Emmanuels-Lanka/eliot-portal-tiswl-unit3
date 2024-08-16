@@ -1,9 +1,25 @@
-import LogComponent from '@/components/log/log-component'
+
 import { Cog } from 'lucide-react'
 import React from 'react'
-import LogTable from './LogTable'
+import LogTable from '../../components/log/LogTable'
+import { db } from '@/lib/db';
 
-const page = () => {
+const page = async () => {
+
+
+  const obbSheets = await db.obbSheet.findMany({
+    where: {
+        isActive: true,
+    },
+    orderBy: {
+        createdAt: "desc",
+    },
+    select: {
+        id: true,
+        name: true
+    }
+});
+
   return (
     <div>
     <div className="shadow-sm mb-4">
@@ -19,7 +35,7 @@ const page = () => {
      
     </div>
         <div className="container">
-        <LogTable></LogTable>
+        <LogTable obbSheets={obbSheets} ></LogTable>
       </div>
   </div>
   )

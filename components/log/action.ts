@@ -1,8 +1,9 @@
 "use server";
 import { neon } from "@neondatabase/serverless";
+import { ProductionDataType } from "./LogTable";
 
 
-export async function getData(obbsheetid:string,date:string)   {
+export async function getData(obbsheetid:string,date:string)  : Promise<ProductionDataType[]>   {
     const sql = neon(process.env.DATABASE_URL || "");
 
     const data = await sql`SELECT 
@@ -25,8 +26,8 @@ FROM
   INNER JOIN "Operator" oprt ON oprt.rfid = pd."operatorRfid"
   INNER JOIN "OperatorSession" opses ON opses."operatorRfid" = oprt."rfid"
 WHERE 
-  pd.timestamp LIKE '2024-08-15%' 
-  AND obbs.id = 'lzs07i72-ojSke1Ky3mJh'
+  pd.timestamp LIKE ${date} 
+  AND obbs.id = ${obbsheetid}
 GROUP BY 
   sm."machineId", 
   pd."eliotSerialNumber", 
@@ -45,5 +46,5 @@ ORDER BY
 
 
  
-    return new Promise((resolve) => resolve(data  ))
+    return new Promise((resolve) => resolve(data as ProductionDataType[]  ))
 }
