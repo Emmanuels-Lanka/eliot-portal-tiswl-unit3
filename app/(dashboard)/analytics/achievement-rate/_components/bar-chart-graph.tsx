@@ -125,7 +125,7 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
                                 <XAxis
                                     dataKey="name"
                                     tickLine={false}
-                                    tickMargin={20}
+                                    tickMargin={45}
                                     axisLine={false}
                                     angle={80}
                                     
