@@ -69,8 +69,8 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
             workingHrs > 10 ? 10 : workingHrs
 
             console.log("workingHrs", workingHrs)
-            const chartData: BarChartData[] = prod.map((item) => ({
-                name: getShortName(item.name),
+            const chartData: BarChartData[] = prod.map((item,index) => ({
+                name:(index+1+"-")+getShortName(item.name),
                 count: item.count,
                 target: item.target * workingHrs,
                 ratio: parseFloat((item.count / (item.target * workingHrs)).toFixed(2)),
@@ -108,22 +108,22 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
     return (
         <>
             {chartData.length > 0 ?
-                <Card className='pr-2 pt-1 pb-2 border rounded-xl bg-slate-50 '>
+                <Card className='pr-2 pt-1 pb-2 border rounded-xl bg-slate-50'>
                     <div className="px-8">
                         <CardHeader>
-                            <CardTitle>Operation - Achievement Rate</CardTitle>
+                            <CardTitle>Operation - Achievement Rate(Live Data)</CardTitle>
                         </CardHeader>
                     </div>
                     <CardContent>
                         {/* <ChartContainer config={chartConfig} className={`min-h-[300px] max-h-[600px] w-[${chartWidth.toString()}%]`}> */}
-                        <ChartContainer config={chartConfig} className={`min-h-[300px] max-h-[600px]`} style={{ width: chartWidth + "%" }}>
+                        <ChartContainer config={chartConfig} className={`min-h-[300px] max-h-[600px] `} style={{ width: chartWidth + "%" }}>
 
                             <BarChart
                                 accessibilityLayer
                                 data={chartData}
                                 margin={{
                                     top: 0,
-                                    bottom: 10
+                                    bottom: 60
                                 }}
                                 barGap={10}
                                 className="h-[300px] "
@@ -139,7 +139,7 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
                                 <XAxis
                                     dataKey="name"
                                     tickLine={false}
-                                    tickMargin={30}
+                                    tickMargin={50}
                                     axisLine={true}
                                     angle={85}
                                 />
@@ -172,13 +172,13 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
                     <p className="text-center text-slate-500">No Data Available.</p>
                 </div>
             }
-            {<div className="flex justify-center gap-2 mt-5 2xl:hidden block">
+            <div className="flex justify-center gap-2 mt-5 ">
 
                 <Button onClick={() => setChartWidth((p) => p + 20)} className="rounded-full bg-gray-300"><FaPlus size={12} color="#007bff" /></Button>
                 <Button onClick={() => setChartWidth((p) => p - 20)} className="rounded-full bg-gray-300"> <FaMinus size={12} color="#007bff" /></Button>
 
             </div>
-            }
+            
         </>
     )
 }

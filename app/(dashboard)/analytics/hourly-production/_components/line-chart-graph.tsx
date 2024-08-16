@@ -1,8 +1,16 @@
 "use client"
 
 import { TrendingUp } from "lucide-react";
-import { CartesianGrid, LabelList, Line, LineChart, XAxis } from "recharts";
-
+import { Line, LineChart,} from "recharts";
+import {
+    Bar,
+    BarChart,
+    CartesianGrid,
+    LabelList,
+    XAxis,
+    YAxis,
+  } from "recharts";
+  
 import {
     Card,
     CardContent,
@@ -13,6 +21,8 @@ import {
 import {
     ChartConfig,
     ChartContainer,
+    ChartLegend,
+    ChartLegendContent,
     ChartTooltip,
     ChartTooltipContent,
 } from "@/components/ui/chart";
@@ -45,12 +55,12 @@ const LineChartGraph = ({ data }: LineChartGraphProps) => {
     return (
         <Card className="bg-slate-50">
             <CardHeader>
-                <CardTitle>Target vs Actual - Hourly</CardTitle>
+                <CardTitle>Hourly Production - Target vs Actual</CardTitle>
                 {/* <CardDescription>January - June 2024</CardDescription> */}
             </CardHeader>
             <CardContent>
                 <ChartContainer config={chartConfig}>
-                    <LineChart
+                    {/* <LineChart
                         accessibilityLayer
                         data={chartData}
                         margin={{
@@ -110,7 +120,63 @@ const LineChartGraph = ({ data }: LineChartGraphProps) => {
                                 fontSize={14}
                             />
                         </Line>
-                    </LineChart>
+                    </LineChart> */}
+
+
+
+         <BarChart
+                accessibilityLayer
+                data={chartData}
+                margin={{
+                  top: 20,
+                }}
+
+              >
+                <CartesianGrid vertical={false} />
+                <YAxis
+                  dataKey="target"
+                  type="number"
+                  tickLine={true}
+                  tickMargin={10}
+                  axisLine={true}
+                />
+                <XAxis
+                  dataKey="name"
+                  tickLine={true}
+                  tickMargin={45}
+                  axisLine={true}
+                  angle={40}
+                  fontSize={8}
+                  interval={0}
+
+
+                />
+                <ChartTooltip
+                  cursor={false}
+                  content={<ChartTooltipContent indicator="line" />}
+                />
+                <ChartLegend
+                  verticalAlign="top"
+                  content={<ChartLegendContent />}
+                  className="mt-2 text-sm"
+                />
+                <Bar dataKey="target" fill="var(--color-target)" radius={5}>
+                  <LabelList
+                    position="top"
+                    offset={7} // Increase the offset value
+                    className="fill-foreground"
+                    fontSize={9}
+                  />
+                </Bar>
+                <Bar dataKey="actual" fill="var(--color-actual)" radius={5}>
+                  <LabelList
+                    position="top"
+                    offset={20} // Increase the offset value
+                    className="fill-foreground"
+                    fontSize={9}
+                  />
+                </Bar>
+              </BarChart>
                 </ChartContainer>
             </CardContent>
         </Card>
