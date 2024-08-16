@@ -40,7 +40,7 @@ const chartConfig = {
     color: "hsl(var(--chart-2))",
   },
   count: {
-    label: "Count",
+    label: "Production",
     color: "hsl(var(--chart-3))",
   },
 } satisfies ChartConfig;
@@ -127,7 +127,7 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
             <CardHeader>
               <CardTitle className="text-center">
                 {" "}
-                Daily Target vs Actual Productions
+                Daily Target vs Actual Productions (LIVE Data)
               </CardTitle>
               {/* <CardDescription>Number of items came across each scanning points today</CardDescription> */}
             </CardHeader>
