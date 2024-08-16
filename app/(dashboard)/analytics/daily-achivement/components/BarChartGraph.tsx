@@ -29,6 +29,7 @@ import { getData } from "../actions";
 
 import { useRouter } from "next/navigation";
 import { useToast } from "@/components/ui/use-toast";
+import { Button } from "@/components/ui/button";
 
 const chartConfig = {
   target: {
@@ -40,7 +41,7 @@ const chartConfig = {
     color: "hsl(var(--chart-2))",
   },
   count: {
-    label: "Count",
+    label: "Production",
     color: "hsl(var(--chart-3))",
   },
 } satisfies ChartConfig;
@@ -63,15 +64,18 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
 
   const [chartData, setChartData] = useState<BarchartData[]>([]);
 
+  const[chartWidth,setChartWidth] = useState<number>(100)
+
   /////
   const handleFetchProductions = async () => {
     try {
       const prod = await getData(obbSheetId, date);
 
       setProductionData(prod);
-
-      const chartData1: BarchartData[] = prod.map((item) => ({
-        name: item.name,
+      const seq=1;
+      const chartData1: BarchartData[] = prod.map((item,index) => ({
+        
+        name: (index+1+"-")+item.name.trim().substring(0,10)+"...",
         target: item.target * 10,
         count: item.count,
       }));
@@ -98,28 +102,31 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
     if (date.length > 0 && obbSheetId.length > 0) {
       handleFetchProductions();
     }
-  const intervalId = setInterval(() => {
-    
+    const intervalId = setInterval(() => {
+
       handleFetchProductions();
-    
-  }, 60000);
 
-  return () => {
-    clearInterval(intervalId);
-  };
+    }, 60000);
+
+    return () => {
+      clearInterval(intervalId);
+    };
 
 
-}, [date, obbSheetId]);
+  }, [date, obbSheetId]);
+
+
+  
 
   return (
     <>
       {chartData.length > 0 ? (
-        <Card className="pr-2 pt-6 pb-4 border rounded-xl bg-slate-50">
+        <Card className="pr-2 pt-6  border rounded-xl bg-slate-50">
           <div className="px-8">
             <CardHeader>
               <CardTitle className="text-center">
                 {" "}
-                Daily Target vs Actual Values
+                Daily Target vs Actual Productions (LIVE Data)
               </CardTitle>
               {/* <CardDescription>Number of items came across each scanning points today</CardDescription> */}
             </CardHeader>
@@ -127,15 +134,17 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
           <CardContent>
             <ChartContainer
               config={chartConfig}
-              className=" max-h-[350px] min-h-[300px] w-full"
+              className=" max-h-screen  min-h-[300px] w-full " 
+              style={{width:chartWidth+"%", height:chartWidth+"%"}} 
             >
               <BarChart
                 accessibilityLayer
                 data={chartData}
                 margin={{
-                  top: 30,
+                  top: 20,
+                  bottom: 70,
                 }}
-                barGap={2}
+
               >
                 <CartesianGrid vertical={false} />
                 <YAxis
@@ -143,29 +152,34 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
                   type="number"
                   tickLine={true}
                   tickMargin={10}
-                  axisLine={false}
+                  axisLine={true}
                 />
                 <XAxis
                   dataKey="name"
-                  tickLine={false}
-                  tickMargin={20}
-                  axisLine={false}
-                  angle={40}
+                  tickLine={true}
+                  tickMargin={50}
+                  axisLine={true}
+                  angle={90}
+                  fontSize={10}
+                  interval={0}
+
+
                 />
                 <ChartTooltip
                   cursor={false}
                   content={<ChartTooltipContent indicator="line" />}
                 />
                 <ChartLegend
+                  verticalAlign="top"
                   content={<ChartLegendContent />}
                   className="mt-2 text-sm"
                 />
                 <Bar dataKey="target" fill="var(--color-target)" radius={5}>
                   <LabelList
                     position="top"
-                    offset={20} // Increase the offset value
+                    offset={7} // Increase the offset value
                     className="fill-foreground"
-                    fontSize={8}
+                    fontSize={9}
                   />
                 </Bar>
                 <Bar dataKey="count" fill="var(--color-actual)" radius={5}>
@@ -173,7 +187,7 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
                     position="top"
                     offset={20} // Increase the offset value
                     className="fill-foreground"
-                    fontSize={10}
+                    fontSize={9}
                   />
                 </Bar>
               </BarChart>
@@ -184,7 +198,15 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
         <div className="mt-12 w-full">
           <p className="text-center text-slate-500">No Data Available...</p>
         </div>
-      )}
+      )
+      }
+      {<div className="flex justify-center gap-2 mt-5 2xl:hidden block">
+
+<Button onClick={() => setChartWidth((p) => p + 20)} className="rounded-full bg-gray-300">+</Button>
+<Button onClick={() => setChartWidth((p) => p - 20)} className="rounded-full bg-gray-300"> -</Button>
+
+</div>
+}
     </>
   );
 };

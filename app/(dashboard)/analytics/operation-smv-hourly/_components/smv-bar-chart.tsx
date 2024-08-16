@@ -5,6 +5,7 @@ import {
     BarChart, 
     CartesianGrid, 
     LabelList,
+    ReferenceLine,
     XAxis, 
     YAxis
 } from "recharts";
@@ -83,6 +84,7 @@ const SmvBarChart = ({
                             content={<ChartTooltipContent indicator="line" />}
                         />
                         <ChartLegend content={<ChartLegendContent />} className="mt-2 text-sm"/>
+                        <ReferenceLine y={0.5} stroke="red" strokeDasharray="3 3" label="Target Line" />
                         <Bar dataKey="smv" fill="var(--color-smv)" radius={5}>
                             <LabelList
                                 position="top"

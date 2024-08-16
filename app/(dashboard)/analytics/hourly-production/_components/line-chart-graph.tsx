@@ -1,8 +1,18 @@
 "use client"
 
 import { TrendingUp } from "lucide-react";
-import { CartesianGrid, LabelList, Line, LineChart, XAxis } from "recharts";
-
+import { Line, LineChart,} from "recharts";
+import { Button } from "@/components/ui/button";
+import { FaPlus, FaMinus } from 'react-icons/fa';
+import {
+    Bar,
+    BarChart,
+    CartesianGrid,
+    LabelList,
+    XAxis,
+    YAxis,
+  } from "recharts";
+  
 import {
     Card,
     CardContent,
@@ -13,9 +23,12 @@ import {
 import {
     ChartConfig,
     ChartContainer,
+    ChartLegend,
+    ChartLegendContent,
     ChartTooltip,
     ChartTooltipContent,
 } from "@/components/ui/chart";
+import { useState } from "react";
 
 const chartConfig = {
     target: {
@@ -35,22 +48,28 @@ interface LineChartGraphProps {
     }[]
 }
 
+const getShortName = (name: any) => {
+    return name.substring(1, 10) + "..."
+
+}
 const LineChartGraph = ({ data }: LineChartGraphProps) => {
-    const chartData = data.map((item) => ({
-        name: item.name,
+    const [chartWidth, setChartWidth] = useState<number>(150);
+    const chartData = data.map((item,index) => ({
+        name: (index+1+"-")+getShortName(item.name),
         target: item.target,
         actual: item.count,
     }));
 
     return (
+        <>
         <Card className="bg-slate-50">
             <CardHeader>
-                <CardTitle>Target vs Actual - Hourly</CardTitle>
+                <CardTitle>Hourly Production - Target vs Actual</CardTitle>
                 {/* <CardDescription>January - June 2024</CardDescription> */}
             </CardHeader>
             <CardContent>
-                <ChartContainer config={chartConfig}>
-                    <LineChart
+                <ChartContainer config={chartConfig}  style={{ width: chartWidth + "%" , height: chartWidth + "%" }}>
+                    {/* <LineChart
                         accessibilityLayer
                         data={chartData}
                         margin={{
@@ -110,10 +129,75 @@ const LineChartGraph = ({ data }: LineChartGraphProps) => {
                                 fontSize={14}
                             />
                         </Line>
-                    </LineChart>
+                    </LineChart> */}
+
+
+
+         <BarChart
+                accessibilityLayer
+                data={chartData}
+                margin={{
+                  top: 20,
+                  bottom:60
+                }}
+
+              >
+                <CartesianGrid vertical={false} />
+                <YAxis
+                  dataKey="target"
+                  type="number"
+                  tickLine={true}
+                  tickMargin={10}
+                  axisLine={true}
+                />
+                <XAxis
+                  dataKey="name"
+                  tickLine={true}
+                  tickMargin={45}
+                  axisLine={true}
+                  angle={86}
+                  fontSize={8}
+                  interval={0}
+
+
+                />
+                <ChartTooltip
+                  cursor={false}
+                  content={<ChartTooltipContent indicator="line" />}
+                />
+                <ChartLegend
+                  verticalAlign="top"
+                  content={<ChartLegendContent />}
+                  className="mt-2 text-sm"
+                />
+                <Bar dataKey="target" fill="var(--color-target)" radius={5}>
+                  <LabelList
+                    position="top"
+                    offset={7} // Increase the offset value
+                    className="fill-foreground"
+                    fontSize={9}
+                  />
+                </Bar>
+                <Bar dataKey="actual" fill="var(--color-actual)" radius={5}>
+                  <LabelList
+                    position="top"
+                    offset={20} // Increase the offset value
+                    className="fill-foreground"
+                    fontSize={9}
+                  />
+                </Bar>
+              </BarChart>
                 </ChartContainer>
             </CardContent>
         </Card>
+        
+        <div className="flex justify-center gap-2 mt-5 ">
+
+            <Button onClick={() => setChartWidth((p) => p + 20)} className="rounded-full bg-gray-300"><FaPlus size={12} color="#007bff" /></Button>
+            <Button onClick={() => setChartWidth((p) => p - 20)} className="rounded-full bg-gray-300"> <FaMinus size={12} color="#007bff" /></Button>
+
+        </div>
+        </>
     )
 }
 
