@@ -1,12 +1,12 @@
 "use client"
 
-import { 
-    Bar, 
-    BarChart, 
-    CartesianGrid, 
+import {
+    Bar,
+    BarChart,
+    CartesianGrid,
     LabelList,
     ReferenceLine,
-    XAxis, 
+    XAxis,
     YAxis
 } from "recharts";
 
@@ -30,7 +30,8 @@ interface SmvBarChartProps {
     data: {
         hourGroup: string;
         smv: number | null;
-    }[]
+    }[],
+    tsmv: number
 }
 
 const chartConfig = {
@@ -40,8 +41,8 @@ const chartConfig = {
     }
 } satisfies ChartConfig
 
-const SmvBarChart = ({ 
-    data
+const SmvBarChart = ({
+    data, tsmv
 }: SmvBarChartProps) => {
     const chartData = data.map((item) => ({
         name: item.hourGroup,
@@ -58,11 +59,12 @@ const SmvBarChart = ({
             </div>
             <CardContent>
                 <ChartContainer config={chartConfig} className="min-h-[576px] w-full">
-                    <BarChart 
-                        accessibilityLayer 
+                    <BarChart
+                        accessibilityLayer
                         data={chartData}
                         margin={{
                             top: 30,
+                            left: 30
                         }}
                     >
                         <CartesianGrid vertical={false} />
@@ -71,20 +73,31 @@ const SmvBarChart = ({
                             type="number"
                             tickLine={true}
                             tickMargin={10}
-                            axisLine={false}
+                            axisLine={true}
                         />
                         <XAxis
                             dataKey="name"
                             tickLine={false}
                             tickMargin={10}
-                            axisLine={false}
+                            axisLine={true}
                         />
                         <ChartTooltip
                             cursor={false}
                             content={<ChartTooltipContent indicator="line" />}
                         />
-                        <ChartLegend content={<ChartLegendContent />} className="mt-2 text-sm"/>
-                        <ReferenceLine y={0.5} stroke="red" strokeDasharray="3 3" label="Target Line" />
+                        <ChartLegend content={<ChartLegendContent />} className="mt-2 text-sm" />
+                        <ReferenceLine alwaysShow ifOverflow="extendDomain" position={'start'} y={tsmv} isFront={true} strokeWidth={10} stroke="red" strokeDasharray="3 3"
+                            label={{
+                                value: tsmv,
+                                position: 'left',
+                                offset: 40,
+                                angle: 0,
+                                color: 'red',
+                                fontSize: 20,
+                                fontWeight: 'bold',
+                            }}
+
+                        />
                         <Bar dataKey="smv" fill="var(--color-smv)" radius={5}>
                             <LabelList
                                 position="top"

@@ -43,7 +43,19 @@ export async function GET(
             }
         });
 
-        return NextResponse.json({ data: smv, message: 'SMV data fetched successfully'}, { status: 201 });
+        //target SMV
+        const tsmv = await db.obbOperation.findFirst({
+            where: {
+               id: obbOperationId
+            },
+             select: {
+                smv: true,
+                },
+        })
+
+        console.log("tsmv",tsmv,)
+
+        return NextResponse.json({ data: smv, tsmv,message: 'SMV data fetched successfully'}, { status: 201 });
     } catch (error) {
         console.error("[FETCH_SMV_ERROR]", error);
         return new NextResponse("Internal Error", { status: 500 });
