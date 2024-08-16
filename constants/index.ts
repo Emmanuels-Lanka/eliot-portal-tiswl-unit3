@@ -206,18 +206,24 @@ export const SIDEBAR_ROUTES = [
         ]
     },
     {
-        categoryName: "Production Analytics",
+        categoryName: "Live Production Analytics",
         routes: [
             {
                 label: "Hourly Achievement",
                 href: "/analytics/hourly-production",
                 icon: BarChart3
             },
+              {
+                label: "Daily Achivement ",
+                href: "/analytics/daily-achivement",
+                icon: BarChartHorizontal
+            },
             {
                 label: "Achievement Rate",
                 href: "/analytics/achievement-rate-operation",
                 icon: BarChart3
-            }
+            },
+          
             
         ]
         
@@ -232,7 +238,7 @@ export const SIDEBAR_ROUTES = [
                 icon: BarChart3
             },
             {
-                label: "Target vs Actual SMV",
+                label: "Target vs Actual",
                 href: "/analytics/operation-smv",
                 icon: BarChart3
             }
@@ -246,11 +252,7 @@ export const SIDEBAR_ROUTES = [
                 href: "/analytics/operation-efficiency-60",
                 icon: BarChartHorizontal
             },
-            {
-                label: "Daily Achivement ",
-                href: "/analytics/daily-achivement",
-                icon: BarChartHorizontal
-            },
+           
 
             // {
             //     label: "Operation Efficiency (15min)",
@@ -267,9 +269,30 @@ export const SIDEBAR_ROUTES = [
                 href: "/analytics/operator-efficiency-60",
                 icon: BarChartHorizontal
             },
+            // {
+            //     label: "Resource Utilization",
+            //     href: "/analytics/operator-effective-time",
+            //     icon: Table
+            // },
+            // {
+            //     label: "Operator Efficiency (15min)",
+            //     href: "/analytics/operator-efficiency-15",
+            //     icon: BarChartHorizontal
+            // },
+        ]
+    },
+    {
+        categoryName: "Records",
+        routes: [
+          
             {
-                label: "Operator Resource Utilization",
+                label: "Resource Utilization",
                 href: "/analytics/operator-effective-time",
+                icon: Table
+            },
+            {
+                label: "Logs",
+                href: "/log",
                 icon: Table
             },
             // {
@@ -388,37 +411,37 @@ export const HEADER_INFO = [
         icon: BarChart3
     },
     {
-        label: "Hourly Operation SMV",
+        label: "Hourly Cycle Time",
         href: "/analytics/operation-smv-hourly",
         icon: BarChart3
     },
     {
-        label: "Operation SMV",
+        label: "SMV Target vs Avg. Actual Cycle Time",
         href: "/analytics/operation-smv",
         icon: BarChart3
     },
     {
-        label: "Production Analytic charts",
+        label: "Operation Efficiency (60 Minute)",
         href: "/analytics/operation-efficiency-60",
         icon: BarChartHorizontal
     },
     {
-        label: "Production Analytic charts",
+        label: "Operator Efficiency (60 Minute)",
         href: "/analytics/operation-efficiency-15",
         icon: BarChartHorizontal
     },
     {
-        label: "Operator Analytic chart",
+        label: "Operator Efficiency (60 Minute)",
         href: "/analytics/operator-efficiency-60",
         icon: BarChartHorizontal
     },
     {
-        label: "Operator Analytic chart",
+        label: "xOperator Analytic chart",
         href: "/analytics/operator-efficiency-15",
         icon: BarChartHorizontal
     },
     {
-        label: "Operator Analytic chart",
+        label: "Resource Utilization",
         href: "/analytics/operator-effective-time",
         icon: Table
     },
@@ -430,6 +453,16 @@ export const HEADER_INFO = [
     {
         label: "Analytic charts for TLS",
         href: "/analytics/tls-operators",
+        icon: Sliders
+    },
+    {
+        label: "Daily Achievement",
+          href: "/analytics/daily-achivement",
+        icon: Sliders
+    },
+    {
+        label: "Achievement Rate",
+         href: "/analytics/achievement-rate-operation",
         icon: Sliders
     },
 ]
