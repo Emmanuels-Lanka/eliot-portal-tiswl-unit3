@@ -135,7 +135,7 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
                 margin={{
                   top: 15,
                 }}
-                barGap={2}
+               
               >
                 <CartesianGrid vertical={false} />
                 <YAxis
@@ -147,11 +147,12 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
                 />
                 <XAxis
                   dataKey="name"
-                  tickLine={false}
+                  tickLine={true}
                   tickMargin={10}
                   axisLine={false}
-                  angle={40}
+                  angle={-40}
                   fontSize={8}
+                  interval={0}
                   
                  
                 />
