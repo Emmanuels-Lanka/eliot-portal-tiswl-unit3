@@ -123,7 +123,7 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
                                 data={chartData}
                                 margin={{
                                     top: 0,
-                                    bottom: 10
+                                    bottom: 20
                                 }}
                                 barGap={10}
                                 className="h-[300px] "
