@@ -136,7 +136,7 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
                                     content={<ChartTooltipContent indicator="line" />}
                                 />
                                 <ChartLegend content={<ChartLegendContent />} className="mt-2 text-sm" />
-                                <Bar dataKey="ratio" fill="orange" radius={5}>
+                                <Bar dataKey="ratio" fill="blue" radius={5}>
                                     <LabelList
                                         position="top"
                                         offset={12}
