@@ -125,7 +125,7 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
                                 <XAxis
                                     dataKey="name"
                                     tickLine={false}
-                                    tickMargin={20}
+                                    tickMargin={45}
                                     axisLine={false}
                                     angle={80}
                                     
@@ -136,7 +136,7 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
                                     content={<ChartTooltipContent indicator="line" />}
                                 />
                                 <ChartLegend content={<ChartLegendContent />} className="mt-2 text-sm" />
-                                <Bar dataKey="ratio" fill="orange" radius={5}>
+                                <Bar dataKey="ratio" fill="blue" radius={5}>
                                     <LabelList
                                         position="top"
                                         offset={12}
