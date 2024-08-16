@@ -71,7 +71,7 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
       setProductionData(prod);
 
       const chartData1: BarchartData[] = prod.map((item) => ({
-        name: item.name.split(' ').map((word) => word[0]).join(''),
+        name: item.name,
         target: item.target * 10,
         count: item.count,
       }));
@@ -114,7 +114,7 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
   return (
     <>
       {chartData.length > 0 ? (
-        <Card className="pr-2 pt-6 pb-4 border rounded-xl bg-slate-50">
+        <Card className="pr-2 pt-6 pb-8 border rounded-xl bg-slate-50">
           <div className="px-8">
             <CardHeader>
               <CardTitle className="text-center">
@@ -127,13 +127,13 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
           <CardContent>
             <ChartContainer
               config={chartConfig}
-              className=" max-h-[400px] min-h-[300px] w-full"
+              className=" max-h-screen min-h-[300px] w-full"
             >
               <BarChart
                 accessibilityLayer
                 data={chartData}
                 margin={{
-                  top: 15,
+                  top: 20,
                 }}
                
               >
@@ -148,9 +148,9 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
                 <XAxis
                   dataKey="name"
                   tickLine={true}
-                  tickMargin={10}
+                  tickMargin={25}
                   axisLine={false}
-                  angle={-40}
+                  angle={40}
                   fontSize={8}
                   interval={0}
                   
@@ -161,13 +161,14 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
                   content={<ChartTooltipContent indicator="line" />}
                 />
                 <ChartLegend
+                  verticalAlign="top"
                   content={<ChartLegendContent />}
                   className="mt-2 text-sm"
                 />
                 <Bar dataKey="target" fill="var(--color-target)" radius={5}>
                   <LabelList
                     position="top"
-                    offset={20} // Increase the offset value
+                    offset={7} // Increase the offset value
                     className="fill-foreground"
                     fontSize={9}
                   />
