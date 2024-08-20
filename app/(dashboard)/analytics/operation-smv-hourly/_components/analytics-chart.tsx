@@ -25,6 +25,7 @@ const AnalyticsChart = ({
     const router = useRouter();
 
     const [barchartData, setBarchartData] = useState<{ hourGroup: string; smv: number | null }[]>([]);
+    const [tsmv, settsmv] = useState< number>(0);
 
     const groupSMVByHour = (data: ProductionSMVDataTypes[]): { hourGroup: string; smv: number | null }[] => {
         const hourGroups = [
@@ -64,6 +65,8 @@ const AnalyticsChart = ({
 
             const response = await axios.get(`/api/smv/fetch-by-operation?obbOperationId=${data.obbOperationId}&date=${formattedDate}`);
             const result = groupSMVByHour(response.data.data);
+            const tsmv = response.data.tsmv.smv
+            settsmv(tsmv)
             setBarchartData(result);
 
             router.refresh();
@@ -87,7 +90,7 @@ const AnalyticsChart = ({
             <div className="mx-auto max-w-[1680px]">
                 {barchartData.length > 0 ?
                     <div className="mt-12">
-                        <SmvBarChart data={barchartData} />
+                        <SmvBarChart tsmv={tsmv} data={barchartData} />
                     </div>
                     :
                     <div className="mt-12 w-full">

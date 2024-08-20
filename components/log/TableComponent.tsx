@@ -13,6 +13,7 @@ const TableComponent = ({data}:{data:any}) => {
     <div><Table>
     <TableHeader>
       <TableRow>
+        <TableHead>Seq No</TableHead>
         <TableHead>Operator Name</TableHead>
         <TableHead className="hidden sm:table-cell">
         Employee ID
@@ -51,8 +52,10 @@ const TableComponent = ({data}:{data:any}) => {
      
       <TableRow key={d.rid} className="bg-accent">
         <TableCell>
+          <div className="font-medium">{d.seqNo}</div>
+        </TableCell>
+        <TableCell>
           <div className="font-medium">{d.name}</div>
-          
         </TableCell>
         <TableCell className="hidden sm:table-cell">
           {d.employeeId}
@@ -65,10 +68,10 @@ const TableComponent = ({data}:{data:any}) => {
         </TableCell>
         <TableCell className="text-right">{d.code}</TableCell>
         <TableCell className="text-right">{d.operationname}</TableCell>
-        <TableCell className="text-right">{d.totprod}</TableCell>
+        <TableCell className="text-center">{d.totprod}</TableCell>
         <TableCell className="text-right">{d.LoginTimestamp}</TableCell>
         <TableCell className="text-right">{d.LogoutTimestamp}</TableCell>
-        <TableCell className="text-right">{d.target}</TableCell>
+        <TableCell className="text-left">{d.target}</TableCell>
         
       </TableRow>
       ))}

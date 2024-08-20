@@ -292,7 +292,7 @@ export const SIDEBAR_ROUTES = [
             },
             {
                 label: "Logs",
-                href: "/log",
+                href: "/analytics/log",
                 icon: Table
             },
             // {
@@ -463,6 +463,11 @@ export const HEADER_INFO = [
     {
         label: "Achievement Rate",
          href: "/analytics/achievement-rate-operation",
+        icon: Sliders
+    },
+    {
+        label: "Log Records",
+        href: "/analytics/log",
         icon: Sliders
     },
 ]
