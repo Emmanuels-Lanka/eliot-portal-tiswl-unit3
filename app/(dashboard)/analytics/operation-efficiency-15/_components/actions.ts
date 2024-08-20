@@ -1,22 +1,21 @@
 "use server";
 import { neon } from "@neondatabase/serverless";
-import { ProductionDataType } from "../../daily-achivement/components/analytics-chart";
 
 
-export async function getData(obbsheetid:string,date:string)    {
+export async function getData(obbsheetid:string,date:string)   {
     const sql = neon(process.env.DATABASE_URL || "");
 
-    const data = await sql`SELECT SUM(pd."productionCount") as count,o.name as name   ,oo.target
+    const data = await sql`SELECT pd."productionCount" as count,o.name as name  ,oo."seqNo" as seq, pd.timestamp as timestamp
     FROM "ProductionData" pd
     INNER JOIN "ObbOperation" oo ON pd."obbOperationId" = oo.id
     INNER JOIN "ObbSheet" os ON oo."obbSheetId" = os.id
     INNER JOIN "Operation" o ON o.id= oo."operationId"
     WHERE os.id = ${obbsheetid} and pd.timestamp like ${date}
-    group by o.name,oo.target,oo."seqNo" order by  oo."seqNo" ;`;
+     order by  pd.timestamp ;`;
 
-    // console.log("data fetched",data,)
+    //console.log("data fetched",data,)
 
 
  
-    return new Promise((resolve) => resolve(data  ))
+    return new Promise((resolve) => resolve(data ))
 }

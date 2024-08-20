@@ -10,6 +10,7 @@ import SelectObbSheetAndDate from "@/components/dashboard/common/select-obbsheet
 import { useToast } from "@/components/ui/use-toast";
 import { getData } from "./actions";
 
+
 interface AnalyticsChartProps {
     obbSheets: {
         id: string;
@@ -81,14 +82,22 @@ const AnalyticsChart = ({
         return { heatmapData, xAxisCategories };
     };
 
+
+
     // Fetch production data and product counts, then process and set them
     const handleFetchProductions = async (data: { obbSheetId: string; date: Date }) => {
         try {
             data.date.setDate(data.date.getDate() + 1);
             const formattedDate = data.date.toISOString().split('T')[0];
 
+
+            const sqlDate = formattedDate+"%";
             const response = await axios.get(`/api/efficiency/production?obbSheetId=${data.obbSheetId}&date=${formattedDate}`);
         
+
+            const prod = await getData(data.obbSheetId,sqlDate)
+            console.log("FOrmatted",getProcessData(prod))
+            console.log("daraaaaaaa",prod)
 
             const heatmapData = processForHeatmap(response.data.data);
             setHeatmapData(heatmapData.heatmapData);
@@ -145,3 +154,32 @@ const AnalyticsChart = ({
 }
 
 export default AnalyticsChart;
+
+
+
+
+const getProcessData = (data:any []) => {
+
+    const dataWithQuarter = data.map((d)=> (
+    
+        {
+            ...d,hour : new Date(d.timestamp).getHours(),
+            qtrIndex : Math.floor(new Date(d.timestamp).getMinutes()/15)
+
+        }
+    )
+
+    )
+
+    const result = Object.groupBy(dataWithQuarter, (d) => d.hour.toString()+d.qtrIndex.toString());
+    console.log("dataaaaaa",result)
+
+
+
+
+
+
+    return dataWithQuarter
+    
+
+}
