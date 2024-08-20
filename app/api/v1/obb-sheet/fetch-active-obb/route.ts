@@ -20,7 +20,9 @@ export async function GET(
             }
         });
 
-        return NextResponse.json({ data: obbSheets, message: 'OBB sheets fetched successfully'}, { status: 201 });
+        const response = NextResponse.json({ data: obbSheets, message: 'OBB sheets fetched successfully'}, { status: 201 });
+        response.headers.set('Cache-Control', 'no-cache, no-store, must-revalidate'); // Prevent caching
+        return response;
     } catch (error) {
         console.error("[FETCH_OBB_SHEETS_ERROR]", error);
         return new NextResponse("Internal Error", { status: 500 });
