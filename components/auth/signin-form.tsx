@@ -46,6 +46,7 @@ const SignInForm = () => {
     const onSubmit = async (data: z.infer<typeof formSchema>) => {
         try {
             const res = await axios.post('/api/auth/sign-in', data);
+            
             toast({
                 title: res.data,
                 variant: "success",
@@ -57,6 +58,8 @@ const SignInForm = () => {
                     </div>
                 ),
             });
+
+
             router.push('/dashboard');
             form.reset();
         } catch (error: any) {
