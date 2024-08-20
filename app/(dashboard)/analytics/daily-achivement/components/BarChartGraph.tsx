@@ -75,7 +75,7 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
       const seq=1;
       const chartData1: BarchartData[] = prod.map((item,index) => ({
         
-        name: (index+1+"-")+item.name.trim().substring(0,10)+"...",
+        name: (index+1+"-")+item.name.trim().substring(0,12)+"...",
         target: item.target * 10,
         count: item.count,
       }));
@@ -142,7 +142,7 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
                 data={chartData}
                 margin={{
                   top: 20,
-                  bottom: 70,
+                  bottom: 100,
                 }}
 
               >
@@ -157,7 +157,7 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
                 <XAxis
                   dataKey="name"
                   tickLine={true}
-                  tickMargin={50}
+                  tickMargin={45}
                   axisLine={true}
                   angle={90}
                   fontSize={10}
