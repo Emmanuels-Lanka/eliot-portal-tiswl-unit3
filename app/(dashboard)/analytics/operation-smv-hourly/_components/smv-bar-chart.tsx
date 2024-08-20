@@ -25,15 +25,18 @@ import {
     ChartTooltip,
     ChartTooltipContent,
 } from "@/components/ui/chart";
+import { useEffect, useState } from "react";
+import { getSMV } from "../../operation-smv/_components/actions";
 
 interface SmvBarChartProps {
-    data: {
-        hourGroup: string;
-        smv: number | null;
-    }[],
-    tsmv: number
+  obbSheetId:string
+  date:String
 }
 
+type BarChartData={
+  obbSheetId:string
+  date:Date
+}
 const chartConfig = {
     smv: {
         label: "Actual Cycle Time",
@@ -42,12 +45,24 @@ const chartConfig = {
 } satisfies ChartConfig
 
 const SmvBarChart = ({
-    data, tsmv
-}: SmvBarChartProps) => {
-    const chartData = data.map((item) => ({
-        name: item.hourGroup,
-        smv: item.smv,
-    }));
+   obbSheetId,date
+}: SmvBarChartProps)=>{
+  const[chartData,setChartData]=useState<BarChartData[]>([])
+
+
+  const FetchData=async()=>{
+    const result = await getSMV(obbSheetId, date);
+             
+    const chartData:BarChartData[]=result.map((item)=>({
+        obbSheetId:item.obbSheetId,
+        date:item.date
+    }))
+    setChartData(chartData)
+  }
+
+useEffect(() => {
+    FetchData()
+}, [date, obbSheetId])
 
     return (
         <Card className='pr-2 pt-6 pb-4 border rounded-xl bg-slate-50'>

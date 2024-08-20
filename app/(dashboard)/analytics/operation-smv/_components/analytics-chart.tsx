@@ -11,6 +11,8 @@ import EffiencyHeatmap from "@/components/dashboard/charts/efficiency-heatmap";
 import SelectObbSheetDateOperation from "@/components/dashboard/common/select-obbsheet-date-operation";
 import SmvBarChart from "./smv-bar-chart";
 import SelectObbSheetAndDate from "@/components/dashboard/common/select-obbsheet-and-date";
+import { getSMV } from "./actions";
+import { date } from "zod";
 
 interface AnalyticsChartProps {
     obbSheets: {
@@ -19,11 +21,15 @@ interface AnalyticsChartProps {
     }[] | null;
 }
 
-type SMVChartData = {
+ type SMVChartData = {
     groupName: string;
     actualSMV: number;
     calculatedSMV: number;
+  
 };
+
+
+
 
 const AnalyticsChart = ({
     obbSheets
@@ -49,6 +55,7 @@ const AnalyticsChart = ({
             const firstItem = group[0];
             const groupName = `${firstItem.obbOperation.operation.code} - ${firstItem.obbOperation.operation.name}`;
             const actualSMV = parseFloat(firstItem.obbOperation.smv);
+            
 
             // Calculate the average recorded SMV
             const sumSMV = group.reduce((acc, curr) => acc + parseFloat(curr.smv), 0);
@@ -68,13 +75,15 @@ const AnalyticsChart = ({
         try {
             data.date.setDate(data.date.getDate() + 1);
             const formattedDate = data.date.toISOString().split('T')[0];
-
-            const response = await axios.get(`/api/smv/fetch-by-obb-sheet?obbSheetId=${data.obbSheetId}&date=${formattedDate}`);
+            const result = await getSMV(data.obbSheetId, formattedDate);
+             
+            // const preparedData = prepareSMVChartData(result);
             
-            const result = prepareSMVChartData(response.data.data);
-            setBarchartData(result);
+            // setBarchartData(preparedData);
+            
+            console.log("Result",result)
 
-            router.refresh();
+             router.refresh();
         } catch (error: any) {
             console.error("Error fetching production data:", error);
             toast({
@@ -95,7 +104,11 @@ const AnalyticsChart = ({
             <div className="mx-auto max-w-[1680px]">
                 {barchartData.length > 0 ?
                     <div className="mt-12">
-                        <SmvBarChart data={barchartData} />
+                        <SmvBarChart 
+                        obbSheetId={obbSheetId} 
+                        date={date}
+                        smv={smv}
+                        />
                     </div>
                     :
                     <div className="mt-12 w-full">
