@@ -14,6 +14,7 @@ export async function getData(obbsheetid:string,date:string)  : Promise<Producti
   pd."eliotSerialNumber", 
   SUM(pd."productionCount") AS totprod, 
   obbopn.target, 
+  obbopn."seqNo", 
   sm."machineId", 
   null as "LoginTimestamp", 
   null  as "LogoutTimestamp"
@@ -37,11 +38,12 @@ GROUP BY
   obbopn."seqNo", 
   obbopn.target, 
   oprt.name, 
-  oprt."employeeId"
+  oprt."employeeId",
+  obbopn."seqNo"
   ORDER BY 
   obbopn."seqNo";`;
 
-    console.log("data fetchedddddd",data,)
+     
 
 
  
