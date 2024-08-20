@@ -25,11 +25,11 @@ FROM
   INNER JOIN "ObbSheet" obbs ON obbopn."obbSheetId" = obbs.id
   INNER JOIN "SewingMachine" sm ON sm.id = obbopn."sewingMachineId"
   INNER JOIN "Operator" oprt ON oprt.rfid = pd."operatorRfid"
-  INNER JOIN "OperatorSession" opses ON opses."operatorRfid" = oprt."rfid"
+  
 WHERE 
   pd.timestamp LIKE ${date} 
   AND obbs.id = ${obbsheetid}
-  AND  opses."LoginTimestamp" LIKE ${date} 
+  
 GROUP BY 
   sm."machineId", 
   pd."eliotSerialNumber", 
