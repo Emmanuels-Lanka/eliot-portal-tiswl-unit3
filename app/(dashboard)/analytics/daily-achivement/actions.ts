@@ -11,7 +11,7 @@ export async function getData(obbsheetid:string,date:string) : Promise<Productio
     INNER JOIN "ObbSheet" os ON oo."obbSheetId" = os.id
     INNER JOIN "Operation" o ON o.id= oo."operationId"
     WHERE os.id = ${obbsheetid} and pd.timestamp like ${date}
-    group by o.name,oo.target order by  max(oo."seqNo") ;`;
+    group by o.name,oo.target,oo."seqNo" order by  oo."seqNo" ;`;
 
     console.log("data fetched",data,)
 

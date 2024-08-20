@@ -121,7 +121,7 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
   return (
     <>
       {chartData.length > 0 ? (
-        <Card className="pr-2 pt-6  border rounded-xl bg-slate-50">
+        <Card className="pr-2 pt-6  border rounded-xl bg-slate-50" style={{width:chartWidth+"%", height:chartWidth+"%"}}>
           <div className="px-8">
             <CardHeader>
               <CardTitle className="text-center">
