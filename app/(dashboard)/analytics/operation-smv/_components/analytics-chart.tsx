@@ -48,10 +48,10 @@ const AnalyticsChart = ({
         try {
             
             data.date.setDate(data.date.getDate() + 1);
-            const formattedDate = data.date.toISOString().split('T')[0];
-            
-            setObbSheetId(data.obbSheetId);
+            //const formattedDate = data.date.toISOString().split('T')[0];
+            const formattedDate = data.date.toISOString().split('T')[0].toString()  ;
             setDate(formattedDate);
+            setObbSheetId(data.obbSheetId);
             
             // console.log("obbSheetId",obbSheetId)
             // console.log("date",formattedDate)

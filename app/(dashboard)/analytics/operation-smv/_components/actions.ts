@@ -3,10 +3,10 @@ import { neon } from "@neondatabase/serverless";
 import { SMVChartData } from "./analytics-chart";
 
 export async function getSMV(obbSheetId:String,date:String):Promise<SMVChartData[]> {
-  
+    console.log("SMV Data",obbSheetId,date)
   const sql = neon(process.env.DATABASE_URL || "");
 
-  const Date = `${date}%`; // Start of the day
+  const datef = `${date}%`; // Start of the day
 //   const endDate = `${date} 23:59:59`; // End of the day
 
 //   console.log("Start Date:", startDate);
@@ -29,21 +29,11 @@ export async function getSMV(obbSheetId:String,date:String):Promise<SMVChartData
 // ORDER BY 
 //   p.id ASC;`
 
-
- 
-
-
- 
-
-
-const smv = await sql `SELECT 
-     
+const smv = await sql`SELECT 
     o.smv,
-    op.name,
+    concat(o."seqNo",'-',op.name) as name,
     o."seqNo",
-    op.code,
     AVG(CAST(p.smv AS NUMERIC)) AS avg
-    
 FROM 
     "ProductionSMV" p
 JOIN 
@@ -52,16 +42,12 @@ JOIN
     "Operation" op ON o."operationId" = op.id
 WHERE 
     o."obbSheetId" = ${obbSheetId}
-    AND p.timestamp >=${Date}
-  
-group by   o.smv,
+    AND p.timestamp like ${datef}
+group by  o.smv,
     op.name,
-    o."seqNo",
-    op.code
+    o."seqNo" 
 ORDER BY 
-     op.name ASC;`
-
-
+     o."seqNo" ASC;`
   console.log("SMV Data",smv)
 
   return new Promise((resolve) => resolve(smv as SMVChartData[] ))

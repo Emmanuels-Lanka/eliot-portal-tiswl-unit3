@@ -81,6 +81,113 @@ export const SIDEBAR_ROUTES = [
         ]
     },
     {
+        categoryName: "Live Production Analytics",
+        routes: [
+            {
+                label: "Hourly Achievement",
+                href: "/analytics/hourly-production",
+                icon: BarChart3
+            },
+              {
+                label: "Daily Achivement ",
+                href: "/analytics/daily-achivement",
+                icon: BarChartHorizontal
+            },
+            {
+                label: "Achievement Rate",
+                href: "/analytics/achievement-rate-operation",
+                icon: BarChart3
+            },
+            {
+                label: "Production Heatmap (15min)",
+                href: "/analytics/operation-efficiency-15",
+                icon: BarChartHorizontal
+            },
+          
+            
+        ]
+        
+        
+    },
+    {
+        categoryName: "SMV Analytics",
+        routes: [
+            {
+                label: "Hourly Cycle Time",
+                href: "/analytics/operation-smv-hourly",
+                icon: BarChart3
+            },
+            {
+                label: "Target vs Actual",
+                href: "/analytics/operation-smv",
+                icon: BarChart3
+            }
+        ]
+    },
+    {
+        categoryName: "Operation Efficiency Analytics",
+        routes: [
+            {
+                label: "Operation Efficiency (60min)",
+                href: "/analytics/operation-efficiency-60",
+                icon: BarChartHorizontal
+            },
+            
+           
+
+ 
+        ]
+    },
+    {
+        categoryName: "Operator Efficiency Analytics",
+        routes: [
+            {
+                label: "Operator Efficiency (60min)",
+                href: "/analytics/operator-efficiency-60",
+                icon: BarChartHorizontal
+            },
+            // {
+            //     label: "Resource Utilization",
+            //     href: "/analytics/operator-effective-time",
+            //     icon: Table
+            // },
+            
+        ]
+    },
+    {
+        categoryName: "Records",
+        routes: [
+          
+            {
+                label: "Resource Utilization",
+                href: "/analytics/operator-effective-time",
+                icon: Table
+            },
+            {
+                label: "Logs",
+                href: "/analytics/log",
+                icon: Table
+            },
+            
+        ]
+    },
+    {
+        categoryName: "DHU Status",
+        routes: [
+            {
+                label: "Real-time DHU",
+                href: "/analytics/tls-productions",
+                icon: BarChartHorizontal
+            },
+            {
+                label: "GMT DHU",
+                href: "/analytics/tls-operators",
+                icon: BarChartHorizontal
+            },
+        ]
+    },
+   
+    {
         categoryName: null,
         routes: [
             {
@@ -205,123 +312,6 @@ export const SIDEBAR_ROUTES = [
             },
         ]
     },
-    {
-        categoryName: "Live Production Analytics",
-        routes: [
-            {
-                label: "Hourly Achievement",
-                href: "/analytics/hourly-production",
-                icon: BarChart3
-            },
-              {
-                label: "Daily Achivement ",
-                href: "/analytics/daily-achivement",
-                icon: BarChartHorizontal
-            },
-            {
-                label: "Achievement Rate",
-                href: "/analytics/achievement-rate-operation",
-                icon: BarChart3
-            },
-          
-            
-        ]
-        
-        
-    },
-    {
-        categoryName: "SMV Analytics",
-        routes: [
-            {
-                label: "Hourly Cycle Time",
-                href: "/analytics/operation-smv-hourly",
-                icon: BarChart3
-            },
-            {
-                label: "Target vs Actual",
-                href: "/analytics/operation-smv",
-                icon: BarChart3
-            }
-        ]
-    },
-    {
-        categoryName: "Operation Efficiency Analytics",
-        routes: [
-            {
-                label: "Operation Efficiency (60min)",
-                href: "/analytics/operation-efficiency-60",
-                icon: BarChartHorizontal
-            },
-            {
-                label: "Operation Efficiency (15min)",
-                href: "/analytics/operation-efficiency-15",
-                icon: BarChartHorizontal
-            },
-           
-
-            // // {
-            // //     label: "Operation Efficiency (15min)",
-            // //     href: "/analytics/operation-efficiency-15",
-            // //     icon: BarChartHorizontal
-            // // },
-        ]
-    },
-    {
-        categoryName: "Operator Efficiency Analytics",
-        routes: [
-            {
-                label: "Operator Efficiency (60min)",
-                href: "/analytics/operator-efficiency-60",
-                icon: BarChartHorizontal
-            },
-            // {
-            //     label: "Resource Utilization",
-            //     href: "/analytics/operator-effective-time",
-            //     icon: Table
-            // },
-            // {
-            //     label: "Operator Efficiency (15min)",
-            //     href: "/analytics/operator-efficiency-15",
-            //     icon: BarChartHorizontal
-            // },
-        ]
-    },
-    {
-        categoryName: "Records",
-        routes: [
-          
-            {
-                label: "Resource Utilization",
-                href: "/analytics/operator-effective-time",
-                icon: Table
-            },
-            {
-                label: "Logs",
-                href: "/analytics/log",
-                icon: Table
-            },
-            // {
-            //     label: "Operator Efficiency (15min)",
-            //     href: "/analytics/operator-efficiency-15",
-            //     icon: BarChartHorizontal
-            // },
-        ]
-    },
-    {
-        categoryName: "DHU Status",
-        routes: [
-            {
-                label: "Real-time DHU",
-                href: "/analytics/tls-productions",
-                icon: BarChartHorizontal
-            },
-            {
-                label: "GMT DHU",
-                href: "/analytics/tls-operators",
-                icon: BarChartHorizontal
-            },
-        ]
-    },
 ];
 
 export const HEADER_INFO = [
@@ -431,7 +421,7 @@ export const HEADER_INFO = [
         icon: BarChartHorizontal
     },
     {
-        label: "Operation Efficiency (15 Minute)",
+        label: "Production Heatmap (15 Minute)",
         href: "/analytics/operation-efficiency-15",
         icon: BarChartHorizontal
     },

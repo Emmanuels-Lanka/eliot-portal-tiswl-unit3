@@ -61,7 +61,7 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
 
     const Fetchdata = async () => {
         try {
- 
+            
         const prod = await getSMV(obbSheetId, date)
         // setProductionData(prod)
         console.log("ObbsheetId111",prod)
@@ -88,7 +88,11 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
     };
 
     useEffect(() => {
+
+        
+        if(obbSheetId){
         Fetchdata()
+        }
     }, [obbSheetId,date])
 
     // useEffect(()=>{
