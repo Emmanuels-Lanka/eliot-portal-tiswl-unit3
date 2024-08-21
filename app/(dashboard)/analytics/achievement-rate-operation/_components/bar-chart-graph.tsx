@@ -123,7 +123,7 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
                                 data={chartData}
                                 margin={{
                                     top: 0,
-                                    bottom: 60
+                                    bottom: 300
                                 }}
                                 barGap={10}
                                 className="h-[300px] "
@@ -139,9 +139,9 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
                                 <XAxis
                                     dataKey="name"
                                     tickLine={false}
-                                    tickMargin={50}
+                                    tickMargin={140}
                                     axisLine={true}
-                                    angle={85}
+                                    angle={90}
                                 />
                                 <ChartTooltip
                                     cursor={false}

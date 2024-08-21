@@ -68,7 +68,7 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
               
       
             const chartData1: BarChartData[] = prod.map((item) => ({
-               name:item.name.trim().substring(0,10)+"...",
+               name:item.name,
                smv:item.smv,
             //    avg:Number(item.avg.toFixed(2))
              avg:Number(parseFloat(item.avg.toString()).toFixed(2))
@@ -116,14 +116,14 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
                     {/* <CardDescription>Number of items came across each scanning points today</CardDescription> */}
                 </CardHeader>
             </div>
-            <CardContent>
-                <ChartContainer config={chartConfig} className="min-h-[650px] w-full"  style={{width:chartWidth+"%", height:chartWidth+"%"}} >
+            <CardContent className="w-auto h-auto" style={{width:chartWidth+"%"}}  >
+                <ChartContainer config={chartConfig} className="min-h-[650px] w-auto"  style={{width:chartWidth+"%", height:chartWidth+"%"}} >
                     <BarChart 
                         accessibilityLayer 
                         data={chartData}
                         margin={{
-                            top: 30,
-                            bottom: 200
+                            top: 50,
+                            bottom: 250
                         }}
                         startAngle={10}
                     >
@@ -138,14 +138,15 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
                         <XAxis
                             dataKey="name"
                             tickLine={false}
-                            tickMargin={100}
+                            tickMargin={180}
                             axisLine={false}
                             angle={90}
                             fontSize={11}
-                            fontFamily="Inter"
-                            fontWeight={600}
-                            className="z-[999]"
-                            minTickGap={0}
+                            // fontFamily="Inter"
+                            // fontWeight={600}
+                            // className="z-[999]"
+                            
+                            interval={0}
                         />
                         <ChartTooltip
                             cursor={false}
