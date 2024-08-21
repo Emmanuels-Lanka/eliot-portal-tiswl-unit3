@@ -9,7 +9,6 @@ import HeatmapChart from "@/components/dashboard/charts/heatmap-chart";
 import SelectObbSheetAndDate from "@/components/dashboard/common/select-obbsheet-and-date";
 import { useToast } from "@/components/ui/use-toast";
 import { getData } from "./actions";
-import ReactApexChart from "react-apexcharts";
 
 
 interface AnalyticsChartProps {
@@ -29,20 +28,6 @@ type HourGroup = {
     };
 }
 
-const options= {
-    chart: {
-      height: 350,
-      type: 'heatmap',
-    },
-    dataLabels: {
-      enabled: false
-    },
-    colors: ["#008FFB"],
-    title: {
-      text: 'HeatMap Chart (Single color)'
-    },
-  }
-
 const AnalyticsChart = ({
     obbSheets,
     title
@@ -51,7 +36,7 @@ const AnalyticsChart = ({
     const router = useRouter();
 
     const [obbSheet, setObbSheet] = useState<ObbSheet | null>(null);
-    const [heatmapData, setHeatmapData] = useState<any| null>(null);
+    const [heatmapData, setHeatmapData] = useState<number[][] | null>(null);
     const [heatmapCategories, setHeatmapCategories] = useState<string[] | null>(null);
 
     // Process production data to prepare it for the heatmap
@@ -107,7 +92,7 @@ const AnalyticsChart = ({
 
 
             const sqlDate = formattedDate + "%";
-            //const response = await axios.get(`/api/efficiency/production?obbSheetId=${data.obbSheetId}&date=${formattedDate}`);
+            const response = await axios.get(`/api/efficiency/production?obbSheetId=${data.obbSheetId}&date=${formattedDate}`);
 
 
             const prod = await getData(data.obbSheetId, sqlDate)
@@ -118,7 +103,7 @@ const AnalyticsChart = ({
             const heatmapData = getProcessData(prod);
             setHeatmapData(heatmapData );
             //setHeatmapCategories(heatmapData.xAxisCategories);
-            //setObbSheet(response.data.obbSheet);
+            setObbSheet(response.data.obbSheet);
 
             router.refresh();
         } catch (error: any) {
@@ -149,7 +134,15 @@ const AnalyticsChart = ({
                 {heatmapData !== null && heatmapCategories !== null ?
                     <div className="mt-12">
                         <h2 className="text-lg mb-2 font-medium text-slate-700">{title}</h2>
-                        <ReactApexChart options={ options} series={heatmapData} type="heatmap" height={350}/> 
+                        <HeatmapChart
+                            xAxisLabel='Operations'
+                            height={1800}
+                            type='15min'
+                            efficiencyLow={obbSheet?.efficiencyLevel1}
+                            efficiencyHigh={obbSheet?.efficiencyLevel3}
+                            heatmapData={heatmapData}
+                            heatmapCategories={heatmapCategories}
+                        />
                     </div>
                     :
                     <div className="mt-12 w-full">
