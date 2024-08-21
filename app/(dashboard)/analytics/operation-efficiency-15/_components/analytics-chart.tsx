@@ -10,6 +10,8 @@ import SelectObbSheetAndDate from "@/components/dashboard/common/select-obbsheet
 import { useToast } from "@/components/ui/use-toast";
 import { getData } from "./actions";
 import ReactApexChart from "react-apexcharts";
+import { ApexOptions } from "apexcharts";
+import HeatMapChartNew from "./heatMapChart";
 
 
 interface AnalyticsChartProps {
@@ -29,19 +31,104 @@ type HourGroup = {
     };
 }
 
-const options= {
+// const options :ApexOptions =  {
+//     chart: {
+//       height: 350,
+//       type: 'heatmap',
+//     },
+//     dataLabels: {
+//       enabled: false
+//     },
+//     colors: ["#008FFB"],
+//     title: {
+//       text: 'HeatMap Chart (Single color)'
+//     },
+//   }
+
+
+const xAxisLabel = "Productions"
+const efficiencyLow = 5
+const efficiencyHigh = 50
+const width = 580
+
+
+const options = {
     chart: {
-      height: 350,
-      type: 'heatmap',
+        type: 'heatmap' as const,
+    },
+    plotOptions: {
+        heatmap: {
+            enableShades: false,
+            radius: 24,
+            useFillColorAsStroke: false,
+            colorScale: {
+                ranges: [
+                    {
+                        from: -10,
+                        to: -0.9,
+                        name: 'No Data',
+                        color: '#f1f5f9'
+                    },
+                    {
+                        from: 0,
+                        to: efficiencyLow,
+                        name: 'Low',
+                        color: '#ef4444'
+                    },
+                    {
+                        from: efficiencyLow,
+                        to: efficiencyHigh,
+                        name: 'Medium',
+                        color: '#f97316'
+                    },
+                    {
+                        from: efficiencyHigh,
+                        to: 1000,
+                        name: 'High',
+                        color: '#16a34a'
+                    },
+                ],
+            },
+        },
     },
     dataLabels: {
-      enabled: false
+        enabled: true,
+        style: {
+            colors: ['#fff']
+        }
     },
-    colors: ["#008FFB"],
-    title: {
-      text: 'HeatMap Chart (Single color)'
+    stroke: {
+        width: 0,
     },
-  }
+    xaxis: {
+        title: {
+            text: xAxisLabel,
+            style: {
+                color: '#0070c0',
+                fontSize: '14px',
+                fontWeight: 600,
+                fontFamily: 'Inter, sans-serif',
+            }
+        },
+        labels: {
+            style: {
+                colors: '#0070c0',
+                fontSize: '12px',
+                fontFamily: 'Inter, sans-serif',
+            },
+        },
+       
+    },
+    yaxis: {
+        labels: {
+            style: {
+                colors: '#0070c0',
+                fontSize: '12px',
+                fontFamily: 'Inter, sans-serif',
+            },
+        },
+    },
+};
 
 const AnalyticsChart = ({
     obbSheets,
@@ -146,10 +233,12 @@ const AnalyticsChart = ({
                 />
             </div>
             <div className="mx-auto max-w-[1680px]">
-                {heatmapData !== null && heatmapCategories !== null ?
+            
+                {heatmapData !== null ?
                     <div className="mt-12">
                         <h2 className="text-lg mb-2 font-medium text-slate-700">{title}</h2>
-                        <ReactApexChart options={ options} series={heatmapData} type="heatmap" height={350}/> 
+                        <ReactApexChart options={ options} series={heatmapData} type="heatmap" height={1000} width={1000} /> 
+                       {/* <HeatMapChartNew></HeatMapChartNew> */}
                     </div>
                     :
                     <div className="mt-12 w-full">
@@ -166,45 +255,88 @@ export default AnalyticsChart;
 
 
 
+// const getProcessData = (data: any[]) => {
+//     const fmtDataSeries = []
+//     const dataWithQuarter = data.map((d) => (
+//         {
+//             ...d,  hour: new Date(d.timestamp).getHours(), qtrIndex: Math.floor(new Date(d.timestamp).getMinutes() / 15)
+//         }
+//     )
+//     )
+
+//     const result = Object.groupBy(dataWithQuarter, (d) => d.hour.toString() + d.qtrIndex.toString());
+
+//     for (const [key, value] of Object.entries(result)) {
+
+//         const dataGBOp = Object.groupBy(value || [], (d) =>  d.name);
+//         const dataPoints = []
+//         for (const [key, value] of Object.entries(dataGBOp)) {
+
+//             const v = value?.reduce((a, d) => {
+
+//                 return a.count + d.count
+//             })
+
+//             console.log("vqw", v)
+
+//             dataPoints.push({ x: key, y: v?.count ?? 0 })
+
+//         }
+//         fmtDataSeries.push({ name: key, data: [...dataPoints] })
+//     }
+
+
+//     console.log("dataaaaaa", fmtDataSeries)
+
+
+
+
+
+
+//     return fmtDataSeries
+
+
+// }
+
 const getProcessData = (data: any[]) => {
-    const fmtDataSeries = []
-    const dataWithQuarter = data.map((d) => (
-        {
-            ...d,  hour: new Date(d.timestamp).getHours(), qtrIndex: Math.floor(new Date(d.timestamp).getMinutes() / 15)
+    const fmtDataSeries = [];
+    const dataWithQuarter = data.map((d) => ({
+        ...d,
+        hour: new Date(d.timestamp).getHours(),
+        qtrIndex: Math.floor(new Date(d.timestamp).getMinutes() / 15),
+    }));
+
+    const result = Object.entries(
+        dataWithQuarter.reduce((acc, current) => {
+            const key = `${current.hour}${current.qtrIndex}`;
+            if (!acc[key]) {
+                acc[key] = [];
+            }
+            acc[key].push(current);
+            return acc;
+        }, {})
+    );
+
+    for (const [key, value] of result) {
+        const dataGBOp = Object.entries(
+            value.reduce((acc, current) => {
+                if (!acc[current.name]) {
+                    acc[current.name] = [];
+                }
+                acc[current.name].push(current);
+                return acc;
+            }, {})
+        );
+
+        const dataPoints = [];
+        for (const [name, values] of dataGBOp) {
+            const count = values.reduce((a, d) => a + d.count, 0);
+            dataPoints.push({ x: name, y: count });
         }
-    )
-    )
-
-    const result = Object.groupBy(dataWithQuarter, (d) => d.hour.toString() + d.qtrIndex.toString());
-
-    for (const [key, value] of Object.entries(result)) {
-
-        const dataGBOp = Object.groupBy(value || [], (d) =>  d.name);
-        const dataPoints = []
-        for (const [key, value] of Object.entries(dataGBOp)) {
-
-            const v = value?.reduce((a, d) => {
-
-                return a.count + d.count
-            })
-
-            console.log("vqw", v)
-
-            dataPoints.push({ x: key, y: v?.count ?? 0 })
-
-        }
-        fmtDataSeries.push({ name: key, data: [...dataPoints] })
+        fmtDataSeries.push({ name: key, data: dataPoints });
     }
 
+    console.log("dataaaaaa", fmtDataSeries);
 
-    console.log("dataaaaaa", fmtDataSeries)
-
-
-
-
-
-
-    return dataWithQuarter
-
-
-}
+    return fmtDataSeries;
+};
