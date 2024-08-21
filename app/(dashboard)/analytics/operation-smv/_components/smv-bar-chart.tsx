@@ -85,11 +85,12 @@ const SmvBarChart = ({
                             tickLine={false}
                             tickMargin={100}
                             axisLine={false}
-                            angle={-45}
+                            angle={90}
                             fontSize={11}
                             fontFamily="Inter"
                             fontWeight={600}
                             className="z-[999]"
+                            minTickGap={0}
                         />
                         <ChartTooltip
                             cursor={false}
