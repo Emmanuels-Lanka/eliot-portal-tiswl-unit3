@@ -1,14 +1,14 @@
 "use client"
 
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ObbSheet, ProductionData } from "@prisma/client";
 
 import HeatmapChart from "@/components/dashboard/charts/heatmap-chart";
 import SelectObbSheetAndDate from "@/components/dashboard/common/select-obbsheet-and-date";
 import { useToast } from "@/components/ui/use-toast";
-import { getData } from "./actions";
+import { geOperationList, getData } from "./actions";
 import ReactApexChart from "react-apexcharts";
 import { ApexOptions } from "apexcharts";
 import HeatMapChartNew from "./heatMapChart";
@@ -51,84 +51,23 @@ const efficiencyLow = 5
 const efficiencyHigh = 50
 const width = 580
 
-
-const options = {
-    chart: {
-        type: 'heatmap' as const,
-    },
-    plotOptions: {
-        heatmap: {
-            enableShades: false,
-            radius: 24,
-            useFillColorAsStroke: false,
-            colorScale: {
-                ranges: [
-                    {
-                        from: -10,
-                        to: -0.9,
-                        name: 'No Data',
-                        color: '#f1f5f9'
-                    },
-                    {
-                        from: 0,
-                        to: efficiencyLow,
-                        name: 'Low',
-                        color: '#ef4444'
-                    },
-                    {
-                        from: efficiencyLow,
-                        to: efficiencyHigh,
-                        name: 'Medium',
-                        color: '#f97316'
-                    },
-                    {
-                        from: efficiencyHigh,
-                        to: 1000,
-                        name: 'High',
-                        color: '#16a34a'
-                    },
-                ],
-            },
-        },
-    },
-    dataLabels: {
-        enabled: true,
-        style: {
-            colors: ['#fff']
-        }
-    },
-    stroke: {
-        width: 0,
-    },
-    xaxis: {
-        title: {
-            text: xAxisLabel,
-            style: {
-                color: '#0070c0',
-                fontSize: '14px',
-                fontWeight: 600,
-                fontFamily: 'Inter, sans-serif',
-            }
-        },
-        labels: {
-            style: {
-                colors: '#0070c0',
-                fontSize: '12px',
-                fontFamily: 'Inter, sans-serif',
-            },rotate: -90,
-        },
-       
-    },
-    yaxis: {
-        labels: {
-            style: {
-                colors: '#0070c0',
-                fontSize: '12px',
-                fontFamily: 'Inter, sans-serif',
-            },
-        },
-    },
+const ensureAllCategoriesHaveData = (series:any, categories:any, defaultValue = 0) => {
+    console.log("categories",categories)
+  return series.map((serie:any) => {
+    const filledData = categories.map((category:any) => {
+      const dataPoint = serie.data.find((d:any) => d.x === category);
+      return {
+        x: category,
+        y: dataPoint ? dataPoint.y : defaultValue,
+      };
+    });
+    return {
+      ...serie,
+      data: filledData,
+    };
+  });
 };
+
 
 const AnalyticsChart = ({
     obbSheets,
@@ -139,7 +78,89 @@ const AnalyticsChart = ({
 
     const [obbSheet, setObbSheet] = useState<ObbSheet | null>(null);
     const [heatmapData, setHeatmapData] = useState<any| null>(null);
+    const [heatmapFullData, setHeatmapFullData] = useState<any| null>(null);
+    const [operationList, setoperationList] = useState<any[]>([]);
     const [heatmapCategories, setHeatmapCategories] = useState<string[] | null>(null);
+
+    const options = {
+        chart: {
+            type: 'heatmap' as const,
+        },
+        plotOptions: {
+            heatmap: {
+                enableShades: false,
+                radius: 24,
+                useFillColorAsStroke: false,
+                colorScale: {
+                    ranges: [
+                        {
+                            from: -10,
+                            to: -0.9,
+                            name: 'No Data',
+                            color: '#f1f5f9'
+                        },
+                        {
+                            from: 0,
+                            to: efficiencyLow,
+                            name: 'Low',
+                            color: '#ef4444'
+                        },
+                        {
+                            from: efficiencyLow,
+                            to: efficiencyHigh,
+                            name: 'Medium',
+                            color: '#f97316'
+                        },
+                        {
+                            from: efficiencyHigh,
+                            to: 1000,
+                            name: 'High',
+                            color: '#16a34a'
+                        },
+                    ],
+                },
+            },
+        },
+        dataLabels: {
+            enabled: true,
+            style: {
+                colors: ['#fff']
+            }
+        },
+        stroke: {
+            width: 0,
+        },
+        xaxis: {
+            title: {
+                text: xAxisLabel,
+                style: {
+                    color: '#0070c0',
+                    fontSize: '14px',
+                    fontWeight: 600,
+                    fontFamily: 'Inter, sans-serif',
+                }
+            },
+            labels: {
+                style: {
+                    colors: '#0070c0',
+                    fontSize: '12px',
+                    fontFamily: 'Inter, sans-serif',
+                },rotate: -90,
+            },
+            categories: operationList.map(o=> o.name ), // x-axis categories
+           
+        },
+     
+        yaxis: {
+            labels: {
+                style: {
+                    colors: '#0070c0',
+                    fontSize: '12px',
+                    fontFamily: 'Inter, sans-serif',
+                },
+            },
+        },
+    };
 
     // Process production data to prepare it for the heatmap
     // const processForHeatmap = (productionData: ProductionData[]) => {
@@ -198,12 +219,17 @@ const AnalyticsChart = ({
 
 
             const prod = await getData(data.obbSheetId, sqlDate)
+            const opList = await geOperationList(data.obbSheetId )
+            setoperationList(opList)
             //console.log("FOrmatted", getProcessData(prod))
             //console.log("daraaaaaaa", prod)
 
             //const heatmapData = processForHeatmap(response.data.data);
-            const heatmapData = getProcessData(prod);
+            const heatmapData = getProcessData(prod,operationList);
+            
             setHeatmapData(heatmapData );
+
+
             //setHeatmapCategories(heatmapData.xAxisCategories);
             //setObbSheet(response.data.obbSheet);
 
@@ -224,6 +250,13 @@ const AnalyticsChart = ({
         }
     }
 
+    useEffect(()=>{
+        if(heatmapData?.length>0){
+        const filledSeries = ensureAllCategoriesHaveData(heatmapData, operationList.map(o=>o.name));
+        setHeatmapFullData(filledSeries)
+        }
+    },[heatmapData])
+
     return (
         <>
             <div className="mx-auto max-w-7xl">
@@ -234,10 +267,10 @@ const AnalyticsChart = ({
             </div>
             <div className="mx-auto max-w-[1680px]">
             
-                {heatmapData !== null ?
+                {heatmapFullData !== null ?
                     <div className="mt-12 ">
                         <h2 className="text-lg mb-2 font-medium text-slate-700">{title}</h2>
-                        <ReactApexChart options={ options} series={heatmapData} type="heatmap" height={1000} width={1000} /> 
+                        <ReactApexChart options={ options} series={heatmapFullData} type="heatmap" height={1000} width={1000} /> 
                        {/* <HeatMapChartNew></HeatMapChartNew> */}
                     </div>
                     :
@@ -269,7 +302,7 @@ return res
 }
 
 
-  const getProcessData = (data: any[]) => {
+  const getProcessData = (data: any[],operationList:any[]) => {
       const fmtDataSeries = []
       const dataWithQuarter = data.map((d) => (
           {
@@ -281,11 +314,11 @@ return res
 
     //   const result = Object.groupBy(dataWithQuarter, (d) => d.hour.toString() + d.qtrIndex.toString());
       const result = Object.groupBy(dataWithQuarter, (d) => getTimeSlotLabel(d.hour,d.qtrIndex));
-
+      
       
       for (const [key, value] of Object.entries(result)) {
 
-          const dataGBOp = Object.groupBy(value || [], (d) =>  d.seqNo);
+          const dataGBOp = Object.groupBy(value || [], (d) =>  d.name);
           const dataPoints = []
           for (const [key, value] of Object.entries(dataGBOp)) {
 
@@ -295,11 +328,16 @@ return res
               },0)
 
             //   console.log("vqw", v)
-
+              
               dataPoints.push({ x: key, y: v ?? 0 })
               
 
           }
+
+          //fill unavailble timeslots
+
+
+
           fmtDataSeries.push({ name: key, data: dataPoints })
       }
 
