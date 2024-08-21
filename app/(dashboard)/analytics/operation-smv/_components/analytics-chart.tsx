@@ -33,7 +33,8 @@ interface AnalyticsChartProps {
 
 
 const AnalyticsChart = ({
-    obbSheets
+    obbSheets,
+    title
 }: AnalyticsChartProps) => {
     const { toast } = useToast();
     const router = useRouter();

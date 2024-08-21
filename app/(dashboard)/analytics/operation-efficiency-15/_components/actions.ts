@@ -20,7 +20,7 @@ export async function getData(obbsheetid:string,date:string)  : Promise<any[]>{
     return new Promise((resolve) => resolve(data ))
 }
 
-export async function geOperationList(obbsheetid:string )   {
+export async function geOperationList(obbsheetid:string ) : Promise<any[]>  {
     const sql = neon(process.env.DATABASE_URL || "");
  
     // const data = await sql`SELECT   concat(oo."seqNo",'-',o.name ) as name

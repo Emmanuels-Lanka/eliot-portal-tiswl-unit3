@@ -40,9 +40,9 @@ const chartConfig = {
 } satisfies ChartConfig
 
 type BarChartData = {
-    smv:number
-    name:string
-    avg: number
+    smv:number;
+    name:string;
+    avg: number;
 };
 
 interface BarChartGraphProps {
@@ -71,7 +71,7 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
                name:item.name.trim().substring(0,10)+"...",
                smv:item.smv,
             //    avg:Number(item.avg.toFixed(2))
-             avg:parseFloat(item.avg).toFixed(2)
+             avg:Number(parseFloat(item.avg.toString()).toFixed(2))
 
             }));
             console.log("AVG values:", chartData1.map(item => item.avg));
@@ -108,7 +108,7 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
         <Card className='pr-2 pt-6 pb-4 border rounded-xl bg-slate-50'>
             <div className="px-8">
                 <CardHeader>
-                    <CardTitle>Target SMV vs Actual Cycle Time!</CardTitle>
+                    <CardTitle>Target SMV vs Actual Cycle Time</CardTitle>
                     {/* <CardDescription>Number of items came across each scanning points today</CardDescription> */}
                 </CardHeader>
             </div>
