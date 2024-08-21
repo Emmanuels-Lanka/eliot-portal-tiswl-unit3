@@ -70,7 +70,7 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
 
             console.log("workingHrs", workingHrs)
             const chartData: BarChartData[] = prod.map((item,index) => ({
-                name:(index+1+"-")+getShortName(item.name),
+                name:item.name,
                 count: item.count,
                 target: item.target * workingHrs,
                 ratio: parseFloat((item.count / (item.target * workingHrs)).toFixed(2)),

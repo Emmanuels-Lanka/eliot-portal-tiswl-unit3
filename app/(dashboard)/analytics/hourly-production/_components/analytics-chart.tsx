@@ -7,7 +7,7 @@ import { ProductionData } from "@prisma/client";
 
 import { useToast } from "@/components/ui/use-toast";
 import SelectObbSheetDateHour from "@/components/dashboard/common/select-obbsheet-date-hour";
-import LineChartGraph from "./line-chart-graph";
+import LineChartGraph from "./bar-chart-graph";
 
 interface AnalyticsChartProps {
     obbSheets: {
