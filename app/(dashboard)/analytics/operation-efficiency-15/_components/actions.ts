@@ -2,7 +2,7 @@
 import { neon } from "@neondatabase/serverless";
 
 
-export async function getData(obbsheetid:string,date:string)   {
+export async function getData(obbsheetid:string,date:string)  : Promise<any[]>{
     const sql = neon(process.env.DATABASE_URL || "");
  
     const data = await sql`SELECT pd."productionCount" as count,concat(oo."seqNo",'-',o.name ) as name  , pd.timestamp as timestamp, oo."seqNo"
