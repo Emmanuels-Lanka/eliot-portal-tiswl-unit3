@@ -89,7 +89,7 @@ const AnalyticsChart = ({
         plotOptions: {
             heatmap: {
                 enableShades: false,
-                radius: 24,
+                radius: 50,
                 useFillColorAsStroke: false,
                 colorScale: {
                     ranges: [
@@ -226,7 +226,7 @@ const AnalyticsChart = ({
 
             //const heatmapData = processForHeatmap(response.data.data);
             const heatmapData = getProcessData(prod,operationList);
-            
+            console.log("heatmapData1", heatmapData)
             setHeatmapData(heatmapData );
 
 
@@ -270,7 +270,7 @@ const AnalyticsChart = ({
                 {heatmapFullData !== null ?
                     <div className="mt-12 ">
                         <h2 className="text-lg mb-2 font-medium text-slate-700">{title}</h2>
-                        <ReactApexChart options={ options} series={heatmapFullData} type="heatmap" height={1000} width={1000} /> 
+                        <ReactApexChart options={ options} series={heatmapFullData} type="heatmap" height={1000} width={1500} /> 
                        {/* <HeatMapChartNew></HeatMapChartNew> */}
                     </div>
                     :

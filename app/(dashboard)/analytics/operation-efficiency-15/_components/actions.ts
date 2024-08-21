@@ -23,7 +23,7 @@ export async function getData(obbsheetid:string,date:string)   {
 export async function geOperationList(obbsheetid:string )   {
     const sql = neon(process.env.DATABASE_URL || "");
  
-    const data = await sql`SELECT oo."seqNo",o.name 
+    const data = await sql`SELECT  concat(oo."seqNo",'-',o.name ) as name
     FROM "ObbOperation" oo  
     INNER JOIN "ObbSheet" os ON oo."obbSheetId" = os.id
     inner JOIN "Operation" o ON o.id= oo."operationId"
