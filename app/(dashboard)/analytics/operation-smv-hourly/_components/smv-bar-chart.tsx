@@ -30,7 +30,7 @@ import { getSMV } from "../../operation-smv/_components/actions";
 
 interface SmvBarChartProps {
   obbSheetId:string
-  date:String
+  date:Date
 }
 
 type BarChartData={

@@ -24,45 +24,96 @@ import {
     ChartTooltip,
     ChartTooltipContent,
 } from "@/components/ui/chart";
-
-interface SmvBarChartProps {
-    data: {
-        groupName: string;
-        actualSMV: number;
-        calculatedSMV: number;
-    }[]
-}
+import { useEffect, useState } from "react";
+import { getSMV } from "./actions";
+import { Button } from "@/components/ui/button";
 
 const chartConfig = {
-    actualSMV: {
+    avg: {
         label: "Target SMV",
         color: "hsl(var(--chart-1))",
     },
-    calculatedSMV: {
+    smv: {
         label: "Actual Cycle Time",
         color: "hsl(var(--chart-2))",
     }
 } satisfies ChartConfig
 
-const SmvBarChart = ({ 
-    data
-}: SmvBarChartProps) => {
-    const chartData = data.map((item) => ({
-        name: item.groupName,
-        actualSMV: item.actualSMV,
-        calculatedSMV: item.calculatedSMV.toFixed(2),
-    }));
+type BarChartData = {
+    smv:number
+    name:string
+    avg: number
+};
+
+interface BarChartGraphProps {
+    date: string
+    obbSheetId: string
+}
+
+
+
+const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
+    const [chartData, setChartData] = useState<BarChartData[]>([])
+    const [productionData, setProductionData] = useState<BarChartData[]>([]);
+
+    const[chartWidth,setChartWidth] = useState<number>(100)
+
+
+    const Fetchdata = async () => {
+        try {
+ 
+        const prod = await getSMV(obbSheetId, date)
+        // setProductionData(prod)
+        console.log("ObbsheetId111",prod)
+              
+      
+            const chartData1: BarChartData[] = prod.map((item) => ({
+               name:item.name.trim().substring(0,10)+"...",
+               smv:item.smv,
+            //    avg:Number(item.avg.toFixed(2))
+             avg:parseFloat(item.avg).toFixed(2)
+
+            }));
+            console.log("AVG values:", chartData1.map(item => item.avg));
+            setProductionData(chartData1)
+            setChartData(chartData1)
+            console.log("chart data",chartData1)
+            
+            
+            } 
+            catch (error) {
+            console.error("Error fetching data:", error);
+        }
+
+    };
+
+    useEffect(() => {
+        Fetchdata()
+    }, [obbSheetId,date])
+
+    // useEffect(()=>{
+    //     console.log("1firstq")
+    // },[])
+    // useEffect(() => {
+    //     const interval = setInterval(() => {
+    //         Fetchdata();
+    //     }, 60000); 
+    
+    //     return () => clearInterval(interval);
+    // }, [date, obbSheetId]);
+   
 
     return (
+        <>
         <Card className='pr-2 pt-6 pb-4 border rounded-xl bg-slate-50'>
             <div className="px-8">
                 <CardHeader>
-                    <CardTitle>Target SMV vs Actual Cycle Time</CardTitle>
+                    <CardTitle>Target SMV vs Actual Cycle Time!</CardTitle>
                     {/* <CardDescription>Number of items came across each scanning points today</CardDescription> */}
                 </CardHeader>
             </div>
             <CardContent>
-                <ChartContainer config={chartConfig} className="min-h-[576px] w-full">
+                <ChartContainer config={chartConfig} className="min-h-[650px] w-full"  style={{width:chartWidth+"%", height:chartWidth+"%"}} >
                     <BarChart 
                         accessibilityLayer 
                         data={chartData}
@@ -74,7 +125,7 @@ const SmvBarChart = ({
                     >
                         <CartesianGrid vertical={false} />
                         <YAxis
-                            dataKey="actualSMV"
+                            dataKey="smv"
                             type="number"
                             tickLine={true}
                             tickMargin={10}
@@ -85,7 +136,7 @@ const SmvBarChart = ({
                             tickLine={false}
                             tickMargin={100}
                             axisLine={false}
-                            angle={-45}
+                            angle={90}
                             fontSize={11}
                             fontFamily="Inter"
                             fontWeight={600}
@@ -99,8 +150,9 @@ const SmvBarChart = ({
                             content={<ChartLegendContent />} 
                             className="-mb-10 text-xs text-blue-500 font-bold" 
                             margin={{top:10}}
+                            
                         />
-                        <Bar dataKey="actualSMV" fill="var(--color-actualSMV)" radius={5}>
+                        <Bar dataKey="smv" fill="var(--color-smv)" radius={5} barSize={5}>
                             <LabelList
                                 position="top"
                                 offset={12}
@@ -109,7 +161,7 @@ const SmvBarChart = ({
                                 fontFamily="Inter"
                             />
                         </Bar>
-                        <Bar dataKey="calculatedSMV" fill="var(--color-calculatedSMV)" radius={5}>
+                         <Bar dataKey="avg" fill="var(--color-avg)" radius={5} barSize={5}>
                             <LabelList
                                 position="top"
                                 offset={12}
@@ -122,7 +174,15 @@ const SmvBarChart = ({
                 </ChartContainer>
             </CardContent>
         </Card>
+
+        <div className="flex justify-center gap-2 mt-5 ">
+
+<Button onClick={() => setChartWidth((p) => p + 20)} className="rounded-full bg-gray-300">+</Button>
+<Button onClick={() => setChartWidth((p) => p - 20)} className="rounded-full bg-gray-300"> -</Button>
+
+</div>
+        </>
     )
 }
 
-export default SmvBarChart
+export default BarChartGraph
