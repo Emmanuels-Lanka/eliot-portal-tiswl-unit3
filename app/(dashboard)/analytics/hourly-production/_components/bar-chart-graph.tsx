@@ -53,7 +53,7 @@ const getShortName = (name: any) => {
 
 }
 const LineChartGraph = ({ data }: LineChartGraphProps) => {
-    const [chartWidth, setChartWidth] = useState<number>(150);
+    const [chartWidth, setChartWidth] = useState<number>(100);
     const chartData = data.map((item,index) => ({
         name: (index+1+"-")+getShortName(item.name),
         target: item.target,

@@ -51,7 +51,7 @@ const efficiencyLow = 5
 const efficiencyHigh = 50
 const width = 580
 
-const ensureAllCategoriesHaveData = (series:any, categories:any, defaultValue = 0) => {
+const ensureAllCategoriesHaveData = (series:any, categories:any, defaultValue = -1) => {
     console.log("categories",categories)
   return series.map((serie:any) => {
     const filledData = categories.map((category:any) => {
@@ -95,9 +95,9 @@ const AnalyticsChart = ({
                     ranges: [
                         {
                             from: -10,
-                            to: -0.9,
+                            to: 0,
                             name: 'No Data',
-                            color: '#f1f5f9'
+                            color: '#FFFFFF'
                         },
                         {
                             from: 0,
@@ -146,8 +146,10 @@ const AnalyticsChart = ({
                     fontSize: '12px',
                     fontFamily: 'Inter, sans-serif',
                 },rotate: -90,
+                minHeight:400,
             },
-            categories: operationList.map(o=> o.name ), // x-axis categories
+            categories: operationList.map(o=> o.name  ), // x-axis categories
+            
            
         },
      
@@ -157,7 +159,9 @@ const AnalyticsChart = ({
                     colors: '#0070c0',
                     fontSize: '12px',
                     fontFamily: 'Inter, sans-serif',
+                    marginBottom:'100px',
                 },
+                offsetY: 10,
             },
         },
     };
@@ -270,7 +274,7 @@ const AnalyticsChart = ({
                 {heatmapFullData !== null ?
                     <div className="mt-12 ">
                         <h2 className="text-lg mb-2 font-medium text-slate-700">{title}</h2>
-                        <ReactApexChart options={ options} series={heatmapFullData} type="heatmap" height={1000} width={1500} /> 
+                        <ReactApexChart  options={ options} series={heatmapFullData} type="heatmap" height={1000} width={1500} /> 
                        {/* <HeatMapChartNew></HeatMapChartNew> */}
                     </div>
                     :
@@ -311,26 +315,28 @@ return res
           }
       )
       )
-
+      
     //   const result = Object.groupBy(dataWithQuarter, (d) => d.hour.toString() + d.qtrIndex.toString());
       const result = Object.groupBy(dataWithQuarter, (d) => getTimeSlotLabel(d.hour,d.qtrIndex));
       
-      
+      let rc=0
       for (const [key, value] of Object.entries(result)) {
+            
 
+           
           const dataGBOp = Object.groupBy(value || [], (d) =>  d.name);
           const dataPoints = []
           for (const [key, value] of Object.entries(dataGBOp)) {
 
               const v = value?.reduce((a, d) => {
 
-                  return a + d?.count ?? 0
+                  return a + (d?.count ?? 0)
               },0)
 
             //   console.log("vqw", v)
-              
+           
               dataPoints.push({ x: key, y: v ?? 0 })
-              
+               rc +=v
 
           }
 
@@ -340,6 +346,8 @@ return res
 
           fmtDataSeries.push({ name: key, data: dataPoints })
       }
+
+      console.log("rc",rc )
 
 
       console.log("dataaaaaa", fmtDataSeries)

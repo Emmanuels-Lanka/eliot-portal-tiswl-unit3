@@ -18,6 +18,7 @@ const OperatorSMV = async () => {
         <div>
             <AnalyticsChart
                 obbSheets={obbSheets}
+                title={"Title"}
             />
         </div>
     )

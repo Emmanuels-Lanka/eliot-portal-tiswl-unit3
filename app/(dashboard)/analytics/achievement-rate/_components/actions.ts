@@ -5,7 +5,7 @@ import { ProductionDataType } from "./analytics-chart";
 export async function getOperatorEfficiency(obbsheetid:string,date:string) : Promise<ProductionDataType[]>   {
     const sql = neon(process.env.DATABASE_URL || "");
 
-    const data = await sql`SELECT sum(pd."productionCount") as count,o.name  ,oo.target
+    const data = await sql`SELECT sum(pd."productionCount") as count, name:item.name.trim().substring(0,10)+"...", ,oo.target
             FROM "ProductionData" pd
             INNER JOIN "ObbOperation" oo ON pd."obbOperationId" = oo.id
             INNER JOIN "ObbSheet" os ON oo."obbSheetId" = os.id
