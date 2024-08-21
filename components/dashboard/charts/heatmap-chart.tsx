@@ -189,7 +189,7 @@ const HeatmapChart = ({
             width = '100%';
             break;
         case heatmapCategories.length >= 28:
-            width = '200%';
+            width = '200%';     
             break;
     };
 

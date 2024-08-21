@@ -47,44 +47,7 @@ const AnalyticsChart = ({
     const [date,setDate] = useState<string>("")
 
 
-    // function processProductionData(productionData: ProductionDataForChartTypes[]): OperationEfficiencyOutputTypes {
-    //     const hourGroups = ["7:00 AM - 8:00 AM", "8:00 AM - 9:00 AM", "9:00 AM - 10:00 AM", "10:00 AM - 11:00 AM", "11:00 AM - 12:00 PM", "12:00 PM - 1:00 PM", "1:00 PM - 2:00 PM", "2:00 PM - 3:00 PM", "3:00 PM - 4:00 PM", "4:00 PM - 5:00 PM", "5:00 PM - 6:00 PM", "6:00 PM - 7:00 PM"];
-
-    //     const getHourGroup = (timestamp: string): string => {
-    //         const hour = new Date(timestamp).getHours();
-    //         return hourGroups[Math.max(0, Math.min(11, hour - 7))];
-    //     };
-
-    //     const operatorsMap: { [key: string]: ProductionDataForChartTypes[] } = {};
-    //     productionData.forEach(data => {
-    //         if (!operatorsMap[data.operatorRfid]) {
-    //             operatorsMap[data.operatorRfid] = [];
-    //         }
-    //         operatorsMap[data.operatorRfid].push(data);
-    //     });
-
-    //     const operations = Object.values(operatorsMap).map(group => ({
-    //         operator: group[0],
-    //         data: group
-    //     })).sort((a, b) => a.operator.obbOperation.seqNo - b.operator.obbOperation.seqNo);
-
-    //     const categories = operations.map(op => `${op.operator.operator.name}-${op.operator.obbOperation.seqNo}`);
-
-    //     const resultData = hourGroups.map(hourGroup => ({
-    //         hourGroup,
-    //         operation: operations.map(op => {
-    //             const filteredData = op.data.filter(data => getHourGroup(data.timestamp) === hourGroup);
-    //             const totalProduction = filteredData.reduce((sum, curr) => sum + curr.productionCount, 0);
-    //             const efficiency = filteredData.length > 0 ? (totalProduction === 0 ? 0 : (totalProduction / op.operator.obbOperation.target) * 100) : null;
-    //             return { name: `${op.operator.obbOperation.seqNo}-${op.operator.obbOperation.operation.name}`, efficiency: efficiency !== null ? parseFloat(efficiency.toFixed(1)) : null };
-    //         })
-    //     }));
-
-    //     return {
-    //         data: resultData,
-    //         categories
-    //     };
-    // }
+  
 
     const handleFetchProductions = async (data: { obbSheetId: string; date: Date }) => {
         try {

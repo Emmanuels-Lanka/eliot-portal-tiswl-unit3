@@ -141,6 +141,7 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
                             fontFamily="Inter"
                             fontWeight={600}
                             className="z-[999]"
+                            minTickGap={0}
                         />
                         <ChartTooltip
                             cursor={false}

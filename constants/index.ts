@@ -252,13 +252,18 @@ export const SIDEBAR_ROUTES = [
                 href: "/analytics/operation-efficiency-60",
                 icon: BarChartHorizontal
             },
+            {
+                label: "Operation Efficiency (15min)",
+                href: "/analytics/operation-efficiency-15",
+                icon: BarChartHorizontal
+            },
            
 
-            // {
-            //     label: "Operation Efficiency (15min)",
-            //     href: "/analytics/operation-efficiency-15",
-            //     icon: BarChartHorizontal
-            // },
+            // // {
+            // //     label: "Operation Efficiency (15min)",
+            // //     href: "/analytics/operation-efficiency-15",
+            // //     icon: BarChartHorizontal
+            // // },
         ]
     },
     {
@@ -426,7 +431,7 @@ export const HEADER_INFO = [
         icon: BarChartHorizontal
     },
     {
-        label: "Operator Efficiency (60 Minute)",
+        label: "Operation Efficiency (15 Minute)",
         href: "/analytics/operation-efficiency-15",
         icon: BarChartHorizontal
     },
