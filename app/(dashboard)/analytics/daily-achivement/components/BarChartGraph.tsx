@@ -73,9 +73,9 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
 
       setProductionData(prod);
       const seq=1;
-      const chartData1: BarchartData[] = prod.map((item,index) => ({
+      const chartData1: BarchartData[] = prod.map((item) => ({
         
-        name: (index+1+"-")+item.name.trim().substring(0,12)+"...",
+        name: item.name.trim().substring(0,15)+"...",
         target: item.target * 10,
         count: item.count,
       }));
@@ -121,7 +121,7 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
   return (
     <>
       {chartData.length > 0 ? (
-        <Card className="pr-2 pt-6  border rounded-xl bg-slate-50" style={{width:chartWidth+"%", height:chartWidth+"%"}}>
+        <Card className="pr-2 pt-6  border rounded-xl bg-slate-50 w-auto" style={{width:(chartWidth*1.5)+"%", height:chartWidth+"%"}}>
           <div className="px-8">
             <CardHeader>
               <CardTitle className="text-center">
