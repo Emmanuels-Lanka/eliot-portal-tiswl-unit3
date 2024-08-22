@@ -84,13 +84,16 @@ const EffiencyHeatmap = ({
                 }
             },
             labels: {
+                rotate:-50,
                 style: {
                     colors: '#0070c0',
                     fontSize: '12px',
                     fontFamily: 'Inter, sans-serif',
+                    
                 },
             },
-            categories: categories
+            categories: categories,
+           
         },
         yaxis: {
             labels: {
@@ -106,7 +109,7 @@ const EffiencyHeatmap = ({
     const width: string = heatmapData.categories.length < 21 ? '100%' : heatmapData.categories.length < 30 ? '150%' : '200%';
 
     return (
-        <div className='bg-slate-100 pt-5 -pl-8 rounded-lg border w-full mb-16 overflow-x-auto'>
+        <div className='bg-slate-100 pt-5 pl-8 rounded-lg border w-full mb-16 overflow-x-auto'>
             <div id="chart">
                 <ReactApexChart options={options} series={series} type="heatmap" height={height} width={width} />
             </div>
