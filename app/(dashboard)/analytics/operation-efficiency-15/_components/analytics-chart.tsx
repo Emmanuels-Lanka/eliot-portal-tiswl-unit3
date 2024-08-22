@@ -215,12 +215,12 @@ const AnalyticsChart = ({
     // Fetch production data and product counts, then process and set them
     const handleFetchProductions = async (data: { obbSheetId: string; date: Date }) => {
         try {
-            data.date.setDate(data.date.getDate() );
+            data.date.setDate(data.date.getDate()+1 );
             const formattedDate = data.date.toISOString().split('T')[0];
 
             setNewDate(formattedDate);
             setObbSheetId(data.obbSheetId);
-
+                console.log("date",formattedDate)
             const sqlDate = formattedDate + "%";
             //const response = await axios.get(`/api/efficiency/production?obbSheetId=${data.obbSheetId}&date=${formattedDate}`);
 
@@ -264,17 +264,17 @@ const AnalyticsChart = ({
         }
     },[heatmapData])
     
-    useEffect(() => {
+    // useEffect(() => {
 
-        const interval = setInterval(() => {
-            if (obbSheetId && newDate) {
-                handleFetchProductions({ obbSheetId, date: new Date(newDate) });
-                console.log("hola")
-            }
-        }, 60000); 
+    //     const interval = setInterval(() => {
+    //         if (obbSheetId && newDate) {
+    //             handleFetchProductions({ obbSheetId, date: new Date(newDate) });
+    //             console.log("hola")
+    //         }
+    //     }, 60000); 
 
-        return () => clearInterval(interval); 
-    }, [obbSheetId, newDate]);
+    //     return () => clearInterval(interval); 
+    // }, [obbSheetId, newDate]);
 
     return (
         <>
