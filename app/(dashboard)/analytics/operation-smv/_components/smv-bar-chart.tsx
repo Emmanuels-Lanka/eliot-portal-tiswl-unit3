@@ -24,36 +24,91 @@ import {
     ChartTooltip,
     ChartTooltipContent,
 } from "@/components/ui/chart";
-
-interface SmvBarChartProps {
-    data: {
-        groupName: string;
-        actualSMV: number;
-        calculatedSMV: number;
-    }[]
-}
+import { useEffect, useState } from "react";
+import { getSMV } from "./actions";
+import { Button } from "@/components/ui/button";
 
 const chartConfig = {
-    actualSMV: {
+    avg: {
         label: "Target SMV",
         color: "hsl(var(--chart-1))",
     },
-    calculatedSMV: {
+    smv: {
         label: "Actual Cycle Time",
         color: "hsl(var(--chart-2))",
     }
 } satisfies ChartConfig
 
-const SmvBarChart = ({ 
-    data
-}: SmvBarChartProps) => {
-    const chartData = data.map((item) => ({
-        name: item.groupName,
-        actualSMV: item.actualSMV,
-        calculatedSMV: item.calculatedSMV.toFixed(2),
-    }));
+type BarChartData = {
+    smv:number;
+    name:string;
+    avg: number;
+};
+
+interface BarChartGraphProps {
+    date: string
+    obbSheetId: string
+}
+
+
+
+const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
+    const [chartData, setChartData] = useState<BarChartData[]>([])
+    const [productionData, setProductionData] = useState<BarChartData[]>([]);
+
+    const[chartWidth,setChartWidth] = useState<number>(100)
+
+
+    const Fetchdata = async () => {
+        try {
+            
+        const prod = await getSMV(obbSheetId, date)
+        // setProductionData(prod)
+        console.log("ObbsheetId111",prod)
+              
+      
+            const chartData1: BarChartData[] = prod.map((item) => ({
+               name:item.name,
+               smv:item.smv,
+            //    avg:Number(item.avg.toFixed(2))
+             avg:Number(parseFloat(item.avg.toString()).toFixed(2))
+
+            }));
+            console.log("AVG values:", chartData1.map(item => item.avg));
+            setProductionData(chartData1)
+            setChartData(chartData1)
+            console.log("chart data",chartData1)
+            
+            
+            } 
+            catch (error) {
+            console.error("Error fetching data:", error);
+        }
+
+    };
+
+    useEffect(() => {
+
+        
+        if(obbSheetId){
+        Fetchdata()
+        }
+    }, [obbSheetId,date])
+
+    // useEffect(()=>{
+    //     console.log("1firstq")
+    // },[])
+    // useEffect(() => {
+    //     const interval = setInterval(() => {
+    //         Fetchdata();
+    //     }, 60000); 
+    
+    //     return () => clearInterval(interval);
+    // }, [date, obbSheetId]);
+   
 
     return (
+        <>
         <Card className='pr-2 pt-6 pb-4 border rounded-xl bg-slate-50'>
             <div className="px-8">
                 <CardHeader>
@@ -61,20 +116,20 @@ const SmvBarChart = ({
                     {/* <CardDescription>Number of items came across each scanning points today</CardDescription> */}
                 </CardHeader>
             </div>
-            <CardContent>
-                <ChartContainer config={chartConfig} className="min-h-[576px] w-full">
+            <CardContent className="w-auto h-auto" style={{width:chartWidth+"%"}}  >
+                <ChartContainer config={chartConfig} className="min-h-[650px] w-auto"  style={{width:chartWidth+"%", height:chartWidth+"%"}} >
                     <BarChart 
                         accessibilityLayer 
                         data={chartData}
                         margin={{
-                            top: 30,
-                            bottom: 200
+                            top: 50,
+                            bottom: 250
                         }}
                         startAngle={10}
                     >
                         <CartesianGrid vertical={false} />
                         <YAxis
-                            dataKey="actualSMV"
+                            dataKey="smv"
                             type="number"
                             tickLine={true}
                             tickMargin={10}
@@ -83,13 +138,15 @@ const SmvBarChart = ({
                         <XAxis
                             dataKey="name"
                             tickLine={false}
-                            tickMargin={100}
+                            tickMargin={180}
                             axisLine={false}
-                            angle={-45}
+                            angle={90}
                             fontSize={11}
-                            fontFamily="Inter"
-                            fontWeight={600}
-                            className="z-[999]"
+                            // fontFamily="Inter"
+                            // fontWeight={600}
+                            // className="z-[999]"
+                            
+                            interval={0}
                         />
                         <ChartTooltip
                             cursor={false}
@@ -99,8 +156,9 @@ const SmvBarChart = ({
                             content={<ChartLegendContent />} 
                             className="-mb-10 text-xs text-blue-500 font-bold" 
                             margin={{top:10}}
+                            
                         />
-                        <Bar dataKey="actualSMV" fill="var(--color-actualSMV)" radius={5}>
+                        <Bar dataKey="smv" fill="var(--color-smv)" radius={5} barSize={5}>
                             <LabelList
                                 position="top"
                                 offset={12}
@@ -109,7 +167,7 @@ const SmvBarChart = ({
                                 fontFamily="Inter"
                             />
                         </Bar>
-                        <Bar dataKey="calculatedSMV" fill="var(--color-calculatedSMV)" radius={5}>
+                         <Bar dataKey="avg" fill="var(--color-avg)" radius={5} barSize={5}>
                             <LabelList
                                 position="top"
                                 offset={12}
@@ -122,7 +180,15 @@ const SmvBarChart = ({
                 </ChartContainer>
             </CardContent>
         </Card>
+
+        <div className="flex justify-center gap-2 mt-5 ">
+
+<Button onClick={() => setChartWidth((p) => p + 20)} className="rounded-full bg-gray-300">+</Button>
+<Button onClick={() => setChartWidth((p) => p - 20)} className="rounded-full bg-gray-300"> -</Button>
+
+</div>
+        </>
     )
 }
 
-export default SmvBarChart
+export default BarChartGraph

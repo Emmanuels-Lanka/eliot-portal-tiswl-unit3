@@ -56,7 +56,7 @@ export async function GET(
             }
         });
         // console.log("DATA COUNT:", productionData.length);
-        // console.log("DATA:", productionData);
+        console.log("DATA:", productionData);
 
         const obbSheet = await db.obbSheet.findUnique({
             where: {

@@ -53,10 +53,10 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
 
     const Fetchdata = async () => {
         try {
-            const getShortName = (name: any) => {
-                const afterDot = name.split('.')[1]?.trim();
-                return afterDot ? afterDot.split(' ')[0] : null;
-          }
+        //     const getShortName = (name: any) => {
+        //         const afterDot = name.split('.')[1]?.trim();
+        //         return afterDot ? afterDot.split(' ')[0] : null;
+        //   }
             const prod = await getOperatorEfficiency(obbSheetId, date)
             console.log(date)
             let workingHrs=(new Date().getHours()-8)+new Date().getMinutes()/60;
@@ -64,7 +64,7 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
               
             console.log("workingHrs",workingHrs)
             const chartData: BarChartData[] = prod.map((item) => ({
-                name: getShortName(item.name),
+                name:item.name,
                 count: item.count,
                 target: item.target*workingHrs,
                 ratio: parseFloat((item.count / (item.target*workingHrs)).toFixed(2)),
