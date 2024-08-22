@@ -109,3 +109,13 @@ type ProductionSMVDataTypes = {
     smv: string;
     timestamp: string;
 }
+
+type DHUDefectsDataTypes = {
+    id: string;
+    qcStatus: string;
+    timestamp: string;
+    obbOperationId: string;
+    operatorId: string;
+    operatorName: string;
+    defects: string[];
+}[];

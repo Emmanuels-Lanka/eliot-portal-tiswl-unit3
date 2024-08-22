@@ -26,19 +26,7 @@ export async function GET(
                         name: true,
                         code: true
                     }
-                },
-                // operatorSessions: {
-                //     select: {
-                //         operatorRfid: true,
-                //         isLoggedIn: true,
-                //         operator: {
-                //             select: {
-                //                 name: true,
-                //                 employeeId: true
-                //             }
-                //         }
-                //     }
-                // }
+                }
             },
             orderBy: {
                 createdAt: "desc"

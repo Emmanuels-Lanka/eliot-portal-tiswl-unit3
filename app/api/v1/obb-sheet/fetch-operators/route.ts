@@ -13,12 +13,11 @@ export async function GET(
         return new NextResponse("Missing required parameters: obbOperationId", { status: 409 })
     }
 
-    const date = new Date;
     const timezone: string = process.env.NODE_ENV === 'development' ? 'Asia/Colombo' : 'Asia/Dhaka'
-    const today = moment(date).tz(timezone).format('YYYY-MM-DD');
+    const today = moment().tz(timezone).format('YYYY-MM-DD');
     const startDate = `${today} 00:00:00`;
     const endDate = `${today} 23:59:59`;
-
+    
     try {
         const operators = await db.operatorSession.findMany({
             where: {
