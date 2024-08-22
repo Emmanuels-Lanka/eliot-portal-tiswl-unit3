@@ -12,11 +12,12 @@ export async function fetchProductDefectsForDHU(obbSheetId: string): Promise<DHU
         const threeDaysBefore = moment().tz(timezone).add(-3, 'days').format('YYYY-MM-DD');
         const startDate = `${threeDaysBefore} 00:00:00`;
         const endDate = `${today} 23:59:59`;
-        
+
         const productDefects = await sql`
             SELECT 
                 pd.id, 
                 pd."qcStatus", 
+                pd."productId" AS "itemId",
                 pd.timestamp, 
                 pd."obbOperationId", 
                 pd."operatorId", 

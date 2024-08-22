@@ -17,6 +17,7 @@ export async function fetchGmtDefectsForDHU(obbSheetId: string): Promise<DHUDefe
             SELECT 
                 gd.id, 
                 gd."qcStatus", 
+                gd."gmtId" AS "itemId", 
                 gd.timestamp, 
                 gd."obbOperationId", 
                 gd."operatorId", 

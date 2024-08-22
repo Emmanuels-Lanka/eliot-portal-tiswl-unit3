@@ -113,6 +113,7 @@ type ProductionSMVDataTypes = {
 type DHUDefectsDataTypes = {
     id: string;
     qcStatus: string;
+    itemId: string;
     timestamp: string;
     obbOperationId: string;
     operatorId: string;
