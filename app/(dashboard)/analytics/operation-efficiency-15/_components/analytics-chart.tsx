@@ -240,7 +240,7 @@ const AnalyticsChart = ({
             //setHeatmapCategories(heatmapData.xAxisCategories);
             //setObbSheet(response.data.obbSheet);
 
-            router.refresh();
+           
         } catch (error: any) {
             console.error("Error fetching production data:", error);
             toast({
@@ -271,7 +271,7 @@ const AnalyticsChart = ({
                 handleFetchProductions({ obbSheetId, date: new Date(newDate) });
                 console.log("hola")
             }
-        }, 6000); 
+        }, 60000); 
 
         return () => clearInterval(interval); 
     }, [obbSheetId, newDate]);
