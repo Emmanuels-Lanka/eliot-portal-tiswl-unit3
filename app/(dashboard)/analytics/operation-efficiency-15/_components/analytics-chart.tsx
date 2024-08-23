@@ -102,22 +102,22 @@ const AnalyticsChart = ({
                         },
                         {
                             from: 0,
-                            to: efficiencyLow,
-                            name: 'Low',
-                            color: '#ef4444'
+                            to: 50000,
+                            name: 'Data',
+                            color: '#006400'
                         },
-                        {
-                            from: efficiencyLow,
-                            to: efficiencyHigh,
-                            name: 'Medium',
-                            color: '#f97316'
-                        },
-                        {
-                            from: efficiencyHigh,
-                            to: 1000,
-                            name: 'High',
-                            color: '#16a34a'
-                        },
+                        // {
+                        //     from: efficiencyLow,
+                        //     to: efficiencyHigh,
+                        //     name: 'Medium',
+                        //     color: '#006400'
+                        // },
+                        // {
+                        //     from: efficiencyHigh,
+                        //     to: 1000,
+                        //     name: 'High',
+                        //     color: '#006400'
+                        // },
                     ],
                 },
             },
