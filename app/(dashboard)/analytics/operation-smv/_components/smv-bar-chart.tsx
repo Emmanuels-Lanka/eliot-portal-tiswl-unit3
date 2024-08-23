@@ -29,11 +29,11 @@ import { getSMV } from "./actions";
 import { Button } from "@/components/ui/button";
 
 const chartConfig = {
-    avg: {
+    smv: {
         label: "Target SMV",
         color: "hsl(var(--chart-1))",
     },
-    smv: {
+    avg: {
         label: "Actual Cycle Time",
         color: "hsl(var(--chart-2))",
     }

@@ -48,14 +48,10 @@ interface LineChartGraphProps {
     }[]
 }
 
-const getShortName = (name: any) => {
-    return name.substring(1, 10) + "..."
-}
-
 const LineChartGraph = ({ data }: LineChartGraphProps) => {
     const [chartWidth, setChartWidth] = useState<number>(100);
     const chartData = data.map((item,index) => ({
-        name: (index+1+"-")+getShortName(item.name),
+        name: (item.name),
         target: item.target,
         actual: item.count,
     }));
@@ -138,7 +134,7 @@ const LineChartGraph = ({ data }: LineChartGraphProps) => {
                 data={chartData}
                 margin={{
                   top: 20,
-                  bottom:60
+                  bottom:200
                 }}
 
               >
@@ -153,9 +149,9 @@ const LineChartGraph = ({ data }: LineChartGraphProps) => {
                 <XAxis
                   dataKey="name"
                   tickLine={true}
-                  tickMargin={45}
+                  tickMargin={120}
                   axisLine={true}
-                  angle={86}
+                  angle={-90}
                   fontSize={8}
                   interval={0}
 
