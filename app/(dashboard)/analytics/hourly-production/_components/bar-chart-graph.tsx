@@ -50,8 +50,8 @@ interface LineChartGraphProps {
 
 const getShortName = (name: any) => {
     return name.substring(1, 10) + "..."
-
 }
+
 const LineChartGraph = ({ data }: LineChartGraphProps) => {
     const [chartWidth, setChartWidth] = useState<number>(100);
     const chartData = data.map((item,index) => ({

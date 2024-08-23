@@ -93,6 +93,7 @@ const EffiencyHeatmap = ({
                 },
             },
             categories: categories,
+        
            
         },
         yaxis: {
