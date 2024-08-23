@@ -43,7 +43,7 @@ const chartConfig = {
     color: "hsl(var(--chart-2))",
   },
   count: {
-    label: "Production",
+    label: "DHU%",
     color: "hsl(var(--chart-3))",
   },
 } satisfies ChartConfig;
@@ -129,7 +129,8 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
             <CardHeader>
               <CardTitle className="text-center">
                 {" "}
-                Defects per Hundred Units
+                {" "}
+                Operator Wise DHU%
               </CardTitle>
               {/* <CardDescription>Number of items came across each scanning points today</CardDescription> */}
             </CardHeader>
@@ -160,7 +161,7 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
                 <XAxis
                   dataKey="name"
                   tickLine={true}
-                  tickMargin={45}
+                  tickMargin={55}
                   axisLine={true}
                   angle={90}
                   fontSize={10}
@@ -177,15 +178,15 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
                   content={<ChartLegendContent />}
                   className="mt-2 text-sm"
                 />
-                <Bar dataKey="target" fill="var(--color-target)" radius={5}>
+                {/* <Bar dataKey="target" fill="var(--color-target)" radius={5}>
                   <LabelList
                     position="top"
                     offset={7} // Increase the offset value
                     className="fill-foreground"
                     fontSize={9}
                   />
-                </Bar>
-                <Bar dataKey="count" fill="var(--color-actual)" radius={5}>
+                </Bar> */}
+                <Bar dataKey="count" fill="var(--color-actual)" radius={5} barSize={60}>
                   <LabelList
                     position="top"
                     offset={20} // Increase the offset value

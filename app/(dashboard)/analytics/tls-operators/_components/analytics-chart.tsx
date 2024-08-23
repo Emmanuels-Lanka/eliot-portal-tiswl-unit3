@@ -135,7 +135,7 @@ const AnalyticsChart = ({
             />
             {obbSheetId.length > 0 ?
                 <div className="mt-12">
-                    <h2 className="text-lg mb-2 font-medium text-slate-700">{title}</h2>
+                    <h2 className="text-lg mb-2 font-medium text-slate-700"></h2>
                     {/* <HeatmapChart
                         xAxisLabel='Operators for TLS'
                         height={720}
