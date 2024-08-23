@@ -129,7 +129,7 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
             <CardHeader>
               <CardTitle className="text-center">
                 {" "}
-                OPERATOR DHU%
+                Operator Wise DHU%
               </CardTitle>
               {/* <CardDescription>Number of items came across each scanning points today</CardDescription> */}
             </CardHeader>
