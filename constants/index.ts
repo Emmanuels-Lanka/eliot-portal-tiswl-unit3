@@ -83,11 +83,11 @@ export const SIDEBAR_ROUTES = [
     {
         categoryName: "Live Production Analytics",
         routes: [
-            {
-                label: "Hourly Achievement",
-                href: "/analytics/hourly-production",
-                icon: BarChart3
-            },
+            // {
+            //     label: "Hourly Achievement",
+            //     href: "/analytics/hourly-production",
+            //     icon: BarChart3
+            // },
               {
                 label: "Daily Achivement ",
                 href: "/analytics/daily-achivement",
