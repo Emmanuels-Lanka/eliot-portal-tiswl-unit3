@@ -215,10 +215,13 @@ const AnalyticsChart = ({
     // Fetch production data and product counts, then process and set them
     const handleFetchProductions = async (data: { obbSheetId: string; date: Date }) => {
         try {
+            console.log("data",data)
             data.date.setDate(data.date.getDate()+1 );
+
             const formattedDate = data.date.toISOString().split('T')[0];
 
             setNewDate(formattedDate);
+            console.log(formattedDate)
             setObbSheetId(data.obbSheetId);
                 console.log("date",formattedDate)
             const sqlDate = formattedDate + "%";
