@@ -1,5 +1,5 @@
 import { db } from '@/lib/db';
-import AnalyticsChart from './_components/analytics-chart';
+import AnalyticsChartHmap15 from './_components/analytics-chart';
 
 const ProductionEfficiency15 = async () => {
     const obbSheets = await db.obbSheet.findMany({
@@ -17,7 +17,7 @@ const ProductionEfficiency15 = async () => {
 
     return (
         <div>
-            <AnalyticsChart
+            <AnalyticsChartHmap15
                 obbSheets={obbSheets}
                 title='Production Efficiency Heatmap for 15min'
             />

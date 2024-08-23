@@ -3,7 +3,7 @@ import { neon } from "@neondatabase/serverless";
 
 
 export async function   getDHUData(obbsheetid:string,date:string) :Promise<any[]>   {
-    const sql = neon(process.env.DATABASE_URL2 || "");
+    const sql = neon(process.env.RFID_DATABASE_URL || "");
 
     //console.log("dara",obbsheetid,"",date)
     const dataGmts = await sql`select count(*) as count ,"qcStatus" qc, "operatorName" as name from "GmtDefect"

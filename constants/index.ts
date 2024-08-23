@@ -441,7 +441,7 @@ export const HEADER_INFO = [
         icon: Table
     },
     {
-        label: "Analytic charts for TLS",
+        label: "DHU Status",
         href: "/analytics/tls-productions",
         icon: Sliders
     },

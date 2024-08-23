@@ -12,16 +12,11 @@ import { geOperationList, getData } from "./actions";
 import ReactApexChart from "react-apexcharts";
 import { ApexOptions } from "apexcharts";
  
-import HmapChart15Compo from "./heatmap-15-min";
-import { getFormattedTime } from "@/lib/utils-time";
 
 
 interface AnalyticsChartProps {
-    obbSheets: {
-        id: string;
-        name: string;
-    }[] | null;
-    title: string;
+    obbSheetId: string
+    date: string;
 }
 
 type HourGroup = {
@@ -53,37 +48,36 @@ const efficiencyLow = 5
 const efficiencyHigh = 50
 const width = 580
 
-const ensureAllCategoriesHaveData = (series:any, categories:any, defaultValue = -1) => {
-    console.log("categories",categories)
-  return series.map((serie:any) => {
-    const filledData = categories.map((category:any) => {
-      const dataPoint = serie.data.find((d:any) => d.x === category);
-      return {
-        x: category,
-        y: dataPoint ? dataPoint.y : defaultValue,
-      };
+const ensureAllCategoriesHaveData = (series: any, categories: any, defaultValue = -1) => {
+    console.log("categories", categories)
+    return series.map((serie: any) => {
+        const filledData = categories.map((category: any) => {
+            const dataPoint = serie.data.find((d: any) => d.x === category);
+            return {
+                x: category,
+                y: dataPoint ? dataPoint.y : defaultValue,
+            };
+        });
+        return {
+            ...serie,
+            data: filledData,
+        };
     });
-    return {
-      ...serie,
-      data: filledData,
-    };
-  });
 };
 
 
-const AnalyticsChartHmap15 = ({
-    obbSheets,
-    title
+const HmapChart15Compo = ({
+    obbSheetId,
+    date
 }: AnalyticsChartProps) => {
     const { toast } = useToast();
     const router = useRouter();
 
-    const [obbSheetId, setObbSheetId] = useState<string>("");
-    const [heatmapData, setHeatmapData] = useState<any| null>(null);
-    const [heatmapFullData, setHeatmapFullData] = useState<any| null>(null);
+
+    const [heatmapData, setHeatmapData] = useState<any | null>(null);
+    const [heatmapFullData, setHeatmapFullData] = useState<any | null>(null);
     const [operationList, setoperationList] = useState<any[]>([]);
-    const [heatmapCategories, setHeatmapCategories] = useState<string[] | null>(null);
-    const [newDate, setNewDate] = useState<any>();
+
 
     const options = {
         chart: {
@@ -148,39 +142,45 @@ const AnalyticsChartHmap15 = ({
                     colors: '#0070c0',
                     fontSize: '12px',
                     fontFamily: 'Inter, sans-serif',
-                },rotate: -90,
-                minHeight:400,
+                }, rotate: -90,
+                minHeight: 200,
             },
-            categories: operationList.map(o=> o.name  ), // x-axis categories
-            
-           
+            categories: operationList.map(o => o.name), // x-axis categories
+
+
         },
-     
+
         yaxis: {
             labels: {
                 style: {
                     colors: '#0070c0',
                     fontSize: '12px',
                     fontFamily: 'Inter, sans-serif',
-                    marginBottom:'100px',
+                    marginBottom: '100px',
                 },
                 offsetY: 10,
             },
         },
     };
 
-     
-    const handleFetchProductions = async (data: { obbSheetId: string; date: Date }) => {
+
+    const handleFetchProductions = async () => {
         try {
-             
-            const formattedDate =  getFormattedTime(data.date.toString())
 
-            setNewDate(formattedDate);
-            
-            setObbSheetId(data.obbSheetId);
-          
+            const sqlDate = date + "%";
+            const prod: any[] = await getData(obbSheetId, sqlDate)
+            const opList = await geOperationList(obbSheetId)
+            setoperationList(opList)
 
-           
+            const heatmapData = getProcessData(prod, operationList as any[]);
+            console.log("heatmapData1", heatmapData)
+            setHeatmapData(heatmapData);
+
+
+            //setHeatmapCategories(heatmapData.xAxisCategories);
+            //setObbSheet(response.data.obbSheet);
+
+
         } catch (error: any) {
             console.error("Error fetching production data:", error);
             toast({
@@ -197,114 +197,116 @@ const AnalyticsChartHmap15 = ({
         }
     }
 
+    useEffect(() => {
+        if (heatmapData?.length > 0) {
+            const filledSeries = ensureAllCategoriesHaveData(heatmapData, operationList.map(o => o.name));
+            setHeatmapFullData(filledSeries)
+        }
+    }, [heatmapData])
+
+    useEffect(() => {
+        handleFetchProductions()
+
+    }, [obbSheetId])
+
  
-    
-   
 
     return (
         <>
-            <div className="mx-auto max-w-7xl">
-                <SelectObbSheetAndDate
-                    obbSheets={obbSheets}
-                    handleSubmit={handleFetchProductions}
-                />
-            </div>
+
             <div className="mx-auto max-w-[1680px]">
 
-              { 
-                obbSheetId &&
-                <HmapChart15Compo  obbSheetId={obbSheetId} date={newDate}></HmapChart15Compo>}
-                {/* {heatmapFullData !== null ?
+                {heatmapFullData !== null ?
                     <div className="mt-12 ">
-                        <h2 className="text-lg mb-2 font-medium text-slate-700">{title}</h2>
-                        <ReactApexChart  options={ options} series={heatmapFullData} type="heatmap" height={1000} width={1500} /> 
-                      
+                        <h2 className="text-lg mb-2 font-medium text-slate-700">{" "}</h2>
+                        <ReactApexChart options={options} series={heatmapFullData} type="heatmap" height={1000} width={1500} />
                     </div>
                     :
                     <div className="mt-12 w-full">
                         <p className="text-center text-slate-500">Please select the OBB sheet and date ☝️</p>
                     </div>
-                } */}
+                }
             </div>
         </>
     )
 }
 
-export default AnalyticsChartHmap15;
+export default HmapChart15Compo;
 
 
-const getTimeSlotLabel =(hr:number,qtrIndex:number)=>{
-    let res :string=""
-    hr= hr??0
-    let qtrStartLabel=(qtrIndex*15).toString().padStart(2,"0")
+const getTimeSlotLabel = (hr: number, qtrIndex: number) => {
+    let res: string = ""
+    hr = hr ?? 0
+    let qtrStartLabel = (qtrIndex * 15).toString().padStart(2, "0")
     let hrStartLabel = hr.toString()
-    let qtrEndLabel=qtrIndex!=3 ? ((qtrIndex+1)*15).toString().padStart(2,"0"): "00"
-    let hrEndLabel =  qtrIndex==3 ?  (hr+1).toString(): hr.toString()
-   
-     res= `${hrStartLabel}:${qtrStartLabel}- ${hrEndLabel}:${qtrEndLabel}`
+    let qtrEndLabel = qtrIndex != 3 ? ((qtrIndex + 1) * 15).toString().padStart(2, "0") : "00"
+    let hrEndLabel = qtrIndex == 3 ? (hr + 1).toString() : hr.toString()
 
-return res
+    res = `${hrStartLabel}:${qtrStartLabel}- ${hrEndLabel}:${qtrEndLabel}`
+
+    return res
 
 
 }
 
 
-  const getProcessData = (data: any[],operationList:any[]) => {
-      const fmtDataSeries = []
-      const dataWithQuarter = data.map((d) => (
-          {
-              ...d,  hour: new Date(d.timestamp).getHours(),
-               qtrIndex: Math.floor(new Date(d.timestamp).getMinutes() / 15)
-          }
-      )
-      )
-      
+const getProcessData = (data: any[], operationList: any[]) => {
+    const fmtDataSeries = []
+    const dataWithQuarter = data.map((d) => (
+        {
+            ...d, hour: new Date(d.timestamp).getHours(),
+            qtrIndex: Math.floor(new Date(d.timestamp).getMinutes() / 15)
+        }
+    )
+    )
+
     //   const result = Object.groupBy(dataWithQuarter, (d) => d.hour.toString() + d.qtrIndex.toString());
-      const result = Object.groupBy(dataWithQuarter, (d) => getTimeSlotLabel(d.hour,d.qtrIndex));
-      
-      let rc=0
-      for (const [key, value] of Object.entries(result)) {
-            
+    const result = Object.groupBy(dataWithQuarter, (d) => getTimeSlotLabel(d.hour, d.qtrIndex));
 
-           
-          const dataGBOp = Object.groupBy(value || [], (d) =>  d.name);
-          const dataPoints = []
-          for (const [key, value] of Object.entries(dataGBOp)) {
+    let rc = 0
+    for (const [key, value] of Object.entries(result)) {
 
-              const v = value?.reduce((a, d) => {
 
-                  return a + (d?.count ?? 0)
-              },0)
+
+        const dataGBOp = Object.groupBy(value || [], (d) => d.name);
+        const dataPoints = []
+        for (const [key, value] of Object.entries(dataGBOp)) {
+
+            const v = value?.reduce((a, d) => {
+
+                return a + (d?.count ?? 0)
+            }, 0)
 
             //   console.log("vqw", v)
-           
-              dataPoints.push({ x: key, y: v ?? 0 })
-               rc +=v
 
-          }
+            dataPoints.push({ x: key, y: v ?? 0 })
+            rc += v
 
-          //fill unavailble timeslots
+        }
 
-
-
-          fmtDataSeries.push({ name: key, data: dataPoints })
-      }
-
-      console.log("rc",rc )
+        //fill unavailble timeslots
 
 
-      console.log("dataaaaaa", fmtDataSeries)
+
+        fmtDataSeries.push({ name: key, data: dataPoints })
+    }
+
+    console.log("rc", rc)
 
 
+    console.log("dataaaaaa", fmtDataSeries)
 
 
 
 
-      return fmtDataSeries
 
 
-  }
- 
+    return fmtDataSeries
+
+
+}
+
+
 
 
 

@@ -1,13 +1,14 @@
 "use client"
 import { useEffect, useState } from "react";
-import { getObbSheetID } from "./actions";
-import BarChartGraph from "@/app/(dashboard)/analytics/achievement-rate-operation/_components/bar-chart-graph";
-import { Span } from "next/dist/trace";
+ 
+ 
 import DashboardHeader from "@/components/dashboard/dashboard-header";
 import { Cog } from "lucide-react";
+import { getObbSheetID } from "@/components/tv-charts/achievement-rate-operation/actions";
+import HmapChart15Compo from "@/app/(dashboard)/analytics/operation-efficiency-15/_components/heatmap-15-min";
 
 
-const AchievementRateOperation = ({ linename }: { linename: string }) => {
+const Hmap15Compo = ({ linename }: { linename: string }) => {
 
   const [obbSheetId, setobbSheetId] = useState<string>("")
   const [date, setdate] = useState<string>("")
@@ -32,21 +33,21 @@ const AchievementRateOperation = ({ linename }: { linename: string }) => {
   }, [])
 
   useEffect(() => {
-    console.log("linename", linename,)
+     
     getObbSheetID1()
   }, [linename])
   return (
     <div className="h-[200]">
       <div className='flex justify-center items-center gap-3'>
         <Cog className='w-7 h-7 text-voilet' />
-        <h1 className='text-slate-500 m-4 text-3xl'>ELIoT Web Portal - Operation Achievement Rate for {linename}</h1>
+        <h1 className='text-slate-500 m-4 text-3xl'>ELIoT Web Portal - Production Heatmap (15min) {linename}</h1>
       </div>
 
-      {obbSheetId.length > 0 ? <BarChartGraph
+      {obbSheetId.length > 0 ? <HmapChart15Compo
         obbSheetId={obbSheetId}
         date={date}
       /> : <span>No Layout for Line {linename} - {date}</span>}
     </div>
   )
 }
-export default AchievementRateOperation;
+export default Hmap15Compo;

@@ -9,7 +9,7 @@ import { parseISO, getHours } from 'date-fns';
 import { useToast } from "@/components/ui/use-toast";
 import EffiencyHeatmap from "@/components/dashboard/charts/efficiency-heatmap";
 import SelectObbSheetDateOperation from "@/components/dashboard/common/select-obbsheet-date-operation";
-import SmvBarChart from "./smv-bar-chart";
+import BarChartGraphOpSmv from "./smv-bar-chart";
 import SelectObbSheetAndDate from "@/components/dashboard/common/select-obbsheet-and-date";
 import { getSMV } from "./actions";
 import { date } from "zod";
@@ -79,7 +79,7 @@ const AnalyticsChart = ({
             <div className="mx-auto max-w-[1680px]">
                 {/* {barchartData.length > 0 ? */}
                     <div className="mt-12">
-                        <SmvBarChart 
+                        <BarChartGraphOpSmv 
                             obbSheetId={obbSheetId}
                             date={date}
                                          
