@@ -76,11 +76,12 @@ const AnalyticsChart = ({
     const { toast } = useToast();
     const router = useRouter();
 
-    const [obbSheet, setObbSheet] = useState<ObbSheet | null>(null);
+    const [obbSheetId, setObbSheetId] = useState<any>();
     const [heatmapData, setHeatmapData] = useState<any| null>(null);
     const [heatmapFullData, setHeatmapFullData] = useState<any| null>(null);
     const [operationList, setoperationList] = useState<any[]>([]);
     const [heatmapCategories, setHeatmapCategories] = useState<string[] | null>(null);
+    const [newDate, setNewDate] = useState<any>();
 
     const options = {
         chart: {
@@ -214,10 +215,15 @@ const AnalyticsChart = ({
     // Fetch production data and product counts, then process and set them
     const handleFetchProductions = async (data: { obbSheetId: string; date: Date }) => {
         try {
-            data.date.setDate(data.date.getDate() + 1);
+            console.log("data",data)
+            data.date.setDate(data.date.getDate()+1 );
+
             const formattedDate = data.date.toISOString().split('T')[0];
 
-
+            setNewDate(formattedDate);
+            console.log(formattedDate)
+            setObbSheetId(data.obbSheetId);
+                console.log("date",formattedDate)
             const sqlDate = formattedDate + "%";
             //const response = await axios.get(`/api/efficiency/production?obbSheetId=${data.obbSheetId}&date=${formattedDate}`);
 
@@ -237,7 +243,7 @@ const AnalyticsChart = ({
             //setHeatmapCategories(heatmapData.xAxisCategories);
             //setObbSheet(response.data.obbSheet);
 
-            router.refresh();
+           
         } catch (error: any) {
             console.error("Error fetching production data:", error);
             toast({
@@ -260,6 +266,18 @@ const AnalyticsChart = ({
         setHeatmapFullData(filledSeries)
         }
     },[heatmapData])
+    
+    // useEffect(() => {
+
+    //     const interval = setInterval(() => {
+    //         if (obbSheetId && newDate) {
+    //             handleFetchProductions({ obbSheetId, date: new Date(newDate) });
+    //             console.log("hola")
+    //         }
+    //     }, 60000); 
+
+    //     return () => clearInterval(interval); 
+    // }, [obbSheetId, newDate]);
 
     return (
         <>

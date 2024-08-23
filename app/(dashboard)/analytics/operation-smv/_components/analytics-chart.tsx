@@ -57,6 +57,7 @@ const AnalyticsChart = ({
             // console.log("date",formattedDate)
         
             // router.refresh();
+            // router.refresh();
           
         } catch (error: any) {
             console.error("Error fetching production data:", error);
