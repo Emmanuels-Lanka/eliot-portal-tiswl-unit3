@@ -72,7 +72,7 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
   const handleFetchProductions = async () => {
     try {
       const prod = await getDHUData(obbSheetId, date);
-        console.log("aaaasssss",prod,"aaaaaaaaaaa")
+        console.log("prod",prod)
     //   setProductionData(prod);
     
       const chartData1: BarchartData[] = prod.map((item) => ({
