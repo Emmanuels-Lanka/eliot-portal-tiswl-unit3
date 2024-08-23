@@ -10,6 +10,7 @@ import { useToast } from "@/components/ui/use-toast";
 import EffiencyHeatmap from "@/components/dashboard/charts/efficiency-heatmap";
 import SelectObbSheetDateOperation from "@/components/dashboard/common/select-obbsheet-date-operation";
 import SmvBarChart from "./smv-bar-chart";
+import { getFormattedTime } from "@/lib/utils-time";
 
 interface AnalyticsChartProps {
     obbSheets: {
@@ -55,7 +56,7 @@ const AnalyticsChart = ({
         // Helper function to determine hour group based on timestamp 
         const getHourGroup = (timestamp: string): string => {
             const hour = new Date(timestamp).getHours();
-            return hourGroups[Math.max(0, Math.min(11, hour -7))];
+            return hourGroups[Math.max(0, Math.min(11, hour -7))-1];
         };
 
         // Map to store the SMV values by hour group
@@ -77,13 +78,13 @@ const AnalyticsChart = ({
 
     const handleFetchSmv = async (data: { obbSheetId: string; obbOperationId: string; date: Date }) => {
         try {
-            console.log("dateqq1",data.date)
+            // console.log("dateqq1",data.date)
            // data.date.setDate(data.date.getDate() +1);
-            const formattedDate = data.date.toISOString().split('T')[0];
-            console.log("dateqq",formattedDate)
+            const formattedDate = getFormattedTime(data.date.toString())
+             
             const response = await axios.get(`/api/smv/fetch-by-operation?obbOperationId=${data.obbOperationId}&date=${formattedDate}`);
             const result = groupSMVByHour(response.data.data);
-            
+            console.log("dateqq1",result)
             const tsmv = response.data.tsmv.smv
             settsmv(tsmv)
             setBarchartData(result);

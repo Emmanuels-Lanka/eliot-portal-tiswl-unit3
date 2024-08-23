@@ -18,7 +18,7 @@ export async function getHrSmv(obbOperationId:string,date:string) : Promise<Prod
         JOIN "obbOperation" o ON p."obbOperationId" = o.id
         JOIN operation op ON o."operationId" = op.id
         WHERE p."obbOperationId" = ${obbOperationId}
-          AND p.timestamp >= ${newdate}
+          AND p.timestamp like ${newdate}
          ORDER BY p.id ASC;`;
 
     console.log("data",data,)
