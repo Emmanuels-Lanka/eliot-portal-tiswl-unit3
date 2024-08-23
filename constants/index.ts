@@ -446,7 +446,7 @@ export const HEADER_INFO = [
         icon: Sliders
     },
     {
-        label: "Analytic charts for TLS",
+        label: "Opertor Wise DHU",
         href: "/analytics/tls-operators",
         icon: Sliders
     },
