@@ -95,7 +95,7 @@ const AnalyticsChartHmap15 = ({
             setNewDate(formattedDate);
             
             setObbSheetId(data.obbSheetId);
-          
+           router.refresh()
 
            
         } catch (error: any) {

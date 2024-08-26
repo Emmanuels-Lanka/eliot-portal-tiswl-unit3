@@ -100,7 +100,7 @@ const HmapChart15Compo = ({
                             from: 0,
                             to: 50000,
                             name: 'Data',
-                            color: '#16a34a'
+                            color: '#0171c1'
                         },
                         // {
                         //     from: efficiencyLow,
