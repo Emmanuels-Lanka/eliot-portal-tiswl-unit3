@@ -83,11 +83,11 @@ export const SIDEBAR_ROUTES = [
     {
         categoryName: "Live Production Analytics",
         routes: [
-            {
-                label: "Hourly Achievement",
-                href: "/analytics/hourly-production",
-                icon: BarChart3
-            },
+            // {
+            //     label: "Hourly Achievement",
+            //     href: "/analytics/hourly-production",
+            //     icon: BarChart3
+            // },
               {
                 label: "Daily Achivement ",
                 href: "/analytics/daily-achivement",
@@ -441,12 +441,12 @@ export const HEADER_INFO = [
         icon: Table
     },
     {
-        label: "Analytic charts for TLS",
+        label: "DHU Status",
         href: "/analytics/tls-productions",
         icon: Sliders
     },
     {
-        label: "Analytic charts for TLS",
+        label: "Opertor Wise DHU",
         href: "/analytics/tls-operators",
         icon: Sliders
     },

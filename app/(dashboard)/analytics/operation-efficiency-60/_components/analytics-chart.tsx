@@ -61,14 +61,16 @@ const AnalyticsChart = ({
             data: group
         })).sort((a, b) => a.obbOperation.seqNo - b.obbOperation.seqNo);
 
-        const categories = operations.map(op => `${op.obbOperation.operation.name}-${op.obbOperation.seqNo}`);
-        
+        // const categories = operations.map(op => `${op.obbOperation.operation.name}-${op.obbOperation.seqNo}`);
+        const categories = operations.map(op => `${op.obbOperation.operation.name.substring(0, 15)+"..."}-${op.obbOperation.seqNo}`);
+
         const resultData = hourGroups.map(hourGroup => ({
             hourGroup,
             operation: operations.map(op => {
                 const filteredData = op.data.filter(data => getHourGroup(data.timestamp) === hourGroup);
                 const totalProduction = filteredData.reduce((sum, curr) => sum + curr.productionCount, 0);
                 const efficiency = filteredData.length > 0 ? (totalProduction === 0 ? 0 : (totalProduction / op.obbOperation.target) * 100) : null;
+                
                 return { name: `${op.obbOperation.seqNo}-${op.obbOperation.operation.name}`, efficiency: efficiency !== null ? parseFloat(efficiency.toFixed(1)) : null };
             })
         }));

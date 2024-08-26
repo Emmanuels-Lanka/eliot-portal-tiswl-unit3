@@ -1,9 +1,9 @@
 "use server";
 import { neon } from "@neondatabase/serverless";
 
-export async function getData(linename:string) :Promise<string>{
+export async function getObbSheetID(linename: string): Promise<string> {
   const sql = neon(process.env.DATABASE_URL || "");
-  console.log("linename",linename,)
+  console.log("linename", linename,)
   const data = await sql`
   SELECT oo.id
   FROM "ProductionLine" pl 
@@ -13,14 +13,14 @@ export async function getData(linename:string) :Promise<string>{
   order by oo."updatedAt" asc
 `;
 
-  console.log("data",data.length)
-  
-  if(data.length>0){
+  console.log("data", data.length)
+
+  if (data.length > 0) {
     return new Promise((resolve) => resolve(data[0].id))
 
   }
-  else{
-  return new Promise((resolve) => resolve(""))
-   
+  else {
+    return new Promise((resolve) => resolve(""))
+
   }
 }

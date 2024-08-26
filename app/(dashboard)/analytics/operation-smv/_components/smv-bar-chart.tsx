@@ -29,11 +29,11 @@ import { getSMV } from "./actions";
 import { Button } from "@/components/ui/button";
 
 const chartConfig = {
-    avg: {
+    smv: {
         label: "Target SMV",
         color: "hsl(var(--chart-1))",
     },
-    smv: {
+    avg: {
         label: "Actual Cycle Time",
         color: "hsl(var(--chart-2))",
     }
@@ -52,7 +52,7 @@ interface BarChartGraphProps {
 
 
 
-const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
+const BarChartGraphOpSmv = ({ date, obbSheetId }: BarChartGraphProps) => {
     const [chartData, setChartData] = useState<BarChartData[]>([])
     const [productionData, setProductionData] = useState<BarChartData[]>([]);
 
@@ -64,7 +64,7 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
             
         const prod = await getSMV(obbSheetId, date)
         // setProductionData(prod)
-        console.log("ObbsheetId111",prod)
+        
               
       
             const chartData1: BarChartData[] = prod.map((item) => ({
@@ -145,7 +145,6 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
                             // fontFamily="Inter"
                             // fontWeight={600}
                             // className="z-[999]"
-                            
                             interval={0}
                         />
                         <ChartTooltip
@@ -156,7 +155,6 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
                             content={<ChartLegendContent />} 
                             className="-mb-10 text-xs text-blue-500 font-bold" 
                             margin={{top:10}}
-                            
                         />
                         <Bar dataKey="smv" fill="var(--color-smv)" radius={5} barSize={5}>
                             <LabelList
@@ -191,4 +189,4 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
     )
 }
 
-export default BarChartGraph
+export default BarChartGraphOpSmv
