@@ -99,22 +99,22 @@ const HmapChart15Compo = ({
                         },
                         {
                             from: 0,
-                            to: 50000,
-                            name: 'Data',
-                            color: '#0171c1'
+                            to: 41,
+                            name: 'Low',
+                            color: '#ef4444'
                         },
-                        // {
-                        //     from: efficiencyLow,
-                        //     to: efficiencyHigh,
-                        //     name: 'Medium',
-                        //     color: '#006400'
-                        // },
-                        // {
-                        //     from: efficiencyHigh,
-                        //     to: 1000,
-                        //     name: 'High',
-                        //     color: '#006400'
-                        // },
+                        {
+                            from: 41,
+                            to: 67,
+                            name: 'Medium',
+                            color: '#f97316'
+                        },
+                        {
+                            from: 67,
+                            to: 1000,
+                            name: 'High',
+                            color: '#16a34a'
+                        },
                     ],
                 },
             },
@@ -297,7 +297,7 @@ const getProcessData = (data: any[], operationList: any[]) => {
 
             //   console.log("vqw", v)
 
-            dataPoints.push({ x: key, y: (v /(target/4)).toFixed(2) ?? 0 })
+            dataPoints.push({ x: key, y: ((v /(target/4))*100).toFixed(0) ?? 0 })
             rc += v
 
         }
