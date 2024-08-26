@@ -14,8 +14,7 @@ export async function getOperatorEfficiencyData15M(obbsheetid:string,date:string
             INNER JOIN "Operator" oprtr ON oprtr."rfid" = pd."operatorRfid"
             WHERE pd.timestamp like ${date} and  obbs.id = ${obbsheetid}
             group by oprtr.name,obbopn."seqNo",obbopn.target, pd."productionCount",pd.timestamp
-
-            order by  obbopn."seqNo"`
+order by  pd.timestamp ;`;
     
 
     
