@@ -8,13 +8,12 @@ import { ObbSheet, ProductionData } from "@prisma/client";
 import HeatmapChart from "@/components/dashboard/charts/heatmap-chart";
 import SelectObbSheetAndDate from "@/components/dashboard/common/select-obbsheet-and-date";
 import { useToast } from "@/components/ui/use-toast";
-
+import { geOperationList, getData } from "./actions";
 import ReactApexChart from "react-apexcharts";
 import { ApexOptions } from "apexcharts";
  
-
-import { getFormattedTime } from "@/lib/utils-time";
 import HmapChart15Compo from "./heatmap-15-min";
+import { getFormattedTime } from "@/lib/utils-time";
 
 
 interface AnalyticsChartProps {
@@ -72,7 +71,7 @@ const ensureAllCategoriesHaveData = (series:any, categories:any, defaultValue = 
 };
 
 
-const AnalyticsChartHmap15Oprtr = ({
+const AnalyticsChartHmap15 = ({
     obbSheets,
     title
 }: AnalyticsChartProps) => {
@@ -155,81 +154,80 @@ const AnalyticsChartHmap15Oprtr = ({
     )
 }
 
-export default AnalyticsChartHmap15Oprtr;
+export default AnalyticsChartHmap15;
 
 
-// const getTimeSlotLabel =(hr:number,qtrIndex:number)=>{
-//     let res :string=""
-//     hr= hr??0
-//     let qtrStartLabel=(qtrIndex*15).toString().padStart(2,"0")
-//     let hrStartLabel = hr.toString()
-//     let qtrEndLabel=qtrIndex!=3 ? ((qtrIndex+1)*15).toString().padStart(2,"0"): "00"
-//     let hrEndLabel =  qtrIndex==3 ?  (hr+1).toString(): hr.toString()
+const getTimeSlotLabel =(hr:number,qtrIndex:number)=>{
+    let res :string=""
+    hr= hr??0
+    let qtrStartLabel=(qtrIndex*15).toString().padStart(2,"0")
+    let hrStartLabel = hr.toString()
+    let qtrEndLabel=qtrIndex!=3 ? ((qtrIndex+1)*15).toString().padStart(2,"0"): "00"
+    let hrEndLabel =  qtrIndex==3 ?  (hr+1).toString(): hr.toString()
    
-//      res= `${hrStartLabel}:${qtrStartLabel}- ${hrEndLabel}:${qtrEndLabel}`
+     res= `${hrStartLabel}:${qtrStartLabel}- ${hrEndLabel}:${qtrEndLabel}`
 
-   
-// return res
-
-
-// }
+return res
 
 
-//   const getProcessData = (data: any[],operationList:any[]) => {
-//       const fmtDataSeries = []
-//       const dataWithQuarter = data.map((d) => (
-//           {
-//               ...d,  hour: new Date(d.timestamp).getHours(),
-//                qtrIndex: Math.floor(new Date(d.timestamp).getMinutes() / 15)
-//           }
-//       )
-//       )
+}
+
+
+  const getProcessData = (data: any[],operationList:any[]) => {
+      const fmtDataSeries = []
+      const dataWithQuarter = data.map((d) => (
+          {
+              ...d,  hour: new Date(d.timestamp).getHours(),
+               qtrIndex: Math.floor(new Date(d.timestamp).getMinutes() / 15)
+          }
+      )
+      )
       
-//     //   const result = Object.groupBy(dataWithQuarter, (d) => d.hour.toString() + d.qtrIndex.toString());
-//       const result = Object.groupBy(dataWithQuarter, (d) => getTimeSlotLabel(d.hour,d.qtrIndex));
+    //   const result = Object.groupBy(dataWithQuarter, (d) => d.hour.toString() + d.qtrIndex.toString());
+      const result = Object.groupBy(dataWithQuarter, (d) => getTimeSlotLabel(d.hour,d.qtrIndex));
       
-//       let rc=0
-//       for (const [key, value] of Object.entries(result)) {
+      let rc=0
+      for (const [key, value] of Object.entries(result)) {
             
 
            
-//           const dataGBOp = Object.groupBy(value || [], (d) =>  d.name);
-//           const dataPoints = []
-//           for (const [key, value] of Object.entries(dataGBOp)) {
+          const dataGBOp = Object.groupBy(value || [], (d) =>  d.name);
+          const dataPoints = []
+          for (const [key, value] of Object.entries(dataGBOp)) {
 
-//               const v = value?.reduce((a, d) => {
+              const v = value?.reduce((a, d) => {
 
-//                   return a + (d?.count ?? 0)
-//               },0)
+                  return a + (d?.count ?? 0)
+              },0)
 
-//             //   console.log("vqw", v)
+            //   console.log("vqw", v)
            
-//               dataPoints.push({ x: key, y: v ?? 0 })
-//                rc +=v
+              dataPoints.push({ x: key, y: v ?? 0 })
+               rc +=v
 
-//           }
+          }
 
-//           //fill unavailble timeslots
-
-
-
-//           fmtDataSeries.push({ name: key, data: dataPoints })
-//       }
-
-//       console.log("rc",rc )
+          //fill unavailble timeslots
 
 
-//       console.log("dataaaaaa", fmtDataSeries)
+
+          fmtDataSeries.push({ name: key, data: dataPoints })
+      }
+
+      console.log("rc",rc )
 
 
+      console.log("dataaaaaa", fmtDataSeries)
 
 
 
 
-//       return fmtDataSeries
 
 
-//   }
+      return fmtDataSeries
+
+
+  }
  
 
 
