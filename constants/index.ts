@@ -99,6 +99,11 @@ export const SIDEBAR_ROUTES = [
                 icon: BarChart3
             },
             {
+                label: "Efficiency Rate",
+                href: "/analytics/efficiency-rate",
+                icon: BarChart3
+            },
+            {
                 label: "Production Heatmap (15min)",
                 href: "/analytics/operation-efficiency-15",
                 icon: BarChartHorizontal
@@ -463,6 +468,11 @@ export const HEADER_INFO = [
     {
         label: "Log Records",
         href: "/analytics/log",
+        icon: Sliders
+    },
+    {
+        label: "Efficiency Rate",
+         href: "/analytics/efficiency-rate",
         icon: Sliders
     },
 ]
