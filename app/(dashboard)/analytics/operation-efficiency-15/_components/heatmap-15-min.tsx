@@ -46,7 +46,7 @@ type HourGroup = {
 const xAxisLabel = "Productions"
 const efficiencyLow = 5
 const efficiencyHigh = 50
-const width = 580
+
 
 const ensureAllCategoriesHaveData = (series: any, categories: any, defaultValue = -1) => {
     console.log("categories", categories)
@@ -100,7 +100,7 @@ const HmapChart15Compo = ({
                             from: 0,
                             to: 50000,
                             name: 'Data',
-                            color: '#006400'
+                            color: '#16a34a'
                         },
                         // {
                         //     from: efficiencyLow,
@@ -151,6 +151,15 @@ const HmapChart15Compo = ({
         },
 
         yaxis: {
+            title: {
+                text: "Time",
+                style: {
+                    color: '#0070c0',
+                    fontSize: '14px',
+                    fontWeight: 600,
+                    fontFamily: 'Inter, sans-serif',
+                }
+            },
             labels: {
                 style: {
                     colors: '#0070c0',
@@ -214,12 +223,16 @@ const HmapChart15Compo = ({
     return (
         <>
 
-            <div className="mx-auto max-w-[1680px]">
 
+
+
+
+            <div className="mx-auto max-w-[1680px]">
+        
                 {heatmapFullData !== null ?
-                    <div className="mt-12 ">
+                    <div className="mt-12 bg-slate-100 pt-5 pl-8 rounded-lg border w-full mb-16 overflow-x-auto ">
                         <h2 className="text-lg mb-2 font-medium text-slate-700">{" "}</h2>
-                        <ReactApexChart options={options} series={heatmapFullData} type="heatmap" height={1000} width={1500} />
+                        <ReactApexChart options={options} series={heatmapFullData} type="heatmap" height={1000} width={2000} />
                     </div>
                     :
                     <div className="mt-12 w-full">

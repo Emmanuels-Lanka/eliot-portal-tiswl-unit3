@@ -85,90 +85,7 @@ const AnalyticsChartHmap15 = ({
     const [heatmapCategories, setHeatmapCategories] = useState<string[] | null>(null);
     const [newDate, setNewDate] = useState<any>();
 
-    const options = {
-        chart: {
-            type: 'heatmap' as const,
-        },
-        plotOptions: {
-            heatmap: {
-                enableShades: false,
-                radius: 50,
-                useFillColorAsStroke: false,
-                colorScale: {
-                    ranges: [
-                        {
-                            from: -10,
-                            to: 0,
-                            name: 'No Data',
-                            color: '#FFFFFF'
-                        },
-                        {
-                            from: 0,
-                            to: 50000,
-                            name: 'Data',
-                            color: '#006400'
-                        },
-                        // {
-                        //     from: efficiencyLow,
-                        //     to: efficiencyHigh,
-                        //     name: 'Medium',
-                        //     color: '#006400'
-                        // },
-                        // {
-                        //     from: efficiencyHigh,
-                        //     to: 1000,
-                        //     name: 'High',
-                        //     color: '#006400'
-                        // },
-                    ],
-                },
-            },
-        },
-        dataLabels: {
-            enabled: true,
-            style: {
-                colors: ['#fff']
-            }
-        },
-        stroke: {
-            width: 0,
-        },
-        xaxis: {
-            title: {
-                text: xAxisLabel,
-                style: {
-                    color: '#0070c0',
-                    fontSize: '14px',
-                    fontWeight: 600,
-                    fontFamily: 'Inter, sans-serif',
-                }
-            },
-            labels: {
-                style: {
-                    colors: '#0070c0',
-                    fontSize: '12px',
-                    fontFamily: 'Inter, sans-serif',
-                },rotate: -90,
-                minHeight:400,
-            },
-            categories: operationList.map(o=> o.name  ), // x-axis categories
-            
-           
-        },
-     
-        yaxis: {
-            labels: {
-                style: {
-                    colors: '#0070c0',
-                    fontSize: '12px',
-                    fontFamily: 'Inter, sans-serif',
-                    marginBottom:'100px',
-                },
-                offsetY: 10,
-            },
-        },
-    };
-
+    
      
     const handleFetchProductions = async (data: { obbSheetId: string; date: Date }) => {
         try {
@@ -213,7 +130,14 @@ const AnalyticsChartHmap15 = ({
 
               { 
                 obbSheetId &&
-                <HmapChart15Compo  obbSheetId={obbSheetId} date={newDate}></HmapChart15Compo>}
+                
+                <div className="mt-12">
+                <HmapChart15Compo  obbSheetId={obbSheetId} date={newDate}></HmapChart15Compo>
+                </div>}
+
+
+
+
                 {/* {heatmapFullData !== null ?
                     <div className="mt-12 ">
                         <h2 className="text-lg mb-2 font-medium text-slate-700">{title}</h2>
