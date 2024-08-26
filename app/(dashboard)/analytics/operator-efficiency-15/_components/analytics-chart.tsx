@@ -85,7 +85,7 @@ const AnalyticsChart = ({
 
         return {
             efficiencies,
-            xAxisCategories: Array.from(xAxisCategories)
+            xAxisCategories: Array.from(xAxisCategories)    
         };
     }
 
@@ -95,6 +95,7 @@ const AnalyticsChart = ({
             const formattedDate = data.date.toISOString().split('T')[0];
             
             const response = await axios.get(`/api/efficiency/production?obbSheetId=${data.obbSheetId}&date=${formattedDate}`);
+            console.log("data",response)
             const { efficiencies, xAxisCategories } = processForHeatmap(response.data.data);
 
             setHeatmapData(efficiencies);
