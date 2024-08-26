@@ -37,7 +37,8 @@ export async function geOperatorList(obbsheetid:string ) : Promise<any[]>  {
     INNER JOIN "ObbSheet" os ON oopn."obbSheetId" = os.id
     WHERE os.id = ${obbsheetid}  
     group by oo.name,oopn."seqNo"
-    order by  oopn."seqNo";`;
+    order by  substring(concat(oopn."seqNo",'-',oo.name ) from 0 for 20) ;`
+    // order by  oopn."seqNo";`;
 
     console.log("geOperationList",data,)
 
