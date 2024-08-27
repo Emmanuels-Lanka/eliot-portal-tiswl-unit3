@@ -19,7 +19,6 @@ import { Button } from "@/components/ui/button";
 interface AnalyticsChartProps {
     obbSheetId: string
     date: string;
-    listData:any [];
 }
 
 type HourGroup = {
@@ -71,8 +70,7 @@ const ensureAllCategoriesHaveData = (series: any, categories: any, defaultValue 
 
 const HmapChart15Compo = ({
     obbSheetId,
-    date,
-    listData 
+    date
 }: AnalyticsChartProps) => {
     const { toast } = useToast();
     const router = useRouter();
@@ -184,8 +182,7 @@ const HmapChart15Compo = ({
         try {
 
             const sqlDate = date + "%";
-            const prod  = listData
-            console.log(prod)
+            const prod  = await getOperatorEfficiencyData15M(obbSheetId, sqlDate)
           
             const opList = await geOperatorList(obbSheetId)
             setoperationList(opList)
