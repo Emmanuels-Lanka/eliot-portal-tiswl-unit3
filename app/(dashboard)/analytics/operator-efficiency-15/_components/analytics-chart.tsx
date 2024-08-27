@@ -15,6 +15,7 @@ import { ApexOptions } from "apexcharts";
 
 import { getFormattedTime } from "@/lib/utils-time";
 import HmapChart15Compo from "./heatmap-15-min";
+import { Loader2 } from "lucide-react";
 
 
 interface AnalyticsChartProps {
@@ -128,11 +129,12 @@ const AnalyticsChartHmap15Oprtr = ({
                 />
             </div>
             <div className="mx-auto max-w-[1680px]">
-
+            
               { 
                 obbSheetId &&
                 
                 <div className="mt-12">
+
                 <HmapChart15Compo  obbSheetId={obbSheetId} date={newDate}></HmapChart15Compo>
                 </div>}
 
