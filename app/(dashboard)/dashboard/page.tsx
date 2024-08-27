@@ -3,11 +3,11 @@ import { fetchProductDefectsForDHU } from '@/actions/fetch-product-defects-for-d
 import Image from 'next/image';
 
 const Dashboard = async () => {
-    const gmtDefects = await fetchGmtDefectsForDHU('lzs07i72-ojSke1Ky3mJh');
-    const productDefects = await fetchProductDefectsForDHU('lzs07i72-ojSke1Ky3mJh');
+    // const gmtDefects = await fetchGmtDefectsForDHU('lzs07i72-ojSke1Ky3mJh');
+    // const productDefects = await fetchProductDefectsForDHU('lzs07i72-ojSke1Ky3mJh');
 
-    console.log("GMT:", gmtDefects);
-    console.log("PRODUCT:", productDefects);
+    // console.log("GMT:", gmtDefects);
+    // console.log("PRODUCT:", productDefects);
 
     return (
         <section className='flex flex-col justify-center items-center'>

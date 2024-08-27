@@ -74,6 +74,7 @@ const formSchema = z.object({
     supervisorId: z.string().min(1, {
         message: "Responsive supervisor is required",
     }),
+    part: z.string()
 });
 
 const AddObbOperationForm = ({
@@ -105,7 +106,8 @@ const AddObbOperationForm = ({
             length: 0,
             totalStitches: 0,
             obbSheetId: obbSheetId,
-            supervisorId: ""
+            supervisorId: "",
+            part: ""
         },
     });
 
@@ -123,6 +125,7 @@ const AddObbOperationForm = ({
                 totalStitches: updatingData.totalStitches,
                 obbSheetId: updatingData.obbSheetId,
                 supervisorId: updatingData.supervisorId || '',
+                part: updatingData.part || "",
             });
         }
     }, [updatingData, form]);
@@ -426,7 +429,34 @@ const AddObbOperationForm = ({
                                     )}
                                 />
                             </div>
-                            <div className="w-16">
+                            <div className="w-2/12">
+                                <FormField
+                                    control={form.control}
+                                    name="part"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>
+                                                Part
+                                            </FormLabel>
+                                            <Select onValueChange={field.onChange} defaultValue={updatingData?.part ? updatingData.part : field.value}>
+                                                <FormControl>
+                                                    <SelectTrigger>
+                                                        <SelectValue placeholder="Select part" />
+                                                    </SelectTrigger>
+                                                </FormControl>
+                                                <SelectContent>
+                                                    <SelectItem value="front">FRONT</SelectItem>
+                                                    <SelectItem value="back">BACK</SelectItem>
+                                                    <SelectItem value="assembly">ASSEMBLY</SelectItem>
+                                                    <SelectItem value="line-end">LINE END</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                            </div>
+                            <div className="w-20">
                                 <FormField
                                     control={form.control}
                                     name="smv"
