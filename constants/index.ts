@@ -156,7 +156,11 @@ export const SIDEBAR_ROUTES = [
             //     href: "/analytics/operator-effective-time",
             //     icon: Table
             // },
-            
+            {
+                label: "Operator Efficiency (15min)",
+                href: "/analytics/operator-efficiency-15",
+                icon: BarChartHorizontal
+            },
         ]
     },
     {
@@ -436,7 +440,7 @@ export const HEADER_INFO = [
         icon: BarChartHorizontal
     },
     {
-        label: "xOperator Analytic chart",
+        label: "Operator Efficiency (15 Minute)",
         href: "/analytics/operator-efficiency-15",
         icon: BarChartHorizontal
     },

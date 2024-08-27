@@ -8,9 +8,10 @@ import { ObbSheet, ProductionData } from "@prisma/client";
 import HeatmapChart from "@/components/dashboard/charts/heatmap-chart";
 import SelectObbSheetAndDate from "@/components/dashboard/common/select-obbsheet-and-date";
 import { useToast } from "@/components/ui/use-toast";
-import { geOperationList, getData } from "./actions";
+
 import ReactApexChart from "react-apexcharts";
 import { ApexOptions } from "apexcharts";
+import { geOperatorList, getOperatorEfficiencyData15M } from "./actions";
  
 
 
@@ -43,7 +44,7 @@ type HourGroup = {
 //   }
 
 
-const xAxisLabel = "Productions"
+const xAxisLabel = "Operators"
 const efficiencyLow = 5
 const efficiencyHigh = 50
 
@@ -98,22 +99,22 @@ const HmapChart15Compo = ({
                         },
                         {
                             from: 0,
-                            to: 50000,
-                            name: 'Data',
-                            color: '#0171c1'
+                            to: 41,
+                            name: 'Low',
+                            color: '#ef4444'
                         },
-                        // {
-                        //     from: efficiencyLow,
-                        //     to: efficiencyHigh,
-                        //     name: 'Medium',
-                        //     color: '#006400'
-                        // },
-                        // {
-                        //     from: efficiencyHigh,
-                        //     to: 1000,
-                        //     name: 'High',
-                        //     color: '#006400'
-                        // },
+                        {
+                            from: 41,
+                            to: 67,
+                            name: 'Medium',
+                            color: '#f97316'
+                        },
+                        {
+                            from: 67,
+                            to: 1000,
+                            name: 'High',
+                            color: '#16a34a'
+                        },
                     ],
                 },
             },
@@ -177,8 +178,9 @@ const HmapChart15Compo = ({
         try {
 
             const sqlDate = date + "%";
-            const prod: any[] = await getData(obbSheetId, sqlDate)
-            const opList = await geOperationList(obbSheetId)
+            const prod  = await getOperatorEfficiencyData15M(obbSheetId, sqlDate)
+          
+            const opList = await geOperatorList(obbSheetId)
             setoperationList(opList)
 
             const heatmapData = getProcessData(prod, operationList as any[]);
@@ -232,7 +234,7 @@ const HmapChart15Compo = ({
                 {heatmapFullData !== null ?
                     <div className="mt-12 bg-slate-100 pt-5 pl-8 rounded-lg border w-full mb-16 overflow-x-auto ">
                         <h2 className="text-lg mb-2 font-medium text-slate-700">{" "}</h2>
-                        <ReactApexChart options={options} series={heatmapFullData} type="heatmap" height={1000} width={2000} />
+                        <ReactApexChart options={options} series={heatmapFullData} type="heatmap" height={1000} width={3000} />
                     </div>
                     :
                     <div className="mt-12 w-full">
@@ -256,7 +258,7 @@ const getTimeSlotLabel = (hr: number, qtrIndex: number) => {
     let hrEndLabel = qtrIndex == 3 ? (hr + 1).toString() : hr.toString()
 
     res = `${hrStartLabel}:${qtrStartLabel}- ${hrEndLabel}:${qtrEndLabel}`
-
+    // console.log("aaaaa",res)
     return res
 
 
@@ -264,6 +266,7 @@ const getTimeSlotLabel = (hr: number, qtrIndex: number) => {
 
 
 const getProcessData = (data: any[], operationList: any[]) => {
+    // console.log("aaaaasssss",data)
     const fmtDataSeries = []
     const dataWithQuarter = data.map((d) => (
         {
@@ -284,6 +287,8 @@ const getProcessData = (data: any[], operationList: any[]) => {
         const dataGBOp = Object.groupBy(value || [], (d) => d.name);
         const dataPoints = []
         for (const [key, value] of Object.entries(dataGBOp)) {
+            const target = value?.[0].target ?? 1;
+            
 
             const v = value?.reduce((a, d) => {
 
@@ -292,7 +297,7 @@ const getProcessData = (data: any[], operationList: any[]) => {
 
             //   console.log("vqw", v)
 
-            dataPoints.push({ x: key, y: v ?? 0 })
+            dataPoints.push({ x: key, y: ((v /(target/4))*100).toFixed(0) ?? 0 })
             rc += v
 
         }

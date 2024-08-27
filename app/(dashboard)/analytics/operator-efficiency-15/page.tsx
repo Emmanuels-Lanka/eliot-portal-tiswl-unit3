@@ -1,5 +1,7 @@
 import { db } from '@/lib/db';
-import AnalyticsChart from './_components/analytics-chart';
+import AnalyticsChart from './_components/Oldanalytics-chart';
+import AnalyticsChartHmap15 from './_components/analytics-chart';
+import AnalyticsChartHmap15Oprtr from './_components/analytics-chart';
 
 const OperatorEfficiency60 = async () => {
     const obbSheets = await db.obbSheet.findMany({
@@ -17,7 +19,7 @@ const OperatorEfficiency60 = async () => {
 
     return (
         <div>
-            <AnalyticsChart
+            <AnalyticsChartHmap15Oprtr
                 obbSheets={obbSheets}
                 title='Operator Efficiency Heatmap for 15min'
             />
