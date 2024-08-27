@@ -27,6 +27,8 @@ import {
 import { use, useEffect, useState } from "react";
 import { getOperatorEfficiency } from "./actions";
 import { Button } from "@/components/ui/button";
+import { Loader2 } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 const chartConfig = {
     target: {
@@ -50,6 +52,7 @@ interface BarChartGraphProps {
 const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
     const [chartData, setChartData] = useState<BarChartData[]>([])
     const [chartWidth, setChartWidth] = useState<number>(150);
+    const [isSubmitting,setisSubmitting]=useState<boolean>(false)
 
 
     const Fetchdata = async () => {
@@ -63,6 +66,7 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
                 return name.substring(1, 10) + "..."
 
             }
+            setisSubmitting(true)
             const prod = await getOperatorEfficiency(obbSheetId, date)
             console.log(date)
             let workingHrs = (new Date().getHours() - 8) + new Date().getMinutes() / 60;
@@ -76,8 +80,10 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
                 ratio: parseFloat((item.count / (item.target * workingHrs)*100).toFixed(2)),
                 // ratio: (item.count / (item.target * workingHrs)) * 100,
                 // ratio: parseFloat((item.count / (item.target * workingHrs)).toFixed(2))*100,
+                
 
             })
+            
             );
             console.log("chart data", chartData)
             setChartData(chartData)
@@ -87,6 +93,7 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
         catch (error) {
             console.error("Error fetching data:", error);
         }
+        setisSubmitting(false)
 
     };
 
@@ -109,6 +116,8 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
 
     return (
         <>
+    <Loader2 className={cn("animate-spin w-7 h-7 hidden", isSubmitting && "flex")} />
+
             {chartData.length > 0 ?
                 <Card className='pr-2 pt-1 pb-2 border rounded-xl bg-slate-50'>
                     <div className="px-8">
