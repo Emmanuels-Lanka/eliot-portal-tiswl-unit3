@@ -43,7 +43,7 @@ type HourGroup = {
 //   }
 
 
-const xAxisLabel = "Productions"
+const xAxisLabel = "Operations"
 const efficiencyLow = 5
 const efficiencyHigh = 50
 
