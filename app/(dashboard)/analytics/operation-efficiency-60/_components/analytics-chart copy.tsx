@@ -89,7 +89,7 @@ const AnalyticsChart = ({
             setHeatmapCategories(heatmapData.xAxisCategories);
             setObbSheet(response.data.obbSheet);
 
-            router.refresh();
+            router.refresh();    
         } catch (error: any) {
             console.error("Error fetching production data:", error);
             toast({
@@ -112,7 +112,7 @@ const AnalyticsChart = ({
                 <SelectObbSheetAndDate
                     obbSheets={obbSheets}
                     handleSubmit={handleFetchProductions}
-                />
+                /> 
             </div>
             <div className="mx-auto max-w-[1680px]">
                 {heatmapData !== null && heatmapCategories !== null ?

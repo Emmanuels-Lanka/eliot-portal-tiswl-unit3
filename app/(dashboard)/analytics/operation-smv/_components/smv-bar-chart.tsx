@@ -27,6 +27,8 @@ import {
 import { useEffect, useState } from "react";
 import { getSMV } from "./actions";
 import { Button } from "@/components/ui/button";
+import { Loader2 } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 const chartConfig = {
     smv: {
@@ -57,11 +59,12 @@ const BarChartGraphOpSmv = ({ date, obbSheetId }: BarChartGraphProps) => {
     const [productionData, setProductionData] = useState<BarChartData[]>([]);
 
     const[chartWidth,setChartWidth] = useState<number>(100)
-
+    const[isSubmitting,setisSubmitting]=useState<boolean>(false)
 
     const Fetchdata = async () => {
+        
         try {
-            
+            setisSubmitting(true)
         const prod = await getSMV(obbSheetId, date)
         // setProductionData(prod)
         
@@ -84,7 +87,8 @@ const BarChartGraphOpSmv = ({ date, obbSheetId }: BarChartGraphProps) => {
             catch (error) {
             console.error("Error fetching data:", error);
         }
-
+        setisSubmitting(false)
+        
     };
 
     useEffect(() => {
@@ -109,6 +113,11 @@ const BarChartGraphOpSmv = ({ date, obbSheetId }: BarChartGraphProps) => {
 
     return (
         <>
+        <div className="justify-center">
+        <Loader2 className={cn("animate-spin w-7 h-7 hidden", isSubmitting && "flex")} />
+        </div>
+
+
         <Card className='pr-2 pt-6 pb-4 border rounded-xl bg-slate-50'>
             <div className="px-8">
                 <CardHeader>
