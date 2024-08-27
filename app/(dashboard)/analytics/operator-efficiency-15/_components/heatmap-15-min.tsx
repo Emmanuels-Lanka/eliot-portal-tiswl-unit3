@@ -13,6 +13,8 @@ import ReactApexChart from "react-apexcharts";
 import { ApexOptions } from "apexcharts";
 import { geOperatorList, getOperatorEfficiencyData15M } from "./actions";
 import { Button } from "@/components/ui/button";
+import { Loader2 } from "lucide-react";
+import { cn } from "@/lib/utils";
  
 
 
@@ -81,6 +83,8 @@ const HmapChart15Compo = ({
     const [operationList, setoperationList] = useState<any[]>([]);
     const[chartWidth,setChartWidth] = useState<number>(4000)
     const[timeList,settimeList] = useState<string>("")
+    const [ isSubmitting, setIsSubmitting ] = useState<boolean>(false)
+
     
 
 
@@ -180,7 +184,8 @@ const HmapChart15Compo = ({
 
     const handleFetchProductions = async () => {
         try {
-
+            setIsSubmitting(true)
+            console.log("test111")
             const sqlDate = date + "%";
             const prod  = await getOperatorEfficiencyData15M(obbSheetId, sqlDate)
           
@@ -193,6 +198,8 @@ const HmapChart15Compo = ({
             
             console.log("heatmapData1", heatmapData)
             setHeatmapData(heatmapData.dataSeries);
+            setIsSubmitting(false)
+          
 
 
             //setHeatmapCategories(heatmapData.xAxisCategories);
@@ -225,7 +232,7 @@ const HmapChart15Compo = ({
     useEffect(() => {
         handleFetchProductions()
 
-    }, [obbSheetId])
+    }, [obbSheetId,date])
 
     //const height: string = timeList.length < 21 ? '200%' : timeList.length < 30 ? '300%' : '500%';
     const totalCount = Object.keys(timeList).reduce((acc, curr) => acc + curr.length, 0);
@@ -239,7 +246,10 @@ const HmapChart15Compo = ({
 
 
             <div className="mx-auto max-w-[1680px]">
-        
+        {<div className=" flex justify-center items-center">
+            <Loader2 className={cn("animate-spin w-5 h-5 hidden", isSubmitting && "flex")} />
+            </div>}
+
                 {heatmapFullData !== null ?
                     <div className="mt-12 bg-slate-100 pt-5 pl-8 rounded-lg border w-full mb-16 overflow-x-auto ">
                         <h2 className="text-lg mb-2 font-medium text-slate-700">{" "}</h2>
