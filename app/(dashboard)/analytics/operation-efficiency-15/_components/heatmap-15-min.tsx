@@ -74,7 +74,7 @@ const HmapChart15Compo = ({
     const router = useRouter();
 
 
-    const [heatmapData, setHeatmapData] = useState<any | null>(null);
+    const [heatmapData, setHeatmapData] = useState<any[] | null>([]);
     const [heatmapFullData, setHeatmapFullData] = useState<any | null>(null);
     const [operationList, setoperationList] = useState<any[]>([]);
 
@@ -181,7 +181,7 @@ const HmapChart15Compo = ({
             const opList = await geOperationList(obbSheetId)
             setoperationList(opList)
 
-            const heatmapData = getProcessData(prod, operationList as any[]);
+            const heatmapData = getProcessData(prod as any[], operationList as any[]);
             console.log("heatmapData1", heatmapData)
             setHeatmapData(heatmapData);
 
@@ -207,7 +207,7 @@ const HmapChart15Compo = ({
     }
 
     useEffect(() => {
-        if (heatmapData?.length > 0) {
+        if (heatmapData?.length ?? 0 > 0) {
             const filledSeries = ensureAllCategoriesHaveData(heatmapData, operationList.map(o => o.name));
             setHeatmapFullData(filledSeries)
         }
@@ -263,7 +263,7 @@ const getTimeSlotLabel = (hr: number, qtrIndex: number) => {
 }
 
 
-const getProcessData = (data: any[], operationList: any[]) => {
+const getProcessData = (data: any[], operationList: any[]) :any[]=> {
     const fmtDataSeries = []
     const dataWithQuarter = data.map((d) => (
         {

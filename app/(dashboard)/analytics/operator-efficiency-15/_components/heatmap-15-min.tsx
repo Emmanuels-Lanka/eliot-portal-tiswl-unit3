@@ -183,7 +183,7 @@ const HmapChart15Compo = ({
             const opList = await geOperatorList(obbSheetId)
             setoperationList(opList)
 
-            const heatmapData = getProcessData(prod, operationList as any[]);
+            const heatmapData = getProcessData(prod as any[], operationList as any[]);
             console.log("heatmapData1", heatmapData)
             setHeatmapData(heatmapData);
 

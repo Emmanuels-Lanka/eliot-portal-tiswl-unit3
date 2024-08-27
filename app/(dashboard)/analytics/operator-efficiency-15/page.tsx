@@ -1,6 +1,5 @@
 import { db } from '@/lib/db';
-import AnalyticsChart from './_components/Oldanalytics-chart';
-import AnalyticsChartHmap15 from './_components/analytics-chart';
+ 
 import AnalyticsChartHmap15Oprtr from './_components/analytics-chart';
 
 const OperatorEfficiency60 = async () => {
