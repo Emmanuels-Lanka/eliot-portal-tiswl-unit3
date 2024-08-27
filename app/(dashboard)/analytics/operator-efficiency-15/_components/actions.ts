@@ -6,7 +6,7 @@ export async function getOperatorEfficiencyData15M(obbsheetid:string,date:string
 
     
     
-     const data = await sql`SELECT concat(obbopn."seqNo",'-',oprtr.name ) as name,pd."productionCount" as count, obbopn.target,pd.timestamp as timestamp
+     const data = await sql`SELECT concat(obbopn."seqNo",'-',oprtr.name ) as name,pd."productionCount" as count, obbopn.target,pd.timestamp as timestamp,
             FROM "ProductionData" pd
             INNER JOIN "ObbOperation" obbopn ON pd."obbOperationId" = obbopn.id
             INNER JOIN "Operation" opn ON opn.id= obbopn."operationId"
