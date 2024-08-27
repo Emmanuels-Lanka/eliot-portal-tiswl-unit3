@@ -12,12 +12,14 @@ import { useToast } from "@/components/ui/use-toast";
 import ReactApexChart from "react-apexcharts";
 import { ApexOptions } from "apexcharts";
 import { geOperatorList, getOperatorEfficiencyData15M } from "./actions";
+import { Button } from "@/components/ui/button";
  
 
 
 interface AnalyticsChartProps {
     obbSheetId: string
     date: string;
+    listData:any [];
 }
 
 type HourGroup = {
@@ -69,7 +71,8 @@ const ensureAllCategoriesHaveData = (series: any, categories: any, defaultValue 
 
 const HmapChart15Compo = ({
     obbSheetId,
-    date
+    date,
+    listData 
 }: AnalyticsChartProps) => {
     const { toast } = useToast();
     const router = useRouter();
@@ -78,6 +81,9 @@ const HmapChart15Compo = ({
     const [heatmapData, setHeatmapData] = useState<any | null>(null);
     const [heatmapFullData, setHeatmapFullData] = useState<any | null>(null);
     const [operationList, setoperationList] = useState<any[]>([]);
+    const[chartWidth,setChartWidth] = useState<number>(4000)
+    const[timeList,settimeList] = useState<string>("")
+    
 
 
     const options = {
@@ -178,14 +184,18 @@ const HmapChart15Compo = ({
         try {
 
             const sqlDate = date + "%";
-            const prod  = await getOperatorEfficiencyData15M(obbSheetId, sqlDate)
+            const prod  = listData
+            console.log(prod)
           
             const opList = await geOperatorList(obbSheetId)
             setoperationList(opList)
 
             const heatmapData = getProcessData(prod as any[], operationList as any[]);
+            const t = heatmapData.time
+            settimeList(t as any)
+            
             console.log("heatmapData1", heatmapData)
-            setHeatmapData(heatmapData);
+            setHeatmapData(heatmapData.dataSeries);
 
 
             //setHeatmapCategories(heatmapData.xAxisCategories);
@@ -220,7 +230,9 @@ const HmapChart15Compo = ({
 
     }, [obbSheetId])
 
- 
+    //const height: string = timeList.length < 21 ? '200%' : timeList.length < 30 ? '300%' : '500%';
+    const totalCount = Object.keys(timeList).reduce((acc, curr) => acc + curr.length, 0);
+    const height: string = totalCount < 21 ? '200%' : totalCount < 30 ? '300%' : '500%';
 
     return (
         <>
@@ -234,13 +246,19 @@ const HmapChart15Compo = ({
                 {heatmapFullData !== null ?
                     <div className="mt-12 bg-slate-100 pt-5 pl-8 rounded-lg border w-full mb-16 overflow-x-auto ">
                         <h2 className="text-lg mb-2 font-medium text-slate-700">{" "}</h2>
-                        <ReactApexChart options={options} series={heatmapFullData} type="heatmap" height={1000} width={3000} />
+                        <ReactApexChart options={options} series={heatmapFullData} type="heatmap" height={height} width={chartWidth} />
                     </div>
                     :
                     <div className="mt-12 w-full">
                         <p className="text-center text-slate-500">Please select the OBB sheet and date ☝️</p>
                     </div>
-                }
+                }{<div className="flex justify-center gap-2 mt-5 2xl:hidden block">
+
+                    <Button onClick={() => setChartWidth((p) => p + 200)} className="rounded-full bg-gray-300">+</Button>
+                    <Button onClick={() => setChartWidth((p) => p - 200)} className="rounded-full bg-gray-300"> -</Button>
+                    
+                    </div>
+                    }
             </div>
         </>
     )
@@ -278,6 +296,7 @@ const getProcessData = (data: any[], operationList: any[]) => {
 
     //   const result = Object.groupBy(dataWithQuarter, (d) => d.hour.toString() + d.qtrIndex.toString());
     const result = Object.groupBy(dataWithQuarter, (d) => getTimeSlotLabel(d.hour, d.qtrIndex));
+    console.log(result)
 
     let rc = 0
     for (const [key, value] of Object.entries(result)) {
@@ -297,7 +316,7 @@ const getProcessData = (data: any[], operationList: any[]) => {
 
             //   console.log("vqw", v)
 
-            dataPoints.push({ x: key, y: ((v /(target/4))*100).toFixed(0) ?? 0 })
+            dataPoints.push({ x: key, y: ((v /(target/4))*100).toFixed(1) ?? 0 })
             rc += v
 
         }
@@ -307,6 +326,8 @@ const getProcessData = (data: any[], operationList: any[]) => {
 
 
         fmtDataSeries.push({ name: key, data: dataPoints })
+     
+
     }
 
     console.log("rc", rc)
@@ -319,7 +340,7 @@ const getProcessData = (data: any[], operationList: any[]) => {
 
 
 
-    return fmtDataSeries
+    return {dataSeries : fmtDataSeries,time:result}
 
 
 }
