@@ -30,6 +30,11 @@ import { Button } from "@/components/ui/button";
 import { Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
+import React, { useRef } from "react";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
+import * as XLSX from 'xlsx';
+
 const chartConfig = {
     target: {
         label: "",
@@ -53,7 +58,7 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
     const [chartData, setChartData] = useState<BarChartData[]>([])
     const [chartWidth, setChartWidth] = useState<number>(150);
     const [isSubmitting,setisSubmitting]=useState<boolean>(false)
-
+    const chartRef = useRef<HTMLDivElement>(null);
 
     const Fetchdata = async () => {
         try {
@@ -113,10 +118,42 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
 
 
 
+    //create pdf
+    const saveAsPDF = async () => {
+        if (chartRef.current) {
+            const canvas = await html2canvas(chartRef.current);
+            const imgData = canvas.toDataURL('image/png');
+            const pdf = new jsPDF({
+                orientation: 'landscape',
+                unit: 'px',
+                format: [canvas.width, canvas.height],
+            });
+            pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
+            pdf.save('chart.pdf');
+        }
+    };
+
+    
+//create Excel sheet
+    const saveAsExcel = () => {
+        const worksheet = XLSX.utils.json_to_sheet(chartData);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Chart Data");
+        XLSX.writeFile(workbook, `chart-data.xlsx`);
+    };
+
 
     return (
         <>
-    <Loader2 className={cn("animate-spin w-7 h-7 hidden", isSubmitting && "flex")} />
+  <div className="flex justify-center ">
+        <Loader2 className={cn("animate-spin w-7 h-7 hidden", isSubmitting && "flex")} />
+       </div>
+    
+    
+        <div className='mb-3'>
+            <Button type="button" className='mr-3' onClick={saveAsPDF}>Save as PDF</Button>
+            <Button type="button" onClick={saveAsExcel}>Save as Excel</Button>
+        </div>
 
             {chartData.length > 0 ?
                 <Card className='pr-2 pt-1 pb-2 border rounded-xl bg-slate-50'>
@@ -127,7 +164,9 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
                     </div>
                     <CardContent>
                         {/* <ChartContainer config={chartConfig} className={`min-h-[300px] max-h-[600px] w-[${chartWidth.toString()}%]`}> */}
-                        <ChartContainer config={chartConfig} className={`min-h-[300px] max-h-[600px] `} style={{ width: chartWidth + "%", height: chartWidth + "%" }}>
+                        <ChartContainer 
+                        ref={chartRef}
+                        config={chartConfig} className={`min-h-[300px] max-h-[600px] `} style={{ width: chartWidth + "%", height: chartWidth + "%" }}>
 
                             <BarChart
                                 accessibilityLayer
