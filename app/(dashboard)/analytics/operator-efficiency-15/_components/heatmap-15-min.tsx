@@ -107,18 +107,18 @@ const HmapChart15Compo = ({
                         },
                         {
                             from: 0,
-                            to: 41,
+                            to: 70,
                             name: 'Low',
                             color: '#ef4444'
                         },
                         {
-                            from: 41,
-                            to: 67,
+                            from: 70,
+                            to: 79,
                             name: 'Medium',
-                            color: '#f97316'
+                            color: '#FFAA33'
                         },
                         {
-                            from: 67,
+                            from: 80,
                             to: 1000,
                             name: 'High',
                             color: '#16a34a'
@@ -224,8 +224,9 @@ const HmapChart15Compo = ({
 
     useEffect(() => {
         if (heatmapData?.length > 0) {
-            const filledSeries = ensureAllCategoriesHaveData(heatmapData, operationList.map(o => o.name));
-            setHeatmapFullData(filledSeries)
+            //const filledSeries = ensureAllCategoriesHaveData(heatmapData, operationList.map(o => o.name));
+            //setHeatmapFullData(filledSeries)
+            setHeatmapFullData(heatmapData)
         }
     }, [heatmapData])
 

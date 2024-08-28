@@ -4,8 +4,8 @@ import { neon } from "@neondatabase/serverless";
 
 export async function getData(obbsheetid:string,date:string)  : Promise<any[]>{
     const sql = neon(process.env.DATABASE_URL || "");
- 
-    const data = await sql`SELECT pd."productionCount" as count, substring(concat(oo."seqNo",'-',o.name ) from 0 for 20) as name  , pd.timestamp as timestamp, oo."seqNo",pd."eliotSerialNumber" as eliotid
+    //,pd."eliotSerialNumber" as eliotid
+    const data = await sql`SELECT pd."productionCount" as count, substring(concat(oo."seqNo",'-',o.name ) from 0 for 20) as name  , pd.timestamp as timestamp, oo."seqNo"
     FROM "ProductionData" pd
     right JOIN "ObbOperation" oo ON pd."obbOperationId" = oo.id
     INNER JOIN "ObbSheet" os ON oo."obbSheetId" = os.id
@@ -28,6 +28,25 @@ export async function geOperationList(obbsheetid:string ) : Promise<any[]>  {
     FROM "ObbOperation" oo  
     INNER JOIN "ObbSheet" os ON oo."obbSheetId" = os.id
     inner JOIN "Operation" o ON o.id= oo."operationId"
+    WHERE os.id = ${obbsheetid}  
+     order by  oo."seqNo" ;`;
+
+    console.log("geOperationList",data,)
+
+
+ 
+    return new Promise((resolve) => resolve(data ))
+}
+
+export async function getEliotMachineList(obbsheetid:string ) : Promise<any[]>  {
+    const sql = neon(process.env.DATABASE_URL || "");
+ 
+    // const data = await sql`SELECT   concat(oo."seqNo",'-',o.name ) as name
+    const data = await sql`SELECT sm."machineId",ed."serialNumber"
+    FROM "ObbOperation" oo  
+    INNER JOIN "ObbSheet" os ON oo."obbSheetId" = os.id
+    inner JOIN "SewingMachine" sm ON sm."machineId"= oo."sewingMachineId"
+    inner JOIN "EliotDevice" ed ON ed.id = sm."eliotDeviceId"
     WHERE os.id = ${obbsheetid}  
      order by  oo."seqNo" ;`;
 

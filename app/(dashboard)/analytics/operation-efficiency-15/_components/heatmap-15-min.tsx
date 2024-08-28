@@ -81,6 +81,7 @@ const   HmapChart15Compo = ({
     const [heatmapData, setHeatmapData] = useState<any[] | null>([]);
     const [heatmapFullData, setHeatmapFullData] = useState<any | null>(null);
     const [operationList, setoperationList] = useState<any[]>([]);
+    const [EliotDeviceList, setEliotDeviceList] = useState<any[]>([]);
     const [ isSubmitting, setIsSubmitting ] = useState<boolean>(false)
 
 
@@ -89,11 +90,11 @@ const   HmapChart15Compo = ({
             type: 'heatmap' as const,
           },
           tooltip: {
-            custom: function({ series, seriesIndex, dataPointIndex, w }) {
-                console.log("wwwww")
-                console.log("sss",series)
-                console.log("SII",seriesIndex)
-                console.log("DPI",dataPointIndex)
+            custom: function({ series, seriesIndex, dataPointIndex ,w }:{series:any, seriesIndex:any, dataPointIndex:any,w:any}) {
+                console.log("wwwww");
+                console.log("series11q",series);
+                console.log("seriesIndex11q",seriesIndex);
+                console.log("dataPointIndex11q",dataPointIndex);
                 const value = series[seriesIndex][dataPointIndex];
                 const category = w.globals.categoryLabels[dataPointIndex];
                 const eliotDevice = value.eliotid;
@@ -328,7 +329,7 @@ const getProcessData = (data: any[], operationList: any[]) :any[]=> {
 
             //   console.log("vqw", v)
 
-            dataPoints.push({ x: key, y: v ?? 0,eliotid: value[0].eliotid  })
+            dataPoints.push({ x: key, y: v ?? 0,eliotid: value?.[0].eliotid??0  })
             rc += v
 
         }
