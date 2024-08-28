@@ -29,6 +29,9 @@ import {
     ChartTooltipContent,
 } from "@/components/ui/chart";
 import { useState } from "react";
+import React, { useRef } from "react";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 
 const chartConfig = {
     target: {
@@ -50,21 +53,39 @@ interface LineChartGraphProps {
 
 const LineChartGraph = ({ data }: LineChartGraphProps) => {
     const [chartWidth, setChartWidth] = useState<number>(100);
+    const chartRef = useRef<HTMLDivElement>(null);
     const chartData = data.map((item,index) => ({
         name: (item.name),
         target: item.target,
         actual: item.count,
     }));
 
+    const saveAsPDF = async () => {
+        if (chartRef.current) {
+            const canvas = await html2canvas(chartRef.current);
+            const imgData = canvas.toDataURL('image/png');
+            const pdf = new jsPDF({
+                orientation: 'landscape',
+                unit: 'px',
+                format: [canvas.width, canvas.height],
+            });
+            pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
+            pdf.save('chart.pdf');
+        }
+    };
+
     return (
         <>
+         <div className='mb-3'>
+            <Button type="button" className='mr-3' onClick={saveAsPDF}>Save as PDF</Button>
+        </div>
         <Card className="bg-slate-50">
             <CardHeader>
                 <CardTitle>Hourly Production - Target vs Actual</CardTitle>
                 {/* <CardDescription>January - June 2024</CardDescription> */}
             </CardHeader>
             <CardContent>
-                <ChartContainer config={chartConfig}  style={{ width: chartWidth + "%" , height: chartWidth + "%" }}>
+                <ChartContainer ref={chartRef} config={chartConfig}  style={{ width: chartWidth + "%" , height: chartWidth + "%" }}>
                     {/* <LineChart
                         accessibilityLayer
                         data={chartData}
