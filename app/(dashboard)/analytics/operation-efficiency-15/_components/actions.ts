@@ -45,12 +45,14 @@ export async function getEliotMachineList(obbsheetid:string ) : Promise<any[]>  
     const data = await sql`SELECT sm."machineId",ed."serialNumber"
     FROM "ObbOperation" oo  
     INNER JOIN "ObbSheet" os ON oo."obbSheetId" = os.id
-    inner JOIN "SewingMachine" sm ON sm."machineId"= oo."sewingMachineId"
+    inner JOIN "SewingMachine" sm ON sm."id"= oo."sewingMachineId"
     inner JOIN "EliotDevice" ed ON ed.id = sm."eliotDeviceId"
     WHERE os.id = ${obbsheetid}  
      order by  oo."seqNo" ;`;
 
-    console.log("geOperationList",data,)
+ 
+
+    console.log("getEliotMachineList",data,)
 
 
  

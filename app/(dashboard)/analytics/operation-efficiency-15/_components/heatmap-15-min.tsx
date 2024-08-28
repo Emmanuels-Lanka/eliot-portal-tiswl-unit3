@@ -8,7 +8,7 @@ import { ObbSheet, ProductionData } from "@prisma/client";
 import HeatmapChart from "@/components/dashboard/charts/heatmap-chart";
 import SelectObbSheetAndDate from "@/components/dashboard/common/select-obbsheet-and-date";
 import { useToast } from "@/components/ui/use-toast";
-import { geOperationList, getData } from "./actions";
+import { geOperationList, getData, getEliotMachineList } from "./actions";
 import ReactApexChart from "react-apexcharts";
 import { ApexOptions } from "apexcharts";
 import { Loader2 } from "lucide-react";
@@ -83,6 +83,7 @@ const   HmapChart15Compo = ({
     const [operationList, setoperationList] = useState<any[]>([]);
     const [EliotDeviceList, setEliotDeviceList] = useState<any[]>([]);
     const [ isSubmitting, setIsSubmitting ] = useState<boolean>(false)
+    const [ eliotIdList, seteliotIdList ] = useState<any[]>([])
 
 
     const options = {
@@ -94,15 +95,15 @@ const   HmapChart15Compo = ({
                 console.log("wwwww");
                 console.log("series11q",series);
                 console.log("seriesIndex11q",seriesIndex);
-                console.log("dataPointIndex11q",dataPointIndex);
+                console.log("dataPointIndex11q",eliotIdList[dataPointIndex].machineId);
                 const value = series[seriesIndex][dataPointIndex];
                 const category = w.globals.categoryLabels[dataPointIndex];
                 const eliotDevice = value.eliotid;
                 return `<div style="padding: 10px; color: #000;">
-                          <strong>Category: </strong> ${category} <br/>
-                          <strong>Value: </strong> ${value.y} <br/>
-                          <strong>Eliot Device: </strong> ${eliotDevice} <br/>
-                          <strong>Custom Text: </strong> This is your custom tooltip!
+                         
+                          <strong>Eliot Device Id: </strong> ${eliotIdList[dataPointIndex].serialNumber} <br/>
+                          <strong>MAchine Id: </strong> ${eliotIdList[dataPointIndex].machineId} <br/>
+                           
                         </div>`;
               },
           },
@@ -243,6 +244,17 @@ const   HmapChart15Compo = ({
 
     useEffect(() => {
         handleFetchProductions()
+
+    }, [obbSheetId,date])
+
+    useEffect(() => {
+     
+        const e= async ()=>{
+        const s =  await getEliotMachineList(obbSheetId)
+
+        seteliotIdList(s)
+        }
+        e()
 
     }, [obbSheetId,date])
 
