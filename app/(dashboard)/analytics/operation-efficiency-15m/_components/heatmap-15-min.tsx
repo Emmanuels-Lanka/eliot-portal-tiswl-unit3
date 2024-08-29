@@ -122,22 +122,22 @@ const   HmapChart15Compo = ({
                         },
                         {
                             from: 0,
-                            to: 50000,
-                            name: 'Data',
-                            color: '#0171c1'
+                            to: 44,
+                            name: 'Low',
+                           color: '#ef4444'
                         },
-                        // {
-                        //     from: efficiencyLow,
-                        //     to: efficiencyHigh,
-                        //     name: 'Medium',
-                        //     color: '#006400'
-                        // },
-                        // {
-                        //     from: efficiencyHigh,
-                        //     to: 1000,
-                        //     name: 'High',
-                        //     color: '#006400'
-                        // },
+                        {
+                            from: 44,
+                            to: 74,
+                            name: 'Medium',
+                             color: '#f97316'
+                        },
+                        {
+                            from: 74,
+                            to: 1000,
+                            name: 'High',
+                           color: '#16a34a'
+                        },
                     ],
                 },
             },
@@ -169,8 +169,8 @@ const   HmapChart15Compo = ({
                 }, rotate: -90,
                 minHeight: 200,
             },
-            categories: operationList.map(o => o.name), // x-axis categories
-
+            // categories: operationList.map(o => o.name), // x-axis categories
+            categories: operationList.map(o => `${o.name} `)
 
         },
 
@@ -251,7 +251,7 @@ const   HmapChart15Compo = ({
      
         const e= async ()=>{
         const s =  await getEliotMachineList(obbSheetId)
-
+        console.log("machine data",s)
         seteliotIdList(s)
         }
         e()
@@ -262,10 +262,6 @@ const   HmapChart15Compo = ({
 
     return (
         <>
-
-
-
-
 
             <div className="mx-auto max-w-[1680px]">
             {<div className=" flex justify-center items-center">
@@ -333,7 +329,7 @@ const getProcessData = (data: any[], operationList: any[]) :any[]=> {
         const dataGBOp = Object.groupBy(value || [], (d) => d.name);
         const dataPoints = []
         for (const [key, value] of Object.entries(dataGBOp)) {
-            
+            const target = value?.[0].target ?? 1;
             const v = value?.reduce((a, d) => {
 
                 return a + (d?.count ?? 0)
@@ -341,7 +337,9 @@ const getProcessData = (data: any[], operationList: any[]) :any[]=> {
 
             //   console.log("vqw", v)
 
-            dataPoints.push({ x: key, y: v ?? 0,eliotid: value?.[0].eliotid??0  })
+            // dataPoints.push({ x: key, y: v ?? 0,eliotid: value?.[0].eliotid??0  })
+            // rc += v
+            dataPoints.push({ x: key, y: ((v /(target/4))*100).toFixed(1) ?? 0 })
             rc += v
 
         }

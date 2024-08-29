@@ -138,7 +138,11 @@ export const SIDEBAR_ROUTES = [
                 icon: BarChartHorizontal
             },
             
-           
+            {
+                label: "Operation Efficiency (15min)",
+                href: "/analytics/operation-efficiency-15m",
+                icon: BarChartHorizontal
+            },
 
  
         ]
@@ -186,7 +190,7 @@ export const SIDEBAR_ROUTES = [
           
             {
                 label: "Daily Efficiency Report",
-                href: "/analytics/operator-effective-time",
+                href: "/analytics/daily-report",
                 icon: Table
             },
             
@@ -492,4 +496,10 @@ export const HEADER_INFO = [
          href: "/analytics/efficiency-rate",
         icon: Sliders
     },
+    {
+        label: "Operator Daily Efficiency Report",
+         href: "/analytics/daily-report",
+        icon: Sliders
+    },
 ]
+
