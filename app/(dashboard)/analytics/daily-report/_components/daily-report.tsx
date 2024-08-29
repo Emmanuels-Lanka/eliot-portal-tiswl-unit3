@@ -43,7 +43,7 @@ const ReportTable=({
   const[date,setDate]=useState<string>("")
   const[data,setData]=useState<ReportData[]>([])
   const [obbSheetId, setObbSheetId] = useState<string>("");
-  const reportRef = useRef();
+  const reportRef = useRef<any>(null);
 
 
   const handleFetchProductions = async (data: { obbSheetId: string; date: Date }) => {
@@ -102,9 +102,9 @@ setData(res)
 
 
   const handlePrint = () => {
-    const printContent = reportRef.current;
+    const printContent: any = reportRef.current;
     const windowToPrint = window.open("", "", "width=800,height=600");
-    windowToPrint.document.write(`
+    windowToPrint?.document.write(`
       <html>
         <head>
           <title>Invoice</title>
@@ -155,15 +155,15 @@ setData(res)
           <h5>Line Unit :${data[0].unitname}</h5></br> 
           <h5> Style :${data[0].style}</h5></br> 
                    
-          ${printContent.innerHTML}
+          ${printContent?.innerHTML}
         
 
         </body>
       </html>
     `);
-    windowToPrint.document.close();
-    windowToPrint.focus();
-    windowToPrint.print();
+    windowToPrint?.document.close();
+    windowToPrint?.focus();
+    windowToPrint?.print();
   };
 
  
