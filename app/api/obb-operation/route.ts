@@ -7,7 +7,7 @@ export async function POST(
     req: Request,
 ) {
     try {
-        const { operationId, sewingMachineId, smv, target, spi, length, totalStitches, obbSheetId, supervisorId } = await req.json();
+        const { operationId, sewingMachineId, smv, target, spi, length, totalStitches, obbSheetId, supervisorId, part } = await req.json();
         
         let id = generateUniqueId();
 
@@ -40,7 +40,8 @@ export async function POST(
                 length, 
                 totalStitches, 
                 supervisorId,
-                sewingMachineId
+                sewingMachineId,
+                part
             }
         });
 

@@ -248,6 +248,10 @@ export function DataTable<TData, TValue>({
             accessorKey: "target",
             header: "Target",
         },
+        {
+            accessorKey: "part",
+            header: "Part",
+        },
         // {
         //     accessorKey: "spi",
         //     header: "SPI",

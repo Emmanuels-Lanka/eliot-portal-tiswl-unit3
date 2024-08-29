@@ -181,6 +181,19 @@ export const SIDEBAR_ROUTES = [
         ]
     },
     {
+        categoryName: "Reports",
+        routes: [
+          
+            {
+                label: "Daily Efficiency Report",
+                href: "/analytics/operator-effective-time",
+                icon: Table
+            },
+            
+            
+        ]
+    },
+    {
         categoryName: "DHU Status",
         routes: [
             {

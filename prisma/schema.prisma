@@ -59,8 +59,8 @@ model Operator {
   operatorNonEffectiveTime OperatorNonEffectiveTime[]
   operatorSessions         OperatorSession[]
   productionData           ProductionData[]
-  tslRecords               TrafficLightSystem[]
   productionSMV            ProductionSMV[]
+  tslRecords               TrafficLightSystem[]
 }
 
 model Unit {
@@ -94,6 +94,7 @@ model EliotDevice {
   installedDate  String
   modelNumber    String
   serialNumber   String           @unique
+  hasTrained     Boolean?         @default(false)
   productionData ProductionData[]
   sewingMachines SewingMachine?
 }
@@ -196,6 +197,7 @@ model ObbOperation {
   totalStitches    Int
   createdAt        DateTime             @default(now())
   updatedAt        DateTime             @updatedAt
+  part             String?
   supervisorId     String?
   isActive         Boolean              @default(false)
   sewingMachineId  String?
@@ -205,9 +207,9 @@ model ObbOperation {
   supervisor       Staff?               @relation(fields: [supervisorId], references: [id])
   operatorSessions OperatorSession[]
   productionData   ProductionData[]
+  productionSMV    ProductionSMV[]
   staffSessions    StaffSession[]
   tslRecords       TrafficLightSystem[]
-  productionSMV    ProductionSMV[]
 
   @@index([operationId, obbSheetId])
 }
@@ -318,6 +320,7 @@ model OperatorEffectiveTime {
   productionDownTime String?
   lunchBreakTime     String?
   offStandTime       String?
+  status             String?  @db.VarChar(255)
   operator           Operator @relation(fields: [operatorRfid], references: [rfid], onDelete: Cascade)
 
   @@index([operatorRfid])
@@ -325,10 +328,10 @@ model OperatorEffectiveTime {
 
 model ProductionSMV {
   id             Int          @id @default(autoincrement())
-  obbOperationId String
   operatorRfid   String
   smv            String
   timestamp      String
+  obbOperationId String
   obbOperation   ObbOperation @relation(fields: [obbOperationId], references: [id], onDelete: Cascade)
   operator       Operator     @relation(fields: [operatorRfid], references: [rfid], onDelete: Cascade)
 

@@ -19,6 +19,7 @@ type ObbOperationData = {
     totalStitches: number;
     createdAt: Date;
     updatedAt: Date;
+    part: string | null;
     operation: {
         id: string;
         name: string;
