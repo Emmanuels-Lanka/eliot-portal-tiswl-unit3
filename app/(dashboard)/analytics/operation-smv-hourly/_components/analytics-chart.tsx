@@ -84,7 +84,9 @@ const AnalyticsChart = ({
              
             const response = await axios.get(`/api/smv/fetch-by-operation?obbOperationId=${data.obbOperationId}&date=${formattedDate}`);
             const result = groupSMVByHour(response.data.data);
-            console.log("dateqq1",result)
+            console.log("Result data",response)
+            console.log("dateqq11111111111",result)
+
             const tsmv = response.data.tsmv.smv
             settsmv(tsmv)
             setBarchartData(result);

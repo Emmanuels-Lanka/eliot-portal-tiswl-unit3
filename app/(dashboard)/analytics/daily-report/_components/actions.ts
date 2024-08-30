@@ -22,13 +22,12 @@ export async function getDailyData(obbsheetid:string,date:string)  : Promise<Rep
            sm."machineId" as machineid
     from "ProductionData" pd
     inner join "Operator" opr on pd."operatorRfid" = opr.rfid 
-    inner join "OperatorSession" ops on opr.rfid = ops."operatorRfid"
-    inner join "ObbOperation" obbop on ops."obbOperationId" = obbop.id
+    inner join "ObbOperation" obbop on pd."obbOperationId" = obbop.id
     inner join "ObbSheet" obbs on obbop."obbSheetId" = obbs.id
     inner join "Operation" op on obbop."operationId" = op.id
     inner join "Unit" unt on obbs."unitId" = unt.id
     inner join "SewingMachine" sm on obbop."sewingMachineId"=sm.id
-    where pd."timestamp" like ${date} AND obbs.id = ${obbsheetid}
+    where pd."timestamp" LIKE ${date} AND obbs.id = ${obbsheetid}
     group by opr.id, opr.name, op.name, obbop.smv, obbop.target, unt.name, obbs.style,sm.id`;
   
   

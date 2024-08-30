@@ -42,6 +42,7 @@ export async function GET(
                 id: "asc"
             }
         });
+        console.log('Dat00000',smv)
 
         //target SMV
         const tsmv = await db.obbOperation.findFirst({

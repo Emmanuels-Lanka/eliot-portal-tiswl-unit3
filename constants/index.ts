@@ -89,7 +89,7 @@ export const SIDEBAR_ROUTES = [
             //     icon: BarChart3
             // },
               {
-                label: "Daily Achivement ",
+                label: "Daily Achievement",
                 href: "/analytics/daily-achivement",
                 icon: BarChartHorizontal
             },
@@ -99,7 +99,7 @@ export const SIDEBAR_ROUTES = [
                 icon: BarChart3
             },
             {
-                label: "Efficiency Rate",
+                label: "Overall Efficiency",
                 href: "/analytics/efficiency-rate",
                 icon: BarChart3
             },
@@ -492,13 +492,18 @@ export const HEADER_INFO = [
         icon: Sliders
     },
     {
-        label: "Efficiency Rate",
+        label: "Overall Efficiency ",
          href: "/analytics/efficiency-rate",
         icon: Sliders
     },
     {
         label: "Operator Daily Efficiency Report",
          href: "/analytics/daily-report",
+        icon: Sliders
+    },
+    {
+        label: "Operation Efficiency-15",
+         href: "/analytics/operation-efficiency-15m",
         icon: Sliders
     },
 ]

@@ -157,11 +157,7 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
 
             {chartData.length > 0 ?
                 <Card className='pr-2 pt-1 pb-2 border rounded-xl bg-slate-50'>
-                    <div className="px-8">
-                        <CardHeader>
-                            <CardTitle>Operation - Efficiency Rate(Live Data)</CardTitle>
-                        </CardHeader>
-                    </div>
+                    
                     <CardContent>
                         {/* <ChartContainer config={chartConfig} className={`min-h-[300px] max-h-[600px] w-[${chartWidth.toString()}%]`}> */}
                         <ChartContainer 
