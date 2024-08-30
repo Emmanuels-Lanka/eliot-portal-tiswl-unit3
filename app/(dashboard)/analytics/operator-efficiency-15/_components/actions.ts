@@ -6,17 +6,19 @@ export async function getOperatorEfficiencyData15M(obbsheetid:string,date:string
 
     
     
-     const data = await sql`SELECT concat(obbopn."seqNo",'-',oprtr.name ) as name,pd."productionCount" as count, obbopn.target,pd.timestamp as timestamp
+     const data = await sql`SELECT substring(concat(obbopn."seqNo",'-',oprtr.name ) from 0 for 20)  as name,
+            pd."productionCount" as count, obbopn.target,pd.timestamp as timestamp
             FROM "ProductionData" pd
             INNER JOIN "ObbOperation" obbopn ON pd."obbOperationId" = obbopn.id
-            INNER JOIN "Operation" opn ON opn.id= obbopn."operationId"
             INNER JOIN "ObbSheet" obbs ON obbopn."obbSheetId" = obbs.id
             INNER JOIN "Operator" oprtr ON oprtr."rfid" = pd."operatorRfid"
             WHERE pd.timestamp like ${date} and  obbs.id = ${obbsheetid}
-            group by oprtr.name,obbopn."seqNo",obbopn.target, pd."productionCount",pd.timestamp
-order by  pd.timestamp ;`;
-    
+            group by substring(concat(obbopn."seqNo",'-',oprtr.name ) from 0 for 20),obbopn.target, pd."productionCount",pd.timestamp
+            order by  pd.timestamp ;`;
+  
+            // INNER JOIN "Operation" opn ON opn.id= obbopn."operationId"
 
+// group by oprtr.name,obbopn."seqNo",obbopn.target, pd."productionCount",pd.timestamp
     
     console.log("data",data,obbsheetid)
     return new Promise((resolve) => resolve(data  ))
@@ -24,7 +26,7 @@ order by  pd.timestamp ;`;
 }
 
 
-export async function geOperatorList(obbsheetid:string ) : Promise<any[]>  {
+export async function geOperatorList(obbsheetid:string,date:string ) : Promise<any[]>  {
     const sql = neon(process.env.DATABASE_URL || "");
  
     // const data = await sql`SELECT   concat(oo."seqNo",'-',o.name ) as name
@@ -35,7 +37,8 @@ export async function geOperatorList(obbsheetid:string ) : Promise<any[]>  {
     INNER JOIN "ObbOperation" oopn ON pd."obbOperationId" = oopn."id"
     INNER JOIN "ObbSheet" os ON oopn."obbSheetId" = os.id
     WHERE os.id = ${obbsheetid}  
-    group by oo.name,oopn."seqNo"
+     AND pd.timestamp like ${date}
+    group by substring(concat(oopn."seqNo",'-',oo.name ) from 0 for 20) , oopn."seqNo"
     order by  oopn."seqNo";`;
     //order by  substring(concat(oopn."seqNo",'-',oo.name ) from 0 for 20) ;`
 
