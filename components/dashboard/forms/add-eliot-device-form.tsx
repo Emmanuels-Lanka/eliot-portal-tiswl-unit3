@@ -66,14 +66,7 @@ const AddEliotDeviceForm = ({
                 const res = await axios.post('/api/eliot-device', data);
                 toast({
                     title: "Successfully created new device",
-                    variant: "success",
-                    description: (
-                        <div className='mt-2 bg-slate-200 py-2 px-3 md:w-[336px] rounded-md'>
-                            <code className="text-slate-800">
-                                Serial No: {res.data.data.serialNumber}
-                            </code>
-                        </div>
-                    ),
+                    variant: "success"
                 });
                 form.reset();
                 router.refresh();
