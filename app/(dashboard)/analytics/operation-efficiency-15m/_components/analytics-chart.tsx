@@ -173,66 +173,12 @@ return res
 }
 
 
-  const getProcessData = (data: any[],operationList:any[]) => {
-      const fmtDataSeries = []
-      const dataWithQuarter = data.map((d) => (
-          {
-              ...d,  hour: new Date(d.timestamp).getHours(),
-               qtrIndex: Math.floor(new Date(d.timestamp).getMinutes() / 15)
-          }
-      )
-      )
-      
-    //   const result = Object.groupBy(dataWithQuarter, (d) => d.hour.toString() + d.qtrIndex.toString());
-      const result = Object.groupBy(dataWithQuarter, (d) => getTimeSlotLabel(d.hour,d.qtrIndex));
-      
-      let rc=0
-      for (const [key, value] of Object.entries(result)) {
-            
-
-           
-          const dataGBOp = Object.groupBy(value || [], (d) =>  d.name);
-          const dataPoints = []
-          for (const [key, value] of Object.entries(dataGBOp)) {
-
-              const v = value?.reduce((a, d) => {
-
-                  return a + (d?.count ?? 0)
-              },0)
-
-            //   console.log("vqw", v)
-           
-              dataPoints.push({ x: key, y: v ?? 0 })
-               rc +=v
-
-          }
-
-          //fill unavailble timeslots
-
-
-
-          fmtDataSeries.push({ name: key, data: dataPoints })
-      }
-
-      console.log("rc",rc )
-
-
-      console.log("dataaaaaa", fmtDataSeries)
-
-
-
-
-
-
-      return fmtDataSeries
-
-
-  }
+  
  
 
 
 
-//  const getProcessData = (data: any[]) => {
+
 //      const fmtDataSeries = [];
 //      const dataWithQuarter = data.map((d) => ({
 //          ...d,

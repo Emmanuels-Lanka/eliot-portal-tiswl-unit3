@@ -13,6 +13,7 @@ import ReactApexChart from "react-apexcharts";
 import { ApexOptions } from "apexcharts";
 import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Card, CardHeader, CardTitle } from "@/components/ui/card";
  
 
 
@@ -210,8 +211,11 @@ const   HmapChart15Compo = ({
             const opList = await geOperationList(obbSheetId)
             setoperationList(opList)
             const heatmapDatas = getProcessData(prod as any[], operationList as any[]);
+            //rem 0 ops
+            console.log("heatmap data00000000",heatmapDatas)
+
             setHeatmapData(heatmapDatas);
-            console.log("heatmapData1", heatmapData)
+            //console.log("heatmapData1", heatmapData)
             setIsSubmitting(false)
 
             //setHeatmapCategories(heatmapData.xAxisCategories);
@@ -268,16 +272,25 @@ const   HmapChart15Compo = ({
             <Loader2 className={cn("animate-spin w-5 h-5 hidden", isSubmitting && "flex")} />
             </div>}
                 {heatmapFullData !== null ?
-                    <div className="mt-12 bg-slate-100 pt-5 pl-8 rounded-lg border w-full mb-16 overflow-x-auto ">
+                <Card className="mt-5 bg-slate-100 pt-5 pl-8 rounded-lg border w-full mb-16 overflow-x-auto ">
+                    <div>
+                    <div>
+                        <CardHeader>
+                            <CardTitle>Operation Efficiency-15</CardTitle>
+                        </CardHeader>
+                    </div>
                         <h2 className="text-lg mb-2 font-medium text-slate-700">{" "}</h2>
                         <ReactApexChart options={options} series={heatmapFullData} type="heatmap" height={1000} width={2000} />
                     </div>
+                    </Card>
                     :
                     <div className="mt-12 w-full">
                         <p className="text-center text-slate-500">Please select the OBB sheet and date ☝️</p>
                     </div>
                 }
+                
             </div>
+           
         </>
     )
 }
@@ -351,19 +364,7 @@ const getProcessData = (data: any[], operationList: any[]) :any[]=> {
         fmtDataSeries.push({ name: key, data: dataPoints })
     }
 
-    console.log("rc", rc)
-
-
-    console.log("dataaaaaa", fmtDataSeries)
-
-
-
-
-
-
     return fmtDataSeries
-
-
 }
 
 

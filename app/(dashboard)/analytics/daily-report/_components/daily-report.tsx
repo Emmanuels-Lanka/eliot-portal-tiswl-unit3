@@ -84,6 +84,7 @@ const ReportTable=({
 
 
   const getDetails= async()=>{
+
 const details=await getDailyData(obbSheetId,date)
 const res = calculateEfficiency(details)
 console.log("details",details)
@@ -187,7 +188,7 @@ setData(res)
       <TableHead>Operator Name</TableHead>
       <TableHead>Operation Name</TableHead>
       <TableHead>Operated Machine</TableHead>
-      <TableHead >Target(100% SMV Target)</TableHead>
+      <TableHead >100% SMV Target/Hr</TableHead>
       <TableHead >Units Produced</TableHead>
       <TableHead >Efficiency(%)</TableHead>
       <TableHead >Achievement</TableHead>
@@ -211,7 +212,7 @@ setData(res)
     <div className="font-medium">{d.machineid}</div>
   </TableCell>
   <TableCell>
-    <div className="font-medium">{(d.smv*100).toFixed(2)}</div>
+    <div className="font-medium">{(60/d.smv).toFixed(2)}</div>
   </TableCell>
   <TableCell>
     <div className="font-medium">{d.count}</div>
