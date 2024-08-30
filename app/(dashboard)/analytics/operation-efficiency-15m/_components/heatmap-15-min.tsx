@@ -218,8 +218,7 @@ const   HmapChart15Compo = ({
             //console.log("heatmapData1", heatmapData)
             setIsSubmitting(false)
 
-            //setHeatmapCategories(heatmapData.xAxisCategories);
-            //setObbSheet(response.data.obbSheet);
+            
 
 
         } catch (error: any) {
