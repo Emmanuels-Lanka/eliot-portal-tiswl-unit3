@@ -54,7 +54,7 @@ interface BarChartGraphProps {
     obbSheetId: string
 }
 
-const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
+const BarChartGraphEfficiencyRate = ({ date, obbSheetId }: BarChartGraphProps) => {
     const [chartData, setChartData] = useState<BarChartData[]>([])
     const [chartWidth, setChartWidth] = useState<number>(150);
     const [isSubmitting,setisSubmitting]=useState<boolean>(false)
@@ -229,4 +229,4 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
     )
 }
 
-export default BarChartGraph
+export default BarChartGraphEfficiencyRate

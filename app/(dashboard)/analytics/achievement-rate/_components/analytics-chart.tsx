@@ -19,7 +19,7 @@ import { ProductionData } from "@prisma/client";
 
 import { useToast } from "@/components/ui/use-toast";
 import SelectObbSheetAndDate  from "@/components/dashboard/common/select-obbsheet-and-date";
-import BarChartGraph from "./bar-chart-graph";
+import BarChartGraphEffRate from "./bar-chart-graph";
 import { getOperatorEfficiency } from "./actions";
 // import LineChartGraph from "./line-chart-graph";
 
@@ -162,7 +162,7 @@ const AnalyticsChart = ({
                         {/* <LineChartGraph 
                             data={production}
                         />  */}
-                        <BarChartGraph
+                        <BarChartGraphEffRate
                             obbSheetId={obbSheetId}
                             date={date}
                            

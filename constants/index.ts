@@ -88,7 +88,7 @@ export const SIDEBAR_ROUTES = [
             //     href: "/analytics/hourly-production",
             //     icon: BarChart3
             // },
-              {
+            {
                 label: "Daily Achievement",
                 href: "/analytics/daily-achivement",
                 icon: BarChartHorizontal
@@ -108,11 +108,11 @@ export const SIDEBAR_ROUTES = [
                 href: "/analytics/operation-efficiency-15",
                 icon: BarChartHorizontal
             },
-          
-            
+
+
         ]
-        
-        
+
+
     },
     {
         categoryName: "SMV Analytics",
@@ -123,7 +123,7 @@ export const SIDEBAR_ROUTES = [
                 icon: BarChart3
             },
             {
-                label: "Target vs Actual",
+                label: "SMV vs Cycle Time",
                 href: "/analytics/operation-smv",
                 icon: BarChart3
             }
@@ -137,14 +137,14 @@ export const SIDEBAR_ROUTES = [
                 href: "/analytics/operation-efficiency-60",
                 icon: BarChartHorizontal
             },
-            
+
             {
                 label: "Operation Efficiency (15min)",
                 href: "/analytics/operation-efficiency-15m",
                 icon: BarChartHorizontal
             },
 
- 
+
         ]
     },
     {
@@ -170,7 +170,7 @@ export const SIDEBAR_ROUTES = [
     {
         categoryName: "Records",
         routes: [
-          
+
             {
                 label: "Resource Utilization",
                 href: "/analytics/operator-effective-time",
@@ -181,20 +181,20 @@ export const SIDEBAR_ROUTES = [
                 href: "/analytics/log",
                 icon: Table
             },
-            
+
         ]
     },
     {
         categoryName: "Reports",
         routes: [
-          
+
             {
                 label: "Daily Efficiency Report",
                 href: "/analytics/daily-report",
                 icon: Table
             },
-            
-            
+
+
         ]
     },
     {
@@ -212,7 +212,7 @@ export const SIDEBAR_ROUTES = [
             },
         ]
     },
-   
+
     {
         categoryName: null,
         routes: [
@@ -437,7 +437,7 @@ export const HEADER_INFO = [
         icon: BarChart3
     },
     {
-        label: "SMV Target vs Avg. Actual Cycle Time",
+        label: "SMV vs Cycle Time",
         href: "/analytics/operation-smv",
         icon: BarChart3
     },
@@ -478,12 +478,12 @@ export const HEADER_INFO = [
     },
     {
         label: "Daily Achievement",
-          href: "/analytics/daily-achivement",
+        href: "/analytics/daily-achivement",
         icon: Sliders
     },
     {
         label: "Achievement Rate",
-         href: "/analytics/achievement-rate-operation",
+        href: "/analytics/achievement-rate-operation",
         icon: Sliders
     },
     {
@@ -493,17 +493,17 @@ export const HEADER_INFO = [
     },
     {
         label: "Overall Efficiency ",
-         href: "/analytics/efficiency-rate",
+        href: "/analytics/efficiency-rate",
         icon: Sliders
     },
     {
         label: "Operator Daily Efficiency Report",
-         href: "/analytics/daily-report",
+        href: "/analytics/daily-report",
         icon: Sliders
     },
     {
         label: "Operation Efficiency-15",
-         href: "/analytics/operation-efficiency-15m",
+        href: "/analytics/operation-efficiency-15m",
         icon: Sliders
     },
 ]

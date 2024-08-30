@@ -36,11 +36,11 @@ import * as XLSX from 'xlsx';
 
 const chartConfig = {
     smv: {
-        label: "Target SMV",
+        label: "SMV",
         color: "hsl(var(--chart-1))",
     },
     avg: {
-        label: "Actual Cycle Time",
+        label: "Cycle Time",
         color: "hsl(var(--chart-2))",
     }
 } satisfies ChartConfig
@@ -163,7 +163,7 @@ const saveAsExcel = () => {
         <Card className='pr-2 pt-6 pb-4 border rounded-xl bg-slate-50'>
             <div className="px-8">
                 <CardHeader>
-                    <CardTitle>Target SMV vs Actual Cycle Time</CardTitle>
+                    <CardTitle>SMV vs Cycle Time</CardTitle>
                     {/* <CardDescription>Number of items came across each scanning points today</CardDescription> */}
                 </CardHeader>
             </div>

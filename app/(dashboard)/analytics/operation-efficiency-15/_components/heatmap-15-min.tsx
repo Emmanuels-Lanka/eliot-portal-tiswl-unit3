@@ -92,10 +92,7 @@ const   HmapChart15Compo = ({
           },
           tooltip: {
             custom: function({ series, seriesIndex, dataPointIndex ,w }:{series:any, seriesIndex:any, dataPointIndex:any,w:any}) {
-                console.log("wwwww");
-                console.log("series11q",series);
-                console.log("seriesIndex11q",seriesIndex);
-                console.log("dataPointIndex11q",eliotIdList[dataPointIndex].machineId);
+ 
                 const value = series[seriesIndex][dataPointIndex];
                 const category = w.globals.categoryLabels[dataPointIndex];
                 const eliotDevice = value.eliotid;
