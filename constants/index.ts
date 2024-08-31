@@ -502,7 +502,7 @@ export const HEADER_INFO = [
         icon: Sliders
     },
     {
-        label: "Operation Efficiency-15",
+        label: "Operation Efficiency-(15minute)",
         href: "/analytics/operation-efficiency-15m",
         icon: Sliders
     },
