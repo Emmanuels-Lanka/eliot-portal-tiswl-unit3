@@ -52,7 +52,7 @@ const efficiencyHigh = 50
 const width = 580
 
 const ensureAllCategoriesHaveData = (series:any, categories:any, defaultValue = -1) => {
-    console.log("categories",categories)
+    
   return series.map((serie:any) => {
     const filledData = categories.map((category:any) => {
       const dataPoint = serie.data.find((d:any) => d.x === category);
@@ -215,15 +215,15 @@ const AnalyticsChartHmap15x = ({
     // Fetch production data and product counts, then process and set them
     const handleFetchProductions = async (data: { obbSheetId: string; date: Date }) => {
         try {
-            console.log("data",data)
+           
             data.date.setDate(data.date.getDate()+1 );
 
             const formattedDate = data.date.toISOString().split('T')[0];
 
             setNewDate(formattedDate);
-            console.log(formattedDate)
+           
             setObbSheetId(data.obbSheetId);
-                console.log("date",formattedDate)
+              
             const sqlDate = formattedDate + "%";
             //const response = await axios.get(`/api/efficiency/production?obbSheetId=${data.obbSheetId}&date=${formattedDate}`);
 
@@ -236,7 +236,7 @@ const AnalyticsChartHmap15x = ({
 
             //const heatmapData = processForHeatmap(response.data.data);
             const heatmapData = getProcessData(prod,operationList as any[]);
-            console.log("heatmapData1", heatmapData)
+            
             setHeatmapData(heatmapData );
 
 
@@ -364,13 +364,7 @@ return res
 
           fmtDataSeries.push({ name: key, data: dataPoints })
       }
-
-      console.log("rc",rc )
-
-
-      console.log("dataaaaaa", fmtDataSeries)
-
-
+ 
 
 
 

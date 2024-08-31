@@ -73,11 +73,11 @@ const BarChartGraphEfficiencyRate = ({ date, obbSheetId }: BarChartGraphProps) =
             }
             setisSubmitting(true)
             const prod = await getOperatorEfficiency(obbSheetId, date)
-            console.log(date)
+         
             let workingHrs = (new Date().getHours() - 8) + new Date().getMinutes() / 60;
             workingHrs > 10 ? 10 : workingHrs
 
-            console.log("workingHrs", workingHrs)
+           
             const chartData: BarChartData[] = prod.map((item,index) => ({
                 name:item.name,
                 count: item.count,
@@ -90,7 +90,7 @@ const BarChartGraphEfficiencyRate = ({ date, obbSheetId }: BarChartGraphProps) =
             })
             
             );
-            console.log("chart data", chartData)
+           
             setChartData(chartData)
 
         }

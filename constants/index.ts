@@ -89,20 +89,16 @@ export const SIDEBAR_ROUTES = [
             //     icon: BarChart3
             // },
             {
-                label: "Daily Achievement",
+                label: "Target vs Actual",
                 href: "/analytics/daily-achivement",
                 icon: BarChartHorizontal
             },
             {
-                label: "Achievement Rate",
+                label: "Overall Achievement",
                 href: "/analytics/achievement-rate-operation",
                 icon: BarChart3
             },
-            {
-                label: "Overall Efficiency",
-                href: "/analytics/efficiency-rate",
-                icon: BarChart3
-            },
+        
             {
                 label: "Production Heatmap (15min)",
                 href: "/analytics/operation-efficiency-15",
@@ -142,6 +138,11 @@ export const SIDEBAR_ROUTES = [
                 label: "Operation Efficiency (15min)",
                 href: "/analytics/operation-efficiency-15m",
                 icon: BarChartHorizontal
+            },
+            {
+                label: "Overall Efficiency",
+                href: "/analytics/efficiency-rate",
+                icon: BarChart3
             },
 
 
@@ -477,12 +478,12 @@ export const HEADER_INFO = [
         icon: Sliders
     },
     {
-        label: "Daily Achievement",
+        label: "Target vs Actual",
         href: "/analytics/daily-achivement",
         icon: Sliders
     },
     {
-        label: "Achievement Rate",
+        label: "Overall Achievement",
         href: "/analytics/achievement-rate-operation",
         icon: Sliders
     },

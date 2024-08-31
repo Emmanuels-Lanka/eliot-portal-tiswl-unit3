@@ -58,11 +58,11 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
         //         return afterDot ? afterDot.split(' ')[0] : null;
         //   }
             const prod = await getOperatorEfficiency(obbSheetId, date)
-            console.log(date)
+            
             let workingHrs=(new Date().getHours()-8)+new Date().getMinutes()/60;
             workingHrs > 10? 10 :  workingHrs
               
-            console.log("workingHrs",workingHrs)
+           
             const chartData: BarChartData[] = prod.map((item) => ({
                 name:item.name,
                 count: item.count,

@@ -53,7 +53,7 @@ const ReportTable=({
     const formattedDate = data.date.toISOString().split('T')[0].toString() + "%";
     setDate(formattedDate);
     setObbSheetId(data.obbSheetId);
-    console.log("formated date",formattedDate)
+    
 
   };
 
@@ -87,7 +87,7 @@ const ReportTable=({
 
 const details=await getDailyData(obbSheetId,date)
 const res = calculateEfficiency(details)
-console.log("details",details)
+ 
 
 setData(res)
 

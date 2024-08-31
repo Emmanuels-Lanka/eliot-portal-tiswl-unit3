@@ -13,7 +13,7 @@ export async function getData(obbsheetid:string,date:string)  : Promise<any[]>{
     WHERE os.id = ${obbsheetid} and pd.timestamp like ${date}
      order by  pd.timestamp ;`;
 
-    console.log("data fetched",data)
+ 
 
 
  
@@ -31,7 +31,7 @@ export async function geOperationList(obbsheetid:string ) : Promise<any[]>  {
     WHERE os.id = ${obbsheetid}  
      order by  oo."seqNo" ;`;
 
-    console.log("geOperationList",data,)
+   
 
 
  
@@ -51,8 +51,7 @@ export async function getEliotMachineList(obbsheetid:string ) : Promise<any[]>  
      order by  oo."seqNo" ;`;
 
  
-
-    console.log("getEliotMachineList",data,)
+ 
 
 
  

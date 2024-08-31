@@ -12,6 +12,6 @@ export async function getOperatorEfficiency(obbsheetid:string,date:string) : Pro
             INNER JOIN "Operator" o ON o.rfid= pd."operatorRfid"
             WHERE os.id = ${obbsheetid} and pd.timestamp like ${date}
             group by o.name,oo."seqNo",oo.target order by  oo."seqNo" ;`;
-    console.log("data",data,)
+    
     return new Promise((resolve) => resolve(data as ProductionDataType[] ))
 }

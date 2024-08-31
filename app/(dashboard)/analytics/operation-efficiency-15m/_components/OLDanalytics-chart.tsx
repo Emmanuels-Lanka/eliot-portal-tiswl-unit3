@@ -54,7 +54,7 @@ const efficiencyHigh = 50
 const width = 580
 
 const ensureAllCategoriesHaveData = (series:any, categories:any, defaultValue = -1) => {
-    console.log("categories",categories)
+    
   return series.map((serie:any) => {
     const filledData = categories.map((category:any) => {
       const dataPoint = serie.data.find((d:any) => d.x === category);
@@ -213,13 +213,7 @@ return res
 
           fmtDataSeries.push({ name: key, data: dataPoints })
       }
-
-      console.log("rc",rc )
-
-
-      console.log("dataaaaaa", fmtDataSeries)
-
-
+ 
 
 
 

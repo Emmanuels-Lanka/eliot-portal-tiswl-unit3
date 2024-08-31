@@ -7,8 +7,7 @@ import { ReportData } from "./daily-report";
 
 
 export async function getDailyData(obbsheetid:string,date:string)  : Promise<ReportData[]>   {
-    console.log("date",date)
-    console.log("Obb sheet ",obbsheetid)
+    
     const sql = neon(process.env.DATABASE_URL || "");
 
     const data = await sql`
@@ -30,9 +29,7 @@ export async function getDailyData(obbsheetid:string,date:string)  : Promise<Rep
     where pd."timestamp" LIKE ${date} AND obbs.id = ${obbsheetid}
     group by opr.id, opr.name, op.name, obbop.smv, obbop.target, unt.name, obbs.style,sm.id`;
   
-  
-console.log("TableData",data)
-
+   
 
  
     return new Promise((resolve) => resolve(data as ReportData[]  ))

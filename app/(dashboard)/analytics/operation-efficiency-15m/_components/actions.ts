@@ -14,10 +14,7 @@ export async function getData(obbsheetid:string,date:string)  : Promise<any[]>{
      inner join "SewingMachine" sm on sm.id=oo."sewingMachineId"
     WHERE os.id = ${obbsheetid} and pd.timestamp like ${date}
      order by  pd.timestamp ;`;
-
-    console.log("data fetched",data)
-
-
+ 
  
     return new Promise((resolve) => resolve(data ))
 }
@@ -33,10 +30,7 @@ export async function geOperationList(obbsheetid:string ) : Promise<any[]>  {
     inner join "SewingMachine" sm on sm.id=oo."sewingMachineId"
     WHERE os.id = ${obbsheetid}  
      order by  oo."seqNo" ;`;
-
-    console.log("geOperationList",data,)
-
-
+ 
  
     return new Promise((resolve) => resolve(data ))
 }
@@ -53,11 +47,7 @@ export async function getEliotMachineList(obbsheetid:string ) : Promise<any[]>  
     WHERE os.id = ${obbsheetid}  
      order by  oo."seqNo" ;`;
 
- 
-
-    console.log("getEliotMachineList",data,)
-
-
+  
  
     return new Promise((resolve) => resolve(data ))
 }

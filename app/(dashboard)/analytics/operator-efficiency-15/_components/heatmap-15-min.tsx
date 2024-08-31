@@ -142,7 +142,7 @@ const HmapChart15Compo = ({
                 text: xAxisLabel,
                 style: {
                     color: '#0070c0',
-                    fontSize: '14px',
+                    fontSize: '12px',
                     fontWeight: 600,
                     fontFamily: 'Inter, sans-serif',
                 }
@@ -346,14 +346,7 @@ const getProcessData = (data: any[], operationList: any[]) => {
 
 
     }
-
-    console.log("rc", rc)
-
-
-    console.log("dataaaaaa", fmtDataSeries)
-
-
-
+ 
 
 
 
@@ -365,8 +358,7 @@ const getProcessData = (data: any[], operationList: any[]) => {
 
 
 
-
-//  const getProcessData = (data: any[]) => {
+ 
 //      const fmtDataSeries = [];
 //      const dataWithQuarter = data.map((d) => ({
 //          ...d,

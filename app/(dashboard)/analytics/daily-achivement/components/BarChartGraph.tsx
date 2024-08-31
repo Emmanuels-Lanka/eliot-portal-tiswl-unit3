@@ -176,7 +176,7 @@ const saveAsExcel = () => {
             <CardHeader>
               <CardTitle className="text-center">
                 {" "}
-                Daily Target vs Actual Productions (LIVE Data)
+                Daily Target vs Actual Production (LIVE Data)
               </CardTitle>
               {/* <CardDescription>Number of items came across each scanning points today</CardDescription> */}
             </CardHeader>

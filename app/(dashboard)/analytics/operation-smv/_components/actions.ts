@@ -3,7 +3,7 @@ import { neon } from "@neondatabase/serverless";
 import { SMVChartData } from "./analytics-chart";
 
 export async function getSMV(obbSheetId:String,date:String):Promise<SMVChartData[]> {
-    console.log("SMV Data",obbSheetId,date)
+    
   const sql = neon(process.env.DATABASE_URL || "");
 
   const datef = `${date}%`; // Start of the day

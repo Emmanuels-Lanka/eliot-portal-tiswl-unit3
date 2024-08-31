@@ -14,7 +14,7 @@ import { ApexOptions } from "apexcharts";
 import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
- 
+
 
 
 interface AnalyticsChartProps {
@@ -52,15 +52,15 @@ const efficiencyHigh = 50
 
 
 const ensureAllCategoriesHaveData = (series: any, categories: any, defaultValue = -1) => {
-    console.log("series", series) // eliot id is inside of series
     
+
     return series.map((serie: any) => {
         const filledData = categories.map((category: any) => {
             const dataPoint = serie.data.find((d: any) => d.x === category);
             return {
                 x: category,
                 y: dataPoint ? dataPoint.y : defaultValue,
-                eliotid:serie.eliotid
+                eliotid: serie.eliotid
             };
         });
         return {
@@ -71,7 +71,7 @@ const ensureAllCategoriesHaveData = (series: any, categories: any, defaultValue 
 };
 
 
-const   HmapChart15Compo = ({
+const HmapChart15Compo = ({
     obbSheetId,
     date
 }: AnalyticsChartProps) => {
@@ -83,20 +83,17 @@ const   HmapChart15Compo = ({
     const [heatmapFullData, setHeatmapFullData] = useState<any | null>(null);
     const [operationList, setoperationList] = useState<any[]>([]);
     const [EliotDeviceList, setEliotDeviceList] = useState<any[]>([]);
-    const [ isSubmitting, setIsSubmitting ] = useState<boolean>(false)
-    const [ eliotIdList, seteliotIdList ] = useState<any[]>([])
+    const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
+    const [eliotIdList, seteliotIdList] = useState<any[]>([])
 
 
     const options = {
         chart: {
             type: 'heatmap' as const,
-          },
-          tooltip: {
-            custom: function({ series, seriesIndex, dataPointIndex ,w }:{series:any, seriesIndex:any, dataPointIndex:any,w:any}) {
-                console.log("wwwww");
-                console.log("series11q",series);
-                console.log("seriesIndex11q",seriesIndex);
-                console.log("dataPointIndex11q",eliotIdList[dataPointIndex].machineId);
+        },
+        tooltip: {
+            custom: function ({ series, seriesIndex, dataPointIndex, w }: { series: any, seriesIndex: any, dataPointIndex: any, w: any }) {
+               
                 const value = series[seriesIndex][dataPointIndex];
                 const category = w.globals.categoryLabels[dataPointIndex];
                 const eliotDevice = value.eliotid;
@@ -106,8 +103,8 @@ const   HmapChart15Compo = ({
                           <strong>MAchine Id: </strong> ${eliotIdList[dataPointIndex].machineId} <br/>
                            
                         </div>`;
-              },
-          },
+            },
+        },
         plotOptions: {
             heatmap: {
                 enableShades: false,
@@ -125,19 +122,19 @@ const   HmapChart15Compo = ({
                             from: 0,
                             to: 70,
                             name: 'Low(Below 70%)',
-                           color: '#ef4444'
+                            color: '#ef4444'
                         },
                         {
                             from: 70,
                             to: 80,
                             name: 'Medium(70%-80%)',
-                             color: '#f97316'
+                            color: '#f97316'
                         },
                         {
                             from: 80,
                             to: 1000,
                             name: 'High(above 80%)',
-                           color: '#16a34a'
+                            color: '#16a34a'
                         },
                     ],
                 },
@@ -194,31 +191,31 @@ const   HmapChart15Compo = ({
                 },
                 offsetY: 10,
             },
-            
+
         },
-        
+
     };
 
 
     const handleFetchProductions = async () => {
         try {
-            
+
             setIsSubmitting(true)
             const sqlDate = date + "%";
             const prod: any[] = await getData(obbSheetId, sqlDate)
-            const eliot = prod.map((m)=>(m.eliotid))
-            console.log("eliot",eliot)
+            const eliot = prod.map((m) => (m.eliotid))
+          
             const opList = await geOperationList(obbSheetId)
             setoperationList(opList)
             const heatmapDatas = getProcessData(prod as any[], operationList as any[]);
             //rem 0 ops
-            console.log("heatmap data00000000",heatmapDatas)
+            
 
             setHeatmapData(heatmapDatas);
             //console.log("heatmapData1", heatmapData)
             setIsSubmitting(false)
 
-            
+
 
 
         } catch (error: any) {
@@ -240,7 +237,7 @@ const   HmapChart15Compo = ({
     useEffect(() => {
         if (heatmapData?.length ?? 0 > 0) {
             const filledSeries = ensureAllCategoriesHaveData(heatmapData, operationList.map(o => o.name));
-            console.log("filled ",filledSeries)
+            
             setHeatmapFullData(filledSeries)
         }
     }, [heatmapData])
@@ -248,48 +245,48 @@ const   HmapChart15Compo = ({
     useEffect(() => {
         handleFetchProductions()
 
-    }, [obbSheetId,date])
+    }, [obbSheetId, date])
 
     useEffect(() => {
-     
-        const e= async ()=>{
-        const s =  await getEliotMachineList(obbSheetId)
-        console.log("machine data",s)
-        seteliotIdList(s)
+
+        const e = async () => {
+            const s = await getEliotMachineList(obbSheetId)
+            
+            seteliotIdList(s)
         }
         e()
 
-    }, [obbSheetId,date])
+    }, [obbSheetId, date])
 
- 
+
 
     return (
         <>
 
             <div className="mx-auto max-w-[1680px]">
-            {<div className=" flex justify-center items-center">
-            <Loader2 className={cn("animate-spin w-5 h-5 hidden", isSubmitting && "flex")} />
-            </div>}
+                {<div className=" flex justify-center items-center">
+                    <Loader2 className={cn("animate-spin w-5 h-5 hidden", isSubmitting && "flex")} />
+                </div>}
                 {heatmapFullData !== null ?
-                <Card className="mt-5 bg-slate-100 pt-5 pl-8 rounded-lg border w-full mb-16 overflow-x-auto ">
-                    <div>
-                    <div>
-                        <CardHeader>
-                            <CardTitle>Operation Efficiency-15</CardTitle>
-                        </CardHeader>
-                    </div>
-                        <h2 className="text-lg mb-2 font-medium text-slate-700">{" "}</h2>
-                        <ReactApexChart options={options} series={heatmapFullData} type="heatmap" height={1000} width={2000} />
-                    </div>
+                    <Card className="mt-5 bg-slate-100 pt-5 pl-8 rounded-lg border w-full mb-16 overflow-x-auto ">
+                        <div>
+                            <div>
+                                <CardHeader>
+                                    <CardTitle>Operation Efficiency - (15Minute)</CardTitle>
+                                </CardHeader>
+                            </div>
+                            <h2 className="text-lg mb-2 font-medium text-slate-700">{" "}</h2>
+                            <ReactApexChart options={options} series={heatmapFullData} type="heatmap" height={1000} width={2000} />
+                        </div>
                     </Card>
                     :
                     <div className="mt-12 w-full">
                         <p className="text-center text-slate-500">Please select the OBB sheet and date ☝️</p>
                     </div>
                 }
-                
+
             </div>
-           
+
         </>
     )
 }
@@ -313,25 +310,25 @@ const getTimeSlotLabel = (hr: number, qtrIndex: number) => {
 }
 
 
-const getProcessData = (data: any[], operationList: any[]) :any[]=> {
+const getProcessData = (data: any[], operationList: any[]): any[] => {
     const fmtDataSeries = []
-    
+
     const dataWithQuarter = data.map((d) => (
         {
             ...d, hour: new Date(d.timestamp).getHours(),
             qtrIndex: Math.floor(new Date(d.timestamp).getMinutes() / 15),
             // eliotid:d.eliotid
-          
+
         }
-        
+
     )
 
     )
-    
-    
+
+
     //   const result = Object.groupBy(dataWithQuarter, (d) => d.hour.toString() + d.qtrIndex.toString());
     const result = Object.groupBy(dataWithQuarter, (d) => getTimeSlotLabel(d.hour, d.qtrIndex));
-    console.log("dadadada",result)
+     
 
     let rc = 0
     for (const [key, value] of Object.entries(result)) {
@@ -351,7 +348,7 @@ const getProcessData = (data: any[], operationList: any[]) :any[]=> {
 
             // dataPoints.push({ x: key, y: v ?? 0,eliotid: value?.[0].eliotid??0  })
             // rc += v
-            dataPoints.push({ x: key, y: ((v /(target/4))*100).toFixed(1) ?? 0 })
+            dataPoints.push({ x: key, y: ((v / (target / 4)) * 100).toFixed(1) ?? 0 })
             rc += v
 
         }
