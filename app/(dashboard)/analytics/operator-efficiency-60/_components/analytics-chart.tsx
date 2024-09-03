@@ -44,7 +44,7 @@ const AnalyticsChart = ({
             }
             operatorsMap[data.operatorRfid].push(data);
         });
-
+             
         const operations = Object.values(operatorsMap).map(group => ({
             operator: group[0],
             data: group
