@@ -29,14 +29,18 @@ import { getSMV } from "./actions";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import React, { useRef } from "react";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
+import * as XLSX from 'xlsx';
 
 const chartConfig = {
     smv: {
-        label: "Target SMV",
+        label: "SMV",
         color: "hsl(var(--chart-1))",
     },
     avg: {
-        label: "Actual Cycle Time",
+        label: "Cycle Time",
         color: "hsl(var(--chart-2))",
     }
 } satisfies ChartConfig
@@ -60,6 +64,8 @@ const BarChartGraphOpSmv = ({ date, obbSheetId }: BarChartGraphProps) => {
 
     const[chartWidth,setChartWidth] = useState<number>(100)
     const[isSubmitting,setisSubmitting]=useState<boolean>(false)
+
+    const chartRef = useRef<HTMLDivElement>(null);
 
     const Fetchdata = async () => {
         
@@ -111,22 +117,58 @@ const BarChartGraphOpSmv = ({ date, obbSheetId }: BarChartGraphProps) => {
     // }, [date, obbSheetId]);
    
 
+//create pdf
+const saveAsPDF = async () => {
+    if (chartRef.current) {
+        const canvas = await html2canvas(chartRef.current);
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new jsPDF({
+            orientation: 'landscape',
+            unit: 'px',
+            format: [canvas.width, canvas.height],
+        });
+        pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
+        pdf.save('chart.pdf');
+    }
+};
+
+
+//create Excel sheet
+const saveAsExcel = () => {
+    const worksheet = XLSX.utils.json_to_sheet(chartData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Chart Data");
+    XLSX.writeFile(workbook, `chart-data.xlsx`);
+};
+
+
+
+
+
+
+
     return (
         <>
         <div className="justify-center">
         <Loader2 className={cn("animate-spin w-7 h-7 hidden", isSubmitting && "flex")} />
         </div>
 
+        <div className='mb-3'>
+            <Button type="button" className='mr-3' onClick={saveAsPDF}>Save as PDF</Button>
+            <Button type="button" onClick={saveAsExcel}>Save as Excel</Button>
+        </div>
+
+
 
         <Card className='pr-2 pt-6 pb-4 border rounded-xl bg-slate-50'>
             <div className="px-8">
                 <CardHeader>
-                    <CardTitle>Target SMV vs Actual Cycle Time</CardTitle>
+                    <CardTitle>SMV vs Cycle Time</CardTitle>
                     {/* <CardDescription>Number of items came across each scanning points today</CardDescription> */}
                 </CardHeader>
             </div>
             <CardContent className="w-auto h-auto" style={{width:chartWidth+"%"}}  >
-                <ChartContainer config={chartConfig} className="min-h-[650px] w-auto"  style={{width:chartWidth+"%", height:chartWidth+"%"}} >
+                <ChartContainer ref={chartRef} config={chartConfig} className="min-h-[650px] w-auto"  style={{width:chartWidth+"%", height:chartWidth+"%"}} >
                     <BarChart 
                         accessibilityLayer 
                         data={chartData}

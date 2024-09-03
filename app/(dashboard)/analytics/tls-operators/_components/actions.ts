@@ -10,6 +10,7 @@ export async function   getDHUData(obbsheetid:string,date:string) :Promise<any[]
     WHERE "qcStatus" <> 'pass' AND "obbSheetId"= ${obbsheetid} AND timestamp LIKE ${date}
     group by "operatorName","qcStatus";`;
     console.log("data fetched1",dataGmts)
+    
     const dataProducts = await sql`select count(*) as count ,"qcStatus" qc, "operatorName" as name 
     from "ProductDefect"
     WHERE "qcStatus" <> 'pass' AND "obbSheetId"= ${obbsheetid} AND timestamp LIKE ${date}

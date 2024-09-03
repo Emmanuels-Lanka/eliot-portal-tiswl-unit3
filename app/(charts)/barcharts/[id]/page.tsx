@@ -15,7 +15,7 @@ const page = async () => {
             name: true
         }
     });
-    console.log(obbSheets)
+    
   return (
     <div>
         <div className='shadow-sm mb-4'>

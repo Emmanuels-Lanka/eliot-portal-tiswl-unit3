@@ -51,7 +51,6 @@ const efficiencyHigh = 50
 
 
 const ensureAllCategoriesHaveData = (series: any, categories: any, defaultValue = -1) => {
-    console.log("series", series) // eliot id is inside of series
     
     return series.map((serie: any) => {
         const filledData = categories.map((category: any) => {
@@ -92,10 +91,7 @@ const   HmapChart15Compo = ({
           },
           tooltip: {
             custom: function({ series, seriesIndex, dataPointIndex ,w }:{series:any, seriesIndex:any, dataPointIndex:any,w:any}) {
-                console.log("wwwww");
-                console.log("series11q",series);
-                console.log("seriesIndex11q",seriesIndex);
-                console.log("dataPointIndex11q",eliotIdList[dataPointIndex].machineId);
+ 
                 const value = series[seriesIndex][dataPointIndex];
                 const category = w.globals.categoryLabels[dataPointIndex];
                 const eliotDevice = value.eliotid;
@@ -206,12 +202,12 @@ const   HmapChart15Compo = ({
             const sqlDate = date + "%";
             const prod: any[] = await getData(obbSheetId, sqlDate)
             const eliot = prod.map((m)=>(m.eliotid))
-            console.log("eliot",eliot)
+            
             const opList = await geOperationList(obbSheetId)
             setoperationList(opList)
             const heatmapDatas = getProcessData(prod as any[], operationList as any[]);
             setHeatmapData(heatmapDatas);
-            console.log("heatmapData1", heatmapData)
+            
             setIsSubmitting(false)
 
             //setHeatmapCategories(heatmapData.xAxisCategories);
@@ -323,7 +319,7 @@ const getProcessData = (data: any[], operationList: any[]) :any[]=> {
     
     //   const result = Object.groupBy(dataWithQuarter, (d) => d.hour.toString() + d.qtrIndex.toString());
     const result = Object.groupBy(dataWithQuarter, (d) => getTimeSlotLabel(d.hour, d.qtrIndex));
-    console.log("dadadada",result)
+    
 
     let rc = 0
     for (const [key, value] of Object.entries(result)) {
@@ -333,7 +329,7 @@ const getProcessData = (data: any[], operationList: any[]) :any[]=> {
         const dataGBOp = Object.groupBy(value || [], (d) => d.name);
         const dataPoints = []
         for (const [key, value] of Object.entries(dataGBOp)) {
-
+            
             const v = value?.reduce((a, d) => {
 
                 return a + (d?.count ?? 0)
@@ -353,10 +349,7 @@ const getProcessData = (data: any[], operationList: any[]) :any[]=> {
         fmtDataSeries.push({ name: key, data: dataPoints })
     }
 
-    console.log("rc", rc)
-
-
-    console.log("dataaaaaa", fmtDataSeries)
+ 
 
 
 
@@ -371,8 +364,7 @@ const getProcessData = (data: any[], operationList: any[]) :any[]=> {
 
 
 
-
-//  const getProcessData = (data: any[]) => {
+ 
 //      const fmtDataSeries = [];
 //      const dataWithQuarter = data.map((d) => ({
 //          ...d,

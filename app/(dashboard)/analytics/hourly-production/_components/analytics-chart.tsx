@@ -83,12 +83,12 @@ const AnalyticsChart = ({
             const formattedDate = data.date.toISOString().split('T')[0];
             
             const response = await axios.get(`/api/efficiency/production?obbSheetId=${data.obbSheetId}&date=${formattedDate}`);
-            console.log("DATA:", response.data.data);
+            
 
             const prod =await  getData(data.obbSheetId,(formattedDate+"%"))
-            console.log("prod",prod)
+            
             const barchartData = processForBarchart({ productionData: prod, hourGroup:data.hourGroup });
-            console.log("DATAaaaaaaaa:", barchartData);
+           
             setProduction(barchartData);
             router.refresh();
         } catch (error: any) {

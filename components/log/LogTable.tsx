@@ -51,6 +51,9 @@ const LogTable = ({
 
   const [data, setData] = useState<ProductionDataType[]>([]);
 
+
+  
+
   const handleFetchProductions = async (data: { obbSheetId: string; date: Date }) => {
 
 

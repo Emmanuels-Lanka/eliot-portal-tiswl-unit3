@@ -87,7 +87,7 @@ const AnalyticsChart = ({
 
             const response = await axios.get(`/api/efficiency/production?obbSheetId=${data.obbSheetId}&date=${formattedDate}`);
             const heatmapData = processProductionData(response.data.data);
-            console.log("HEATMAP:", heatmapData);
+           
 
             setHeatmapData(heatmapData);
             setObbSheet(response.data.obbSheet);

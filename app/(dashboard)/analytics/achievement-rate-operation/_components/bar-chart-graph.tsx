@@ -75,11 +75,11 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
             }
             setisSubmitting(true)
             const prod = await getOperatorEfficiency(obbSheetId, date)
-            console.log(date)
+          
             let workingHrs = (new Date().getHours() - 8) + new Date().getMinutes() / 60;
             workingHrs > 10 ? 10 : workingHrs
 
-            console.log("workingHrs", workingHrs)
+           
             const chartData: BarChartData[] = prod.map((item,index) => ({
                 name:item.name,
                 count: item.count,
@@ -88,7 +88,7 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
 
             })
             );
-            console.log("chart data", chartData)
+            
             setChartData(chartData)
 
         }
@@ -131,6 +131,7 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
         }
     };
 
+    
 //create Excel sheet
     const saveAsExcel = () => {
         const worksheet = XLSX.utils.json_to_sheet(chartData);
@@ -159,7 +160,7 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
                 <Card   className='pr-2 pt-1 pb-2 border rounded-xl bg-slate-50'>
                     <div className="px-8">
                         <CardHeader>
-                            <CardTitle>Operation - Achievement Rate(Live Data)</CardTitle>
+                            <CardTitle>Operation - Overall Achievement(Live Data)</CardTitle>
                         </CardHeader>
                     </div>
                     <CardContent>

@@ -88,31 +88,27 @@ export const SIDEBAR_ROUTES = [
             //     href: "/analytics/hourly-production",
             //     icon: BarChart3
             // },
-              {
-                label: "Daily Achivement ",
+            {
+                label: "Target vs Actual",
                 href: "/analytics/daily-achivement",
                 icon: BarChartHorizontal
             },
             {
-                label: "Achievement Rate",
+                label: "Overall Achievement",
                 href: "/analytics/achievement-rate-operation",
                 icon: BarChart3
             },
-            {
-                label: "Efficiency Rate",
-                href: "/analytics/efficiency-rate",
-                icon: BarChart3
-            },
+        
             {
                 label: "Production Heatmap (15min)",
                 href: "/analytics/operation-efficiency-15",
                 icon: BarChartHorizontal
             },
-          
-            
+
+
         ]
-        
-        
+
+
     },
     {
         categoryName: "SMV Analytics",
@@ -123,7 +119,7 @@ export const SIDEBAR_ROUTES = [
                 icon: BarChart3
             },
             {
-                label: "Target vs Actual",
+                label: "SMV vs Cycle Time",
                 href: "/analytics/operation-smv",
                 icon: BarChart3
             }
@@ -137,10 +133,19 @@ export const SIDEBAR_ROUTES = [
                 href: "/analytics/operation-efficiency-60",
                 icon: BarChartHorizontal
             },
-            
-           
 
- 
+            {
+                label: "Operation Efficiency (15min)",
+                href: "/analytics/operation-efficiency-15m",
+                icon: BarChartHorizontal
+            },
+            {
+                label: "Overall Efficiency",
+                href: "/analytics/efficiency-rate",
+                icon: BarChart3
+            },
+
+
         ]
     },
     {
@@ -166,7 +171,7 @@ export const SIDEBAR_ROUTES = [
     {
         categoryName: "Records",
         routes: [
-          
+
             {
                 label: "Resource Utilization",
                 href: "/analytics/operator-effective-time",
@@ -177,20 +182,20 @@ export const SIDEBAR_ROUTES = [
                 href: "/analytics/log",
                 icon: Table
             },
-            
+
         ]
     },
     {
         categoryName: "Reports",
         routes: [
-          
+
             {
                 label: "Daily Efficiency Report",
-                href: "/analytics/operator-effective-time",
+                href: "/analytics/daily-report",
                 icon: Table
             },
-            
-            
+
+
         ]
     },
     {
@@ -208,7 +213,7 @@ export const SIDEBAR_ROUTES = [
             },
         ]
     },
-   
+
     {
         categoryName: null,
         routes: [
@@ -433,7 +438,7 @@ export const HEADER_INFO = [
         icon: BarChart3
     },
     {
-        label: "SMV Target vs Avg. Actual Cycle Time",
+        label: "SMV vs Cycle Time",
         href: "/analytics/operation-smv",
         icon: BarChart3
     },
@@ -473,13 +478,13 @@ export const HEADER_INFO = [
         icon: Sliders
     },
     {
-        label: "Daily Achievement",
-          href: "/analytics/daily-achivement",
+        label: "Target vs Actual",
+        href: "/analytics/daily-achivement",
         icon: Sliders
     },
     {
-        label: "Achievement Rate",
-         href: "/analytics/achievement-rate-operation",
+        label: "Overall Achievement",
+        href: "/analytics/achievement-rate-operation",
         icon: Sliders
     },
     {
@@ -488,8 +493,19 @@ export const HEADER_INFO = [
         icon: Sliders
     },
     {
-        label: "Efficiency Rate",
-         href: "/analytics/efficiency-rate",
+        label: "Overall Efficiency ",
+        href: "/analytics/efficiency-rate",
+        icon: Sliders
+    },
+    {
+        label: "Operator Daily Efficiency Report",
+        href: "/analytics/daily-report",
+        icon: Sliders
+    },
+    {
+        label: "Operation Efficiency-(15minute)",
+        href: "/analytics/operation-efficiency-15m",
         icon: Sliders
     },
 ]
+

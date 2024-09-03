@@ -15,7 +15,7 @@ import { geOperatorList, getOperatorEfficiencyData15M } from "./actions";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
- 
+
 
 
 interface AnalyticsChartProps {
@@ -81,11 +81,11 @@ const HmapChart15Compo = ({
     const [heatmapData, setHeatmapData] = useState<any | null>(null);
     const [heatmapFullData, setHeatmapFullData] = useState<any | null>(null);
     const [operationList, setoperationList] = useState<any[]>([]);
-    const[chartWidth,setChartWidth] = useState<number>(4000)
-    const[timeList,settimeList] = useState<string>("")
-    const [ isSubmitting, setIsSubmitting ] = useState<boolean>(false)
+    const [chartWidth, setChartWidth] = useState<number>(4000)
+    const [timeList, settimeList] = useState<string>("")
+    const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
 
-    
+
 
 
     const options = {
@@ -94,9 +94,10 @@ const HmapChart15Compo = ({
         },
         plotOptions: {
             heatmap: {
+                distributed: true,
                 enableShades: false,
                 radius: 50,
-                useFillColorAsStroke: false,
+                useFillColorAsStroke: true,
                 colorScale: {
                     ranges: [
                         {
@@ -113,7 +114,7 @@ const HmapChart15Compo = ({
                         },
                         {
                             from: 70,
-                            to: 79,
+                            to: 80,
                             name: 'Medium',
                             color: '#FFAA33'
                         },
@@ -141,7 +142,7 @@ const HmapChart15Compo = ({
                 text: xAxisLabel,
                 style: {
                     color: '#0070c0',
-                    fontSize: '14px',
+                    fontSize: '12px',
                     fontWeight: 600,
                     fontFamily: 'Inter, sans-serif',
                 }
@@ -179,6 +180,14 @@ const HmapChart15Compo = ({
                 offsetY: 10,
             },
         },
+        grid: {
+            padding: {
+                top: 0,
+                right: 10,
+                bottom: 10,
+                left: 10,
+            },
+        },
     };
 
 
@@ -187,19 +196,19 @@ const HmapChart15Compo = ({
             setIsSubmitting(true)
             console.log("test111")
             const sqlDate = date + "%";
-            const prod  = await getOperatorEfficiencyData15M(obbSheetId, sqlDate)
-          
-            const opList = await geOperatorList(obbSheetId)
+            const prod = await getOperatorEfficiencyData15M(obbSheetId, sqlDate)
+
+            const opList = await geOperatorList(obbSheetId,sqlDate)
             setoperationList(opList)
 
             const heatmapData = getProcessData(prod as any[], operationList as any[]);
             const t = heatmapData.time
             settimeList(t as any)
-            
+
             console.log("heatmapData1", heatmapData)
             setHeatmapData(heatmapData.dataSeries);
             setIsSubmitting(false)
-          
+
 
 
             //setHeatmapCategories(heatmapData.xAxisCategories);
@@ -233,7 +242,7 @@ const HmapChart15Compo = ({
     useEffect(() => {
         handleFetchProductions()
 
-    }, [obbSheetId,date])
+    }, [obbSheetId, date])
 
     //const height: string = timeList.length < 21 ? '200%' : timeList.length < 30 ? '300%' : '500%';
     const totalCount = Object.keys(timeList).reduce((acc, curr) => acc + curr.length, 0);
@@ -247,9 +256,9 @@ const HmapChart15Compo = ({
 
 
             <div className="mx-auto max-w-[1680px]">
-        {<div className=" flex justify-center items-center">
-            <Loader2 className={cn("animate-spin w-5 h-5 hidden", isSubmitting && "flex")} />
-            </div>}
+                {<div className=" flex justify-center items-center">
+                    <Loader2 className={cn("animate-spin w-5 h-5 hidden", isSubmitting && "flex")} />
+                </div>}
 
                 {heatmapFullData !== null ?
                     <div className="mt-12 bg-slate-100 pt-5 pl-8 rounded-lg border w-full mb-16 overflow-x-auto ">
@@ -264,9 +273,9 @@ const HmapChart15Compo = ({
 
                     <Button onClick={() => setChartWidth((p) => p + 200)} className="rounded-full bg-gray-300">+</Button>
                     <Button onClick={() => setChartWidth((p) => p - 200)} className="rounded-full bg-gray-300"> -</Button>
-                    
-                    </div>
-                    }
+
+                </div>
+                }
             </div>
         </>
     )
@@ -315,7 +324,7 @@ const getProcessData = (data: any[], operationList: any[]) => {
         const dataPoints = []
         for (const [key, value] of Object.entries(dataGBOp)) {
             const target = value?.[0].target ?? 1;
-            
+
 
             const v = value?.reduce((a, d) => {
 
@@ -324,7 +333,7 @@ const getProcessData = (data: any[], operationList: any[]) => {
 
             //   console.log("vqw", v)
 
-            dataPoints.push({ x: key, y: ((v /(target/4))*100).toFixed(1) ?? 0 })
+            dataPoints.push({ x: key, y: ((v / (target / 4)) * 100).toFixed(1) ?? 0 })
             rc += v
 
         }
@@ -334,21 +343,14 @@ const getProcessData = (data: any[], operationList: any[]) => {
 
 
         fmtDataSeries.push({ name: key, data: dataPoints })
-     
+
 
     }
-
-    console.log("rc", rc)
-
-
-    console.log("dataaaaaa", fmtDataSeries)
+ 
 
 
 
-
-
-
-    return {dataSeries : fmtDataSeries,time:result}
+    return { dataSeries: fmtDataSeries, time: result }
 
 
 }
@@ -356,8 +358,7 @@ const getProcessData = (data: any[], operationList: any[]) => {
 
 
 
-
-//  const getProcessData = (data: any[]) => {
+ 
 //      const fmtDataSeries = [];
 //      const dataWithQuarter = data.map((d) => ({
 //          ...d,

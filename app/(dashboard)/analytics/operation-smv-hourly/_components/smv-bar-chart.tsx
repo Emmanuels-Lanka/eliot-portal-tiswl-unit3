@@ -26,6 +26,15 @@ import {
     ChartTooltipContent,
 } from "@/components/ui/chart";
 
+import { Loader2 } from 'lucide-react';
+import { cn } from '@/lib/utils';
+
+import React, { useRef } from "react";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
+import * as XLSX from 'xlsx';
+import { Button } from "@/components/ui/button";
+
 interface SmvBarChartProps {
     data: {
         hourGroup: string;
@@ -44,12 +53,48 @@ const chartConfig = {
 const SmvBarChart = ({
     data, tsmv
 }: SmvBarChartProps) => {
+    const chartRef = useRef<HTMLDivElement>(null);
+
     const chartData = data.map((item) => ({
         name: item.hourGroup,
         smv: item.smv,
     }));
 
+
+    
+//create pdf
+const saveAsPDF = async () => {
+    if (chartRef.current) {
+        const canvas = await html2canvas(chartRef.current);
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new jsPDF({
+            orientation: 'landscape',
+            unit: 'px',
+            format: [canvas.width, canvas.height],
+        });
+        pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
+        pdf.save('chart.pdf');
+    }
+};
+
+
+//create Excel sheet
+const saveAsExcel = () => {
+    const worksheet = XLSX.utils.json_to_sheet(chartData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Chart Data");
+    XLSX.writeFile(workbook, `chart-data.xlsx`);
+};
+
+
     return (
+        <>
+
+<div className='mb-3'>
+            <Button type="button" className='mr-3' onClick={saveAsPDF}>Save as PDF</Button>
+            <Button type="button" onClick={saveAsExcel}>Save as Excel</Button>
+        </div>
+      
         <Card className='pr-2 pt-6 pb-4 border rounded-xl bg-slate-50'>
             <div className="px-8">
                 <CardHeader>
@@ -58,7 +103,7 @@ const SmvBarChart = ({
                 </CardHeader>
             </div>
             <CardContent>
-                <ChartContainer config={chartConfig} className="min-h-[576px] w-full">
+                <ChartContainer ref={chartRef} config={chartConfig} className="min-h-[576px] w-full">
                     <BarChart
                         accessibilityLayer
                         data={chartData}
@@ -110,6 +155,7 @@ const SmvBarChart = ({
                 </ChartContainer>
             </CardContent>
         </Card>
+        </>
     )
 }
 

@@ -22,6 +22,6 @@ export async function getOperatorEfficiency(obbsheetid:string,date:string) : Pro
             group by opn.name,obbopn."seqNo",obbopn.target order by  obbopn."seqNo"`
     
     
-    console.log("data",data,obbsheetid)
+     
     return new Promise((resolve) => resolve(data as ProductionDataType[] ))
 }

@@ -197,10 +197,10 @@ model ObbOperation {
   totalStitches    Int
   createdAt        DateTime             @default(now())
   updatedAt        DateTime             @updatedAt
-  part             String?
   supervisorId     String?
   isActive         Boolean              @default(false)
   sewingMachineId  String?
+  part             String?
   obbSheet         ObbSheet             @relation(fields: [obbSheetId], references: [id], onDelete: Cascade)
   operation        Operation            @relation(fields: [operationId], references: [id], onDelete: Cascade)
   sewingMachine    SewingMachine?       @relation(fields: [sewingMachineId], references: [id])
@@ -250,7 +250,7 @@ model ProductionData {
   productionCount   Int
   timestamp         String
   createdAt         DateTime     @default(now())
-  eliotDevice       EliotDevice  @relation(fields: [eliotSerialNumber], references: [serialNumber])
+  eliotDevice       EliotDevice?  @relation(fields: [eliotSerialNumber], references: [serialNumber])
   obbOperation      ObbOperation @relation(fields: [obbOperationId], references: [id], onDelete: Cascade)
   operator          Operator     @relation(fields: [operatorRfid], references: [rfid], onDelete: Cascade)
 
