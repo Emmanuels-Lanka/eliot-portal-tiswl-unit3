@@ -30,8 +30,10 @@ import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import React, { useRef } from "react";
-import jsPDF from "jspdf";
-import html2canvas from "html2canvas";
+// import jsPDF from "jspdf";
+// import html2canvas from "html2canvas";
+// import jsPDF from "jspdf";
+// import html2canvas from "html2canvas";
 import * as XLSX from 'xlsx';
 
 const chartConfig = {
@@ -49,6 +51,7 @@ type BarChartData = {
     smv:number;
     name:string;
     avg: number;
+    machineId?:string;
 };
 
 interface BarChartGraphProps {
@@ -77,7 +80,7 @@ const BarChartGraphOpSmv = ({ date, obbSheetId }: BarChartGraphProps) => {
               
       
             const chartData1: BarChartData[] = prod.map((item) => ({
-               name:item.name,
+               name:item.machineId+"-"+item.name,
                smv:item.smv,
             //    avg:Number(item.avg.toFixed(2))
              avg:Number(parseFloat(item.avg.toString()).toFixed(2))
@@ -160,7 +163,7 @@ const saveAsExcel = () => {
 
 
 
-        <Card className='pr-2 pt-6 pb-4 border rounded-xl bg-slate-50'>
+        <Card className='pr-2 pt-6 pb-4 border rounded-xl bg-slate-50 w-fit'style={{width:chartWidth*2+"%"}} >
             <div className="px-8">
                 <CardHeader>
                     <CardTitle>SMV vs Cycle Time</CardTitle>

@@ -33,19 +33,22 @@ const smv = await sql`SELECT
     o.smv,
     concat(o."seqNo",'-',op.name) as name,
     o."seqNo",
-    AVG(CAST(p.smv AS NUMERIC)) AS avg
+    AVG(CAST(p.smv AS NUMERIC)) AS avg,
+    sm."machineId"
 FROM 
     "ProductionSMV" p
 JOIN 
     "ObbOperation" o ON p."obbOperationId" = o.id
 JOIN 
     "Operation" op ON o."operationId" = op.id
+inner JOIN "SewingMachine" sm ON sm."id"= o."sewingMachineId"
 WHERE 
     o."obbSheetId" = ${obbSheetId}
     AND p.timestamp like ${datef}
 group by  o.smv,
     op.name,
-    o."seqNo" 
+    o."seqNo",
+    sm."machineId" 
 ORDER BY 
      o."seqNo" ASC;`
   console.log("SMV Data",smv)

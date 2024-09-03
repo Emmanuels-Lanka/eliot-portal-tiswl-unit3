@@ -23,6 +23,7 @@ interface AnalyticsChartProps {
 }
 
  export type SMVChartData = {
+    machineId: string;
    
     smv:number;
     name:string;
