@@ -279,7 +279,7 @@ const HmapChart15Compo = ({
                                 </CardHeader>
                             </div>
                             <h2 className="text-lg mb-2 font-medium text-slate-700">{" "}</h2>
-                            <ReactApexChart options={options} series={heatmapFullData} type="heatmap" height={1000} width={2000} />
+                            <ReactApexChart options={options} series={heatmapFullData} type="heatmap" height={800} width={5000} />
                         </div>
                     </Card>
                     :
