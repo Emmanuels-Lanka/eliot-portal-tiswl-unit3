@@ -62,7 +62,7 @@ const AnalyticsChart = ({
         })).sort((a, b) => a.obbOperation.seqNo - b.obbOperation.seqNo);
 
         // const categories = operations.map(op => `${op.obbOperation.operation.name}-${op.obbOperation.seqNo}`);
-        const categories = operations.map(op => `${op.obbOperation.operation.name}-${op.obbOperation.seqNo}`);
+        const categories = operations.map(op => `${op.obbOperation.operation.name} - ${op.obbOperation.seqNo}`);
 
         const resultData = hourGroups.map(hourGroup => ({
             hourGroup,
