@@ -17,15 +17,18 @@ export async function getOperatorEfficiencyData15M(obbsheetid:string,date:string
     //         group by substring(concat(obbopn."seqNo",'-',oprtr.name ) from 0 for 20),obbopn.target, pd."productionCount",pd.timestamp
     //         order by  pd.timestamp ;`;
 
-    const data = await sql`SELECT substring(concat(obbopn."seqNo",'-(',opn."code",')-',oprtr.name ) from 0 for 25)  as name,
+    // const data = await sql`SELECT substring(concat(obbopn."seqNo",'-(',opn."code",')-',oprtr.name ) from 0 for 25)  as name,
+    const data = await sql`select CONCAT(SUBSTRING(CONCAT(obbopn."seqNo", '-(', opn."code", ')', '-', oprtr.name) FROM 1 FOR 25), ' ', '(', sm."machineId", ')') AS name,
     pd."productionCount" as count, obbopn.target,pd.timestamp as timestamp
     FROM "ProductionData" pd
     INNER JOIN "ObbOperation" obbopn ON pd."obbOperationId" = obbopn.id
     INNER JOIN "ObbSheet" obbs ON obbopn."obbSheetId" = obbs.id
     INNER JOIN "Operator" oprtr ON oprtr."rfid" = pd."operatorRfid"
     INNER JOIN "Operation" opn ON opn."id" = obbopn."operationId"
+     INNER JOIN 
+      "SewingMachine" sm ON sm.id = obbopn."sewingMachineId"
     WHERE pd.timestamp like ${date} and  obbs.id = ${obbsheetid}
-    group by substring(concat(obbopn."seqNo",'-(',opn."code",')-',oprtr.name ) from 0 for 25),obbopn.target, pd."productionCount",pd.timestamp
+    group by CONCAT(SUBSTRING(CONCAT(obbopn."seqNo", '-(', opn."code", ')', '-', oprtr.name) FROM 1 FOR 25), ' ', '(', sm."machineId", ')') ,obbopn.target, pd."productionCount",pd.timestamp
     order by  pd.timestamp ;`;
 
   //and (oprtr.name like 'AJUFA%' or oprtr.name like 'RATNA%')

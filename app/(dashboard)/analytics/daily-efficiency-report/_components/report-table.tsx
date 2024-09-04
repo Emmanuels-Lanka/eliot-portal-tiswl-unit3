@@ -99,9 +99,7 @@ const DailyEfficiencyReport=({obbSheets}:AnalyticsChartProps)=>{
   <TableBody>
     
     {data.map((d:any)=>(
-
-     
-<TableRow  className="bg-accent">
+<TableRow key={d.name} className="bg-accent">
 <TableCell>
     <div className="font-medium align-center">{d.name}</div>
   </TableCell>
