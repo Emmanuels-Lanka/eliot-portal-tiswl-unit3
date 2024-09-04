@@ -19,7 +19,7 @@ const ProductionEfficiency60 = async () => {
         <div>
             <AnalyticsChart
                 obbSheets={obbSheets}
-                title='Production Efficiency Heatmap for 60min'
+                title='Production Efficiency - Hourly Heatmap'
             />
         </div>
     )

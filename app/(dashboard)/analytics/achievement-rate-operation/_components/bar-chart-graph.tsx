@@ -160,7 +160,7 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
                 <Card   className='pr-2 pt-1 pb-2 border rounded-xl bg-slate-50'>
                     <div className="px-8">
                         <CardHeader>
-                            <CardTitle>Operation - Overall Achievement(Live Data)</CardTitle>
+                            <CardTitle>Overall Achievement(Live Data)</CardTitle>
                         </CardHeader>
                     </div>
                     <CardContent>

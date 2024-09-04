@@ -155,7 +155,7 @@ const HmapChart15Compo = ({
                 }, rotate: -90,
                 minHeight: 200,
             },
-            categories: operationList.map(o => o.name), // x-axis categories
+           categories: operationList.map(o => o.name), // x-axis categories
 
 
         },
@@ -321,6 +321,7 @@ const getProcessData = (data: any[], operationList: any[]) => {
 
 
         const dataGBOp = Object.groupBy(value || [], (d) => d.name);
+        console.log("abc",dataGBOp)
         const dataPoints = []
         for (const [key, value] of Object.entries(dataGBOp)) {
             const target = value?.[0].target ?? 1;
