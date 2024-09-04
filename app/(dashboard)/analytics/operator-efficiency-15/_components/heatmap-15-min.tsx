@@ -109,19 +109,19 @@ const HmapChart15Compo = ({
                         {
                             from: 0,
                             to: 70,
-                            name: 'Low',
+                            name: 'Low(Below 70%)',
                             color: '#ef4444'
                         },
                         {
                             from: 70,
                             to: 80,
-                            name: 'Medium',
+                            name: 'Medium(70%-80%)',
                             color: '#FFAA33'
                         },
                         {
                             from: 80,
                             to: 1000,
-                            name: 'High',
+                            name: 'High(above 80%)',
                             color: '#16a34a'
                         },
                     ],
