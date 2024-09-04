@@ -27,7 +27,8 @@ const PmsEfficiencyReport=({obbSheets,}:AnalyticsChartProps)=>{
   const[date,setDate]=useState<string>("")
   const[data,setData]=useState<ReportData[]>([])
   const [obbSheetId, setObbSheetId] = useState<string>("");
- 
+  const [minh, setMinh] = useState<number>(0);
+  const [maxh, setMaxh] = useState<number>(0);
 
   const handleFetchData=async(data:{ obbSheetId: string; date: Date })=>{
     data.date.setDate(data.date.getDate() + 1);
@@ -41,8 +42,11 @@ const PmsEfficiencyReport=({obbSheets,}:AnalyticsChartProps)=>{
     const details=await getDailyData(obbSheetId,date)
     const maxh=Math.max(...details.map(o => o.hour))
     const minh=Math.min(...details.map(o => o.hour))
+    setMaxh(maxh);
+    setMinh(minh);
     console.log("max hour",maxh)
     console.log("max hour",minh)
+ console.log("details",details)
     setData(details)
   }
 
@@ -57,6 +61,7 @@ const PmsEfficiencyReport=({obbSheets,}:AnalyticsChartProps)=>{
             obbSheets={obbSheets}
             handleSubmit={handleFetchData}
           />
+          
            <Table className="mt-5">
   <TableCaption>Operator Daily Efficiency Report</TableCaption>
   <TableHeader>
@@ -67,9 +72,21 @@ const PmsEfficiencyReport=({obbSheets,}:AnalyticsChartProps)=>{
       <TableHead>Machine Name</TableHead>
       <TableHead>Obb Operation</TableHead>
       <TableHead >Hourly Tgt</TableHead>
-      {Array.from({ length: maxh - minh + 1 }, (_, i) => minh + i).map((hour) => (
-              <TableHead key={hour}>Hour {hour}</TableHead>
-            ))}
+      {/* {(() => {
+              const headers = [];
+              for (let hour = minh; hour <= maxh; hour++) {
+                headers.push(<TableHead key={hour}>Hour {hour}</TableHead>);
+              }
+              return headers;
+            })()} */}
+
+{(() => {
+  const headers = [];
+  for (let hour = minh; hour <= maxh; hour++) {
+    headers.push(<TableHead key={hour}>Hour-{hour}</TableHead>);
+  }
+  return headers;
+})()}
       <TableHead >D:Tgt</TableHead>
       <TableHead >D:Prod</TableHead>
       <TableHead >Prod/Hr</TableHead>
@@ -96,13 +113,25 @@ const PmsEfficiencyReport=({obbSheets,}:AnalyticsChartProps)=>{
       <TableCell>
       <div className="font-medium align-center">{d.target}</div>
       </TableCell>
-      {
-       
-      }
-    </TableRow>
-  ))
- }
-  </TableBody>
+      {(() => {
+                const cells = [];
+                for (let hour = minh; hour <= maxh; hour++) {
+                  const hourData = data.find(h => Number(h.hour) === hour&& h.name === d.name);
+                  console.log("Hour being checked:", hour);
+                  console.log("Hour data for", hour, ":", hourData);
+                  cells.push(
+                    <TableCell key={hour}>
+                      <div className="font-medium align-center">
+                        {hourData ? hourData.productionCount : 0}
+                      </div>
+                    </TableCell>
+                  );
+                }
+                return cells;
+              })()}
+            </TableRow>
+          ))}
+      </TableBody>
 </Table>
     </>
   )

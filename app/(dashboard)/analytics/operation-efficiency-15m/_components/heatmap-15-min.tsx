@@ -108,7 +108,7 @@ const HmapChart15Compo = ({
         plotOptions: {
             heatmap: {
                 enableShades: false,
-                radius: 50,
+                radius: 100,
                 useFillColorAsStroke: false,
                 colorScale: {
                     ranges: [
@@ -173,6 +173,7 @@ const HmapChart15Compo = ({
         },
 
         yaxis: {
+        tickHeight: 30,
             title: {
                 text: "Time",
                 style: {
@@ -180,6 +181,7 @@ const HmapChart15Compo = ({
                     fontSize: '14px',
                     fontWeight: 600,
                     fontFamily: 'Inter, sans-serif',
+                    
                 }
             },
             labels: {
@@ -187,10 +189,11 @@ const HmapChart15Compo = ({
                     colors: '#0070c0',
                     fontSize: '12px',
                     fontFamily: 'Inter, sans-serif',
-                    marginBottom: '100px',
+                    height:30
                 },
                 offsetY: 10,
             },
+          
 
         },
 

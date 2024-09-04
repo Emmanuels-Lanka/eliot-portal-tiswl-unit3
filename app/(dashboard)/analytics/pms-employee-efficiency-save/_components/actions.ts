@@ -30,7 +30,9 @@ export async function getDailyData(obbsheetid:string,date:string) : Promise<Repo
       obbop.target, 
       sw."machineType",
       obbop.id 
-        having  sum(pd."productionCount")<>0     
+        having  sum(pd."productionCount")<>0   
+order by  hour, 
+    name  
 `; 
    
 console.log("Effeciency Data",data)
