@@ -85,6 +85,8 @@ const HmapChart15Compo = ({
     const [EliotDeviceList, setEliotDeviceList] = useState<any[]>([]);
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
     const [eliotIdList, seteliotIdList] = useState<any[]>([])
+    const [chartWidth, setChartWidth] = useState<number>(4000)
+    const [timeList, settimeList] = useState<string>("")
 
 
     const options = {
@@ -261,8 +263,8 @@ const HmapChart15Compo = ({
 
     }, [obbSheetId, date])
 
-
-
+    const totalCount = Object.keys(timeList).reduce((acc, curr) => acc + curr.length, 0);
+    const height: string = totalCount < 50 ? '430%' : totalCount < 60 ? '300%' : '500%';
     return (
         <>
 
@@ -279,7 +281,7 @@ const HmapChart15Compo = ({
                                 </CardHeader>
                             </div>
                             <h2 className="text-lg mb-2 font-medium text-slate-700">{" "}</h2>
-                            <ReactApexChart options={options} series={heatmapFullData} type="heatmap" height={800} width={5000} />
+                            <ReactApexChart options={options} series={heatmapFullData} type="heatmap" height={height} width={chartWidth} />
                         </div>
                     </Card>
                     :

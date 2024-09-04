@@ -192,6 +192,7 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
                                     tickMargin={140}
                                     axisLine={true}
                                     angle={90}
+                                    
                                 />
                                 <ChartTooltip
                                     cursor={false}

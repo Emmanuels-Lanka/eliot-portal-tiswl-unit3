@@ -9,16 +9,17 @@ export async function getDailyData(obbsheetid:string,date:string) : Promise<Repo
 
   const data = await sql`
   SELECT 
-      CONCAT(op."employeeId", '=>', op.name, '[', op."designation", ']') AS name,
+      op."employeeId", op.name,op."designation",
       SUM(pd."productionCount") AS "productionCount",
       EXTRACT(hour FROM pd.timestamp::TIMESTAMP) AS hour,
       obbop.target,
       sw."machineType" as machine,
-      obbop.id as obboperation
+      opr.name as operation
   FROM 
       "ProductionData" pd
   INNER JOIN "Operator" op ON op.rfid = pd."operatorRfid"
   INNER JOIN "ObbOperation" obbop ON obbop.id = pd."obbOperationId"
+  inner join "Operation" opr on opr.id=obbop."operationId"
   INNER JOIN "ObbSheet" obs ON obs.id = obbop."obbSheetId"
   INNER JOIN "SewingMachine" sw ON sw.id = obbop."sewingMachineId"
   WHERE pd.timestamp::TEXT LIKE ${date} AND obs.id = ${obbsheetid}
@@ -29,7 +30,7 @@ export async function getDailyData(obbsheetid:string,date:string) : Promise<Repo
       op."designation", 
       obbop.target, 
       sw."machineType",
-      obbop.id 
+      opr.name
         having  sum(pd."productionCount")<>0   
 order by  hour, 
     name  
