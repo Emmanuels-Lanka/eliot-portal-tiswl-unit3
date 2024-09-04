@@ -233,9 +233,9 @@ const HmapChart15Compo = ({
 
     useEffect(() => {
         if (heatmapData?.length > 0) {
-            //const filledSeries = ensureAllCategoriesHaveData(heatmapData, operationList.map(o => o.name));
-            //setHeatmapFullData(filledSeries)
-            setHeatmapFullData(heatmapData)
+            const filledSeries = ensureAllCategoriesHaveData(heatmapData, operationList.map(o => o.name));
+            setHeatmapFullData(filledSeries)
+            //setHeatmapFullData(heatmapData)
         }
     }, [heatmapData])
 
@@ -318,22 +318,20 @@ const getProcessData = (data: any[], operationList: any[]) => {
     let rc = 0
     for (const [key, value] of Object.entries(result)) {
 
-
-
         const dataGBOp = Object.groupBy(value || [], (d) => d.name);
         const dataPoints = []
-        for (const [key, value] of Object.entries(dataGBOp)) {
-            const target = value?.[0].target ?? 1;
+        for (const [key1, value1] of Object.entries(dataGBOp)) {
+            const target = value1?.[0].target ?? 1;
 
 
-            const v = value?.reduce((a, d) => {
+            const v = value1?.reduce((a, d) => {
 
                 return a + (d?.count ?? 0)
             }, 0)
 
             //   console.log("vqw", v)
 
-            dataPoints.push({ x: key, y: ((v / (target / 4)) * 100).toFixed(1) ?? 0 })
+            dataPoints.push({ x: key1, y: ((v / (target / 4)) * 100).toFixed(1) ?? 0 })
             rc += v
 
         }

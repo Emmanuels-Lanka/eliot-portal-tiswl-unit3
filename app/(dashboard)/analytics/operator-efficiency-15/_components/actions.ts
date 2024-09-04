@@ -17,7 +17,7 @@ export async function getOperatorEfficiencyData15M(obbsheetid:string,date:string
     //         group by substring(concat(obbopn."seqNo",'-',oprtr.name ) from 0 for 20),obbopn.target, pd."productionCount",pd.timestamp
     //         order by  pd.timestamp ;`;
 
-    const data = await sql`SELECT substring(concat(obbopn,"seqNo",'-(',opn."code",')-',oprtr.name ) from 0 for 25)  as name,
+    const data = await sql`SELECT substring(concat(obbopn."seqNo",'-(',opn."code",')-',oprtr.name ) from 0 for 25)  as name,
     pd."productionCount" as count, obbopn.target,pd.timestamp as timestamp
     FROM "ProductionData" pd
     INNER JOIN "ObbOperation" obbopn ON pd."obbOperationId" = obbopn.id
@@ -25,10 +25,10 @@ export async function getOperatorEfficiencyData15M(obbsheetid:string,date:string
     INNER JOIN "Operator" oprtr ON oprtr."rfid" = pd."operatorRfid"
     INNER JOIN "Operation" opn ON opn."id" = obbopn."operationId"
     WHERE pd.timestamp like ${date} and  obbs.id = ${obbsheetid}
-    group by substring(concat(obbopn,"seqNo",'-(',opn."code",')-',oprtr.name ) from 0 for 25),obbopn.target, pd."productionCount",pd.timestamp
+    group by substring(concat(obbopn."seqNo",'-(',opn."code",')-',oprtr.name ) from 0 for 25),obbopn.target, pd."productionCount",pd.timestamp
     order by  pd.timestamp ;`;
 
-  
+  //and (oprtr.name like 'AJUFA%' or oprtr.name like 'RATNA%')
             // INNER JOIN "Operation" opn ON opn.id= obbopn."operationId"
 
 // group by oprtr.name,obbopn."seqNo",obbopn.target, pd."productionCount",pd.timestamp
@@ -52,9 +52,10 @@ export async function geOperatorList(obbsheetid:string,date:string ) : Promise<a
     INNER JOIN "Operation" opn ON opn."id" = oopn."operationId"
     WHERE os.id = ${obbsheetid}  
      AND pd.timestamp like ${date}
-    group by substring(concat(oopn."seqNo",'-(',opn."code",')-',oo.name ) from 0 for 25) , oopn."seqNo"
+    group by oopn."seqNo",opn."code",oo.name
     order by  oopn."seqNo";`;
     //order by  substring(concat(oopn."seqNo",'-',oo.name ) from 0 for 20) ;`
+    // group by substring(concat(oopn."seqNo",'-(',opn."code",')-',oo.name ) from 0 for 25) , oopn."seqNo"
 
     console.log("geOperationList",data,)
 
