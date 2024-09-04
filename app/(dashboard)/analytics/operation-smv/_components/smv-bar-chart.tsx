@@ -171,7 +171,7 @@ const saveAsExcel = () => {
                 </CardHeader>
             </div>
             <CardContent className="w-auto h-auto" style={{width:chartWidth+"%"}}  >
-                <ChartContainer ref={chartRef} config={chartConfig} className="min-h-[650px] w-auto"  style={{width:chartWidth+"%", height:chartWidth+"%"}} >
+                <ChartContainer ref={chartRef} config={chartConfig} className="min-h-[300px] w-auto"  style={{width:chartWidth+"%", height:chartWidth+"%"}} >
                     <BarChart 
                         accessibilityLayer 
                         data={chartData}
@@ -192,7 +192,7 @@ const saveAsExcel = () => {
                         <XAxis
                             dataKey="name"
                             tickLine={false}
-                            tickMargin={180}
+                            tickMargin={70}
                             axisLine={false}
                             angle={90}
                             fontSize={11}
@@ -200,6 +200,7 @@ const saveAsExcel = () => {
                             // fontWeight={600}
                             // className="z-[999]"
                             interval={0}
+                            textAnchor="start"
                         />
                         <ChartTooltip
                             cursor={false}
@@ -209,6 +210,7 @@ const saveAsExcel = () => {
                             content={<ChartLegendContent />} 
                             className="-mb-10 text-xs text-blue-500 font-bold" 
                             margin={{top:10}}
+                                
                         />
                         <Bar dataKey="smv" fill="var(--color-smv)" radius={5} barSize={5}>
                             <LabelList

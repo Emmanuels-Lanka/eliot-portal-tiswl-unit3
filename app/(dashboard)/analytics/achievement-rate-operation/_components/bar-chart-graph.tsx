@@ -48,6 +48,7 @@ type BarChartData = {
     count: number;
     target: number;
     ratio: number;
+    seqno?:string
 }
 interface BarChartGraphProps {
 
@@ -69,8 +70,9 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
             //         return afterDot ? afterDot.split(' ')[0] : null;
 
             //   }
-            const getShortName = (name: any) => {
-                return name.substring(1, 10) + "..."
+            const getShortName = (name: string) => {
+                // return name.substring(1, 10) + "..."
+                return name.length > 15 ? name.slice(0, 25) + '...' : name;
 
             }
             setisSubmitting(true)
@@ -81,7 +83,10 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
 
            
             const chartData: BarChartData[] = prod.map((item,index) => ({
-                name:item.name,
+                name:item.name+" - "+item.seqno,
+                
+
+                
                 count: item.count,
                 target: item.target * workingHrs,
                 ratio: parseFloat((item.count / (item.target * workingHrs)).toFixed(2)),
@@ -143,94 +148,105 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
     
 
     return (
-        <>
+      <>
         <div className="flex justify-center ">
-        <Loader2 className={cn("animate-spin w-7 h-7 hidden", isSubmitting && "flex")} />
-       </div>
-    
-    
-        <div className='mb-3'>
-            <Button type="button" className='mr-3' onClick={saveAsPDF}>Save as PDF</Button>
-            <Button type="button" onClick={saveAsExcel}>Save as Excel</Button>
+          <Loader2
+            className={cn(
+              "animate-spin w-7 h-7 hidden",
+              isSubmitting && "flex"
+            )}
+          />
         </div>
 
+        <div className="mb-3">
+          <Button type="button" className="mr-3" onClick={saveAsPDF}>
+            Save as PDF
+          </Button>
+          <Button type="button" onClick={saveAsExcel}>
+            Save as Excel
+          </Button>
+        </div>
 
-
-            {chartData.length > 0 ?
-                <Card   className='pr-2 pt-1 pb-2 border rounded-xl bg-slate-50'>
-                    <div className="px-8">
-                        <CardHeader>
-                            <CardTitle>Overall Achievement(Live Data)</CardTitle>
-                        </CardHeader>
-                    </div>
-                    <CardContent>
-                        {/* <ChartContainer config={chartConfig} className={`min-h-[300px] max-h-[600px] w-[${chartWidth.toString()}%]`}> */}
-                        <ChartContainer ref={chartRef}   config={chartConfig} className={`min-h-[300px] max-h-[600px] `} style={{ width: chartWidth + "%", height: chartWidth + "%" }}>
-
-                            <BarChart
-                                accessibilityLayer
-                                data={chartData}
-                                
-                                margin={{
-                                    top: 0,
-                                    bottom: 300
-                                }}
-                                barGap={10}
-                                className="h-[300px] "
-                            >
-                                <CartesianGrid vertical={false} />
-                                <YAxis
-                                    dataKey="ratio"
-                                    type="number"
-                                    tickLine={true}
-                                    tickMargin={10}
-                                    axisLine={true}
-                                />
-                                <XAxis
-                                    dataKey="name"
-                                    tickLine={false}
-                                    tickMargin={140}
-                                    axisLine={true}
-                                    angle={90}
-                                />
-                                <ChartTooltip
-                                    cursor={false}
-                                    content={<ChartTooltipContent indicator="line" />}
-                                />
-
-                                <Bar dataKey="ratio" fill="orange" radius={5}>
-                                    <LabelList
-                                        position="top"
-                                        offset={12}
-                                        className="fill-foreground"
-                                        fontSize={14}
-                                    />
-                                </Bar>
-                                {/* <Bar dataKey="count" fill="var(--color-actual)" radius={5}>
-                            <LabelList
-                                position="top"
-                                offset={12}
-                                className="fill-foreground"
-                                fontSize={14}
-                            />
-                        </Bar> */}
-                            </BarChart>
-                        </ChartContainer>
-                    </CardContent>
-                </Card>
-                : <div className="mt-12 w-full">
-                    <p className="text-center text-slate-500">No Data Available.</p>
-                </div>
-            }
-            <div className="flex justify-center gap-2 mt-5 ">
-
-                <Button onClick={() => setChartWidth((p) => p + 20)} className="rounded-full bg-gray-300"><FaPlus size={12} color="#007bff" /></Button>
-                <Button onClick={() => setChartWidth((p) => p - 20)} className="rounded-full bg-gray-300"> <FaMinus size={12} color="#007bff" /></Button>
-
+        {chartData.length > 0 ? (
+          <Card className="pr-2 pt-1 pb-2 border rounded-xl bg-slate-50">
+            <div className="px-8">
+              <CardHeader>
+                <CardTitle>Overall Achievement(Live Data)</CardTitle>
+              </CardHeader>
             </div>
-            
-        </>
-    )
+            <CardContent>
+              {/* <ChartContainer config={chartConfig} className={`min-h-[300px] max-h-[600px] w-[${chartWidth.toString()}%]`}> */}
+              <ChartContainer
+                ref={chartRef}
+                config={chartConfig}
+                className={`min-h-[300px] max-h-[600px] `}
+                style={{ width: chartWidth + "%", height: chartWidth + "%" }}
+              >
+                <BarChart
+                  accessibilityLayer
+                  data={chartData}
+                  margin={{
+                    top: 0,
+                    bottom: 300,
+                  }}
+                  barGap={10}
+                  className="h-[300px] "
+                >
+                  <CartesianGrid vertical={false} />
+                  <YAxis
+                    dataKey="ratio"
+                    type="number"
+                    tickLine={true}
+                    tickMargin={10}
+                    axisLine={true}
+                  />
+                  <XAxis
+                    dataKey="name"
+                    tickLine={true}
+                    tickMargin={10}
+                    axisLine={true}
+                    angle={-90}
+                    textAnchor="end" // this is the one that we need no align 
+                    interval={0} 
+                  />
+                  <ChartTooltip
+                    cursor={false}
+                    content={<ChartTooltipContent indicator="line" />}
+                  />
+                  <Bar dataKey="ratio" fill="orange" radius={5}>
+                    <LabelList
+                      position="top"
+                      offset={12}
+                      className="fill-foreground"
+                      fontSize={14}
+                    />
+                  </Bar>
+                </BarChart>
+              </ChartContainer>
+            </CardContent>
+          </Card>
+        ) : (
+          <div className="mt-12 w-full">
+            <p className="text-center text-slate-500">No Data Available.</p>
+          </div>
+        )}
+        <div className="flex justify-center gap-2 mt-5 ">
+          <Button
+            onClick={() => setChartWidth((p) => p + 20)}
+            className="rounded-full bg-gray-300"
+          >
+            <FaPlus size={12} color="#007bff" />
+          </Button>
+          <Button
+            onClick={() => setChartWidth((p) => p - 20)}
+            className="rounded-full bg-gray-300"
+          >
+            {" "}
+            <FaMinus size={12} color="#007bff" />
+          </Button>
+        </div>
+      </>
+    );
 }
 
 export default BarChartGraph
