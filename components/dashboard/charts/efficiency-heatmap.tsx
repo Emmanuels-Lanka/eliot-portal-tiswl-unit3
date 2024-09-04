@@ -14,8 +14,8 @@ interface EffiencyHeatmapProps {
 const EffiencyHeatmap = ({
     xAxisLabel,
     height,
-    efficiencyLow = 44,
-    efficiencyHigh = 74,
+    efficiencyLow = 70,
+    efficiencyHigh = 80,
     heatmapData
 }: EffiencyHeatmapProps) => {
     const categories = heatmapData.categories || [];
@@ -45,19 +45,19 @@ const EffiencyHeatmap = ({
                         {
                             from: 0,
                             to: efficiencyLow,
-                            name: 'Low (0-44)',
+                            name: 'Low(Below 70%)',
                             color: '#ef4444'
                         },
                         {
                             from: efficiencyLow,
                             to: efficiencyHigh,
-                            name: 'Medium (44-74)',
+                            name: 'Medium(70%-80%)',
                             color: '#f97316'
                         },
                         {
                             from: efficiencyHigh,
                             to: 1000,
-                            name: 'High ( 74+)',
+                            name: 'High(above 80%)',
                             color: '#16a34a'
                         },
                     ],
@@ -84,13 +84,12 @@ const EffiencyHeatmap = ({
                 }
             },
             labels: {
-                rotate:-50,
                 style: {
                     colors: '#0070c0',
                     fontSize: '12px',
                     fontFamily: 'Inter, sans-serif',
-                    
-                },
+                }, rotate: -90,
+                minHeight: 300,
             },
             categories: categories,
         
