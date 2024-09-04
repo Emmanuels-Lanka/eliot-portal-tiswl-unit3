@@ -44,16 +44,31 @@ export async function geOperatorList(obbsheetid:string,date:string ) : Promise<a
  
     // const data = await sql`SELECT   concat(oo."seqNo",'-',o.name ) as name
 
-    const data = await sql`SELECT substring(concat(oopn."seqNo",'-(',opn."code",')-',oo.name ) from 0 for 25)  as name
-    FROM "Operator" oo  
-    INNER JOIN "ProductionData" pd ON oo."rfid" = pd."operatorRfid"
-    INNER JOIN "ObbOperation" oopn ON pd."obbOperationId" = oopn."id"
-    INNER JOIN "ObbSheet" os ON oopn."obbSheetId" = os.id
-    INNER JOIN "Operation" opn ON opn."id" = oopn."operationId"
-    WHERE os.id = ${obbsheetid}  
-     AND pd.timestamp like ${date}
-    group by oopn."seqNo",opn."code",oo.name
-    order by  oopn."seqNo";`;
+    const data = await sql`
+    SELECT 
+      CONCAT(SUBSTRING(CONCAT(oopn."seqNo", '-(', opn."code", ')', '-', oo.name) FROM 1 FOR 25), ' ', '(', sm."machineId", ')') AS name
+    FROM 
+      "Operator" oo  
+    INNER JOIN 
+      "ProductionData" pd ON oo."rfid" = pd."operatorRfid"
+    INNER JOIN 
+      "ObbOperation" oopn ON pd."obbOperationId" = oopn."id"
+    INNER JOIN 
+      "ObbSheet" os ON oopn."obbSheetId" = os.id
+    INNER JOIN 
+      "Operation" opn ON opn."id" = oopn."operationId"
+    INNER JOIN 
+      "SewingMachine" sm ON sm.id = oopn."sewingMachineId"
+    WHERE 
+      os.id = ${obbsheetid}  
+      AND pd.timestamp LIKE ${date}
+    GROUP BY 
+      CONCAT(SUBSTRING(CONCAT(oopn."seqNo", '-(', opn."code", ')', '-', oo.name) FROM 1 FOR 25), ' ', '(', sm."machineId", ')'), 
+      oopn."seqNo"
+    ORDER BY 
+      oopn."seqNo";
+  `;
+  
     //order by  substring(concat(oopn."seqNo",'-',oo.name ) from 0 for 20) ;`
     // group by substring(concat(oopn."seqNo",'-(',opn."code",')-',oo.name ) from 0 for 25) , oopn."seqNo"
 
