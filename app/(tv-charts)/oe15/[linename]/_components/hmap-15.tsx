@@ -49,7 +49,7 @@ const Hmap15Compo = ({ linename }: { linename: string }) => {
                 height={200}
                 className='py-4'
             />
-        <h1 className='text-slate-500 my-4 text-3xl'>Dashboard - Operator Efficiency(15min) {linename}</h1>
+        <h1 className='text-[#0071c1] my-4 text-3xl '>Dashboard - Operator Efficiency(15min) {linename}</h1>
       </div>
 
       {obbSheetId.length > 0 ? <HmapChart15Compo
