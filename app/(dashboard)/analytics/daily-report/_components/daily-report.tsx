@@ -34,7 +34,9 @@ export type ReportData={
   achievements:string,
   unitname:string,
   style:string,
-  machineid:string
+  machineid:string,
+  linename:string,
+  buyer:string
 }
 const ReportTable=({
   obbSheets,
@@ -87,7 +89,7 @@ const ReportTable=({
 
 const details=await getDailyData(obbSheetId,date)
 const res = calculateEfficiency(details)
- 
+ console.log("details0000",details)
 
 setData(res)
 
@@ -102,15 +104,16 @@ setData(res)
   },[obbSheetId,date])
 
 
-  const handlePrint = () => {
+    const handlePrint = () => {
     const printContent: any = reportRef.current;
     const windowToPrint = window.open("", "", "width=800,height=600");
     windowToPrint?.document.write(`
       <html>
         <head>
           <title>Operator Daily Efficiency Report</title>
-          <style>
-            body {
+           
+        <style>
+           body {
               font-family: Arial, sans-serif;
               margin: 0;
               padding: 20px;
@@ -139,8 +142,12 @@ setData(res)
               text-align: left;
             }
             th {
-              background-color: #f5f5f5;
+              font-size:12px;
+              background-color:'#d3d3d3';
             }
+              td{
+              font-size:11px;
+              }
             .text-left{
               text-align:left;
               margin-top:8px;
@@ -194,12 +201,16 @@ setData(res)
         <body>
         <div class="logo-div">
           <img src="/logo/ha-meem.png" alt="Company Logo" />
-           <h5 style={{ marginTop: '-10px' }}>~ Bangaladesh ~</h5>
-        </div>
+           <h5 style={{ marginTop: '-10px' }}>~ Bangladesh ~  </h5>
+          </div>
         <div class="title">
           <h1>Operator Daily Efficiency Report</h1>
         </div>
         <hr></hr>
+         <div style={{ marginBottom: '5px',paddingLeft:'50px' }}>
+            <h5>  Factory Name : Apparel Gallery LTD</h5>
+          </div>
+      
           <div style={{ marginBottom: '5px',paddingLeft:'50px' }}>
             <h5>Title: Operator Daily Efficiency Report</h5>
           </div>
@@ -207,11 +218,18 @@ setData(res)
             <h5>Date: ${date}</h5>
           </div>
           <div style={{ marginBottom: '5px',marginLeft:'50px' }}>
-            <h5>Line Unit: ${data[0].unitname}</h5>
+            <h5>Unit: ${data[0].unitname}</h5>
           </div>
           <div style={{ marginBottom: '5px',marginLeft:'50px' }}>
-            <h5>Style: ${data[0].style}</h5>
+            <h5>Buyer: ${data[0].buyer}</h5>
           </div>
+          <div style={{ marginBottom: '5px',marginLeft:'50px' }}>
+            <h5>Style Name: ${data[0].style}</h5>
+          </div>
+           <div style={{ marginBottom: '5px',marginLeft:'50px' }}>
+            <h5>Line Name: ${data[0].linename}</h5>
+          </div>
+    
                    
           ${printContent?.innerHTML}
         <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 50px;">
@@ -236,6 +254,9 @@ setData(res)
   };
 
   
+
+
+
  
 
   return(
@@ -253,7 +274,7 @@ setData(res)
   <TableHeader className="mt-5" >
       
     <TableRow>
-      <TableHead >Empl Id</TableHead>
+      <TableHead >Emp.ID</TableHead>
       <TableHead>Operator Name</TableHead>
       <TableHead>Operation Name</TableHead>
       <TableHead>Operated Machine</TableHead>

@@ -14,7 +14,8 @@ export async function getDailyData(obbsheetid:string,date:string) : Promise<Repo
       EXTRACT(hour FROM pd.timestamp::TIMESTAMP) AS hour,
       obbop.target,
       sw."machineType" as machine,
-      opr.name as operation
+      opr.name as operation,
+      pl.name as production
   FROM 
       "ProductionData" pd
   INNER JOIN "Operator" op ON op.rfid = pd."operatorRfid"
@@ -22,6 +23,7 @@ export async function getDailyData(obbsheetid:string,date:string) : Promise<Repo
   inner join "Operation" opr on opr.id=obbop."operationId"
   INNER JOIN "ObbSheet" obs ON obs.id = obbop."obbSheetId"
   INNER JOIN "SewingMachine" sw ON sw.id = obbop."sewingMachineId"
+  inner join "ProductionLine" pl on pl.id=obs."productionLineId"
   WHERE pd.timestamp::TEXT LIKE ${date} AND obs.id = ${obbsheetid}
   GROUP BY 
       hour, 
@@ -30,6 +32,7 @@ export async function getDailyData(obbsheetid:string,date:string) : Promise<Repo
       op."designation", 
       obbop.target, 
       sw."machineType",
+      pl.name,
       opr.name
         having  sum(pd."productionCount")<>0   
 order by  hour, 
