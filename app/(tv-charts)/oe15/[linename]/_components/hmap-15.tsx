@@ -7,6 +7,7 @@ import { Cog } from "lucide-react";
 import { getObbSheetID } from "@/components/tv-charts/achievement-rate-operation/actions";
 import HmapChart15Compo from "./heatmap-15-min";
 import Image from "next/image";
+import LogoImporter from "@/components/dashboard/common/eliot-logo";
 
 
 
@@ -42,13 +43,7 @@ const Hmap15Compo = ({ linename }: { linename: string }) => {
     <div className="h-[200]">
       <div className='flex justify-center items-center gap-3'>
         {/* <Cog className='w-7 h-7 text-voilet' /> */}
-        <Image
-                src="/eliot-logo.png"
-                alt='logo'
-                width={200}
-                height={200}
-                className='py-4'
-            />
+        <LogoImporter/>
         <h1 className='text-[#0071c1] my-4 text-3xl '>Dashboard - Operator Efficiency(15min) {linename}</h1>
       </div>
 

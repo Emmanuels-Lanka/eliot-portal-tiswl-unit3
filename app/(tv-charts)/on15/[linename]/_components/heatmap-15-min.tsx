@@ -8,13 +8,13 @@ import { ObbSheet, ProductionData } from "@prisma/client";
 import HeatmapChart from "@/components/dashboard/charts/heatmap-chart";
 import SelectObbSheetAndDate from "@/components/dashboard/common/select-obbsheet-and-date";
 import { useToast } from "@/components/ui/use-toast";
-
+import { geOperationList, getData, getEliotMachineList } from "./actions";
 import ReactApexChart from "react-apexcharts";
 import { ApexOptions } from "apexcharts";
-import { geOperatorList, getOperatorEfficiencyData15M } from "./actions";
-import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Card, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 
 
@@ -47,19 +47,21 @@ type HourGroup = {
 //   }
 
 
-const xAxisLabel = "Operators"
+const xAxisLabel = "Operations"
 const efficiencyLow = 5
 const efficiencyHigh = 50
 
 
 const ensureAllCategoriesHaveData = (series: any, categories: any, defaultValue = -1) => {
-    console.log("categories", categories)
+    
+
     return series.map((serie: any) => {
         const filledData = categories.map((category: any) => {
             const dataPoint = serie.data.find((d: any) => d.x === category);
             return {
                 x: category,
                 y: dataPoint ? dataPoint.y : defaultValue,
+                eliotid: serie.eliotid
             };
         });
         return {
@@ -78,26 +80,40 @@ const HmapChart15Compo = ({
     const router = useRouter();
 
 
-    const [heatmapData, setHeatmapData] = useState<any | null>(null);
+    const [heatmapData, setHeatmapData] = useState<any[] | null>([]);
     const [heatmapFullData, setHeatmapFullData] = useState<any | null>(null);
     const [operationList, setoperationList] = useState<any[]>([]);
+    const [EliotDeviceList, setEliotDeviceList] = useState<any[]>([]);
+    const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
+    const [eliotIdList, seteliotIdList] = useState<any[]>([])
     const [chartWidth, setChartWidth] = useState<number>(1850)
     const [timeList, settimeList] = useState<string>("")
-    const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
-
-
 
 
     const options = {
         chart: {
             type: 'heatmap' as const,
         },
+        tooltip: {
+            custom: function ({ series, seriesIndex, dataPointIndex, w }: { series: any, seriesIndex: any, dataPointIndex: any, w: any }) {
+               
+                const value = series[seriesIndex][dataPointIndex];
+                const category = w.globals.categoryLabels[dataPointIndex];
+                const eliotDevice = value.eliotid;
+                return `<div style="padding: 10px; color: #000;">
+                         
+                          <strong>Eliot Device Id: </strong> ${eliotIdList[dataPointIndex].serialNumber} <br/>
+                          <strong>MAchine Id: </strong> ${eliotIdList[dataPointIndex].machineId} <br/>
+                           
+                        </div>`;
+            },
+        },
         plotOptions: {
             heatmap: {
-                distributed: true,
                 enableShades: false,
-                radius: 50,
-                useFillColorAsStroke: true,
+                radius: 100,
+                useFillColorAsStroke: false,
+                fontSize: '14px',
                 colorScale: {
                     ranges: [
                         {
@@ -115,8 +131,8 @@ const HmapChart15Compo = ({
                         {
                             from: 70,
                             to: 80,
-                            name: 'Medium(70%-80%)',
-                            color: '#FFAA33'
+                            name: 'Medium(70% - 80%)',
+                            color: '#f97316'
                         },
                         {
                             from: 80,
@@ -132,7 +148,7 @@ const HmapChart15Compo = ({
             enabled: true,
             style: {
                 colors: ['#fff'],
-                fontSize: '10px'
+                fontSize: '10px',
             }
         },
         stroke: {
@@ -141,29 +157,6 @@ const HmapChart15Compo = ({
         xaxis: {
             title: {
                 text: xAxisLabel,
-                style: {
-                    color: '#0070c0',
-                    fontSize: '12px',
-                    fontWeight: 600,
-                    fontFamily: 'Inter, sans-serif',
-                }
-            },
-            labels: {
-                style: {
-                    colors: '#0070c0',
-                    fontSize: '12px',
-                    fontFamily: 'Inter, sans-serif',
-                }, rotate: -90,
-                minHeight: 300,
-            },
-           categories: operationList.map(o => o.name), // x-axis categories
-
-
-        },
-
-        yaxis: {
-            title: {
-                text: "Time",
                 style: {
                     color: '#0070c0',
                     fontSize: '14px',
@@ -176,45 +169,61 @@ const HmapChart15Compo = ({
                     colors: '#0070c0',
                     fontSize: '12px',
                     fontFamily: 'Inter, sans-serif',
-                    marginBottom: '100px',
+                }, rotate: -90,
+                minHeight: 250,
+            },
+            // categories: operationList.map(o => o.name), // x-axis categories
+            categories: operationList.map(o => `${o.name} `)
+
+        },
+
+        yaxis: {
+        tickHeight: 50,
+            title: {
+                text: "Time",
+                style: {
+                    color: '#0070c0',
+                    fontSize: '14px',
+                    fontWeight: 600,
+                    fontFamily: 'Inter, sans-serif',
+                    
+                }
+            },
+            labels: {
+                style: {
+                    colors: '#0070c0',
+                    fontSize: '12px',
+                    fontFamily: 'Inter, sans-serif',
+                    height:50
                 },
                 offsetY: 10,
-                minheight:300,
             },
+          
+
         },
-        grid: {
-            padding: {
-                top: 40,
-                right: 10,
-                bottom: 10,
-                left: 10,
-            },
-        },
+
     };
 
 
     const handleFetchProductions = async () => {
         try {
+
             setIsSubmitting(true)
-            console.log("test111")
             const sqlDate = date + "%";
-            const prod = await getOperatorEfficiencyData15M(obbSheetId, sqlDate)
-
-            const opList = await geOperatorList(obbSheetId,sqlDate)
+            const prod: any[] = await getData(obbSheetId, sqlDate)
+            const eliot = prod.map((m) => (m.eliotid))
+          
+            const opList = await geOperationList(obbSheetId)
             setoperationList(opList)
+            const heatmapDatas = getProcessData(prod as any[], operationList as any[]);
+            //rem 0 ops
+            
 
-            const heatmapData = getProcessData(prod as any[], operationList as any[]);
-            const t = heatmapData.time
-            settimeList(t as any)
-
-            console.log("heatmapData1", heatmapData)
-            setHeatmapData(heatmapData.dataSeries);
+            setHeatmapData(heatmapDatas);
+            //console.log("heatmapData1", heatmapData)
             setIsSubmitting(false)
 
 
-
-            //setHeatmapCategories(heatmapData.xAxisCategories);
-            //setObbSheet(response.data.obbSheet);
 
 
         } catch (error: any) {
@@ -234,10 +243,10 @@ const HmapChart15Compo = ({
     }
 
     useEffect(() => {
-        if (heatmapData?.length > 0) {
+        if (heatmapData?.length ?? 0 > 0) {
             const filledSeries = ensureAllCategoriesHaveData(heatmapData, operationList.map(o => o.name));
+            
             setHeatmapFullData(filledSeries)
-            //setHeatmapFullData(heatmapData)
         }
     }, [heatmapData])
 
@@ -246,18 +255,23 @@ const HmapChart15Compo = ({
 
     }, [obbSheetId, date])
 
-    //const height: string = timeList.length < 21 ? '200%' : timeList.length < 30 ? '300%' : '500%';
-    const totalCount = Object.keys(timeList).reduce((acc, curr) => acc + curr.length, 0);
-    const height: string = totalCount < 21 ? '200%' : totalCount < 30 ? '300%' : '800%';
+    useEffect(() => {
 
+        const e = async () => {
+            const s = await getEliotMachineList(obbSheetId)
+            
+            seteliotIdList(s)
+        }
+        e()
+
+    }, [obbSheetId, date])
+
+    const totalCount = Object.keys(timeList).reduce((acc, curr) => acc + curr.length, 0);
+    const height: string = totalCount < 50 ? '600%' : totalCount < 60 ? '700%' : '600%';
     return (
         <>
 
-
-
-
-
-            <div className="mx-auto max-w-[1850px]">
+<div className="mx-auto max-w-[1850px]">
                 {<div className=" flex justify-center items-center">
                     <Loader2 className={cn("animate-spin w-5 h-5 hidden", isSubmitting && "flex")} />
                 </div>}
@@ -295,46 +309,52 @@ const getTimeSlotLabel = (hr: number, qtrIndex: number) => {
     let hrEndLabel = qtrIndex == 3 ? (hr + 1).toString() : hr.toString()
 
     res = `${hrStartLabel}:${qtrStartLabel}- ${hrEndLabel}:${qtrEndLabel}`
-    // console.log("aaaaa",res)
+
     return res
 
 
 }
 
 
-const getProcessData = (data: any[], operationList: any[]) => {
-    // console.log("aaaaasssss",data)
+const getProcessData = (data: any[], operationList: any[]): any[] => {
     const fmtDataSeries = []
+
     const dataWithQuarter = data.map((d) => (
         {
             ...d, hour: new Date(d.timestamp).getHours(),
-            qtrIndex: Math.floor(new Date(d.timestamp).getMinutes() / 15)
+            qtrIndex: Math.floor(new Date(d.timestamp).getMinutes() / 15),
+            // eliotid:d.eliotid
+
         }
+
     )
+
     )
+
 
     //   const result = Object.groupBy(dataWithQuarter, (d) => d.hour.toString() + d.qtrIndex.toString());
     const result = Object.groupBy(dataWithQuarter, (d) => getTimeSlotLabel(d.hour, d.qtrIndex));
-    console.log(result)
+     
 
     let rc = 0
     for (const [key, value] of Object.entries(result)) {
 
+
+
         const dataGBOp = Object.groupBy(value || [], (d) => d.name);
-        // console.log("abc",dataGBOp)
         const dataPoints = []
-        for (const [key1, value1] of Object.entries(dataGBOp)) {
-            const target = value1?.[0].target ?? 1;
-
-
-            const v = value1?.reduce((a, d) => {
+        for (const [key, value] of Object.entries(dataGBOp)) {
+            const target = value?.[0].target ?? 1;
+            const v = value?.reduce((a, d) => {
 
                 return a + (d?.count ?? 0)
             }, 0)
 
             //   console.log("vqw", v)
 
-            dataPoints.push({ x: key1, y: ((v / (target / 4)) * 100).toFixed(1) ?? 0 })
+            // dataPoints.push({ x: key, y: v ?? 0,eliotid: value?.[0].eliotid??0  })
+            // rc += v
+            dataPoints.push({ x: key, y: ((v / (target / 4)) * 100).toFixed(1) ?? 0 })
             rc += v
 
         }
@@ -344,22 +364,16 @@ const getProcessData = (data: any[], operationList: any[]) => {
 
 
         fmtDataSeries.push({ name: key, data: dataPoints })
-
-
     }
- 
 
-
-
-    return { dataSeries: fmtDataSeries, time: result }
-
-
+    return fmtDataSeries
 }
 
 
 
 
- 
+
+//  const getProcessData = (data: any[]) => {
 //      const fmtDataSeries = [];
 //      const dataWithQuarter = data.map((d) => ({
 //          ...d,
