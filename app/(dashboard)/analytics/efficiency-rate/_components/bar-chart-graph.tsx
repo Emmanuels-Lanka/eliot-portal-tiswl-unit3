@@ -210,7 +210,7 @@ const BarChartGraphEfficiencyRate = ({ date, obbSheetId }: BarChartGraphProps) =
                                         position="top"
                                         offset={12}
                                         className="fill-foreground"
-                                        fontSize={14}
+                                        fontSize={12}
                                     />
                                 </Bar>
                                 {/* <Bar dataKey="count" fill="var(--color-actual)" radius={5}>

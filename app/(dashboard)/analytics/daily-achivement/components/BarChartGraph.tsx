@@ -89,7 +89,7 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
       const seq=1;
       const chartData1: BarchartData[] = prod.map((item) => ({
         
-        name: item.name.trim().substring(0,15)+"...",
+        name: item.name,
         target: item.target * 10,
         count: item.count,
       }));
@@ -213,6 +213,7 @@ const saveAsExcel = () => {
                   angle={90}
                   fontSize={10}
                   interval={0}
+                  
 
 
                 />
@@ -239,6 +240,7 @@ const saveAsExcel = () => {
                     offset={20} // Increase the offset value
                     className="fill-foreground"
                     fontSize={9}
+                    
                   />
                 </Bar>
               </BarChart>
