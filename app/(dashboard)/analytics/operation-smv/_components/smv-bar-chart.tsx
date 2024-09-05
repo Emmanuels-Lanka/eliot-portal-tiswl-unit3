@@ -35,6 +35,8 @@ import React, { useRef } from "react";
 // import jsPDF from "jspdf";
 // import html2canvas from "html2canvas";
 import * as XLSX from 'xlsx';
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
 
 const chartConfig = {
     smv: {
