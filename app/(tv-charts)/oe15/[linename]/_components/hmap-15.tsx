@@ -5,7 +5,8 @@ import { useEffect, useState } from "react";
 import DashboardHeader from "@/components/dashboard/dashboard-header";
 import { Cog } from "lucide-react";
 import { getObbSheetID } from "@/components/tv-charts/achievement-rate-operation/actions";
-import HmapChart15Compo from "@/app/(dashboard)/analytics/operator-efficiency-15/_components/heatmap-15-min";
+import HmapChart15Compo from "./heatmap-15-min";
+
 
 
 const Hmap15Compo = ({ linename }: { linename: string }) => {
