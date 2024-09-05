@@ -14,7 +14,7 @@ import { useEffect, useRef, useState } from "react";
 import { getDailyData } from "./actions";
 import SelectObbSheetAndDate from "@/components/dashboard/common/select-style-and-date";
 import { Button } from "@/components/ui/button";
-
+import Image from 'next/image';
 
 interface AnalyticsChartProps {
   obbSheets: {
@@ -108,7 +108,7 @@ setData(res)
     windowToPrint?.document.write(`
       <html>
         <head>
-          <title>Invoice</title>
+          <title>Operator Daily Efficiency Report</title>
           <style>
             body {
               font-family: Arial, sans-serif;
@@ -141,23 +141,91 @@ setData(res)
             th {
               background-color: #f5f5f5;
             }
+            .text-left{
+              text-align:left;
+              margin-top:8px;
+              }
             .text-right {
               text-align: right;
             }
+              .text-right img{
+               width: 110px; /* Adjust the logo width */
+            height: auto; /* Maintain aspect ratio */
+              }
+
             .text-center {
               text-align: center;
+            }
+            .logo-div {
+            width: 100%; 
+            text-align: center; 
+            color:gray;
+            margin-bottom: 20px; /* Add space between logo and the rest of the content */
+          }
+          .logo-div img {
+            width: 170px; /* Adjust the logo width */
+            height: auto; /* Maintain aspect ratio */
+          }
+            .title{
+            text-align:center;
+            color:black;
+            margin-top: 30px;
+            }
+            hr{
+            width:95%;
+            color:black;
+            margin-top:15px;
+            }
+              @media print {
+            .footer {
+              position: fixed;
+              bottom: 0;
+              left: 0;
+              right: 0;
+              text-align: center;
+              margin-bottom: 20px;
+            }
+          }
+            .pas{
+            flex: 1
             }
           </style>
         </head>
         <body>
-          <h5>Title: Operator Daily Efficiency Report</h5></br>
-          <h5>Obb Sheet Id: ${obbSheetId}</h5></br>
-          <h5>Date : ${date} </h5></br>
-          <h5>Line Unit :${data[0].unitname}</h5></br> 
-          <h5> Style :${data[0].style}</h5></br> 
+        <div class="logo-div">
+          <img src="/logo/ha-meem.png" alt="Company Logo" />
+           <h5 style={{ marginTop: '-10px' }}>~ Bangaladesh ~</h5>
+        </div>
+        <div class="title">
+          <h1>Operator Daily Efficiency Report</h1>
+        </div>
+        <hr></hr>
+          <div style={{ marginBottom: '5px',paddingLeft:'50px' }}>
+            <h5>Title: Operator Daily Efficiency Report</h5>
+          </div>
+          <div style={{ marginBottom: '5px',marginLeft:'50px' }}>
+            <h5>Date: ${date}</h5>
+          </div>
+          <div style={{ marginBottom: '5px',marginLeft:'50px' }}>
+            <h5>Line Unit: ${data[0].unitname}</h5>
+          </div>
+          <div style={{ marginBottom: '5px',marginLeft:'50px' }}>
+            <h5>Style: ${data[0].style}</h5>
+          </div>
                    
           ${printContent?.innerHTML}
-        
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 50px;">
+  <div>
+    <p style="margin: 0;">
+      <a href="https://rfid-tracker.eliot.global/" target="_blank" rel="noopener noreferrer" style="text-decoration: none; color: black;">
+        https://rfid-tracker.eliot.global/
+      </a>
+    </p>
+  </div>
+  <div>
+    <img src="/logo/logo.png" alt="Company Footer Logo" style="width: 120px; height: auto;" />
+  </div>
+</div>
 
         </body>
       </html>
@@ -167,6 +235,7 @@ setData(res)
     windowToPrint?.print();
   };
 
+  
  
 
   return(
@@ -177,11 +246,11 @@ setData(res)
             handleSubmit={handleFetchProductions}
           />
            <Button className="mt-5" onClick={handlePrint}>Print</Button>
-          <div ref={reportRef} className="container mt-5" >
+          <div ref={reportRef} className="container mt-5 mb-10" >
           
-    <Table className="mt-5">
-  <TableCaption>Operator Daily Efficiency Report</TableCaption>
-  <TableHeader >
+    <Table className="mt-10">
+  {/* <TableCaption>Operator Daily Efficiency Report</TableCaption> */}
+  <TableHeader className="mt-5" >
       
     <TableRow>
       <TableHead >Empl Id</TableHead>
