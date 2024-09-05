@@ -193,7 +193,7 @@ const saveAsExcel = () => {
                 data={chartData}
                 margin={{
                   top: 20,
-                  bottom: 100,
+                  bottom: 200,
                 }}
 
               >
@@ -208,11 +208,12 @@ const saveAsExcel = () => {
                 <XAxis
                   dataKey="name"
                   tickLine={true}
-                  tickMargin={45}
+                  tickMargin={15}
                   axisLine={true}
                   angle={90}
                   fontSize={10}
                   interval={0}
+                  textAnchor="start"
                   
 
 
