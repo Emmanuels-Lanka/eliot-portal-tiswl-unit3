@@ -48,6 +48,7 @@ type BarChartData = {
     count: number;
     target: number;
     ratio: number;
+    seqno?:string
 }
 interface BarChartGraphProps {
 
@@ -57,7 +58,7 @@ interface BarChartGraphProps {
 
 const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
     const [chartData, setChartData] = useState<BarChartData[]>([])
-    const [chartWidth, setChartWidth] = useState<number>(150);
+    const [chartWidth, setChartWidth] = useState<number>(220);
     const[isSubmitting,setisSubmitting]=useState<boolean>(false)
 
     const chartRef = useRef<HTMLDivElement>(null);
@@ -69,10 +70,7 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
             //         return afterDot ? afterDot.split(' ')[0] : null;
 
             //   }
-            const getShortName = (name: any) => {
-                return name.substring(1, 10) + "..."
-
-            }
+           
             setisSubmitting(true)
             const prod = await getOperatorEfficiency(obbSheetId, date)
           
@@ -81,7 +79,10 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
 
            
             const chartData: BarChartData[] = prod.map((item,index) => ({
-                name:item.name,
+                name:item.seqno+" - "+item.name,
+                
+
+                
                 count: item.count,
                 target: item.target * workingHrs,
                 ratio: parseFloat((item.count / (item.target * workingHrs)).toFixed(2)),
@@ -143,20 +144,30 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
     
 
     return (
-        <>
+      <>
         <div className="flex justify-center ">
-        <Loader2 className={cn("animate-spin w-7 h-7 hidden", isSubmitting && "flex")} />
-       </div>
-    
-    
-        <div className='mb-3'>
-            <Button type="button" className='mr-3' onClick={saveAsPDF}>Save as PDF</Button>
-            <Button type="button" onClick={saveAsExcel}>Save as Excel</Button>
+          <Loader2
+            className={cn(
+              "animate-spin w-7 h-7 hidden",
+              isSubmitting && "flex"
+            )}
+          />
+        </div>
+
+        <div className="mb-3">
+          <Button type="button" className="mr-3" onClick={saveAsPDF}>
+            Save as PDF
+          </Button>
+          <Button type="button" onClick={saveAsExcel}>
+            Save as Excel
+          </Button>
         </div>
 
 
 
             {chartData.length > 0 ?
+            <div className='bg-slate-50 pt-5 -pl-8 rounded-lg border w-full mb-16 overflow-x-auto'>
+               <div className='bg-slate-50'>
                 <Card   className='pr-2 pt-1 pb-2 border rounded-xl bg-slate-50'>
                     <div className="px-8">
                         <CardHeader>
@@ -188,11 +199,12 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
                                 />
                                 <XAxis
                                     dataKey="name"
-                                    tickLine={false}
-                                    tickMargin={140}
+                                    tickLine={true}
+                                    tickMargin={10}
                                     axisLine={true}
                                     angle={90}
-                                    
+                                    interval={0}
+                                    textAnchor='start'
                                 />
                                 <ChartTooltip
                                     cursor={false}
@@ -219,6 +231,7 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
                         </ChartContainer>
                     </CardContent>
                 </Card>
+               </div></div>
                 : <div className="mt-12 w-full">
                     <p className="text-center text-slate-500">No Data Available.</p>
                 </div>

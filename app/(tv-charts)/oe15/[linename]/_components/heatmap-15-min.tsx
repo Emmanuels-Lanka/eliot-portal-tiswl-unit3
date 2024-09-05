@@ -81,7 +81,7 @@ const HmapChart15Compo = ({
     const [heatmapData, setHeatmapData] = useState<any | null>(null);
     const [heatmapFullData, setHeatmapFullData] = useState<any | null>(null);
     const [operationList, setoperationList] = useState<any[]>([]);
-    const [chartWidth, setChartWidth] = useState<number>(4000)
+    const [chartWidth, setChartWidth] = useState<number>(1850)
     const [timeList, settimeList] = useState<string>("")
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
 
@@ -131,7 +131,8 @@ const HmapChart15Compo = ({
         dataLabels: {
             enabled: true,
             style: {
-                colors: ['#fff']
+                colors: ['#fff'],
+                fontSize: '10px'
             }
         },
         stroke: {
@@ -183,7 +184,7 @@ const HmapChart15Compo = ({
         },
         grid: {
             padding: {
-                top: 0,
+                top: 40,
                 right: 10,
                 bottom: 10,
                 left: 10,
@@ -247,7 +248,7 @@ const HmapChart15Compo = ({
 
     //const height: string = timeList.length < 21 ? '200%' : timeList.length < 30 ? '300%' : '500%';
     const totalCount = Object.keys(timeList).reduce((acc, curr) => acc + curr.length, 0);
-    const height: string = totalCount < 21 ? '200%' : totalCount < 30 ? '300%' : '500%';
+    const height: string = totalCount < 21 ? '200%' : totalCount < 30 ? '300%' : '800%';
 
     return (
         <>
@@ -256,13 +257,13 @@ const HmapChart15Compo = ({
 
 
 
-            <div className="mx-auto max-w-[1680px]">
+            <div className="mx-auto max-w-[1850px]">
                 {<div className=" flex justify-center items-center">
                     <Loader2 className={cn("animate-spin w-5 h-5 hidden", isSubmitting && "flex")} />
                 </div>}
 
                 {heatmapFullData !== null ?
-                    <div className="mt-12 bg-slate-100 pt-5 pl-8 rounded-lg border w-full mb-16 overflow-x-auto ">
+                    <div className="mt-2   ">
                         <h2 className="text-lg mb-2 font-medium text-slate-700">{" "}</h2>
                         <ReactApexChart options={options} series={heatmapFullData} type="heatmap" height={height} width={chartWidth} />
                     </div>

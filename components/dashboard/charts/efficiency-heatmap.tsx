@@ -14,8 +14,8 @@ interface EffiencyHeatmapProps {
 const EffiencyHeatmap = ({
     xAxisLabel,
     height,
-    efficiencyLow = 44,
-    efficiencyHigh = 74,
+    efficiencyLow = 70,
+    efficiencyHigh = 80,
     heatmapData
 }: EffiencyHeatmapProps) => {
     const categories = heatmapData.categories || [];
@@ -84,13 +84,12 @@ const EffiencyHeatmap = ({
                 }
             },
             labels: {
-                rotate:-50,
                 style: {
                     colors: '#0070c0',
                     fontSize: '12px',
                     fontFamily: 'Inter, sans-serif',
-                    
-                },
+                }, rotate: -90,
+                minHeight: 350,
             },
             categories: categories,
         
@@ -107,7 +106,7 @@ const EffiencyHeatmap = ({
         },
     };
 
-    const width: string = heatmapData.categories.length < 21 ? '100%' : heatmapData.categories.length < 30 ? '150%' : '200%';
+    const width: string = heatmapData.categories.length < 21 ? '100%' : heatmapData.categories.length < 30 ? '150%' : '350%';
 
     return (
         <div className='bg-slate-100 pt-5 pl-8 rounded-lg border w-full mb-16 overflow-x-auto'>
