@@ -161,8 +161,9 @@ const AnalyticsChartHmap15x = ({
                     fontSize: '12px',
                     fontFamily: 'Inter, sans-serif',
                     marginBottom:'100px',
+                    Height: 30,
                 },
-                offsetY: 10,
+                offsetY: 50,
             },
         },
     };

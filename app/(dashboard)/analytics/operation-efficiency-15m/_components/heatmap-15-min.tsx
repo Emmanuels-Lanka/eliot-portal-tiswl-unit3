@@ -85,6 +85,8 @@ const HmapChart15Compo = ({
     const [EliotDeviceList, setEliotDeviceList] = useState<any[]>([]);
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
     const [eliotIdList, seteliotIdList] = useState<any[]>([])
+    const [chartWidth, setChartWidth] = useState<number>(4000)
+    const [timeList, settimeList] = useState<string>("")
 
 
     const options = {
@@ -108,7 +110,7 @@ const HmapChart15Compo = ({
         plotOptions: {
             heatmap: {
                 enableShades: false,
-                radius: 50,
+                radius: 100,
                 useFillColorAsStroke: false,
                 colorScale: {
                     ranges: [
@@ -173,6 +175,7 @@ const HmapChart15Compo = ({
         },
 
         yaxis: {
+        tickHeight: 30,
             title: {
                 text: "Time",
                 style: {
@@ -180,6 +183,7 @@ const HmapChart15Compo = ({
                     fontSize: '14px',
                     fontWeight: 600,
                     fontFamily: 'Inter, sans-serif',
+                    
                 }
             },
             labels: {
@@ -187,10 +191,11 @@ const HmapChart15Compo = ({
                     colors: '#0070c0',
                     fontSize: '12px',
                     fontFamily: 'Inter, sans-serif',
-                    marginBottom: '100px',
+                    height:30
                 },
                 offsetY: 10,
             },
+          
 
         },
 
@@ -258,8 +263,8 @@ const HmapChart15Compo = ({
 
     }, [obbSheetId, date])
 
-
-
+    const totalCount = Object.keys(timeList).reduce((acc, curr) => acc + curr.length, 0);
+    const height: string = totalCount < 50 ? '430%' : totalCount < 60 ? '300%' : '500%';
     return (
         <>
 
@@ -276,7 +281,7 @@ const HmapChart15Compo = ({
                                 </CardHeader>
                             </div>
                             <h2 className="text-lg mb-2 font-medium text-slate-700">{" "}</h2>
-                            <ReactApexChart options={options} series={heatmapFullData} type="heatmap" height={1000} width={2000} />
+                            <ReactApexChart options={options} series={heatmapFullData} type="heatmap" height={height} width={chartWidth} />
                         </div>
                     </Card>
                     :
