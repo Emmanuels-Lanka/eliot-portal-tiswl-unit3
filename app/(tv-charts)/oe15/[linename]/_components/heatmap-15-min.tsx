@@ -81,7 +81,7 @@ const HmapChart15Compo = ({
     const [heatmapData, setHeatmapData] = useState<any | null>(null);
     const [heatmapFullData, setHeatmapFullData] = useState<any | null>(null);
     const [operationList, setoperationList] = useState<any[]>([]);
-    const [chartWidth, setChartWidth] = useState<number>(1800)
+    const [chartWidth, setChartWidth] = useState<number>(1850)
     const [timeList, settimeList] = useState<string>("")
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
 
@@ -131,7 +131,8 @@ const HmapChart15Compo = ({
         dataLabels: {
             enabled: true,
             style: {
-                colors: ['#fff']
+                colors: ['#fff'],
+                fontSize: '10px'
             }
         },
         stroke: {
@@ -256,13 +257,13 @@ const HmapChart15Compo = ({
 
 
 
-            <div className="mx-auto max-w-[1680px]">
+            <div className="mx-auto max-w-[1850px]">
                 {<div className=" flex justify-center items-center">
                     <Loader2 className={cn("animate-spin w-5 h-5 hidden", isSubmitting && "flex")} />
                 </div>}
 
                 {heatmapFullData !== null ?
-                    <div className="mt-12  pt-5 pl-8 pb-20 w-1/3 h-5/6 ">
+                    <div className="mt-2   ">
                         <h2 className="text-lg mb-2 font-medium text-slate-700">{" "}</h2>
                         <ReactApexChart options={options} series={heatmapFullData} type="heatmap" height={height} width={chartWidth} />
                     </div>

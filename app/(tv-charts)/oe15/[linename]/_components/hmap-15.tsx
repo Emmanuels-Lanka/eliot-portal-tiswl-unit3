@@ -6,6 +6,7 @@ import DashboardHeader from "@/components/dashboard/dashboard-header";
 import { Cog } from "lucide-react";
 import { getObbSheetID } from "@/components/tv-charts/achievement-rate-operation/actions";
 import HmapChart15Compo from "./heatmap-15-min";
+import Image from "next/image";
 
 
 
@@ -40,8 +41,15 @@ const Hmap15Compo = ({ linename }: { linename: string }) => {
   return (
     <div className="h-[200]">
       <div className='flex justify-center items-center gap-3'>
-        <Cog className='w-7 h-7 text-voilet' />
-        <h1 className='text-slate-500 m-4 text-3xl'>ELIoT Web Portal - Operator Efficiency(15min) {linename}</h1>
+        {/* <Cog className='w-7 h-7 text-voilet' /> */}
+        <Image
+                src="/eliot-logo.png"
+                alt='logo'
+                width={200}
+                height={200}
+                className='py-4'
+            />
+        <h1 className='text-slate-500 my-4 text-3xl'>Dashboard - Operator Efficiency(15min) {linename}</h1>
       </div>
 
       {obbSheetId.length > 0 ? <HmapChart15Compo
