@@ -153,7 +153,7 @@ const HmapChart15Compo = ({
                     fontSize: '12px',
                     fontFamily: 'Inter, sans-serif',
                 }, rotate: -90,
-                minHeight: 200,
+                minHeight: 300,
             },
            categories: operationList.map(o => o.name), // x-axis categories
 
@@ -178,6 +178,7 @@ const HmapChart15Compo = ({
                     marginBottom: '100px',
                 },
                 offsetY: 10,
+                minheight:300,
             },
         },
         grid: {
@@ -319,7 +320,7 @@ const getProcessData = (data: any[], operationList: any[]) => {
     for (const [key, value] of Object.entries(result)) {
 
         const dataGBOp = Object.groupBy(value || [], (d) => d.name);
-        console.log("abc",dataGBOp)
+        // console.log("abc",dataGBOp)
         const dataPoints = []
         for (const [key1, value1] of Object.entries(dataGBOp)) {
             const target = value1?.[0].target ?? 1;
