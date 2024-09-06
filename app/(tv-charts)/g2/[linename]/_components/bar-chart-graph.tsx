@@ -25,7 +25,7 @@ import {
     ChartTooltipContent,
 } from "@/components/ui/chart";
 import { use, useEffect, useState } from "react";
-import { getOperatorEfficiency } from "./actions";
+
 import { Button } from "@/components/ui/button";
 import { Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -35,6 +35,7 @@ import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import * as XLSX from 'xlsx';
 import { formatDate } from 'date-fns';
+import { getOperatorEfficiency } from '@/app/(dashboard)/analytics/achievement-rate/_components/actions';
 
 const chartConfig = {
     target: {
