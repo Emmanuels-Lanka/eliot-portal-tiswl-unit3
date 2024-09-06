@@ -13,14 +13,16 @@ export async function getOperatorEfficiency(obbsheetid:string,date:string) : Pro
     //         WHERE os.id = ${obbsheetid} and pd.timestamp like ${date}
     //         group by o.name,oo."seqNo",oo.target order by  oo."seqNo" ;`;
     
-     const data = await sql`SELECT concat(obbopn."seqNo",'-',opn.name ) as name,sum(pd."productionCount")  as count, obbopn.target
+     const data = await sql`SELECT  opn.name as name,sum(pd."productionCount")  as count, obbopn.target,obbopn."seqNo" as seqNo
             FROM "ProductionData" pd
             INNER JOIN "ObbOperation" obbopn ON pd."obbOperationId" = obbopn.id
             INNER JOIN "Operation" opn ON opn.id= obbopn."operationId"
             INNER JOIN "ObbSheet" obbs ON obbopn."obbSheetId" = obbs.id
             WHERE pd.timestamp like  ${date} and  obbs.id = ${obbsheetid}
-            group by opn.name,obbopn."seqNo",obbopn.target order by  obbopn."seqNo"`
+            group by opn.name,obbopn."seqNo",obbopn.target
+             order by  obbopn."seqNo"`
     
+             //console.log("data,",data)
     
      
     return new Promise((resolve) => resolve(data as ProductionDataType[] ))

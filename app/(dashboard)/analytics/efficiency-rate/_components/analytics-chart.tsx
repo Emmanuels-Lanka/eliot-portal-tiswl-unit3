@@ -19,6 +19,8 @@ interface AnalyticsChartProps {
 }
 
 export type ProductionDataType = {
+    seqNo?: string;
+    seqno?: string;
     name: string;
     count: number;
     target: number;

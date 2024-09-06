@@ -30,9 +30,13 @@ import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import React, { useRef } from "react";
-import jsPDF from "jspdf";
-import html2canvas from "html2canvas";
+// import jsPDF from "jspdf";
+// import html2canvas from "html2canvas";
+// import jsPDF from "jspdf";
+// import html2canvas from "html2canvas";
 import * as XLSX from 'xlsx';
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
 
 const chartConfig = {
     smv: {
@@ -49,6 +53,7 @@ type BarChartData = {
     smv:number;
     name:string;
     avg: number;
+    machineId?:string;
 };
 
 interface BarChartGraphProps {
@@ -77,7 +82,7 @@ const BarChartGraphOpSmv = ({ date, obbSheetId }: BarChartGraphProps) => {
               
       
             const chartData1: BarChartData[] = prod.map((item) => ({
-               name:item.name,
+               name:item.machineId+"-"+item.name,
                smv:item.smv,
             //    avg:Number(item.avg.toFixed(2))
              avg:Number(parseFloat(item.avg.toString()).toFixed(2))
@@ -160,7 +165,7 @@ const saveAsExcel = () => {
 
 
 
-        <Card className='pr-2 pt-6 pb-4 border rounded-xl bg-slate-50'>
+        <Card className='pr-2 pt-6 pb-4 border rounded-xl bg-slate-50 w-fit'style={{width:chartWidth*2+"%"}} >
             <div className="px-8">
                 <CardHeader>
                     <CardTitle>SMV vs Cycle Time</CardTitle>
@@ -168,7 +173,7 @@ const saveAsExcel = () => {
                 </CardHeader>
             </div>
             <CardContent className="w-auto h-auto" style={{width:chartWidth+"%"}}  >
-                <ChartContainer ref={chartRef} config={chartConfig} className="min-h-[650px] w-auto"  style={{width:chartWidth+"%", height:chartWidth+"%"}} >
+                <ChartContainer ref={chartRef} config={chartConfig} className="min-h-[300px] w-auto"  style={{width:chartWidth+"%", height:chartWidth+"%"}} >
                     <BarChart 
                         accessibilityLayer 
                         data={chartData}
@@ -189,7 +194,7 @@ const saveAsExcel = () => {
                         <XAxis
                             dataKey="name"
                             tickLine={false}
-                            tickMargin={180}
+                            tickMargin={70}
                             axisLine={false}
                             angle={90}
                             fontSize={11}
@@ -197,6 +202,7 @@ const saveAsExcel = () => {
                             // fontWeight={600}
                             // className="z-[999]"
                             interval={0}
+                            textAnchor="start"
                         />
                         <ChartTooltip
                             cursor={false}
@@ -206,6 +212,7 @@ const saveAsExcel = () => {
                             content={<ChartLegendContent />} 
                             className="-mb-10 text-xs text-blue-500 font-bold" 
                             margin={{top:10}}
+                                
                         />
                         <Bar dataKey="smv" fill="var(--color-smv)" radius={5} barSize={5}>
                             <LabelList

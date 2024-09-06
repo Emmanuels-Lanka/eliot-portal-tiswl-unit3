@@ -25,7 +25,7 @@ import {
     ChartTooltipContent,
 } from "@/components/ui/chart";
 import { use, useEffect, useState } from "react";
-import { getOperatorEfficiency } from "./actions";
+
 import { Button } from "@/components/ui/button";
 import { Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -35,6 +35,8 @@ import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import * as XLSX from 'xlsx';
 import { formatDate } from 'date-fns';
+import { getOperatorEfficiency } from '@/app/(dashboard)/analytics/efficiency-rate/_components/actions';
+
 
 const chartConfig = {
     target: {
@@ -58,7 +60,7 @@ interface BarChartGraphProps {
 
 const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
     const [chartData, setChartData] = useState<BarChartData[]>([])
-    const [chartWidth, setChartWidth] = useState<number>(220);
+    const [chartWidth, setChartWidth] = useState<number>(1850);
     const[isSubmitting,setisSubmitting]=useState<boolean>(false)
 
     const chartRef = useRef<HTMLDivElement>(null);
@@ -78,8 +80,8 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
             workingHrs > 10 ? 10 : workingHrs
 
            
-            const chartData: BarChartData[] = prod.map((item,index) => ({
-                name:item.seqno+" - "+item.name,
+            const chartData: BarChartData[] = prod.map((item:any) => ({
+                name:item.name,
                 
 
                 
@@ -153,26 +155,12 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
             )}
           />
         </div>
-
-        <div className="mb-3">
-          <Button type="button" className="mr-3" onClick={saveAsPDF}>
-            Save as PDF
-          </Button>
-          <Button type="button" onClick={saveAsExcel}>
-            Save as Excel
-          </Button>
-        </div>
-
-
-
             {chartData.length > 0 ?
-            <div className='bg-slate-50 pt-5 -pl-8 rounded-lg border w-full mb-16 overflow-x-auto'>
+            <div className='bg-slate-50 pt-5 -pl-8 rounded-lg border w-full '>
                <div className='bg-slate-50'>
                 <Card   className='pr-2 pt-1 pb-2 border rounded-xl bg-slate-50'>
                     <div className="px-8">
-                        <CardHeader>
-                            <CardTitle>Overall Achievement(Live Data)</CardTitle>
-                        </CardHeader>
+                        
                     </div>
                     <CardContent>
                         {/* <ChartContainer config={chartConfig} className={`min-h-[300px] max-h-[600px] w-[${chartWidth.toString()}%]`}> */}

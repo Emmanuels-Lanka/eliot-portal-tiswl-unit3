@@ -98,7 +98,7 @@ const   HmapChart15Compo = ({
                 return `<div style="padding: 10px; color: #000;">
                          
                           <strong>Eliot Device Id: </strong> ${eliotIdList[dataPointIndex].serialNumber} <br/>
-                          <strong>MAchine Id: </strong> ${eliotIdList[dataPointIndex].machineId} <br/>
+                          <strong>Machine Id: </strong> ${eliotIdList[dataPointIndex].machineId} <br/>
                            
                         </div>`;
               },

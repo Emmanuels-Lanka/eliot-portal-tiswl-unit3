@@ -14,6 +14,7 @@ import { ApexOptions } from "apexcharts";
 import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 
 
@@ -85,7 +86,7 @@ const HmapChart15Compo = ({
     const [EliotDeviceList, setEliotDeviceList] = useState<any[]>([]);
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
     const [eliotIdList, seteliotIdList] = useState<any[]>([])
-    const [chartWidth, setChartWidth] = useState<number>(4000)
+    const [chartWidth, setChartWidth] = useState<number>(3000)
     const [timeList, settimeList] = useState<string>("")
 
 
@@ -102,7 +103,7 @@ const HmapChart15Compo = ({
                 return `<div style="padding: 10px; color: #000;">
                          
                           <strong>Eliot Device Id: </strong> ${eliotIdList[dataPointIndex].serialNumber} <br/>
-                          <strong>MAchine Id: </strong> ${eliotIdList[dataPointIndex].machineId} <br/>
+                          <strong>Machine Id: </strong> ${eliotIdList[dataPointIndex].machineId} <br/>
                            
                         </div>`;
             },
@@ -129,7 +130,7 @@ const HmapChart15Compo = ({
                         {
                             from: 70,
                             to: 80,
-                            name: 'Medium(70%-80%)',
+                            name: 'Medium(70% - 80%)',
                             color: '#f97316'
                         },
                         {
@@ -167,7 +168,7 @@ const HmapChart15Compo = ({
                     fontSize: '12px',
                     fontFamily: 'Inter, sans-serif',
                 }, rotate: -90,
-                minHeight: 200,
+                minHeight: 250,
             },
             // categories: operationList.map(o => o.name), // x-axis categories
             categories: operationList.map(o => `${o.name} `)
@@ -273,7 +274,7 @@ const HmapChart15Compo = ({
                     <Loader2 className={cn("animate-spin w-5 h-5 hidden", isSubmitting && "flex")} />
                 </div>}
                 {heatmapFullData !== null ?
-                    <Card className="mt-5 bg-slate-100 pt-5 pl-8 rounded-lg border w-full mb-16 overflow-x-auto ">
+                    <Card className="mt-5 bg-slate-100 pt-5 pl-8 rounded-lg border w-full mb-16 overflow-x-auto " style={{width:(chartWidth*1.5)+"%", height:chartWidth+"%"}}>
                         <div>
                             <div>
                                 <CardHeader>
@@ -289,6 +290,13 @@ const HmapChart15Compo = ({
                         <p className="text-center text-slate-500">Please select the OBB sheet and date ☝️</p>
                     </div>
                 }
+                {<div className="flex justify-center gap-2 mt-5 2xl:hidden block">
+
+<Button onClick={() => setChartWidth((p) => p + 200)} className="rounded-full bg-gray-300">+</Button>
+<Button onClick={() => setChartWidth((p) => p - 200)} className="rounded-full bg-gray-300"> -</Button>
+
+</div>
+}
 
             </div>
 

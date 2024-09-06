@@ -1,18 +1,14 @@
 "use client"
 import { useEffect, useState } from "react";
- 
- 
+import { getObbSheetID } from "./actions";
+import { Span } from "next/dist/trace";
 import DashboardHeader from "@/components/dashboard/dashboard-header";
 import { Cog } from "lucide-react";
-import { getObbSheetID } from "@/components/tv-charts/achievement-rate-operation/actions";
+import BarChartGraph from "./bar-chart-graph";
 import LogoImporter from "@/components/dashboard/common/eliot-logo";
-import HmapChart15Compo from "./heatmap-15-min";
-//import HmapChart15Compo from "@/app/(dashboard)/analytics/operation-efficiency-15/_components/heatmap-15-min";
-//import HmapChart15Compo from "@/app/(dashboard)/analytics/operation-efficiency-15/_components/heatmap-15-min";
-// import HmapChart15Compo from "@/app/(dashboard)/analytics/operator-efficiency-15/_components/heatmap-15-min";
 
 
-const Hmap15CompoOperation = ({ linename }: { linename: string }) => {
+const AchievementRateOperation = ({ linename }: { linename: string }) => {
 
   const [obbSheetId, setobbSheetId] = useState<string>("")
   const [date, setdate] = useState<string>("")
@@ -37,23 +33,22 @@ const Hmap15CompoOperation = ({ linename }: { linename: string }) => {
   }, [])
 
   useEffect(() => {
-     
+    console.log("linename", linename,)
     getObbSheetID1()
   }, [linename])
   return (
-    <div className="h-screen">
+    <div className="h-[200]">
       <div className='flex justify-center items-center gap-3'>
         {/* <Cog className='w-7 h-7 text-voilet' /> */}
-        <LogoImporter/>
-        <h1 className='text-[#0071c1] my-4 text-3xl '>Dashboard - Operation Efficiency(15min) {linename}</h1>
+        <LogoImporter/> 
+        <h1 className='text-[#0071c1] mx-4 text-3xl'>Dashboard - Operation Overall Achievement for {linename}</h1>
       </div>
 
-      {obbSheetId.length > 0 ? 
-      <HmapChart15Compo
+      {obbSheetId.length > 0 ? <BarChartGraph
         obbSheetId={obbSheetId}
         date={date}
       /> : <span>No Layout for Line {linename} - {date}</span>}
     </div>
   )
 }
-export default Hmap15CompoOperation;
+export default AchievementRateOperation;

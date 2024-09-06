@@ -50,7 +50,7 @@ const AnalyticsChart = ({
             data: group
         })).sort((a, b) => a.operator.obbOperation.seqNo - b.operator.obbOperation.seqNo);
 
-        const categories = operations.map(op => `${op.operator.operator.name.substring(0, 15)+"..."}-${op.operator.obbOperation.seqNo}`);
+        const categories = operations.map(op => `${op.operator.operator.name} - ${op.operator.obbOperation.seqNo}`);
 
         const resultData = hourGroups.map(hourGroup => ({
             hourGroup,
@@ -112,7 +112,7 @@ const AnalyticsChart = ({
                         <h2 className="text-lg mb-2 font-medium text-slate-700">{title}</h2>
                         <EffiencyHeatmap
                             xAxisLabel='Operations'
-                            height={580}
+                            height={800}
                             efficiencyLow={obbSheet?.efficiencyLevel1}
                             efficiencyHigh={obbSheet?.efficiencyLevel3}
                             heatmapData={heatmapData}

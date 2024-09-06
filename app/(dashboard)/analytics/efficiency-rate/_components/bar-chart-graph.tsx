@@ -47,6 +47,7 @@ type BarChartData = {
     count: number;
     target: number;
     ratio: number;
+    seqNo?:string
 }
 interface BarChartGraphProps {
 
@@ -56,7 +57,7 @@ interface BarChartGraphProps {
 
 const BarChartGraphEfficiencyRate = ({ date, obbSheetId }: BarChartGraphProps) => {
     const [chartData, setChartData] = useState<BarChartData[]>([])
-    const [chartWidth, setChartWidth] = useState<number>(150);
+    const [chartWidth, setChartWidth] = useState<number>(250);
     const [isSubmitting,setisSubmitting]=useState<boolean>(false)
     const chartRef = useRef<HTMLDivElement>(null);
 
@@ -79,7 +80,8 @@ const BarChartGraphEfficiencyRate = ({ date, obbSheetId }: BarChartGraphProps) =
 
            
             const chartData: BarChartData[] = prod.map((item,index) => ({
-                name:item.name,
+                name:item.name+" - "+item.seqNo,
+               
                 count: item.count,
                 target: item.target * workingHrs,
                 ratio: parseFloat((item.count / (item.target * workingHrs)*100).toFixed(2)),
@@ -150,14 +152,21 @@ const BarChartGraphEfficiencyRate = ({ date, obbSheetId }: BarChartGraphProps) =
        </div>
     
     
-        <div className='mb-3'>
+        <div className='mb-3 '>
             <Button type="button" className='mr-3' onClick={saveAsPDF}>Save as PDF</Button>
             <Button type="button" onClick={saveAsExcel}>Save as Excel</Button>
         </div>
 
             {chartData.length > 0 ?
-                <Card className='pr-2 pt-1 pb-2 border rounded-xl bg-slate-50'>
-                    
+                    // <div className='bg-slate-100 pt-5 -pl-8 rounded-lg border w-full mb-16 overflow-x-auto'>
+
+                <div className='bg-slate-50 pt-5 -pl-8 rounded-lg border w-full mb-16 overflow-x-auto'>
+                <Card className='pr-2 pt-1 pb-2 border rounded-xl bg-slate-50 w-11/12' >
+                <h1 className='text-2xl font-semibold m-12'>  Overall Efficiency Data</h1>
+                    {/* <CardTitle className="text-center">
+                {" "}
+                Overall Efficiency Data
+              </CardTitle> */}
                     <CardContent>
                         {/* <ChartContainer config={chartConfig} className={`min-h-[300px] max-h-[600px] w-[${chartWidth.toString()}%]`}> */}
                         <ChartContainer 
@@ -184,10 +193,12 @@ const BarChartGraphEfficiencyRate = ({ date, obbSheetId }: BarChartGraphProps) =
                                 />
                                 <XAxis
                                     dataKey="name"
-                                    tickLine={false}
-                                    tickMargin={140}
+                                    tickLine={true}
+                                    tickMargin={10}
                                     axisLine={true}
                                     angle={90}
+                                    interval={0}
+                                    textAnchor='start'
                                 />
                                 <ChartTooltip
                                     cursor={false}
@@ -199,7 +210,7 @@ const BarChartGraphEfficiencyRate = ({ date, obbSheetId }: BarChartGraphProps) =
                                         position="top"
                                         offset={12}
                                         className="fill-foreground"
-                                        fontSize={14}
+                                        fontSize={12}
                                     />
                                 </Bar>
                                 {/* <Bar dataKey="count" fill="var(--color-actual)" radius={5}>
@@ -214,6 +225,7 @@ const BarChartGraphEfficiencyRate = ({ date, obbSheetId }: BarChartGraphProps) =
                         </ChartContainer>
                     </CardContent>
                 </Card>
+                </div>
                 : <div className="mt-12 w-full">
                     <p className="text-center text-slate-500">No Data Available.</p>
                 </div>

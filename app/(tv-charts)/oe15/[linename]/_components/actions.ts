@@ -18,7 +18,7 @@ export async function getOperatorEfficiencyData15M(obbsheetid:string,date:string
     //         order by  pd.timestamp ;`;
 
     // const data = await sql`SELECT substring(concat(obbopn."seqNo",'-(',opn."code",')-',oprtr.name ) from 0 for 25)  as name,
-    const data = await sql`select CONCAT(SUBSTRING(CONCAT(obbopn."seqNo", '-(', opn."code", ')', '-', oprtr.name) FROM 1 FOR 25), ' ', '(', sm."machineId", ')') AS name,
+    const data = await sql`select CONCAT(SUBSTRING(CONCAT('(', opn."code", ')', '-', oprtr.name) FROM 1 FOR 25), ' ', '(', sm."machineId", ') - ',obbopn."seqNo") AS name,
     pd."productionCount" as count, obbopn.target,pd.timestamp as timestamp
     FROM "ProductionData" pd
     INNER JOIN "ObbOperation" obbopn ON pd."obbOperationId" = obbopn.id
@@ -28,7 +28,7 @@ export async function getOperatorEfficiencyData15M(obbsheetid:string,date:string
      INNER JOIN 
       "SewingMachine" sm ON sm.id = obbopn."sewingMachineId"
     WHERE pd.timestamp like ${date} and  obbs.id = ${obbsheetid}
-    group by CONCAT(SUBSTRING(CONCAT(obbopn."seqNo", '-(', opn."code", ')', '-', oprtr.name) FROM 1 FOR 25), ' ', '(', sm."machineId", ')') ,obbopn.target, pd."productionCount",pd.timestamp
+    group by CONCAT(SUBSTRING(CONCAT('(', opn."code", ')', '-', oprtr.name) FROM 1 FOR 25), ' ', '(', sm."machineId", ') - ',obbopn."seqNo"),obbopn.target, pd."productionCount",pd.timestamp
     order by  pd.timestamp ;`;
 
   //and (oprtr.name like 'AJUFA%' or oprtr.name like 'RATNA%')
@@ -49,7 +49,7 @@ export async function geOperatorList(obbsheetid:string,date:string ) : Promise<a
 
     const data = await sql`
     SELECT 
-      CONCAT(SUBSTRING(CONCAT(oopn."seqNo", '-(', opn."code", ')', '-', oo.name) FROM 1 FOR 25), ' ', '(', sm."machineId", ')') AS name
+      CONCAT(SUBSTRING(CONCAT('(', opn."code", ')', '-', oo.name) FROM 1 FOR 25), ' ', '(', sm."machineId", ') - ',oopn."seqNo") AS name
     FROM 
       "Operator" oo  
     INNER JOIN 
@@ -66,7 +66,7 @@ export async function geOperatorList(obbsheetid:string,date:string ) : Promise<a
       os.id = ${obbsheetid}  
       AND pd.timestamp LIKE ${date}
     GROUP BY 
-      CONCAT(SUBSTRING(CONCAT(oopn."seqNo", '-(', opn."code", ')', '-', oo.name) FROM 1 FOR 25), ' ', '(', sm."machineId", ')'), 
+      CONCAT(SUBSTRING(CONCAT('(', opn."code", ')', '-', oo.name) FROM 1 FOR 25), ' ', '(', sm."machineId", ') - ',oopn."seqNo"), 
       oopn."seqNo"
     ORDER BY 
       oopn."seqNo";
@@ -76,6 +76,7 @@ export async function geOperatorList(obbsheetid:string,date:string ) : Promise<a
     // group by substring(concat(oopn."seqNo",'-(',opn."code",')-',oo.name ) from 0 for 25) , oopn."seqNo"
 
     console.log("geOperationList",data,)
+    console.log("asd",date,obbsheetid)
 
 
  
