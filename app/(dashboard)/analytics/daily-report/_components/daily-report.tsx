@@ -81,7 +81,8 @@ const ReportTable = ({ obbSheets }: AnalyticsChartProps) => {
   const handlePrint = () => {
   const baseUrl = window.location.origin;
   const printContent = reportRef.current?.innerHTML;
-  const date = new Date().toLocaleDateString(); // Ensure you replace this with your date variable
+  const date = new Date().toLocaleDateString();
+  
 
   const htmlContent = `
     <html>
@@ -165,10 +166,14 @@ const ReportTable = ({ obbSheets }: AnalyticsChartProps) => {
   
   const printWindow = window.open(url, '', 'width=800,height=600');
   
-  printWindow.onload = () => {
-    printWindow.print();
-    URL.revokeObjectURL(url);
-  };
+  if (printWindow) {
+    printWindow.onload = () => {
+      printWindow.print();
+      URL.revokeObjectURL(url);
+    };
+  } else {
+    console.error("Failed to open print window");
+  }
 };
 
   
