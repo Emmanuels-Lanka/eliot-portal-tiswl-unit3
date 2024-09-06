@@ -144,6 +144,7 @@ setData(res)
             th {
               font-size:12px;
               background-color:'#d3d3d3';
+              text-align:center;
             }
               td{
               font-size:11px;
