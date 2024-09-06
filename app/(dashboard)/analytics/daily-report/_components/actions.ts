@@ -18,7 +18,9 @@ export async function getDailyData(obbsheetid:string,date:string)  : Promise<Rep
            obbop.target,
            unt.name as unitname,
            obbs.style as style,
-           sm."machineId" as machineid
+           sm."machineId" as machineid,
+           pl.name as linename,
+           obbs.buyer
     from "ProductionData" pd
     inner join "Operator" opr on pd."operatorRfid" = opr.rfid 
     inner join "ObbOperation" obbop on pd."obbOperationId" = obbop.id
@@ -26,10 +28,11 @@ export async function getDailyData(obbsheetid:string,date:string)  : Promise<Rep
     inner join "Operation" op on obbop."operationId" = op.id
     inner join "Unit" unt on obbs."unitId" = unt.id
     inner join "SewingMachine" sm on obbop."sewingMachineId"=sm.id
+     inner join "ProductionLine" pl on pl.id=obbs."productionLineId"
     where pd."timestamp" LIKE ${date} AND obbs.id = ${obbsheetid}
-    group by opr.id, opr.name, op.name, obbop.smv, obbop.target, unt.name, obbs.style,sm.id`;
+    group by opr.id, opr.name, op.name, obbop.smv, obbop.target, unt.name, obbs.style,sm.id,pl.name,obbs.buyer`;
   
-   
+   console.log(data)
 
  
     return new Promise((resolve) => resolve(data as ReportData[]  ))

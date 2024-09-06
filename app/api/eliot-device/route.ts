@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 
 import { db } from "@/lib/db";
 import { generateUniqueId } from "@/actions/generate-unique-id";
-import { PrismaClient } from "@prisma/client";
 
 export async function POST(
     req: Request,
@@ -21,17 +20,8 @@ export async function POST(
         if (existingDeviceBySerialNo) {
             return new NextResponse("This device is already registered", { status: 409 })
         }
-        console.log("Ckeck point 1");
 
-        // const newDevice = await db.eliotDevice.create({
-        //     data: {
-        //         id,
-        //         serialNumber,
-        //         modelNumber,
-        //         installedDate
-        //     }
-        // });
-        await db.eliotDevice.create({
+        const newDevice = await db.eliotDevice.create({
             data: {
                 id,
                 serialNumber,
@@ -39,9 +29,8 @@ export async function POST(
                 installedDate
             }
         });
-        console.log("Ckeck point 2");
 
-        return NextResponse.json({ message: 'ELIoT device created successfully'}, { status: 201 });
+        return NextResponse.json({ data: newDevice, message: 'ELIoT device created successfully'}, { status: 201 });
         
     } catch (error) {
         console.error("[ELIOT_DEVICE_ERROR]", error);
