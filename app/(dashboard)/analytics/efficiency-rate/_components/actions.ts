@@ -18,7 +18,7 @@ export async function getOperatorEfficiency(obbsheetid:string,date:string) : Pro
             INNER JOIN "ObbOperation" obbopn ON pd."obbOperationId" = obbopn.id
             INNER JOIN "Operation" opn ON opn.id= obbopn."operationId"
             INNER JOIN "ObbSheet" obbs ON obbopn."obbSheetId" = obbs.id
-            WHERE pd.timestamp like  ${date} and  obbs.id = ${obbsheetid}
+            WHERE pd.timestamp like  '2024-09-05%' and  obbs.id = ${obbsheetid}
             group by opn.name,obbopn."seqNo",obbopn.target order by  obbopn."seqNo"`
     
             console.log(data)

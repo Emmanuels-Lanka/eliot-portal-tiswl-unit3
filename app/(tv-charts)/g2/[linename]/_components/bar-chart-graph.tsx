@@ -60,7 +60,7 @@ interface BarChartGraphProps {
 
 const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
     const [chartData, setChartData] = useState<BarChartData[]>([])
-    const [chartWidth, setChartWidth] = useState<number>(1850);
+    const [chartWidth, setChartWidth] = useState<number>(220);
     const[isSubmitting,setisSubmitting]=useState<boolean>(false)
 
     const chartRef = useRef<HTMLDivElement>(null);
@@ -156,15 +156,15 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
           />
         </div>
             {chartData.length > 0 ?
-            <div className='bg-slate-50 pt-5 -pl-8 rounded-lg border w-full '>
-               <div className='bg-slate-50'>
-                <Card   className='pr-2 pt-1 pb-2 border rounded-xl bg-slate-50'>
+            <div className=' pt-5 -pl-8 rounded-lg border w-full '>
+               <div className=''>
+                <Card   className='pr-2 pt-1 pb-2 border rounded-xl '>
                     <div className="px-8">
                         
                     </div>
                     <CardContent>
                         {/* <ChartContainer config={chartConfig} className={`min-h-[300px] max-h-[600px] w-[${chartWidth.toString()}%]`}> */}
-                        <ChartContainer ref={chartRef}   config={chartConfig} className={`min-h-[300px] max-h-[600px] `} style={{ width: chartWidth + "%", height: chartWidth + "%" }}>
+                        <ChartContainer ref={chartRef}   config={chartConfig} className={`min-h-[300px]  `} style={{ width: chartWidth + "%", height: 800 + "%" }}>
 
                             <BarChart
                                 accessibilityLayer
