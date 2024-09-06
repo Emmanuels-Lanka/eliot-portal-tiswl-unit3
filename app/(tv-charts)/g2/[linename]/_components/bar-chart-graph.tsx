@@ -60,7 +60,7 @@ interface BarChartGraphProps {
 
 const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
     const [chartData, setChartData] = useState<BarChartData[]>([])
-    const [chartWidth, setChartWidth] = useState<number>(220);
+    const [chartWidth, setChartWidth] = useState<number>(1850);
     const[isSubmitting,setisSubmitting]=useState<boolean>(false)
 
     const chartRef = useRef<HTMLDivElement>(null);
@@ -81,7 +81,7 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
 
            
             const chartData: BarChartData[] = prod.map((item:any) => ({
-                name:item.seqno+" - "+item.name,
+                name:item.name,
                 
 
                 
@@ -156,13 +156,11 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
           />
         </div>
             {chartData.length > 0 ?
-            <div className='bg-slate-50 pt-5 -pl-8 rounded-lg border w-full mb-16 overflow-x-auto'>
+            <div className='bg-slate-50 pt-5 -pl-8 rounded-lg border w-full '>
                <div className='bg-slate-50'>
                 <Card   className='pr-2 pt-1 pb-2 border rounded-xl bg-slate-50'>
                     <div className="px-8">
-                        <CardHeader>
-                            <CardTitle>Overall Achievement(Live Data)</CardTitle>
-                        </CardHeader>
+                        
                     </div>
                     <CardContent>
                         {/* <ChartContainer config={chartConfig} className={`min-h-[300px] max-h-[600px] w-[${chartWidth.toString()}%]`}> */}
