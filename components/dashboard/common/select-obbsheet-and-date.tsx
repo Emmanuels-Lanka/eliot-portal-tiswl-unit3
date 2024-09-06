@@ -213,7 +213,7 @@ const SelectObbSheetAndDate = ({
                     >
                         <Filter className={cn("w-5 h-5", isSubmitting && "hidden")} />
                         <Loader2 className={cn("animate-spin w-5 h-5 hidden", isSubmitting && "flex")} />
-                        Filter
+                        Genarate
                     </Button>
                 </form>
             </Form>

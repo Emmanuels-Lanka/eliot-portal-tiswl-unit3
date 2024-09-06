@@ -164,23 +164,22 @@ const saveAsExcel = () => {
        </div>
     
     
-        <div className='mb-3'>
+        {/* <div className='mb-3'>
             <Button type="button" className='mr-3' onClick={saveAsPDF}>Save as PDF</Button>
             <Button type="button" onClick={saveAsExcel}>Save as Excel</Button>
-        </div>
+        </div> */}
 
 
       {chartData.length > 0 ? (
         <Card className="pr-2 pt-6  border rounded-xl bg-slate-50 w-auto" style={{width:(chartWidth*1.5)+"%", height:chartWidth+"%"}}>
-          <div className="px-8">
+          {/* <div className="px-8">
             <CardHeader>
               <CardTitle className="text-center">
                 {" "}
                 Daily Target vs Actual Production (LIVE Data)
               </CardTitle>
-              {/* <CardDescription>Number of items came across each scanning points today</CardDescription> */}
             </CardHeader>
-          </div>
+          </div> */}
           <CardContent>
             <ChartContainer
             ref={chartRef}
@@ -258,6 +257,10 @@ const saveAsExcel = () => {
 
 <Button onClick={() => setChartWidth((p) => p + 20)} className="rounded-full bg-gray-300">+</Button>
 <Button onClick={() => setChartWidth((p) => p - 20)} className="rounded-full bg-gray-300"> -</Button>
+<div className='mb-3 '>
+            <Button type="button" className='mr-3' onClick={saveAsPDF}>Save as PDF</Button>
+            <Button type="button" onClick={saveAsExcel}>Save as Excel</Button>
+        </div>
 
 </div>
 }

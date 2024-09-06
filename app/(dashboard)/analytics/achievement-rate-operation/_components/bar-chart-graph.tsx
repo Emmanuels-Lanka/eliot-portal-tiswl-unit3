@@ -35,6 +35,7 @@ import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import * as XLSX from 'xlsx';
 import { formatDate } from 'date-fns';
+import ButtonSaveCompo from '@/components/dashboard/common/save-buttons';
 
 const chartConfig = {
     target: {
@@ -154,14 +155,15 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
           />
         </div>
 
-        <div className="mb-3">
+        {/* <div className="mb-3">
           <Button type="button" className="mr-3" onClick={saveAsPDF}>
             Save as PDF
           </Button>
           <Button type="button" onClick={saveAsExcel}>
             Save as Excel
           </Button>
-        </div>
+        </div> */}
+
 
 
 
@@ -169,11 +171,11 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
             <div className='bg-slate-50 pt-5 -pl-8 rounded-lg border w-full mb-16 overflow-x-auto'>
                <div className='bg-slate-50'>
                 <Card   className='pr-2 pt-1 pb-2 border rounded-xl bg-slate-50'>
-                    <div className="px-8">
+                    {/* <div className="px-8">
                         <CardHeader>
                             <CardTitle>Overall Achievement(Live Data)</CardTitle>
                         </CardHeader>
-                    </div>
+                    </div> */}
                     <CardContent>
                         {/* <ChartContainer config={chartConfig} className={`min-h-[300px] max-h-[600px] w-[${chartWidth.toString()}%]`}> */}
                         <ChartContainer ref={chartRef}   config={chartConfig} className={`min-h-[300px] max-h-[600px] `} style={{ width: chartWidth + "%", height: chartWidth + "%" }}>
@@ -240,6 +242,10 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
 
                 <Button onClick={() => setChartWidth((p) => p + 20)} className="rounded-full bg-gray-300"><FaPlus size={12} color="#007bff" /></Button>
                 <Button onClick={() => setChartWidth((p) => p - 20)} className="rounded-full bg-gray-300"> <FaMinus size={12} color="#007bff" /></Button>
+                
+            <ButtonSaveCompo 
+            saveAsPDF={saveAsPDF}
+            saveAsExcel={saveAsExcel} />
 
             </div>
             

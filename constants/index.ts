@@ -94,7 +94,7 @@ export const SIDEBAR_ROUTES = [
                 icon: BarChartHorizontal
             },
             {
-                label: "Overall Achievement",
+                label: "Overall Performance",
                 href: "/analytics/achievement-rate-operation",
                 icon: BarChart3
             },
@@ -478,12 +478,12 @@ export const HEADER_INFO = [
         icon: Sliders
     },
     {
-        label: "Target vs Actual",
+        label: "Target vs Actual - Production",
         href: "/analytics/daily-achivement",
         icon: Sliders
     },
     {
-        label: "Overall Achievement",
+        label: "Overall Performance - Operations (Live Data)",
         href: "/analytics/achievement-rate-operation",
         icon: Sliders
     },
