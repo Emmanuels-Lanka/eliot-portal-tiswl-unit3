@@ -248,7 +248,7 @@ const HmapChart15Compo = ({
 
     //const height: string = timeList.length < 21 ? '200%' : timeList.length < 30 ? '300%' : '500%';
     const totalCount = Object.keys(timeList).reduce((acc, curr) => acc + curr.length, 0);
-    const height: string = totalCount < 21 ? '200%' : totalCount < 30 ? '300%' : '800%';
+    const height: string = totalCount < 50 ? '600%' : totalCount < 60 ? '700%' : '600%';
 
     return (
         <>

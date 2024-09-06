@@ -1,4 +1,4 @@
-import AchievementRateOperation from "@/components/tv-charts/achievement-rate-operation/tv-achievement-rate-operation";
+import AchievementRateOperation from "./_components/tv-achievement-rate-operation";
 
 const Page = ({ params }: { params: { linename: string } }) => {
   const name = params.linename
