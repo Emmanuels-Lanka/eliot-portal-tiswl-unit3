@@ -81,7 +81,7 @@ export const SIDEBAR_ROUTES = [
         ]
     },
     {
-        categoryName: "Live Production Analytics",
+        categoryName: "Live Operator Production Analytics",
         routes: [
             // {
             //     label: "Hourly Achievement",
@@ -433,7 +433,7 @@ export const HEADER_INFO = [
         icon: BarChart3
     },
     {
-        label: "Hourly Cycle Time",
+        label: "Hourly Cycle Time vs Target SMV",
         href: "/analytics/operation-smv-hourly",
         icon: BarChart3
     },

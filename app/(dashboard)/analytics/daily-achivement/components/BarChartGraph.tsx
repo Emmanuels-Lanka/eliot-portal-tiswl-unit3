@@ -42,7 +42,7 @@ import * as XLSX from 'xlsx';
 
 const chartConfig = {
   target: {
-    label: "Target",
+    label: "Daily Target",
     color: "hsl(var(--chart-1))",
   },
   actual: {
@@ -50,7 +50,7 @@ const chartConfig = {
     color: "hsl(var(--chart-2))",
   },
   count: {
-    label: "Production",
+    label: "Actual Production",
     color: "hsl(var(--chart-3))",
   },
 } satisfies ChartConfig;

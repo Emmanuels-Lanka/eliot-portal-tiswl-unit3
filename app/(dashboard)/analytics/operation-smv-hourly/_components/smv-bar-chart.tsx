@@ -45,7 +45,7 @@ interface SmvBarChartProps {
 
 const chartConfig = {
     smv: {
-        label: "Actual Cycle Time",
+        label: "Actual Cycle Time vs Target SMV",
         color: "hsl(var(--chart-2))",
     }
 } satisfies ChartConfig
@@ -88,75 +88,97 @@ const saveAsExcel = () => {
 
 
     return (
-        <>
-
-<div className='mb-3'>
-            <Button type="button" className='mr-3' onClick={saveAsPDF}>Save as PDF</Button>
-            <Button type="button" onClick={saveAsExcel}>Save as Excel</Button>
-        </div>
-      
-        <Card className='pr-2 pt-6 pb-4 border rounded-xl bg-slate-50'>
-            <div className="px-8">
-                <CardHeader>
-                    <CardTitle>Actual Cycle Time - Hourly</CardTitle>
-                    {/* <CardDescription>Number of items came across each scanning points today</CardDescription> */}
-                </CardHeader>
-            </div>
-            <CardContent>
-                <ChartContainer ref={chartRef} config={chartConfig} className="min-h-[576px] w-full">
-                    <BarChart
-                        accessibilityLayer
-                        data={chartData}
-                        margin={{
-                            top: 30,
-                            left: 30
-                        }}
-                    >
-                        <CartesianGrid vertical={false} />
-                        <YAxis
-                            dataKey="smv"
-                            type="number"
-                            tickLine={true}
-                            tickMargin={10}
-                            axisLine={true}
-                        />
-                        <XAxis
-                            dataKey="name"
-                            tickLine={false}
-                            tickMargin={10}
-                            axisLine={true}
-                        />
-                        <ChartTooltip
-                            cursor={false}
-                            content={<ChartTooltipContent indicator="line" />}
-                        />
-                        <ChartLegend content={<ChartLegendContent />} className="mt-2 text-sm" />
-                        <ReferenceLine alwaysShow ifOverflow="extendDomain" position={'start'} y={tsmv} isFront={true} strokeWidth={10} stroke="red" strokeDasharray="3 3"
-                            label={{
-                                value: tsmv,
-                                position: 'left',
-                                offset: 40,
-                                angle: 0,
-                                color: 'red',
-                                fontSize: 20,
-                                fontWeight: 'bold',
-                            }}
-
-                        />
-                        <Bar dataKey="smv" fill="var(--color-smv)" radius={5}>
-                            <LabelList
-                                position="top"
-                                offset={12}
-                                className="fill-foreground"
-                                fontSize={14}
-                            />
-                        </Bar>
-                    </BarChart>
-                </ChartContainer>
-            </CardContent>
+      <>
+        <Card className="pr-2 pt-6 pb-4 border rounded-xl bg-slate-50">
+          <div className="px-8">
+            <CardHeader>
+              {/* <CardTitle>Actual Cycle Time - Hourly</CardTitle> */}
+              {/* <CardDescription>Number of items came across each scanning points today</CardDescription> */}
+            </CardHeader>
+          </div>
+          <CardContent>
+            <ChartContainer
+              ref={chartRef}
+              config={chartConfig}
+              className="min-h-[576px] w-full"
+            >
+              <BarChart
+                accessibilityLayer
+                data={chartData}
+                margin={{
+                  top: 30,
+                  left: 30,
+                }}
+              >
+                <CartesianGrid vertical={false} />
+                <YAxis
+                  dataKey="smv"
+                  type="number"
+                  tickLine={true}
+                  tickMargin={10}
+                  axisLine={true}
+                />
+                <XAxis
+                  dataKey="name"
+                  tickLine={false}
+                  tickMargin={10}
+                  axisLine={true}
+                />
+                <ChartTooltip
+                  cursor={false}
+                  content={<ChartTooltipContent indicator="line" />}
+                />
+                <ChartLegend
+                  content={<ChartLegendContent />}
+                  className="mt-2 text-sm"
+                />
+                <ReferenceLine
+                  alwaysShow
+                  ifOverflow="extendDomain"
+                  position={"start"}
+                  y={tsmv}
+                  isFront={true}
+                  strokeWidth={10}
+                  stroke="red"
+                  strokeDasharray="3 3"
+                  label={{
+                    value: tsmv,
+                    position: "left",
+                    offset: 40,
+                    angle: 0,
+                    color: "red",
+                    fontSize: 20,
+                    fontWeight: "bold",
+                  }}
+                />
+                <Bar dataKey="smv" fill="var(--color-smv)" radius={5}>
+                  <LabelList
+                    position="top"
+                    offset={12}
+                    className="fill-foreground"
+                    fontSize={14}
+                  />
+                </Bar>
+                
+              </BarChart>
+             
+            </ChartContainer>
+          </CardContent>
         </Card>
-        </>
-    )
+        {
+                <div className="flex justify-center gap-2 mt-5 2xl:hidden block">
+                  <div className="mb-3 ">
+                    <Button type="button" className="mr-3" onClick={saveAsPDF}>
+                      Save as PDF
+                    </Button>
+                    <Button type="button" onClick={saveAsExcel}>
+                      Save as Excel
+                    </Button>
+                  </div>
+                </div>
+              }
+      </>
+    );
 }
 
 export default SmvBarChart
