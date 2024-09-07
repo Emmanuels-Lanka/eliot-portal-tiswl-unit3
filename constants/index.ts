@@ -93,11 +93,11 @@ export const SIDEBAR_ROUTES = [
                 href: "/analytics/daily-achivement",
                 icon: BarChartHorizontal
             },
-            {
-                label: "Overall Performance",
-                href: "/analytics/achievement-rate-operation",
-                icon: BarChart3
-            },
+            // {
+            //     label: "Overall Performance",
+            //     href: "/analytics/achievement-rate-operation",
+            //     icon: BarChart3
+            // },
         
             {
                 label: "Production Heatmap (15min)",
