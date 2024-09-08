@@ -360,6 +360,7 @@ const getProcessData = (data: any[], operationList: any[]): any[] => {
             //   console.log("vqw", v)
 
             // dataPoints.push({ x: key, y: v ?? 0,eliotid: value?.[0].eliotid??0  })
+            // dataPoints.push({ x: key, y: v ?? 0,eliotid: value?.[0].eliotid??0  })
             // rc += v
             dataPoints.push({ x: key, y: ((v / (target / 4)) * 100).toFixed(0) ?? 0 })
             rc += v
