@@ -34,8 +34,6 @@ import React, { useRef } from "react";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import * as XLSX from 'xlsx';
-import { formatDate } from 'date-fns';
-import ButtonSaveCompo from '@/components/dashboard/common/save-buttons';
 
 const chartConfig = {
     target: {
@@ -49,7 +47,7 @@ type BarChartData = {
     count: number;
     target: number;
     ratio: number;
-    seqno?:string
+    seqNo?:string
 }
 interface BarChartGraphProps {
 
@@ -57,11 +55,10 @@ interface BarChartGraphProps {
     obbSheetId: string
 }
 
-const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
+const BarChartGraphEfficiencyRate = ({ date, obbSheetId }: BarChartGraphProps) => {
     const [chartData, setChartData] = useState<BarChartData[]>([])
-    const [chartWidth, setChartWidth] = useState<number>(220);
-    const[isSubmitting,setisSubmitting]=useState<boolean>(false)
-
+    const [chartWidth, setChartWidth] = useState<number>(250);
+    const [isSubmitting,setisSubmitting]=useState<boolean>(false)
     const chartRef = useRef<HTMLDivElement>(null);
 
     const Fetchdata = async () => {
@@ -71,26 +68,31 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
             //         return afterDot ? afterDot.split(' ')[0] : null;
 
             //   }
-           
+            const getShortName = (name: any) => {
+                return name.substring(1, 10) + "..."
+
+            }
             setisSubmitting(true)
             const prod = await getOperatorEfficiency(obbSheetId, date)
-          
+         
             let workingHrs = (new Date().getHours() - 8) + new Date().getMinutes() / 60;
             workingHrs > 10 ? 10 : workingHrs
 
            
             const chartData: BarChartData[] = prod.map((item,index) => ({
-                name:item.seqno+" - "+item.name,
-                
-
-                
+                name:item.name+" - "+item.seqNo,
+               
                 count: item.count,
                 target: item.target * workingHrs,
-                ratio: parseFloat((item.count / (item.target * workingHrs)).toFixed(2)),
+                ratio: parseFloat((item.count / (item.target * workingHrs)*100).toFixed(2)),
+                // ratio: (item.count / (item.target * workingHrs)) * 100,
+                // ratio: parseFloat((item.count / (item.target * workingHrs)).toFixed(2))*100,
+                
 
             })
-            );
             
+            );
+           
             setChartData(chartData)
 
         }
@@ -117,73 +119,63 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
     }, [date, obbSheetId]);
 
 
-    
-//create pdf
-    const saveAsPDF = async () => {
-        if (chartRef.current) {
-            const canvas = await html2canvas(chartRef.current);
-            const imgData = canvas.toDataURL('image/png');
-            const pdf = new jsPDF({
-                orientation: 'landscape',
-                unit: 'px',
-                format: [canvas.width, canvas.height],
-            });
-            pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
-            pdf.save('chart.pdf');
-        }
-    };
+
+//     //create pdf
+//     const saveAsPDF = async () => {
+//         if (chartRef.current) {
+//             const canvas = await html2canvas(chartRef.current);
+//             const imgData = canvas.toDataURL('image/png');
+//             const pdf = new jsPDF({
+//                 orientation: 'landscape',
+//                 unit: 'px',
+//                 format: [canvas.width, canvas.height],
+//             });
+//             pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
+//             pdf.save('chart.pdf');
+//         }
+//     };
 
     
-//create Excel sheet
-    const saveAsExcel = () => {
-        const worksheet = XLSX.utils.json_to_sheet(chartData);
-        const workbook = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(workbook, worksheet, "Chart Data");
-        XLSX.writeFile(workbook, `chart-data.xlsx`);
-    };
-    
-    
+// //create Excel sheet
+//     const saveAsExcel = () => {
+//         const worksheet = XLSX.utils.json_to_sheet(chartData);
+//         const workbook = XLSX.utils.book_new();
+//         XLSX.utils.book_append_sheet(workbook, worksheet, "Chart Data");
+//         XLSX.writeFile(workbook, `chart-data.xlsx`);
+//     };
+
 
     return (
-      <>
-        <div className="flex justify-center ">
-          <Loader2
-            className={cn(
-              "animate-spin w-7 h-7 hidden",
-              isSubmitting && "flex"
-            )}
-          />
-        </div>
-
-        {/* <div className="mb-3">
-          <Button type="button" className="mr-3" onClick={saveAsPDF}>
-            Save as PDF
-          </Button>
-          <Button type="button" onClick={saveAsExcel}>
-            Save as Excel
-          </Button>
+        <>
+  <div className="flex justify-center ">
+        <Loader2 className={cn("animate-spin w-7 h-7 hidden", isSubmitting && "flex")} />
+       </div>
+    
+    
+        {/* <div className='mb-3 '>
+            <Button type="button" className='mr-3' onClick={saveAsPDF}>Save as PDF</Button>
+            <Button type="button" onClick={saveAsExcel}>Save as Excel</Button>
         </div> */}
 
-
-
-
             {chartData.length > 0 ?
-            <div className='bg-slate-50 pt-5 -pl-8 rounded-lg border w-full mb-16 overflow-x-auto'>
-               <div className='bg-slate-50'>
-                <Card   className='pr-2 pt-1 pb-2 border rounded-xl bg-slate-50'>
-                    {/* <div className="px-8">
-                        <CardHeader>
-                            <CardTitle>Overall Achievement(Live Data)</CardTitle>
-                        </CardHeader>
-                    </div> */}
+                    // <div className='bg-slate-100 pt-5 -pl-8 rounded-lg border w-full mb-16 overflow-x-auto'>
+
+                <div className=' pt-5 -pl-8 rounded-lg border w-full '>
+                <Card className='pr-2 pt-1 pb-2 border rounded-xl w-11/12' >
+                {/* <h1 className='text-2xl font-semibold m-12'>  Overall Efficiency Data</h1> */}
+                    {/* <CardTitle className="text-center">
+                {" "}
+                Overall Efficiency Data
+              </CardTitle> */}
                     <CardContent>
                         {/* <ChartContainer config={chartConfig} className={`min-h-[300px] max-h-[600px] w-[${chartWidth.toString()}%]`}> */}
-                        <ChartContainer ref={chartRef}   config={chartConfig} className={`min-h-[300px] max-h-[600px] `} style={{ width: chartWidth + "%", height: chartWidth + "%" }}>
+                        <ChartContainer 
+                        ref={chartRef}
+                        config={chartConfig} className={`min-h-[800px] max-h-[1000px] `} style={{ width: chartWidth + "%", height: chartWidth + "%" }}>
 
                             <BarChart
                                 accessibilityLayer
                                 data={chartData}
-                                
                                 margin={{
                                     top: 0,
                                     bottom: 300
@@ -218,7 +210,7 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
                                         position="top"
                                         offset={12}
                                         className="fill-foreground"
-                                        fontSize={14}
+                                        fontSize={12}
                                     />
                                 </Bar>
                                 {/* <Bar dataKey="count" fill="var(--color-actual)" radius={5}>
@@ -233,7 +225,7 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
                         </ChartContainer>
                     </CardContent>
                 </Card>
-               </div></div>
+                </div>
                 : <div className="mt-12 w-full">
                     <p className="text-center text-slate-500">No Data Available.</p>
                 </div>
@@ -242,10 +234,6 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
 
                 <Button onClick={() => setChartWidth((p) => p + 20)} className="rounded-full bg-gray-300"><FaPlus size={12} color="#007bff" /></Button>
                 <Button onClick={() => setChartWidth((p) => p - 20)} className="rounded-full bg-gray-300"> <FaMinus size={12} color="#007bff" /></Button>
-                
-            <ButtonSaveCompo 
-            saveAsPDF={saveAsPDF}
-            saveAsExcel={saveAsExcel} />
 
             </div>
             
@@ -253,4 +241,4 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
     )
 }
 
-export default BarChartGraph
+export default BarChartGraphEfficiencyRate

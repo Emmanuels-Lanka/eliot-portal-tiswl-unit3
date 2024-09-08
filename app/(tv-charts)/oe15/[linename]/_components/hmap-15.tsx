@@ -41,7 +41,7 @@ const Hmap15Compo = ({ linename }: { linename: string }) => {
   }, [linename])
   return (
     <div className="h-[200]">
-      <div className='flex justify-center items-center gap-3'>
+      <div className='flex justify-center items-center gap-3 w-screen'>
         {/* <Cog className='w-7 h-7 text-voilet' /> */}
         <LogoImporter/>
         <h1 className='text-[#0071c1] my-4 text-3xl '>Dashboard - Operator Efficiency(15min) {linename}</h1>

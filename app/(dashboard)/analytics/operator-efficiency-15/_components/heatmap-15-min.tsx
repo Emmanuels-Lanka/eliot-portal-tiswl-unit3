@@ -333,7 +333,7 @@ const getProcessData = (data: any[], operationList: any[]) => {
 
             //   console.log("vqw", v)
 
-            dataPoints.push({ x: key1, y: ((v / (target / 4)) * 100).toFixed(1) ?? 0 })
+            dataPoints.push({ x: key1, y: ((v / (target / 4)) * 100).toFixed(0) ?? 0 })
             rc += v
 
         }
