@@ -160,8 +160,8 @@ const BarChartGraphEfficiencyRate = ({ date, obbSheetId }: BarChartGraphProps) =
             {chartData.length > 0 ?
                     // <div className='bg-slate-100 pt-5 -pl-8 rounded-lg border w-full mb-16 overflow-x-auto'>
 
-                <div className=' pt-5 -pl-8 rounded-lg border w-full mb-16 '>
-                {/* <Card className='pr-2 pt-1 pb-2 border rounded-xl w-11/12' > */}
+                <div className=' pt-5 -pl-8 rounded-lg border w-full '>
+                <Card className='pr-2 pt-1 pb-2 border rounded-xl w-11/12' >
                 {/* <h1 className='text-2xl font-semibold m-12'>  Overall Efficiency Data</h1> */}
                     {/* <CardTitle className="text-center">
                 {" "}
@@ -171,7 +171,7 @@ const BarChartGraphEfficiencyRate = ({ date, obbSheetId }: BarChartGraphProps) =
                         {/* <ChartContainer config={chartConfig} className={`min-h-[300px] max-h-[600px] w-[${chartWidth.toString()}%]`}> */}
                         <ChartContainer 
                         ref={chartRef}
-                        config={chartConfig} className={`min-h-[300px] max-h-[600px] `} style={{ width: chartWidth + "%", height: chartWidth + "%" }}>
+                        config={chartConfig} className={`min-h-[800px] max-h-[1000px] `} style={{ width: chartWidth + "%", height: chartWidth + "%" }}>
 
                             <BarChart
                                 accessibilityLayer
@@ -224,7 +224,7 @@ const BarChartGraphEfficiencyRate = ({ date, obbSheetId }: BarChartGraphProps) =
                             </BarChart>
                         </ChartContainer>
                     </CardContent>
-                {/* </Card> */}
+                </Card>
                 </div>
                 : <div className="mt-12 w-full">
                     <p className="text-center text-slate-500">No Data Available.</p>
