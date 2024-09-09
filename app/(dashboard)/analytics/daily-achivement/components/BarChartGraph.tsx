@@ -58,7 +58,7 @@ const chartConfig = {
 type BarchartData = {
   name: string;
   count: number;
-  target: number;
+  target: any;
 };
 interface BarChartGraphProps {
   date: string;
@@ -87,12 +87,39 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
 
       setProductionData(prod);
       const seq=1;
-      const chartData1: BarchartData[] = prod.map((item) => ({
+      // const chartData1: BarchartData[] = prod.map((item) => ({
         
-        name: item.name,
-        target: item.target * 10,
-        count: item.count,
-      }));
+      //   name: item.name,
+      //   target: (item.target/60),// need to add the time until now
+      //   count: item.count,
+      // }));
+
+      const chartData1: BarchartData[] = prod.map((item) => {
+        const now = new Date(); 
+        const currentHour = now.getHours(); 
+        const currentMinutes = now.getMinutes(); 
+        
+        const startHour = 8; 
+        const endHour = startHour+10; 
+        
+     
+        const elapsedHours = currentHour > startHour ? Math.min(currentHour - startHour, endHour - startHour) : 0;
+        
+
+        const elapsedMinutes = currentHour >= endHour 
+            ? (endHour - startHour) * 60 // 10 hours * 60 minutes
+            : (elapsedHours * 60 + currentMinutes); // Calculate total minutes up to the current time
+    
+        const targetPerMinute = item.target / 60; // Target per minute
+        
+        const adjustedTarget = (targetPerMinute * elapsedMinutes).toFixed(1); // Calculate the target based on the elapsed time
+    
+        return {
+            name: item.name,
+            target: adjustedTarget, // Use the calculated target
+            count: item.count,
+        };
+    });
       setChartData(chartData1);
 
       router.refresh();
