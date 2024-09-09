@@ -81,7 +81,7 @@ export const SIDEBAR_ROUTES = [
         ]
     },
     {
-        categoryName: "Live Production Analytics",
+        categoryName: "Live Operator Production Analytics",
         routes: [
             // {
             //     label: "Hourly Achievement",
@@ -93,11 +93,11 @@ export const SIDEBAR_ROUTES = [
                 href: "/analytics/daily-achivement",
                 icon: BarChartHorizontal
             },
-            {
-                label: "Overall Achievement",
-                href: "/analytics/achievement-rate-operation",
-                icon: BarChart3
-            },
+            // {
+            //     label: "Overall Performance",
+            //     href: "/analytics/achievement-rate-operation",
+            //     icon: BarChart3
+            // },
         
             {
                 label: "Production Heatmap (15min)",
@@ -433,7 +433,7 @@ export const HEADER_INFO = [
         icon: BarChart3
     },
     {
-        label: "Hourly Cycle Time",
+        label: "Hourly Cycle Time vs Target SMV",
         href: "/analytics/operation-smv-hourly",
         icon: BarChart3
     },
@@ -478,12 +478,12 @@ export const HEADER_INFO = [
         icon: Sliders
     },
     {
-        label: "Target vs Actual",
+        label: "Target vs Actual - Production",
         href: "/analytics/daily-achivement",
         icon: Sliders
     },
     {
-        label: "Overall Achievement",
+        label: "Overall Performance - Operations (Live Data)",
         href: "/analytics/achievement-rate-operation",
         icon: Sliders
     },

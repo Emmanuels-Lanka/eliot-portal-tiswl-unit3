@@ -354,7 +354,7 @@ const getProcessData = (data: any[], operationList: any[]): any[] => {
 
             // dataPoints.push({ x: key, y: v ?? 0,eliotid: value?.[0].eliotid??0  })
             // rc += v
-            dataPoints.push({ x: key, y: ((v / (target / 4)) * 100).toFixed(1) ?? 0 })
+            dataPoints.push({ x: key, y: ((v / (target / 4)) * 100).toFixed(0) ?? 0 })
             rc += v
 
         }
