@@ -71,8 +71,8 @@ const ObbSheetId = async ({
           createdAt: 'asc',
         }
       },
-      supervisor1: true,
-      supervisor2: true
+      supervisorFront: true,
+      supervisorBack: true
     }
   });
   
@@ -108,8 +108,8 @@ const ObbSheetId = async ({
         // assignedMachinesToOperations={assignedMachinesToOperations}
         obbOperations={obbOperations?.obbOperations}
         obbSheetId={params.obbSheetId}
-        supervisor1={obbOperations?.supervisor1 || null}
-        supervisor2={obbOperations?.supervisor2 || null}
+        supervisor1={obbOperations?.supervisorFront || null}
+        supervisor2={obbOperations?.supervisorBack || null}
       />
       <div className="space-y-4">
         <div>

@@ -39,8 +39,8 @@ export async function POST(
             data: {
                 id, name, unitId, productionLineId, 
                 indEngineerId: indEngineer, 
-                supervisor1Id: supervisor1, 
-                supervisor2Id: supervisor2,
+                supervisorFrontId: supervisor1, 
+                supervisorBackId: supervisor2,
                 mechanicId: mechanic, 
                 qualityInsId: qualityIns, 
                 accInputManId: accInputMan, 
