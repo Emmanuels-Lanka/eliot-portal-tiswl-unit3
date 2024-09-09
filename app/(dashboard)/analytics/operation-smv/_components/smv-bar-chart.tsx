@@ -91,7 +91,7 @@ const BarChartGraphOpSmv = ({ date, obbSheetId }: BarChartGraphProps) => {
                smv:item.smv,
             //    avg:Number(item.avg.toFixed(2))
              avg:Number(parseFloat(item.avg.toString()).toFixed(2)),
-             realavg:(((Number(parseFloat(item.avg.toString()).toFixed(2)))/item.smv)).toFixed(1),
+             realavg:Math.floor(((((Number(parseFloat(item.avg.toString()).toFixed(2)))/item.smv)))*100)+"%",
 
             }));
             console.log("AVG values:", chartData1.map(item => item.avg));
@@ -154,7 +154,15 @@ const saveAsExcel = () => {
 
 
 
-
+const renderCustomLabel = ({ x, y, width, value, index }: any) => {
+    const realAvgValue = chartData[index]?.realavg || 0;
+    return (
+        <text x={x + width - 3} y={y - 20} fill="black" fontSize={11} textAnchor="middle">
+        <tspan x={x + width - 3} dy="0">{value}</tspan>
+        <tspan x={x + width - 3} dy="1.2em">({realAvgValue})</tspan>
+    </text>
+    );
+};
 
 
 
@@ -171,6 +179,9 @@ const saveAsExcel = () => {
 
 
 
+
+
+
         <Card className='pr-2 pt-6 pb-4 border rounded-xl bg-slate-50 w-fit'style={{width:chartWidth*2+"%"}} >
             <div className="px-8">
                 <CardHeader>
@@ -179,7 +190,7 @@ const saveAsExcel = () => {
                 </CardHeader>
             </div>
             <CardContent className="w-auto h-auto" style={{width:chartWidth+"%"}}  >
-                <ChartContainer ref={chartRef} config={chartConfig} className="min-h-[300px] max-h-[500px]w-auto"  style={{width:chartWidth+"%", height:1000}} >
+                <ChartContainer ref={chartRef} config={chartConfig} className="min-h-[300px] max-h-[800px]w-auto"  style={{width:chartWidth+"%", height:1000}} >
                     <BarChart 
                         accessibilityLayer 
                         data={chartData}
@@ -223,6 +234,7 @@ const saveAsExcel = () => {
                         <Bar dataKey="smv" fill="var(--color-smv)" radius={5} barSize={5}>
                             <LabelList
                                 position="top"
+                                // content={renderCustomLabel}
                                 offset={12}
                                 className="fill-foreground"
                                 fontSize={11}
@@ -233,12 +245,13 @@ const saveAsExcel = () => {
                             <LabelList
                                 position="top"
                                 offset={12}
+                                content={renderCustomLabel}
                                 className="fill-foreground"
                                 fontSize={11}
                                 fontFamily="Inter"
                             />
                         </Bar>
-                         <Bar dataKey="realavg" fill="brown" radius={5} barSize={5}>
+                         {/* <Bar dataKey="realavg" fill="brown" radius={5} barSize={5}>
                             <LabelList
                                 position="top"
                                 offset={12}
@@ -246,7 +259,7 @@ const saveAsExcel = () => {
                                 fontSize={11}
                                 fontFamily="Inter"
                             />
-                        </Bar>
+                        </Bar> */}
                     </BarChart>
                 </ChartContainer>
             </CardContent>
