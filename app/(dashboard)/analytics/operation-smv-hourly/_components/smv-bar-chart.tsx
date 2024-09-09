@@ -64,18 +64,48 @@ const SmvBarChart = ({
     
 //create pdf
 const saveAsPDF = async () => {
-    if (chartRef.current) {
-        const canvas = await html2canvas(chartRef.current);
-        const imgData = canvas.toDataURL('image/png');
-        const pdf = new jsPDF({
-            orientation: 'landscape',
-            unit: 'px',
-            format: [canvas.width, canvas.height],
-        });
-        pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
-        pdf.save('chart.pdf');
-    }
+  if (chartRef.current) {
+    const canvas = await html2canvas(chartRef.current);
+    const imgData = canvas.toDataURL('image/png');
+    const pdf = new jsPDF({
+      orientation: 'landscape',
+      unit: 'px',
+      format: [canvas.width, canvas.height + 150],
+    });
+
+    const baseUrl = window.location.origin;
+    const logoUrl = `${baseUrl}/logo.png`;
+
+    const logo = new Image();
+    logo.src = logoUrl;
+    logo.onload = () => {
+      const logoWidth = 110;
+      const logoHeight = 50;
+      const logoX = (canvas.width / 2) - (logoWidth + 100); // Adjust to place the logo before the text
+      const logoY = 50;
+
+      // Add the logo to the PDF
+      pdf.addImage(logo, 'PNG', logoX, logoY, logoWidth, logoHeight);
+
+      // Set text color to blue
+      pdf.setTextColor(0, 0, 255); // RGB for blue
+
+      // Set larger font size and align text with the logo
+      pdf.setFontSize(24);
+      pdf.text('Dashboard - Hourly Cycle Time vs Target SMV', logoX + logoWidth + 10, 90, { align: 'left' });
+
+      // Add the chart image to the PDF
+      pdf.addImage(imgData, 'PNG', 0, 150, canvas.width, canvas.height);
+
+      // Save the PDF
+      pdf.save('chart.pdf');
+    };
+  }
 };
+
+
+
+
 
 
 //create Excel sheet
