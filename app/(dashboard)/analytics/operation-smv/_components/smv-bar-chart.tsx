@@ -46,6 +46,10 @@ const chartConfig = {
     avg: {
         label: "Cycle Time",
         color: "hsl(var(--chart-2))",
+    },
+    realavg: {
+        label: "Average",
+        color: "hsl(var(--chart-3))",
     }
 } satisfies ChartConfig
 
@@ -54,6 +58,7 @@ type BarChartData = {
     name:string;
     avg: number;
     machineId?:string;
+    realavg?:any;
 };
 
 interface BarChartGraphProps {
@@ -82,10 +87,11 @@ const BarChartGraphOpSmv = ({ date, obbSheetId }: BarChartGraphProps) => {
               
       
             const chartData1: BarChartData[] = prod.map((item) => ({
-               name:item.machineId+"-"+item.name,
+               name:item.name+item.machineId+"-",
                smv:item.smv,
             //    avg:Number(item.avg.toFixed(2))
-             avg:Number(parseFloat(item.avg.toString()).toFixed(2))
+             avg:Number(parseFloat(item.avg.toString()).toFixed(2)),
+             realavg:(((Number(parseFloat(item.avg.toString()).toFixed(2)))/item.smv)).toFixed(1),
 
             }));
             console.log("AVG values:", chartData1.map(item => item.avg));
@@ -173,12 +179,12 @@ const saveAsExcel = () => {
                 </CardHeader>
             </div>
             <CardContent className="w-auto h-auto" style={{width:chartWidth+"%"}}  >
-                <ChartContainer ref={chartRef} config={chartConfig} className="min-h-[300px] w-auto"  style={{width:chartWidth+"%", height:chartWidth+"%"}} >
+                <ChartContainer ref={chartRef} config={chartConfig} className="min-h-[300px] max-h-[500px]w-auto"  style={{width:chartWidth+"%", height:1000}} >
                     <BarChart 
                         accessibilityLayer 
                         data={chartData}
                         margin={{
-                            top: 50,
+                            top: 500,
                             bottom: 250
                         }}
                         startAngle={10}
@@ -224,6 +230,15 @@ const saveAsExcel = () => {
                             />
                         </Bar>
                          <Bar dataKey="avg" fill="var(--color-avg)" radius={5} barSize={5}>
+                            <LabelList
+                                position="top"
+                                offset={12}
+                                className="fill-foreground"
+                                fontSize={11}
+                                fontFamily="Inter"
+                            />
+                        </Bar>
+                         <Bar dataKey="realavg" fill="brown" radius={5} barSize={5}>
                             <LabelList
                                 position="top"
                                 offset={12}

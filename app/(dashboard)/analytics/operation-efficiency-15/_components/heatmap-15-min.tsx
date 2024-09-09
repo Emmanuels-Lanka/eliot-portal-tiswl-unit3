@@ -163,7 +163,7 @@ const   HmapChart15Compo = ({
                     fontSize: '12px',
                     fontFamily: 'Inter, sans-serif',
                 }, rotate: -90,
-                minHeight: 200,
+                minHeight: 400,
             },
             categories: operationList.map(o => o.name), // x-axis categories
 
@@ -185,7 +185,7 @@ const   HmapChart15Compo = ({
                     colors: '#0070c0',
                     fontSize: '12px',
                     fontFamily: 'Inter, sans-serif',
-                    marginBottom: '100px',
+                    marginBottom: '200px',
                 },
                 offsetY: 10,
             },
