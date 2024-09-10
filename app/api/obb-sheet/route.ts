@@ -8,7 +8,7 @@ export async function POST(
 ) {
     try {
         const { 
-            unitId, productionLineId, indEngineer, supervisor1, supervisor2, mechanic, qualityIns, accInputMan, fabInputMan, 
+            unitId, productionLineId, indEngineer, supervisor1, supervisor2, supervisor3, supervisor4, mechanic, qualityIns, accInputMan, fabInputMan, 
             buyer, style, item, operators, helpers, startingDate, endingDate, workingHours, 
             efficiencyLevel1, efficiencyLevel2, efficiencyLevel3, itemReference, totalMP, totalSMV, bottleNeckTarget, target100, 
             ucl, lcl, balancingLoss, balancingRatio, colour, supResponseTime, mecResponseTime, qiResponseTime, 
@@ -41,6 +41,8 @@ export async function POST(
                 indEngineerId: indEngineer, 
                 supervisorFrontId: supervisor1, 
                 supervisorBackId: supervisor2,
+                supervisorAssemblyId: supervisor3,
+                supervisorLineEndId: supervisor4,
                 mechanicId: mechanic, 
                 qualityInsId: qualityIns, 
                 accInputManId: accInputMan, 

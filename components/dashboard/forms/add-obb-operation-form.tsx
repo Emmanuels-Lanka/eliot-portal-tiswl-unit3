@@ -59,6 +59,7 @@ interface AddObbOperationFormProps {
 type FormValues = z.infer<typeof formSchema>;
 
 const formSchema = z.object({
+    seq: z.number(),
     operationId: z.string().min(1, {
         message: "Operation is required",
     }),
@@ -98,6 +99,7 @@ const AddObbOperationForm = ({
     const form = useForm<FormValues>({
         resolver: zodResolver(formSchema),
         defaultValues: {
+            seq:0,
             operationId: "",
             sewingMachineId: "",
             smv: "0.1",
@@ -220,13 +222,17 @@ const AddObbOperationForm = ({
                     >
                         <div className="flex flex-row gap-x-2">
                             <div className="w-14">
+                            <FormField
+                                    control={form.control}
+                                    name="seq"
+                                    render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>
                                         Seq
                                     </FormLabel>
                                     <FormControl>
                                         <Input
-                                            disabled={true}
+                                            disabled={false}
                                             value={updatingData?.seqNo}
                                             className="bg-white border-black/20"
                                             placeholder="@"
@@ -234,6 +240,8 @@ const AddObbOperationForm = ({
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
+                                   )}
+                                   />
                             </div>
                             <div className="w-5/12">
                                 <FormField
@@ -404,31 +412,7 @@ const AddObbOperationForm = ({
                                     )}
                                 />
                             </div>
-                            <div className="w-3/12">
-                                <FormField
-                                    control={form.control}
-                                    name="supervisorId"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>
-                                                Responsible Supervisor
-                                            </FormLabel>
-                                            <Select onValueChange={field.onChange} defaultValue={updatingData?.supervisorId ? updatingData.supervisorId : field.value}>
-                                                <FormControl>
-                                                    <SelectTrigger>
-                                                        <SelectValue placeholder="Select supervisor" />
-                                                    </SelectTrigger>
-                                                </FormControl>
-                                                <SelectContent>
-                                                    {supervisor1 && <SelectItem value={supervisor1.id}>{supervisor1.name} - {supervisor1.employeeId}</SelectItem>}
-                                                    {supervisor2 && <SelectItem value={supervisor2.id}>{supervisor2.name} - {supervisor2.employeeId}</SelectItem>}
-                                                </SelectContent>
-                                            </Select>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                            </div>
+                            
                             <div className="w-2/12">
                                 <FormField
                                     control={form.control}
@@ -449,6 +433,31 @@ const AddObbOperationForm = ({
                                                     <SelectItem value="back">BACK</SelectItem>
                                                     <SelectItem value="assembly">ASSEMBLY</SelectItem>
                                                     <SelectItem value="line-end">LINE END</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                            </div>
+                            <div className="w-3/12">
+                                <FormField
+                                    control={form.control}
+                                    name="supervisorId"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>
+                                                Responsible Supervisor
+                                            </FormLabel>
+                                            <Select onValueChange={field.onChange} defaultValue={updatingData?.supervisorId ? updatingData.supervisorId : field.value}>
+                                                <FormControl>
+                                                    <SelectTrigger>
+                                                        <SelectValue placeholder="Select supervisor" />
+                                                    </SelectTrigger>
+                                                </FormControl>
+                                                <SelectContent>
+                                                    {supervisor1 && <SelectItem value={supervisor1.id}>{supervisor1.name} - {supervisor1.employeeId}</SelectItem>}
+                                                    {supervisor2 && <SelectItem value={supervisor2.id}>{supervisor2.name} - {supervisor2.employeeId}</SelectItem>}
                                                 </SelectContent>
                                             </Select>
                                             <FormMessage />

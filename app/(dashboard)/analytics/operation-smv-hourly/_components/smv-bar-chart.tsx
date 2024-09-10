@@ -92,7 +92,7 @@ const saveAsPDF = async () => {
 
       // Set larger font size and align text with the logo
       pdf.setFontSize(24);
-      pdf.text('Dashboard - Hourly Cycle Time vs Target SMV', logoX + logoWidth + 10, 90, { align: 'left' });
+      pdf.text('Dashboard - Hourly Cycle Time vs Target SMV', logoX + logoWidth + 20, 83, { align: 'left' });
 
       // Add the chart image to the PDF
       pdf.addImage(imgData, 'PNG', 0, 150, canvas.width, canvas.height);
@@ -195,8 +195,8 @@ const saveAsExcel = () => {
             </ChartContainer>
           </CardContent>
         </Card>
-        {
-                <div className="flex justify-center gap-2 mt-5 2xl:hidden block">
+        
+                <div className="flex justify-center gap-2 mt-5">
                   <div className="mb-3 ">
                     <Button type="button" className="mr-3" onClick={saveAsPDF}>
                       Save as PDF
@@ -206,7 +206,7 @@ const saveAsExcel = () => {
                     </Button>
                   </div>
                 </div>
-              }
+              
       </>
     );
 }

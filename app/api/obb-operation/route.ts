@@ -7,7 +7,7 @@ export async function POST(
     req: Request,
 ) {
     try {
-        const { operationId, sewingMachineId, smv, target, spi, length, totalStitches, obbSheetId, supervisorId, part } = await req.json();
+        const { seqNo,operationId, sewingMachineId, smv, target, spi, length, totalStitches, obbSheetId, supervisorId, part } = await req.json();
         
         let id = generateUniqueId();
 
@@ -31,7 +31,7 @@ export async function POST(
         const newObbOperation = await db.obbOperation.create({
             data: {
                 id,
-                seqNo: seqCount + 1,
+                seqNo,
                 operationId, 
                 obbSheetId,
                 smv: parseFloat(smv), 
