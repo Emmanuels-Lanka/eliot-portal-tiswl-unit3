@@ -157,7 +157,7 @@ const saveAsExcel = () => {
 const renderCustomLabel = ({ x, y, width, value, index }: any) => {
     const realAvgValue = chartData[index]?.realavg || 0;
     return (
-        <text x={x + width -5} y={y - 5} fill="black" fontSize={11}>
+        <text x={x + width -5} y={y - 5} fill="black" fontSize={11} fontFamily="Inter">
             {`${value} (${realAvgValue})`}
         </text>
     );

@@ -73,11 +73,16 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
 
   const [chartData, setChartData] = useState<BarchartData[]>([]);
 
-  const[chartWidth,setChartWidth] = useState<number>(100)
+  const[chartWidth,setChartWidth] = useState<number>(380)
 
   const chartRef = useRef<HTMLDivElement>(null);
 
   const[isSubmitting,setisSubmitting]=useState<boolean>(false)
+  const [isSavingPDF, setIsSavingPDF] = useState<boolean>(false);
+
+
+  const [textVisible, setTextVisible]=useState<boolean>(false)
+  const [btnVis, setBtnVis]=useState<boolean>(false)
 
   /////
   const handleFetchProductions = async () => {
@@ -159,18 +164,96 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
 
 
 
-  const saveAsPDF = async () => {
-    if (chartRef.current) {
-        const canvas = await html2canvas(chartRef.current);
-        const imgData = canvas.toDataURL('image/png');
-        const pdf = new jsPDF({
-            orientation: 'landscape',
-            unit: 'px',
-            format: [canvas.width, canvas.height],
-        });
-        pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
-        pdf.save('chart.pdf');
-    }
+ 
+useEffect(() => {
+  
+  setTextVisible(true);
+
+}, [btnVis])
+
+
+
+//   const saveAsPDF = async () => {
+//     setIsSavingPDF(true)
+//     if (chartRef.current) {
+//         const canvas = await html2canvas(chartRef.current);
+//         const imgData = canvas.toDataURL('image/png');
+//         const pdf = new jsPDF({
+//             orientation: 'landscape',
+//             unit: 'px',
+//             format: [canvas.width, canvas.height],
+//         });
+//         pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
+//         pdf.save('chart.pdf');
+//     }
+//     setIsSavingPDF(false);
+    
+// };
+
+// const saveAsPDF = async () => {
+//   setIsSavingPDF(true);  // Show the title for PDF generation
+
+//   // Delay to ensure the text is rendered before capturing the canvas
+//   setTimeout(async () => {
+//     if (chartRef.current) {
+//       const canvas = await html2canvas(chartRef.current);
+//       const imgData = canvas.toDataURL("image/png");
+//       const pdf = new jsPDF({
+//         orientation: "landscape",
+//         unit: "px",
+//         format: [canvas.width, canvas.height],
+//       });
+
+     
+//       pdf.addImage(imgData, "PNG", 0, 0, canvas.width, canvas.height);
+//       pdf.setTextColor(0, 0, 255);
+//       pdf.setFontSize(24);
+//       pdf.text('Dashboard - Hourly Cycle Time vs Target SMV', 80, 40, { align: 'center' });
+//       pdf.save("chart.pdf");
+
+//       setIsSavingPDF(false);  // Hide the title after PDF is saved
+//     }
+//   }, 200); // Adjust the timeout if needed
+// };
+
+const saveAsPDF = async () => {
+  if (chartRef.current) {
+    const canvas = await html2canvas(chartRef.current);
+    const imgData = canvas.toDataURL('image/png');
+    const pdf = new jsPDF({
+      orientation: 'landscape',
+      unit: 'px',
+      format: [canvas.width, canvas.height + 150],
+    });
+
+    const baseUrl = window.location.origin;
+    const logoUrl = `${baseUrl}/logo.png`;
+
+    const logo = new Image();
+    logo.src = logoUrl;
+    logo.onload = () => {
+      const logoWidth = 110;
+      const logoHeight = 50;
+      const logoX = (canvas.width / 2) - (logoWidth + 250); // Adjust to place the logo before the text
+      const logoY = 50;
+
+      // Add the logo to the PDF
+      pdf.addImage(logo, 'PNG', logoX, logoY, logoWidth, logoHeight);
+
+      // Set text color to blue
+      pdf.setTextColor(0, 113 ,193); // RGB for blue
+
+      // Set larger font size and align text with the logo
+      pdf.setFontSize(30);
+      pdf.text('Dashboard - Target vs Actual - Production', logoX + logoWidth + 10, 83, { align: 'left' });
+
+      // Add the chart image to the PDF
+      pdf.addImage(imgData, 'PNG', 0, 150, canvas.width, canvas.height);
+
+      // Save the PDF
+      pdf.save('chart.pdf');
+    };
+  }
 };
 
 
@@ -197,29 +280,30 @@ const saveAsExcel = () => {
         </div> */}
 
 
+      <div  >
       {chartData.length > 0 ? (
-        <Card className="pr-2 pt-6  border rounded-xl bg-slate-50 w-auto" style={{width:(chartWidth*1.5)+"%", height:chartWidth+"%"}}>
-          {/* <div className="px-8">
-            <CardHeader>
-              <CardTitle className="text-center">
-                {" "}
-                Daily Target vs Actual Production (LIVE Data)
-              </CardTitle>
-            </CardHeader>
-          </div> */}
+        <Card className="pr-2 pt-6  border rounded-xl bg-slate-50 w-auto"   >
+         {isSavingPDF && ( 
+            <div className="px-8">
+              <CardHeader>
+                <CardTitle className="text-center">Target vs Actual Production</CardTitle>
+              </CardHeader>
+            </div>
+          )}
           <CardContent>
-            <ChartContainer
-            ref={chartRef}
+            <ChartContainer ref={chartRef}
+            
               config={chartConfig}
-              className=" max-h-screen  min-h-[300px] w-full " 
+              className=" max-h-screen  min-h-[300px]  max-h-[1200px]w-full " 
               style={{width:chartWidth+"%", height:chartWidth+"%"}} 
             >
+              
               <BarChart
                 accessibilityLayer
                 data={chartData}
                 margin={{
-                  top: 200,
-                  bottom: 200,
+                  top: 20,
+                  bottom: 250,
                 }}
 
               >
@@ -280,6 +364,7 @@ const saveAsExcel = () => {
         </div>
       )
       }
+      </div>
       {<div className="flex justify-center gap-2 mt-5 2xl:hidden block">
 
 <Button onClick={() => setChartWidth((p) => p + 20)} className="rounded-full bg-gray-300">+</Button>
