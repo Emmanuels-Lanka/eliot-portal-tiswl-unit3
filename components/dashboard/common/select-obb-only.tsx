@@ -45,7 +45,7 @@ const formSchema = z.object({
     obbSheetId: z.string().min(1, {
         message: "OBB Sheet is required"
     }),
-    date: z.date()
+    
 });
 
 const SelectObbSheetAndDate = ({
@@ -59,7 +59,7 @@ const SelectObbSheetAndDate = ({
         resolver: zodResolver(formSchema),
         defaultValues: {
             obbSheetId: "",
-            date: undefined,
+           
         },
     });
 
@@ -184,7 +184,7 @@ const SelectObbSheetAndDate = ({
                     </div>
                     <Button
                         type="submit"
-                        disabled={!isValid || isSubmitting}
+                        disabled={ isSubmitting}
                         className="flex max-md:w-full w-32 gap-2 pr-5"
                     >
                         <Filter className={cn("w-5 h-5", isSubmitting && "hidden")} />
