@@ -236,7 +236,7 @@ const SelectObbSheetDateOperation = ({
                                 )}
                             />
                         </div>
-                        <div className="md:w-1/5">
+                        <div className="md:w-2/5">
                             <FormField
                                 control={form.control}
                                 name="date"
