@@ -75,8 +75,8 @@ export async function geOperatorList(obbsheetid:string,date:string ) : Promise<a
     //order by  substring(concat(oopn."seqNo",'-',oo.name ) from 0 for 20) ;`
     // group by substring(concat(oopn."seqNo",'-(',opn."code",')-',oo.name ) from 0 for 25) , oopn."seqNo"
 
-    console.log("geOperationList",data,)
-    console.log("asd",date,obbsheetid)
+    // console.log("geOperationList",data,)
+    // console.log("asd",date,obbsheetid)
 
 
  

@@ -7,6 +7,7 @@ import {
     Cog,
     FileCog,
     FileSpreadsheet,
+    icons,
     LayoutDashboard,
     LayoutPanelTop,
     Mail,
@@ -92,6 +93,12 @@ export const SIDEBAR_ROUTES = [
                 label: "Target vs Actual",
                 href: "/analytics/daily-achivement",
                 icon: BarChartHorizontal
+            },
+            {
+                label:"Target vs Actual (Instance)",
+                href: "/analytics/daily-achivement-ins",
+                icon: BarChartHorizontal
+                
             },
             // {
             //     label: "Overall Performance",
@@ -481,6 +488,12 @@ export const HEADER_INFO = [
         label: "Target vs Actual - Production",
         href: "/analytics/daily-achivement",
         icon: Sliders
+    },
+    {
+        label:"Target vs Actual (Instance)",
+        href: "/analytics/daily-achivement-ins",
+        icon: BarChartHorizontal
+
     },
     {
         label: "Overall Performance - Operations (Live Data)",

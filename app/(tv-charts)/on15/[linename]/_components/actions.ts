@@ -37,7 +37,7 @@ export async function geOperationList(obbsheetid:string , date:string) : Promise
 
 `;
  
-     console.log(obbsheetid,date)
+    //  console.log(obbsheetid,date)
  
     return new Promise((resolve) => resolve(data ))
 }

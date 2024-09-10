@@ -36,7 +36,7 @@ export async function getOperatorEfficiencyData15M(obbsheetid:string,date:string
 
 // group by oprtr.name,obbopn."seqNo",obbopn.target, pd."productionCount",pd.timestamp
     
-    console.log("data",data,obbsheetid)
+    // console.log("data",data,obbsheetid)
     return new Promise((resolve) => resolve(data  ))
     
 }
@@ -75,7 +75,7 @@ export async function geOperatorList(obbsheetid:string,date:string ) : Promise<a
     //order by  substring(concat(oopn."seqNo",'-',oo.name ) from 0 for 20) ;`
     // group by substring(concat(oopn."seqNo",'-(',opn."code",')-',oo.name ) from 0 for 25) , oopn."seqNo"
 
-    console.log("geOperationList",data,)
+    // console.log("geOperationList",data,)
 
 
  
