@@ -80,7 +80,7 @@ const BarChartGraphEfficiencyRate = ({ date, obbSheetId }: BarChartGraphProps) =
 
            
             const chartData: BarChartData[] = prod.map((item,index) => ({
-                name:item.name+" - "+item.seqNo,
+                name:item.name,
                
                 count: item.count,
                 target: item.target * workingHrs,

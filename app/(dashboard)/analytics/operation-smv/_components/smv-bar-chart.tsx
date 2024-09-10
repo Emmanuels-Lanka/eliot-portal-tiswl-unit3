@@ -46,6 +46,10 @@ const chartConfig = {
     avg: {
         label: "Cycle Time",
         color: "hsl(var(--chart-2))",
+    },
+    realavg: {
+        label: "Average",
+        color: "hsl(var(--chart-3))",
     }
 } satisfies ChartConfig
 
@@ -54,6 +58,7 @@ type BarChartData = {
     name:string;
     avg: number;
     machineId?:string;
+    realavg?:any;
 };
 
 interface BarChartGraphProps {
@@ -82,10 +87,11 @@ const BarChartGraphOpSmv = ({ date, obbSheetId }: BarChartGraphProps) => {
               
       
             const chartData1: BarChartData[] = prod.map((item) => ({
-               name:item.machineId+"-"+item.name,
+               name:item.name+item.machineId+"-",
                smv:item.smv,
             //    avg:Number(item.avg.toFixed(2))
-             avg:Number(parseFloat(item.avg.toString()).toFixed(2))
+             avg:Number(parseFloat(item.avg.toString()).toFixed(2)),
+             realavg:Math.floor(((((Number(parseFloat(item.avg.toString()).toFixed(2)))/item.smv)))*100)+"%",
 
             }));
             console.log("AVG values:", chartData1.map(item => item.avg));
@@ -148,7 +154,14 @@ const saveAsExcel = () => {
 
 
 
-
+const renderCustomLabel = ({ x, y, width, value, index }: any) => {
+    const realAvgValue = chartData[index]?.realavg || 0;
+    return (
+        <text x={x + width -5} y={y - 5} fill="black" fontSize={11}>
+            {`${value} (${realAvgValue})`}
+        </text>
+    );
+};
 
 
 
@@ -165,6 +178,9 @@ const saveAsExcel = () => {
 
 
 
+
+
+
         <Card className='pr-2 pt-6 pb-4 border rounded-xl bg-slate-50 w-fit'style={{width:chartWidth*2+"%"}} >
             <div className="px-8">
                 <CardHeader>
@@ -173,12 +189,12 @@ const saveAsExcel = () => {
                 </CardHeader>
             </div>
             <CardContent className="w-auto h-auto" style={{width:chartWidth+"%"}}  >
-                <ChartContainer ref={chartRef} config={chartConfig} className="min-h-[300px] w-auto"  style={{width:chartWidth+"%", height:chartWidth+"%"}} >
+                <ChartContainer ref={chartRef} config={chartConfig} className="min-h-[300px] max-h-[800px]w-auto"  style={{width:chartWidth+"%", height:1000}} >
                     <BarChart 
                         accessibilityLayer 
                         data={chartData}
                         margin={{
-                            top: 50,
+                            top: 500,
                             bottom: 250
                         }}
                         startAngle={10}
@@ -217,6 +233,7 @@ const saveAsExcel = () => {
                         <Bar dataKey="smv" fill="var(--color-smv)" radius={5} barSize={5}>
                             <LabelList
                                 position="top"
+                                // content={renderCustomLabel}
                                 offset={12}
                                 className="fill-foreground"
                                 fontSize={11}
@@ -227,11 +244,21 @@ const saveAsExcel = () => {
                             <LabelList
                                 position="top"
                                 offset={12}
+                                content={renderCustomLabel}
                                 className="fill-foreground"
                                 fontSize={11}
                                 fontFamily="Inter"
                             />
                         </Bar>
+                         {/* <Bar dataKey="realavg" fill="brown" radius={5} barSize={5}>
+                            <LabelList
+                                position="top"
+                                offset={12}
+                                className="fill-foreground"
+                                fontSize={11}
+                                fontFamily="Inter"
+                            />
+                        </Bar> */}
                     </BarChart>
                 </ChartContainer>
             </CardContent>

@@ -116,7 +116,7 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
     
         return {
             name: item.name,
-            target: item.target*10, // Use the calculated target
+            target: adjustedTarget, // Use the calculated target
             count: item.count,
         };
     });
@@ -161,44 +161,20 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
 
   const saveAsPDF = async () => {
     if (chartRef.current) {
-      const canvas = await html2canvas(chartRef.current);
-      const imgData = canvas.toDataURL('image/png');
-      const pdf = new jsPDF({
-        orientation: 'landscape',
-        unit: 'px',
-        format: [canvas.width, canvas.height + 150],
-      });
-  
-      const baseUrl = window.location.origin;
-      const logoUrl = `${baseUrl}/logo.png`;
-  
-      const logo = new Image();
-      logo.src = logoUrl;
-      logo.onload = () => {
-        const logoWidth = 100; // Adjusted logo width
-        const logoHeight = 60; // Adjusted logo height
-        const logoX = (canvas.width - logoWidth) / 2; // Centering the logo
-        const logoY = 40; // Vertical position of the logo
-  
-        pdf.addImage(logo, 'PNG', logoX, logoY, logoWidth, logoHeight); // Center the logo
-  
-        pdf.setFontSize(24); // Increase font size
-        pdf.text('Target vs Actual - Production', canvas.width / 2, 120, { align: 'center' }); // Center text
-  
-        pdf.addImage(imgData, 'PNG', 0, 150, canvas.width, canvas.height);
-  
+        const canvas = await html2canvas(chartRef.current);
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new jsPDF({
+            orientation: 'landscape',
+            unit: 'px',
+            format: [canvas.width, canvas.height],
+        });
+        pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
         pdf.save('chart.pdf');
-      };
     }
-  };
-  
+};
 
 
 //create Excel sheet
-
-
-
-
 const saveAsExcel = () => {
     const worksheet = XLSX.utils.json_to_sheet(chartData);
     const workbook = XLSX.utils.book_new();
@@ -206,103 +182,6 @@ const saveAsExcel = () => {
     XLSX.writeFile(workbook, `chart-data.xlsx`);
 };
   
-
-// const handlePrint=()=>{
-//   const baseUrl = window.location.origin;
-//   const printContent = chartRef.current?.innerHTML;
-//   const date = new Date().toLocaleDateString('bn-BD', { timeZone: 'Asia/Dhaka' });
-
-//   const htmlContent = `
-//   <html>
-//   <head>
-//     <title>Target vs Actual - Production</title>
-//     <style>
-//       body {
-//         font-family: Arial, sans-serif;
-//         margin: 0;
-//         padding: 20px;
-//       }
-
-//       ChartContainer {
-//         width: 500%;
-//         margin: 0 auto;
-//         padding: 20px;
-//         box-sizing: border-box;
-//       }
-
-//       table {
-//         width: 500%;
-//         border-collapse: collapse;
-//         margin-top: 20px;
-//       }
-
-//       th, td {
-//         border: 1px solid #ddd;
-//         padding: 8px;
-//       }
-
-//       th {
-//         text-align: center;
-//         background-color: gray;
-//       }
-
-//       td {
-//         text-align: left;
-//       }
-
-//       .logo-div {
-//         display: flex;
-//         align-items: center;
-//         padding-top: 10px;
-//         padding-left: 20px;
-//       }
-
-//       .logo-div img {
-//         width: 170px;
-//         height: auto;
-//       }
-
-//       .text-center {
-//         font-size: 35px;
-//         margin-left: 10px;
-//       }
-
-//       .footer-logo img {
-//         width: 120px;
-//         height: auto;
-//       }
-
-//       p {
-//         font-size: 35px;
-//       }
-//     </style>
-//   </head>
-//   <body>
-//     <div class="logo-div">
-//       <img src="${baseUrl}/logo.png" alt="Logo"/>
-//       <p class="text-center">Target vs Actual - Production</p>
-//     </div>
-
-//     <hr />
-//     ${printContent}
-//   </body>
-// </html>
-//   `;
-
-//   const blob = new Blob([htmlContent], { type: 'text/html' });
-//   const url = URL.createObjectURL(blob);
-  
-//   const printWindow = window.open(url, '', 'width=800,height=600');
-  
-//   if (printWindow) {
-//     printWindow.onload = () => {
-//       printWindow.print();
-//       URL.revokeObjectURL(url);
-//     };
-//   } else {
-//     console.error("Failed to open print window");
-//   }
-// }
 
   return (
     <>
@@ -312,7 +191,10 @@ const saveAsExcel = () => {
        </div>
     
     
-       
+        {/* <div className='mb-3'>
+            <Button type="button" className='mr-3' onClick={saveAsPDF}>Save as PDF</Button>
+            <Button type="button" onClick={saveAsExcel}>Save as Excel</Button>
+        </div> */}
 
 
       {chartData.length > 0 ? (
@@ -406,6 +288,7 @@ const saveAsExcel = () => {
             <Button type="button" className='mr-3' onClick={saveAsPDF}>Save as PDF</Button>
             <Button type="button" onClick={saveAsExcel}>Save as Excel</Button>
         </div>
+
 </div>
 }
     </>

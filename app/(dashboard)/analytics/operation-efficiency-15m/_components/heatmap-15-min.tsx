@@ -274,7 +274,7 @@ const HmapChart15Compo = ({
                     <Loader2 className={cn("animate-spin w-5 h-5 hidden", isSubmitting && "flex")} />
                 </div>}
                 {heatmapFullData !== null ?
-                    <Card className="mt-5 bg-slate-100 pt-5 pl-8 rounded-lg border w-full mb-16 overflow-x-auto " style={{width:(chartWidth*1.5)+"%", height:chartWidth+"%"}}>
+                    <Card className="mt-5 bg-slate-100 pt-5 pl-8 rounded-lg border w-full mb-16 overflow-x-auto " >
                         <div>
                             <div>
                                 <CardHeader>
@@ -286,7 +286,7 @@ const HmapChart15Compo = ({
                         </div>
                     </Card>
                     :
-                    <div className="mt-12 w-full">
+                    <div className="mt-12 w-full">no
                         <p className="text-center text-slate-500">Please select the OBB sheet and date ☝️</p>
                     </div>
                 }
