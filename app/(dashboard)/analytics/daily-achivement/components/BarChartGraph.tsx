@@ -116,7 +116,7 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
     
         return {
             name: item.name,
-            target: adjustedTarget, // Use the calculated target
+            target: item.target*10, // Use the calculated target
             count: item.count,
         };
     });
