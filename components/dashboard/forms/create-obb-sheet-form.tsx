@@ -132,6 +132,8 @@ const CreateObbSheetForm = ({
             indEngineer: initialData?.indEngineerId || "",
             supervisor1: initialData?.supervisorFrontId || "",
             supervisor2: initialData?.supervisorBackId || "",
+            supervisor3:initialData?. supervisorAssemblyId || "",
+            supervisor4:initialData?. supervisorLineEndId || "",
             mechanic: initialData?.mechanicId || "",
             qualityIns: initialData?.qualityInsId || "",
             accInputMan: initialData?.accInputManId || "",
@@ -312,7 +314,7 @@ const CreateObbSheetForm = ({
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel className="text-sm">
-                                            Responsible Supervisor 1
+                                        supervisorFront
                                         </FormLabel>
                                         <Select 
                                             onValueChange={(value) => {
@@ -342,7 +344,7 @@ const CreateObbSheetForm = ({
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel className="text-sm">
-                                            Responsible Supervisor 2
+                                        supervisorBack
                                         </FormLabel>
                                         <Select onValueChange={field.onChange} defaultValue={field.value || undefined}>
                                             <FormControl>
@@ -375,7 +377,7 @@ const CreateObbSheetForm = ({
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel className="text-sm">
-                                            Responsible Supervisor 3
+                                        supervisorAssembly
                                         </FormLabel>
                                         <Select onValueChange={field.onChange} defaultValue={field.value || undefined}>
                                             <FormControl>
@@ -408,7 +410,7 @@ const CreateObbSheetForm = ({
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel className="text-sm">
-                                            Responsible Supervisor 4
+                                        supervisorLineEnd
                                         </FormLabel>
                                         <Select onValueChange={field.onChange} defaultValue={field.value || undefined}>
                                             <FormControl>
