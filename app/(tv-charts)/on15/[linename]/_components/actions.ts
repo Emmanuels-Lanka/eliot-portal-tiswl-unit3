@@ -19,7 +19,7 @@ export async function getData(obbsheetid:string,date:string)  : Promise<any[]>{
     return new Promise((resolve) => resolve(data ))
 }
 
-export async function geOperationList(obbsheetid:string ) : Promise<any[]>  {
+export async function geOperationList(obbsheetid:string , date:string) : Promise<any[]>  {
     const sql = neon(process.env.DATABASE_URL || "");
  
     // const data = await sql`SELECT   concat(oo."seqNo",'-',o.name ) as name
@@ -28,9 +28,16 @@ export async function geOperationList(obbsheetid:string ) : Promise<any[]>  {
     INNER JOIN "ObbSheet" os ON oo."obbSheetId" = os.id
     inner JOIN "Operation" o ON o.id= oo."operationId"
     inner join "SewingMachine" sm on sm.id=oo."sewingMachineId"
-    WHERE os.id = ${obbsheetid}  
-     order by  oo."seqNo" ;`;
+    INNER JOIN 
+      "ProductionData" pd ON oo."id" = pd."obbOperationId"
+    WHERE os.id =${obbsheetid} AND pd.timestamp LIKE ${date}
+    GROUP BY  concat (substring(concat(o.name ) from 0 for 20),' ','(',sm."machineId",') - ',oo."seqNo"),oo."seqNo"
+
+     order by  oo."seqNo" ;
+
+`;
  
+     console.log(obbsheetid,date)
  
     return new Promise((resolve) => resolve(data ))
 }

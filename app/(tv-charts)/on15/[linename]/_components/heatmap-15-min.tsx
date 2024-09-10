@@ -173,7 +173,7 @@ const HmapChart15Compo = ({
                 minHeight: 250,
             },
             // categories: operationList.map(o => o.name), // x-axis categories
-            categories: operationList.map(o => `${o.name} `)
+            categories: operationList.map(o => o.name)
 
         },
 
@@ -209,11 +209,11 @@ const HmapChart15Compo = ({
         try {
 
             setIsSubmitting(true)
-            const sqlDate = date + "%";
+            const sqlDate = date ;
             const prod: any[] = await getData(obbSheetId, sqlDate)
             const eliot = prod.map((m) => (m.eliotid))
           
-            const opList = await geOperationList(obbSheetId)
+            const opList = await geOperationList(obbSheetId,sqlDate)
             setoperationList(opList)
             const heatmapDatas = getProcessData(prod as any[], operationList as any[]);
             //rem 0 ops

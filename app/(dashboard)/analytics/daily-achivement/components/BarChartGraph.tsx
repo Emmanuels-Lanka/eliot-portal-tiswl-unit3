@@ -107,12 +107,12 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
         
 
         const elapsedMinutes = currentHour >= endHour 
-            ? (endHour - startHour) * 60 // 10 hours * 60 minutes
-            : (elapsedHours * 60 + currentMinutes); // Calculate total minutes up to the current time
+            ? (endHour - startHour) * 60 
+            : (elapsedHours * 60 + currentMinutes); 
     
-        const targetPerMinute = item.target / 60; // Target per minute
+        const targetPerMinute = Math.round(item.target / 60)  ; 
         
-        const adjustedTarget = (targetPerMinute * elapsedMinutes).toFixed(1); // Calculate the target based on the elapsed time
+        const adjustedTarget = (targetPerMinute * elapsedMinutes);
     
         return {
             name: item.name,
@@ -218,7 +218,7 @@ const saveAsExcel = () => {
                 accessibilityLayer
                 data={chartData}
                 margin={{
-                  top: 20,
+                  top: 200,
                   bottom: 200,
                 }}
 
