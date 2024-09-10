@@ -39,6 +39,7 @@ import React, { useRef } from "react";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import * as XLSX from 'xlsx';
+import PDFExport from "@/components/dashboard/common/pdf-export";
 
 const chartConfig = {
   target: {
@@ -281,8 +282,9 @@ const saveAsExcel = () => {
 
 
       <div  >
+   
       {chartData.length > 0 ? (
-        <Card className="pr-2 pt-6  border rounded-xl bg-slate-50 w-auto"   >
+        <Card className="pr-2 pt-6  border rounded-xl w-auto"   >
          {isSavingPDF && ( 
             <div className="px-8">
               <CardHeader>
@@ -294,7 +296,7 @@ const saveAsExcel = () => {
             <ChartContainer ref={chartRef}
             
               config={chartConfig}
-              className=" max-h-screen  min-h-[300px]  max-h-[1200px]w-full " 
+              className=" max-h-screen  min-h-[300px] w-full " 
               style={{width:chartWidth+"%", height:chartWidth+"%"}} 
             >
               

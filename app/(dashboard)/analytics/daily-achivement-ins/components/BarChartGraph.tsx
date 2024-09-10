@@ -73,7 +73,7 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
 
   const [chartData, setChartData] = useState<BarchartData[]>([]);
 
-  const[chartWidth,setChartWidth] = useState<number>(100)
+  const[chartWidth,setChartWidth] = useState<number>(380)
 
   const chartRef = useRef<HTMLDivElement>(null);
 
@@ -161,17 +161,43 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
 
   const saveAsPDF = async () => {
     if (chartRef.current) {
-        const canvas = await html2canvas(chartRef.current);
-        const imgData = canvas.toDataURL('image/png');
-        const pdf = new jsPDF({
-            orientation: 'landscape',
-            unit: 'px',
-            format: [canvas.width, canvas.height],
-        });
-        pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
+      const canvas = await html2canvas(chartRef.current);
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF({
+        orientation: 'landscape',
+        unit: 'px',
+        format: [canvas.width, canvas.height + 150],
+      });
+  
+      const baseUrl = window.location.origin;
+      const logoUrl = `${baseUrl}/logo.png`;
+  
+      const logo = new Image();
+      logo.src = logoUrl;
+      logo.onload = () => {
+        const logoWidth = 110;
+        const logoHeight = 50;
+        const logoX = (canvas.width / 2) - (logoWidth + 250); // Adjust to place the logo before the text
+        const logoY = 50;
+  
+        // Add the logo to the PDF
+        pdf.addImage(logo, 'PNG', logoX, logoY, logoWidth, logoHeight);
+  
+        // Set text color to blue
+        pdf.setTextColor(0, 113 ,193); // RGB for blue
+  
+        // Set larger font size and align text with the logo
+        pdf.setFontSize(30);
+        pdf.text('Dashboard - Target vs Actual (Instance) ', logoX + logoWidth + 10, 83, { align: 'left' });
+  
+        // Add the chart image to the PDF
+        pdf.addImage(imgData, 'PNG', 0, 150, canvas.width, canvas.height);
+  
+        // Save the PDF
         pdf.save('chart.pdf');
-    }
-};
+      };
+    }
+  };
 
 
 //create Excel sheet
@@ -198,7 +224,7 @@ const saveAsExcel = () => {
 
 
       {chartData.length > 0 ? (
-        <Card className="pr-2 pt-6  border rounded-xl bg-slate-50 w-auto" style={{width:(chartWidth*1.5)+"%", height:chartWidth+"%"}}>
+        <Card className="pr-2 pt-6  border rounded-xl  w-auto" >
           {/* <div className="px-8">
             <CardHeader>
               <CardTitle className="text-center">
@@ -210,16 +236,16 @@ const saveAsExcel = () => {
           <CardContent>
             <ChartContainer
             ref={chartRef}
-              config={chartConfig}
-              className=" max-h-screen  min-h-[300px] w-full " 
-              style={{width:chartWidth+"%", height:chartWidth+"%"}} 
+            config={chartConfig}
+            className=" max-h-screen  min-h-[300px] w-full " 
+            style={{width:chartWidth+"%", height:chartWidth+"%"}} 
             >
               <BarChart
                 accessibilityLayer
                 data={chartData}
                 margin={{
-                  top: 200,
-                  bottom: 200,
+                  top: 20,
+                  bottom: 250,
                 }}
 
               >
