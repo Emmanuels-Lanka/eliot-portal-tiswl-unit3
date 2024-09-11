@@ -54,8 +54,7 @@ interface AddObbOperationFormProps {
     obbSheetId: string;
     supervisor1: Staff | null;
     supervisor2: Staff | null;
-    supervisor3: Staff | null;
-    supervisor4: Staff | null;
+    
 }
 
 type FormValues = z.infer<typeof formSchema>;
@@ -88,8 +87,7 @@ const AddObbOperationForm = ({
     obbSheetId,
     supervisor1,
     supervisor2,
-    supervisor3,
-    supervisor4,
+    
 }: AddObbOperationFormProps) => {
     const { toast } = useToast();
     const router = useRouter();
