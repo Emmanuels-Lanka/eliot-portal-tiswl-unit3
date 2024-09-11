@@ -31,7 +31,7 @@ export async function getSMV(obbSheetId:String,date:String):Promise<SMVChartData
 
 const smv = await sql`SELECT 
     o.smv,
-    concat(o."seqNo",'-',op.name) as name,
+    concat(o."seqNo",' - ',op.name) as name,
     o."seqNo",
     AVG(CAST(p.smv AS NUMERIC)) AS avg,
     sm."machineId"

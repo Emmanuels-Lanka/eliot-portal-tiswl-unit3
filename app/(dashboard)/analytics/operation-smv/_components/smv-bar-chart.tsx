@@ -87,7 +87,7 @@ const BarChartGraphOpSmv = ({ date, obbSheetId }: BarChartGraphProps) => {
               
       
             const chartData1: BarChartData[] = prod.map((item) => ({
-               name:item.name+item.machineId+"-",
+               name:item.name+"-"+"( "+item.machineId+" )",
                smv:item.smv,
             //    avg:Number(item.avg.toFixed(2))
              avg:Number(parseFloat(item.avg.toString()).toFixed(2)),
@@ -203,6 +203,7 @@ const renderCustomLabel = ({ x, y, width, value, index }: any) => {
 
 
 
+        <div className=' pt-5 -pl-8  bg-slate-50 rounded-lg border w-full mb-16 overflow-x-auto'>
         <Card className='pr-2 pt-6 pb-4 border rounded-xl bg-slate-50 w-fit'style={{width:chartWidth*2+"%"}} >
             {/* <div className="px-8">
                 <CardHeader>
@@ -216,8 +217,8 @@ const renderCustomLabel = ({ x, y, width, value, index }: any) => {
                         accessibilityLayer 
                         data={chartData}
                         margin={{
-                            top: 500,
-                            bottom: 250
+                            top: 10,
+                            bottom: 400
                         }}
                         startAngle={10}
                     >
@@ -285,6 +286,7 @@ const renderCustomLabel = ({ x, y, width, value, index }: any) => {
                 </ChartContainer>
             </CardContent>
         </Card>
+        </div>
         {chartData.length > 0 && (
       <div className="flex flex-col items-center mt-5">
         <div className="flex gap-2">
