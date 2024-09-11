@@ -7,7 +7,7 @@ export async function POST(
     req: Request,
 ) {
     try {
-        const { seqNo,operationId, sewingMachineId, smv, target, spi, length, totalStitches, obbSheetId, supervisorId, part } = await req.json();
+        const { seqNo,operationId, sewingMachineId, smv, target, spi, length, totalStitches, obbSheetId, part,supervisorId } = await req.json();
         
         let id = generateUniqueId();
 
@@ -21,12 +21,35 @@ export async function POST(
         // if (existingMachine) {
         //     return new NextResponse("This sewing machine is already assigned to another operation.", { status: 409 })
         // };
-
-        const seqCount = await db.obbOperation.count({
+        
+        const susupervisorIdnew = await db.obbOperation.findMany({
             where: {
-                obbSheetId
+                part
+            },
+            select: {
+                supervisorId: true,
+                supervisor: {
+                    select: {
+                        id: true,
+                        name:true
+                    }
+                },
+                obbSheet: { // Include the obbSheet relationship
+                    select: {
+                        id: true, // Select the id from obbSheet
+                         
+                    }
+                }
             }
         });
+        const supervisorid = susupervisorIdnew.map(operation => 
+            operation.supervisor ? operation.supervisor.id : 'No supervisor'
+        );
+        console.log("Supervisor Names:", supervisorid);
+
+
+
+
 
         const newObbOperation = await db.obbOperation.create({
             data: {
@@ -39,12 +62,12 @@ export async function POST(
                 spi, 
                 length, 
                 totalStitches, 
-                supervisorId,
+                supervisorId:supervisorid[0],
                 sewingMachineId,
                 part
             }
         });
-
+       console.log("data",newObbOperation)
         // Update the active operation on Machine table
         // await db.sewingMachine.update({
         //     where: {
@@ -61,4 +84,4 @@ export async function POST(
         console.error("[OBB_OPERATION_ERROR]", error);
         return new NextResponse("Internal Error", { status: 500 });
     }
-}
+  }

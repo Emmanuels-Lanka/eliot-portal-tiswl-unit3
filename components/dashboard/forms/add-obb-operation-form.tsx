@@ -54,12 +54,14 @@ interface AddObbOperationFormProps {
     obbSheetId: string;
     supervisor1: Staff | null;
     supervisor2: Staff | null;
+    supervisor3: Staff | null;
+    supervisor4: Staff | null;
 }
 
 type FormValues = z.infer<typeof formSchema>;
 
 const formSchema = z.object({
-    seq: z.number(),
+    seqNo: z.number(),
     operationId: z.string().min(1, {
         message: "Operation is required",
     }),
@@ -72,9 +74,9 @@ const formSchema = z.object({
     length: z.number(),
     totalStitches: z.number(),
     obbSheetId: z.string(),
-    supervisorId: z.string().min(1, {
-        message: "Responsive supervisor is required",
-    }),
+    // supervisorId: z.string().min(1, {
+    //     message: "Responsive supervisor is required",
+    // }),
     part: z.string()
 });
 
@@ -86,6 +88,8 @@ const AddObbOperationForm = ({
     obbSheetId,
     supervisor1,
     supervisor2,
+    supervisor3,
+    supervisor4,
 }: AddObbOperationFormProps) => {
     const { toast } = useToast();
     const router = useRouter();
@@ -96,10 +100,12 @@ const AddObbOperationForm = ({
     const [isUpdating, setIsUpdating] = useState(false);
     const [updatingData, setUpdatingData] = useState<ObbOperationData | undefined>();
 
+    
+
     const form = useForm<FormValues>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            seq:0,
+            seqNo:0,
             operationId: "",
             sewingMachineId: "",
             smv: "0.1",
@@ -108,7 +114,6 @@ const AddObbOperationForm = ({
             length: 0,
             totalStitches: 0,
             obbSheetId: obbSheetId,
-            supervisorId: "",
             part: ""
         },
     });
@@ -126,7 +131,7 @@ const AddObbOperationForm = ({
                 length: updatingData.length,
                 totalStitches: updatingData.totalStitches,
                 obbSheetId: updatingData.obbSheetId,
-                supervisorId: updatingData.supervisorId || '',
+                // supervisorId: updatingData.supervisorId || '',
                 part: updatingData.part || "",
             });
         }
@@ -135,6 +140,7 @@ const AddObbOperationForm = ({
     const onSubmit = async (data: FormValues) => {
         if (!isUpdating) {
             try {
+                console.log("dataaa",data)
                 const res = await axios.post('/api/obb-operation', data);
                 toast({
                     title: "Successfully added new OBB operation",
@@ -188,6 +194,7 @@ const AddObbOperationForm = ({
         setIsEditing(false);
         setUpdatingData(undefined);
         form.reset({
+            seqNo:undefined,
             operationId: "",
             sewingMachineId: "",
             smv: undefined,
@@ -196,9 +203,13 @@ const AddObbOperationForm = ({
             length: undefined,
             totalStitches: undefined,
             obbSheetId: obbSheetId,
-            supervisorId: "",
+            
         });
     }
+
+
+    
+
 
     return (
         <div className="mx-auto max-w-7xl border px-6 pt-4 pb-6 rounded-lg bg-slate-100">
@@ -221,28 +232,27 @@ const AddObbOperationForm = ({
                         className="w-full space-y-6 mt-4"
                     >
                         <div className="flex flex-row gap-x-2">
-                            <div className="w-14">
-                            <FormField
+                                <div className="w-14">
+                                    <FormField
                                     control={form.control}
-                                    name="seq"
+                                    name="seqNo"
                                     render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>
-                                        Seq
-                                    </FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            disabled={false}
-                                            value={updatingData?.seqNo}
-                                            className="bg-white border-black/20"
-                                            placeholder="@"
-                                        />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                                   )}
-                                   />
-                            </div>
+                                        <FormItem>
+                                        <FormLabel>
+                                            Seq
+                                        </FormLabel>
+                                        <FormControl>
+                                            <Input
+                                            value={field.value}
+                                            onChange={(e) => form.setValue("seqNo", parseInt(e.target.value))}
+                                            placeholder="Enter seq number"
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                        </FormItem>
+                                    )}
+                                    />
+                                </div>
                             <div className="w-5/12">
                                 <FormField
                                     control={form.control}
@@ -420,7 +430,7 @@ const AddObbOperationForm = ({
                                     render={({ field }) => (
                                         <FormItem>
                                             <FormLabel>
-                                                Part
+                                              Part
                                             </FormLabel>
                                             <Select onValueChange={field.onChange} defaultValue={updatingData?.part ? updatingData.part : field.value}>
                                                 <FormControl>
@@ -440,7 +450,7 @@ const AddObbOperationForm = ({
                                     )}
                                 />
                             </div>
-                            <div className="w-3/12">
+                            {/* <div className="w-3/12">
                                 <FormField
                                     control={form.control}
                                     name="supervisorId"
@@ -464,7 +474,7 @@ const AddObbOperationForm = ({
                                         </FormItem>
                                     )}
                                 />
-                            </div>
+                            </div> */}
                             <div className="w-20">
                                 <FormField
                                     control={form.control}

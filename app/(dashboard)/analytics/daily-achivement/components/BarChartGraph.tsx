@@ -175,18 +175,25 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
       const logo = new Image();
       logo.src = logoUrl;
       logo.onload = () => {
-        const logoWidth = 100; // Adjusted logo width
-        const logoHeight = 60; // Adjusted logo height
-        const logoX = (canvas.width - logoWidth) / 2; // Centering the logo
-        const logoY = 40; // Vertical position of the logo
+        const logoWidth = 110;
+        const logoHeight = 50;
+        const logoX = (canvas.width / 2) - (logoWidth + 100); // Adjust to place the logo before the text
+        const logoY = 50;
   
-        pdf.addImage(logo, 'PNG', logoX, logoY, logoWidth, logoHeight); // Center the logo
+        // Add the logo to the PDF
+        pdf.addImage(logo, 'PNG', logoX, logoY, logoWidth, logoHeight);
   
-        pdf.setFontSize(24); // Increase font size
-        pdf.text('Target vs Actual - Production', canvas.width / 2, 120, { align: 'center' }); // Center text
+        // Set text color to blue
+        pdf.setTextColor(0, 0, 255); // RGB for blue
   
+        // Set larger font size and align text with the logo
+        pdf.setFontSize(24);
+        pdf.text('Dashboard - Hourly Cycle Time vs Target SMV', logoX + logoWidth + 20, 83, { align: 'left' });
+  
+        // Add the chart image to the PDF
         pdf.addImage(imgData, 'PNG', 0, 150, canvas.width, canvas.height);
   
+        // Save the PDF
         pdf.save('chart.pdf');
       };
     }
