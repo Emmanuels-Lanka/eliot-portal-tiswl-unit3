@@ -92,7 +92,7 @@ const saveAsPDF = async () => {
       pdf.addImage(logo, 'PNG', logoX, logoY, logoWidth, logoHeight);
 
       // Set text color to blue
-      pdf.setTextColor(0, 0, 255); // RGB for blue
+      pdf.setTextColor(0,113,193); // RGB for blue
 
       // Set larger font size and align text with the logo
       pdf.setFontSize(24);

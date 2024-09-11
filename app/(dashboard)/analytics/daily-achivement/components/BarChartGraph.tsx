@@ -73,7 +73,7 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
 
   const [chartData, setChartData] = useState<BarchartData[]>([]);
 
-  const[chartWidth,setChartWidth] = useState<number>(100)
+  const[chartWidth,setChartWidth] = useState<number>(200)
 
   const chartRef = useRef<HTMLDivElement>(null);
 
@@ -177,18 +177,18 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
       logo.onload = () => {
         const logoWidth = 110;
         const logoHeight = 50;
-        const logoX = (canvas.width / 2) - (logoWidth + 100); // Adjust to place the logo before the text
+        const logoX = (canvas.width / 2) - (logoWidth + 150); // Adjust to place the logo before the text
         const logoY = 50;
   
         // Add the logo to the PDF
         pdf.addImage(logo, 'PNG', logoX, logoY, logoWidth, logoHeight);
   
         // Set text color to blue
-        pdf.setTextColor(0, 0, 255); // RGB for blue
+        pdf.setTextColor(0,113,193); // RGB for blue
   
         // Set larger font size and align text with the logo
         pdf.setFontSize(24);
-        pdf.text('Dashboard - Hourly Cycle Time vs Target SMV', logoX + logoWidth + 20, 83, { align: 'left' });
+        pdf.text('Dashboard -Target vs Actual - Production', logoX + logoWidth + 20, 83, { align: 'left' });
   
         // Add the chart image to the PDF
         pdf.addImage(imgData, 'PNG', 0, 150, canvas.width, canvas.height);
@@ -214,102 +214,7 @@ const saveAsExcel = () => {
 };
   
 
-// const handlePrint=()=>{
-//   const baseUrl = window.location.origin;
-//   const printContent = chartRef.current?.innerHTML;
-//   const date = new Date().toLocaleDateString('bn-BD', { timeZone: 'Asia/Dhaka' });
 
-//   const htmlContent = `
-//   <html>
-//   <head>
-//     <title>Target vs Actual - Production</title>
-//     <style>
-//       body {
-//         font-family: Arial, sans-serif;
-//         margin: 0;
-//         padding: 20px;
-//       }
-
-//       ChartContainer {
-//         width: 500%;
-//         margin: 0 auto;
-//         padding: 20px;
-//         box-sizing: border-box;
-//       }
-
-//       table {
-//         width: 500%;
-//         border-collapse: collapse;
-//         margin-top: 20px;
-//       }
-
-//       th, td {
-//         border: 1px solid #ddd;
-//         padding: 8px;
-//       }
-
-//       th {
-//         text-align: center;
-//         background-color: gray;
-//       }
-
-//       td {
-//         text-align: left;
-//       }
-
-//       .logo-div {
-//         display: flex;
-//         align-items: center;
-//         padding-top: 10px;
-//         padding-left: 20px;
-//       }
-
-//       .logo-div img {
-//         width: 170px;
-//         height: auto;
-//       }
-
-//       .text-center {
-//         font-size: 35px;
-//         margin-left: 10px;
-//       }
-
-//       .footer-logo img {
-//         width: 120px;
-//         height: auto;
-//       }
-
-//       p {
-//         font-size: 35px;
-//       }
-//     </style>
-//   </head>
-//   <body>
-//     <div class="logo-div">
-//       <img src="${baseUrl}/logo.png" alt="Logo"/>
-//       <p class="text-center">Target vs Actual - Production</p>
-//     </div>
-
-//     <hr />
-//     ${printContent}
-//   </body>
-// </html>
-//   `;
-
-//   const blob = new Blob([htmlContent], { type: 'text/html' });
-//   const url = URL.createObjectURL(blob);
-  
-//   const printWindow = window.open(url, '', 'width=800,height=600');
-  
-//   if (printWindow) {
-//     printWindow.onload = () => {
-//       printWindow.print();
-//       URL.revokeObjectURL(url);
-//     };
-//   } else {
-//     console.error("Failed to open print window");
-//   }
-// }
 
   return (
     <>
@@ -323,15 +228,10 @@ const saveAsExcel = () => {
 
 
       {chartData.length > 0 ? (
-        <Card className="pr-2 pt-6  border rounded-xl bg-slate-50 w-auto" style={{width:(chartWidth*1.5)+"%", height:chartWidth+"%"}}>
-          {/* <div className="px-8">
-            <CardHeader>
-              <CardTitle className="text-center">
-                {" "}
-                Daily Target vs Actual Production (LIVE Data)
-              </CardTitle>
-            </CardHeader>
-          </div> */}
+        
+        <div className=' pt-5 -pl-8 rounded-lg border w-full mb-16 overflow-x-auto'>
+        <Card className="pr-2 pt-6  border rounded-xl  w-auto" style={{width:(chartWidth*1.5)+"%"}}>
+         
           <CardContent>
             <ChartContainer
             ref={chartRef}
@@ -343,7 +243,7 @@ const saveAsExcel = () => {
                 accessibilityLayer
                 data={chartData}
                 margin={{
-                  top: 200,
+                  top: 20,
                   bottom: 200,
                 }}
 
@@ -399,22 +299,35 @@ const saveAsExcel = () => {
             </ChartContainer>
           </CardContent>
         </Card>
+        </div>
       ) : (
         <div className="mt-12 w-full">
           <p className="text-center text-slate-500">No Data Available...</p>
         </div>
       )
       }
-      {<div className="flex justify-center gap-2 mt-5 2xl:hidden block">
-
-<Button onClick={() => setChartWidth((p) => p + 20)} className="rounded-full bg-gray-300">+</Button>
-<Button onClick={() => setChartWidth((p) => p - 20)} className="rounded-full bg-gray-300"> -</Button>
-<div className='mb-3 '>
-            <Button type="button" className='mr-3' onClick={saveAsPDF}>Save as PDF</Button>
-            <Button type="button" onClick={saveAsExcel}>Save as Excel</Button>
+     {/* Button Section */}
+    {chartData.length > 0 && (
+      <div className="flex flex-col items-center mt-5">
+        <div className="flex gap-2">
+          <Button onClick={() => setChartWidth((p) => p + 20)} className="rounded-full bg-gray-300">
+            +
+          </Button>
+          <Button onClick={() => setChartWidth((p) => p - 20)} className="rounded-full bg-gray-300">
+            -
+          </Button>
         </div>
-</div>
-}
+
+        <div className="flex gap-3 mt-3">
+          <Button type="button" className="mr-3" onClick={saveAsPDF}>
+            Save as PDF
+          </Button>
+          <Button type="button" onClick={saveAsExcel}>
+            Save as Excel
+          </Button>
+        </div>
+      </div>
+    )}
     </>
   );
 };

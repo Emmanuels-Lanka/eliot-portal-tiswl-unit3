@@ -72,7 +72,7 @@ const BarChartGraphOpSmv = ({ date, obbSheetId }: BarChartGraphProps) => {
     const [chartData, setChartData] = useState<BarChartData[]>([])
     const [productionData, setProductionData] = useState<BarChartData[]>([]);
 
-    const[chartWidth,setChartWidth] = useState<number>(100)
+    const[chartWidth,setChartWidth] = useState<number>(130)
     const[isSubmitting,setisSubmitting]=useState<boolean>(false)
 
     const chartRef = useRef<HTMLDivElement>(null);
@@ -154,11 +154,11 @@ const saveAsPDF = async () => {
         pdf.addImage(logo, 'PNG', logoX, logoY, logoWidth, logoHeight);
   
         // Set text color to blue
-        pdf.setTextColor(0, 0, 255); // RGB for blue
+        pdf.setTextColor(0,113,193); // RGB for blue
   
         // Set larger font size and align text with the logo
-        pdf.setFontSize(24);
-        pdf.text('Dashboard - Hourly Cycle Time vs Target SMV', logoX + logoWidth + 20, 83, { align: 'left' });
+        pdf.setFontSize(30);
+        pdf.text('Dashboard -  SMV vs Cycle Time', logoX + logoWidth + 20, 83, { align: 'left' });
   
         // Add the chart image to the PDF
         pdf.addImage(imgData, 'PNG', 0, 150, canvas.width, canvas.height);

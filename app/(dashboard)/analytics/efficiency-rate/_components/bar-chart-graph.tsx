@@ -146,11 +146,11 @@ const BarChartGraphEfficiencyRate = ({ date, obbSheetId }: BarChartGraphProps) =
             pdf.addImage(logo, 'PNG', logoX, logoY, logoWidth, logoHeight);
       
             // Set text color to blue
-            pdf.setTextColor(0, 0, 255); // RGB for blue
+            pdf.setTextColor(0,113,193); // RGB for blue
       
             // Set larger font size and align text with the logo
             pdf.setFontSize(24);
-            pdf.text('Dashboard - Hourly Cycle Time vs Target SMV', logoX + logoWidth + 20, 83, { align: 'left' });
+            pdf.text('Dashboard - Overall Efficiency', logoX + logoWidth + 20, 83, { align: 'left' });
       
             // Add the chart image to the PDF
             pdf.addImage(imgData, 'PNG', 0, 150, canvas.width, canvas.height);
