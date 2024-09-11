@@ -139,26 +139,26 @@ const BarChartGraphEfficiencyRate = ({ date, obbSheetId }: BarChartGraphProps) =
           logo.onload = () => {
             const logoWidth = 110;
             const logoHeight = 50;
-            const logoX = (canvas.width / 2) - (logoWidth + 150); // Adjust to place the logo before the text
+            const logoX = (canvas.width / 2) - (logoWidth + 100); // Adjust to place the logo before the text
             const logoY = 50;
       
             // Add the logo to the PDF
             pdf.addImage(logo, 'PNG', logoX, logoY, logoWidth, logoHeight);
       
             // Set text color to blue
-            pdf.setTextColor(0, 113 ,193); // RGB for blue
+            pdf.setTextColor(0, 0, 255); // RGB for blue
       
             // Set larger font size and align text with the logo
-            pdf.setFontSize(30);
-            pdf.text('Dashboard - Overall Efficiency', logoX + logoWidth + 10, 83, { align: 'left' });
+            pdf.setFontSize(24);
+            pdf.text('Dashboard - Hourly Cycle Time vs Target SMV', logoX + logoWidth + 20, 83, { align: 'left' });
       
             // Add the chart image to the PDF
             pdf.addImage(imgData, 'PNG', 0, 150, canvas.width, canvas.height);
       
             // Save the PDF
             pdf.save('chart.pdf');
-          };
-        }
+          };
+        }
       };
 
     

@@ -39,7 +39,6 @@ import React, { useRef } from "react";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import * as XLSX from 'xlsx';
-import PDFExport from "@/components/dashboard/common/pdf-export";
 
 const chartConfig = {
   target: {
@@ -74,16 +73,11 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
 
   const [chartData, setChartData] = useState<BarchartData[]>([]);
 
-  const[chartWidth,setChartWidth] = useState<number>(380)
+  const[chartWidth,setChartWidth] = useState<number>(100)
 
   const chartRef = useRef<HTMLDivElement>(null);
 
   const[isSubmitting,setisSubmitting]=useState<boolean>(false)
-  const [isSavingPDF, setIsSavingPDF] = useState<boolean>(false);
-
-
-  const [textVisible, setTextVisible]=useState<boolean>(false)
-  const [btnVis, setBtnVis]=useState<boolean>(false)
 
   /////
   const handleFetchProductions = async () => {
@@ -165,100 +159,53 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
 
 
 
- 
-useEffect(() => {
+  const saveAsPDF = async () => {
+    if (chartRef.current) {
+      const canvas = await html2canvas(chartRef.current);
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF({
+        orientation: 'landscape',
+        unit: 'px',
+        format: [canvas.width, canvas.height + 150],
+      });
   
-  setTextVisible(true);
-
-}, [btnVis])
-
-
-
-//   const saveAsPDF = async () => {
-//     setIsSavingPDF(true)
-//     if (chartRef.current) {
-//         const canvas = await html2canvas(chartRef.current);
-//         const imgData = canvas.toDataURL('image/png');
-//         const pdf = new jsPDF({
-//             orientation: 'landscape',
-//             unit: 'px',
-//             format: [canvas.width, canvas.height],
-//         });
-//         pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
-//         pdf.save('chart.pdf');
-//     }
-//     setIsSavingPDF(false);
-    
-// };
-
-// const saveAsPDF = async () => {
-//   setIsSavingPDF(true);  // Show the title for PDF generation
-
-//   // Delay to ensure the text is rendered before capturing the canvas
-//   setTimeout(async () => {
-//     if (chartRef.current) {
-//       const canvas = await html2canvas(chartRef.current);
-//       const imgData = canvas.toDataURL("image/png");
-//       const pdf = new jsPDF({
-//         orientation: "landscape",
-//         unit: "px",
-//         format: [canvas.width, canvas.height],
-//       });
-
-     
-//       pdf.addImage(imgData, "PNG", 0, 0, canvas.width, canvas.height);
-//       pdf.setTextColor(0, 0, 255);
-//       pdf.setFontSize(24);
-//       pdf.text('Dashboard - Hourly Cycle Time vs Target SMV', 80, 40, { align: 'center' });
-//       pdf.save("chart.pdf");
-
-//       setIsSavingPDF(false);  // Hide the title after PDF is saved
-//     }
-//   }, 200); // Adjust the timeout if needed
-// };
-
-const saveAsPDF = async () => {
-  if (chartRef.current) {
-    const canvas = await html2canvas(chartRef.current);
-    const imgData = canvas.toDataURL('image/png');
-    const pdf = new jsPDF({
-      orientation: 'landscape',
-      unit: 'px',
-      format: [canvas.width, canvas.height + 150],
-    });
-
-    const baseUrl = window.location.origin;
-    const logoUrl = `${baseUrl}/logo.png`;
-
-    const logo = new Image();
-    logo.src = logoUrl;
-    logo.onload = () => {
-      const logoWidth = 110;
-      const logoHeight = 50;
-      const logoX = (canvas.width / 2) - (logoWidth + 250); // Adjust to place the logo before the text
-      const logoY = 50;
-
-      // Add the logo to the PDF
-      pdf.addImage(logo, 'PNG', logoX, logoY, logoWidth, logoHeight);
-
-      // Set text color to blue
-      pdf.setTextColor(0, 113 ,193); // RGB for blue
-
-      // Set larger font size and align text with the logo
-      pdf.setFontSize(30);
-      pdf.text('Dashboard - Target vs Actual - Production', logoX + logoWidth + 10, 83, { align: 'left' });
-
-      // Add the chart image to the PDF
-      pdf.addImage(imgData, 'PNG', 0, 150, canvas.width, canvas.height);
-
-      // Save the PDF
-      pdf.save('chart.pdf');
-    };
-  }
-};
+      const baseUrl = window.location.origin;
+      const logoUrl = `${baseUrl}/logo.png`;
+  
+      const logo = new Image();
+      logo.src = logoUrl;
+      logo.onload = () => {
+        const logoWidth = 110;
+        const logoHeight = 50;
+        const logoX = (canvas.width / 2) - (logoWidth + 100); // Adjust to place the logo before the text
+        const logoY = 50;
+  
+        // Add the logo to the PDF
+        pdf.addImage(logo, 'PNG', logoX, logoY, logoWidth, logoHeight);
+  
+        // Set text color to blue
+        pdf.setTextColor(0, 0, 255); // RGB for blue
+  
+        // Set larger font size and align text with the logo
+        pdf.setFontSize(24);
+        pdf.text('Dashboard - Hourly Cycle Time vs Target SMV', logoX + logoWidth + 20, 83, { align: 'left' });
+  
+        // Add the chart image to the PDF
+        pdf.addImage(imgData, 'PNG', 0, 150, canvas.width, canvas.height);
+  
+        // Save the PDF
+        pdf.save('chart.pdf');
+      };
+    }
+  };
+  
 
 
 //create Excel sheet
+
+
+
+
 const saveAsExcel = () => {
     const worksheet = XLSX.utils.json_to_sheet(chartData);
     const workbook = XLSX.utils.book_new();
@@ -266,6 +213,103 @@ const saveAsExcel = () => {
     XLSX.writeFile(workbook, `chart-data.xlsx`);
 };
   
+
+// const handlePrint=()=>{
+//   const baseUrl = window.location.origin;
+//   const printContent = chartRef.current?.innerHTML;
+//   const date = new Date().toLocaleDateString('bn-BD', { timeZone: 'Asia/Dhaka' });
+
+//   const htmlContent = `
+//   <html>
+//   <head>
+//     <title>Target vs Actual - Production</title>
+//     <style>
+//       body {
+//         font-family: Arial, sans-serif;
+//         margin: 0;
+//         padding: 20px;
+//       }
+
+//       ChartContainer {
+//         width: 500%;
+//         margin: 0 auto;
+//         padding: 20px;
+//         box-sizing: border-box;
+//       }
+
+//       table {
+//         width: 500%;
+//         border-collapse: collapse;
+//         margin-top: 20px;
+//       }
+
+//       th, td {
+//         border: 1px solid #ddd;
+//         padding: 8px;
+//       }
+
+//       th {
+//         text-align: center;
+//         background-color: gray;
+//       }
+
+//       td {
+//         text-align: left;
+//       }
+
+//       .logo-div {
+//         display: flex;
+//         align-items: center;
+//         padding-top: 10px;
+//         padding-left: 20px;
+//       }
+
+//       .logo-div img {
+//         width: 170px;
+//         height: auto;
+//       }
+
+//       .text-center {
+//         font-size: 35px;
+//         margin-left: 10px;
+//       }
+
+//       .footer-logo img {
+//         width: 120px;
+//         height: auto;
+//       }
+
+//       p {
+//         font-size: 35px;
+//       }
+//     </style>
+//   </head>
+//   <body>
+//     <div class="logo-div">
+//       <img src="${baseUrl}/logo.png" alt="Logo"/>
+//       <p class="text-center">Target vs Actual - Production</p>
+//     </div>
+
+//     <hr />
+//     ${printContent}
+//   </body>
+// </html>
+//   `;
+
+//   const blob = new Blob([htmlContent], { type: 'text/html' });
+//   const url = URL.createObjectURL(blob);
+  
+//   const printWindow = window.open(url, '', 'width=800,height=600');
+  
+//   if (printWindow) {
+//     printWindow.onload = () => {
+//       printWindow.print();
+//       URL.revokeObjectURL(url);
+//     };
+//   } else {
+//     console.error("Failed to open print window");
+//   }
+// }
 
   return (
     <>
@@ -275,37 +319,32 @@ const saveAsExcel = () => {
        </div>
     
     
-        {/* <div className='mb-3'>
-            <Button type="button" className='mr-3' onClick={saveAsPDF}>Save as PDF</Button>
-            <Button type="button" onClick={saveAsExcel}>Save as Excel</Button>
-        </div> */}
+       
 
 
-<div className=' pt-5 -pl-8 rounded-lg border w-full mb-16 overflow-x-auto'>
-   
       {chartData.length > 0 ? (
-        <Card className="pr-2 pt-6   w-auto"   >
-         {isSavingPDF && ( 
-            <div className="px-8">
-              <CardHeader>
-                <CardTitle className="text-center">Target vs Actual Production</CardTitle>
-              </CardHeader>
-            </div>
-          )}
+        <Card className="pr-2 pt-6  border rounded-xl bg-slate-50 w-auto" style={{width:(chartWidth*1.5)+"%", height:chartWidth+"%"}}>
+          {/* <div className="px-8">
+            <CardHeader>
+              <CardTitle className="text-center">
+                {" "}
+                Daily Target vs Actual Production (LIVE Data)
+              </CardTitle>
+            </CardHeader>
+          </div> */}
           <CardContent>
-            <ChartContainer ref={chartRef}
-            
+            <ChartContainer
+            ref={chartRef}
               config={chartConfig}
               className=" max-h-screen  min-h-[300px] w-full " 
               style={{width:chartWidth+"%", height:chartWidth+"%"}} 
             >
-              
               <BarChart
                 accessibilityLayer
                 data={chartData}
                 margin={{
-                  top: 20,
-                  bottom: 250,
+                  top: 200,
+                  bottom: 200,
                 }}
 
               >
@@ -360,39 +399,13 @@ const saveAsExcel = () => {
             </ChartContainer>
           </CardContent>
         </Card>
-        
       ) : (
         <div className="mt-12 w-full">
           <p className="text-center text-slate-500">No Data Available...</p>
         </div>
       )
       }
-      </div>
-      {chartData.length > 0 && (
-      <div className="flex flex-col items-center mt-5">
-        <div className="flex gap-2">
-          <Button onClick={() => setChartWidth((p) => p + 20)} className="rounded-full bg-gray-300">
-            +
-          </Button>
-          <Button onClick={() => setChartWidth((p) => p - 20)} className="rounded-full bg-gray-300">
-            -
-          </Button>
-        </div>
-
-        <div className="flex gap-3 mt-3">
-          <Button type="button" className="mr-3" onClick={saveAsPDF}>
-            Save as PDF
-          </Button>
-          <Button type="button" onClick={saveAsExcel}>
-            Save as Excel
-          </Button>
-        </div>
-      </div>
-    )}
-
-
-
-      {/* {<div className="flex justify-center gap-2 mt-5 2xl:hidden block">
+      {<div className="flex justify-center gap-2 mt-5 2xl:hidden block">
 
 <Button onClick={() => setChartWidth((p) => p + 20)} className="rounded-full bg-gray-300">+</Button>
 <Button onClick={() => setChartWidth((p) => p - 20)} className="rounded-full bg-gray-300"> -</Button>
@@ -400,9 +413,8 @@ const saveAsExcel = () => {
             <Button type="button" className='mr-3' onClick={saveAsPDF}>Save as PDF</Button>
             <Button type="button" onClick={saveAsExcel}>Save as Excel</Button>
         </div>
-
 </div>
-} */}
+}
     </>
   );
 };

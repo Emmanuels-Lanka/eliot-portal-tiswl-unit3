@@ -175,9 +175,7 @@ const ReportTable = ({ obbSheets }: AnalyticsChartProps) => {
     console.error("Failed to open print window");
   }
 };
-
-  
-  
+ 
   
   
   

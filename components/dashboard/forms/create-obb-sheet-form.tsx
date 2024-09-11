@@ -60,6 +60,8 @@ const formSchema = z.object({
         message: "Supervisor is required"
     }),
     supervisor2: z.string().nullable(),
+    supervisor3: z.string().nullable(),
+    supervisor4: z.string().nullable(),
     mechanic: z.string().min(1, {
         message: "Mechanic is required"
     }),
@@ -130,6 +132,8 @@ const CreateObbSheetForm = ({
             indEngineer: initialData?.indEngineerId || "",
             supervisor1: initialData?.supervisorFrontId || "",
             supervisor2: initialData?.supervisorBackId || "",
+            supervisor3:initialData?. supervisorAssemblyId || "",
+            supervisor4:initialData?. supervisorLineEndId || "",
             mechanic: initialData?.mechanicId || "",
             qualityIns: initialData?.qualityInsId || "",
             accInputMan: initialData?.accInputManId || "",
@@ -310,7 +314,7 @@ const CreateObbSheetForm = ({
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel className="text-sm">
-                                            Responsible Supervisor 1
+                                        supervisorFront
                                         </FormLabel>
                                         <Select 
                                             onValueChange={(value) => {
@@ -340,7 +344,73 @@ const CreateObbSheetForm = ({
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel className="text-sm">
-                                            Responsible Supervisor 2
+                                        supervisorBack
+                                        </FormLabel>
+                                        <Select onValueChange={field.onChange} defaultValue={field.value || undefined}>
+                                            <FormControl>
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Select an option" />
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                                {supervisor && 
+                                                    supervisor.map((sup) => {
+                                                        if (sup.id === selectedSupervisor) {
+                                                            return null;
+                                                        }
+                                                        return (
+                                                            <SelectItem key={sup.id} value={sup.id}>
+                                                                {sup.name}
+                                                            </SelectItem>
+                                                        )
+                                                    })
+                                                }
+                                            </SelectContent>
+                                        </Select>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+
+                     <FormField control={form.control}
+                                name="supervisor3"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel className="text-sm">
+                                        supervisorAssembly
+                                        </FormLabel>
+                                        <Select onValueChange={field.onChange} defaultValue={field.value || undefined}>
+                                            <FormControl>
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Select an option" />
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                                {supervisor && 
+                                                    supervisor.map((sup) => {
+                                                        if (sup.id === selectedSupervisor) {
+                                                            return null;
+                                                        }
+                                                        return (
+                                                            <SelectItem key={sup.id} value={sup.id}>
+                                                                {sup.name}
+                                                            </SelectItem>
+                                                        )
+                                                    })
+                                                }
+                                            </SelectContent>
+                                        </Select>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+
+                      <FormField  control={form.control}
+                                name="supervisor4"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel className="text-sm">
+                                        supervisorLineEnd
                                         </FormLabel>
                                         <Select onValueChange={field.onChange} defaultValue={field.value || undefined}>
                                             <FormControl>

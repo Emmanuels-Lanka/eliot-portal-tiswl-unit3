@@ -85,27 +85,31 @@ const saveAsPDF = async () => {
     logo.onload = () => {
       const logoWidth = 110;
       const logoHeight = 50;
-      const logoX = (canvas.width / 2) - (logoWidth + 250); // Adjust to place the logo before the text
+      const logoX = (canvas.width / 2) - (logoWidth + 100); // Adjust to place the logo before the text
       const logoY = 50;
 
       // Add the logo to the PDF
       pdf.addImage(logo, 'PNG', logoX, logoY, logoWidth, logoHeight);
 
       // Set text color to blue
-      pdf.setTextColor(0, 113 ,193); // RGB for blue
+      pdf.setTextColor(0, 0, 255); // RGB for blue
 
       // Set larger font size and align text with the logo
-      pdf.setFontSize(30);
-      pdf.text('Dashboard - Hourly Cycle Time vs Target SMV ', logoX + logoWidth + 20, 83, { align: 'left' });
+      pdf.setFontSize(24);
+      pdf.text('Dashboard - Hourly Cycle Time vs Target SMV', logoX + logoWidth + 20, 83, { align: 'left' });
 
       // Add the chart image to the PDF
       pdf.addImage(imgData, 'PNG', 0, 150, canvas.width, canvas.height);
 
       // Save the PDF
       pdf.save('chart.pdf');
-    };
-  }
+    };
+  }
 };
+
+
+
+
 
 
 //create Excel sheet
@@ -196,28 +200,18 @@ const saveAsExcel = () => {
             </ChartContainer>
           </CardContent>
         </Card>
-        {chartData.length > 0 && (
-      <div className="flex flex-col items-center mt-5">
-        <div className="flex gap-2">
-          <Button onClick={() => setChartWidth((p) => p + 20)} className="rounded-full bg-gray-300">
-            +
-          </Button>
-          <Button onClick={() => setChartWidth((p) => p - 20)} className="rounded-full bg-gray-300">
-            -
-          </Button>
-        </div>
-
-        <div className="flex gap-3 mt-3">
-          <Button type="button" className="mr-3" onClick={saveAsPDF}>
-            Save as PDF
-          </Button>
-          <Button type="button" onClick={saveAsExcel}>
-            Save as Excel
-          </Button>
-        </div>
-      </div>
-    )}
-       
+        
+                <div className="flex justify-center gap-2 mt-5">
+                  <div className="mb-3 ">
+                    <Button type="button" className="mr-3" onClick={saveAsPDF}>
+                      Save as PDF
+                    </Button>
+                    <Button type="button" onClick={saveAsExcel}>
+                      Save as Excel
+                    </Button>
+                  </div>
+                </div>
+              
       </>
     );
 }
