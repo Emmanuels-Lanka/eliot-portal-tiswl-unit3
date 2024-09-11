@@ -80,7 +80,7 @@ const BarChartGraphEfficiencyRate = ({ date, obbSheetId }: BarChartGraphProps) =
 
            
             const chartData: BarChartData[] = prod.map((item,index) => ({
-                name:item.name+" - "+item.seqNo,
+                name:item.name,
                
                 count: item.count,
                 target: item.target * workingHrs,
@@ -123,17 +123,43 @@ const BarChartGraphEfficiencyRate = ({ date, obbSheetId }: BarChartGraphProps) =
     //create pdf
     const saveAsPDF = async () => {
         if (chartRef.current) {
-            const canvas = await html2canvas(chartRef.current);
-            const imgData = canvas.toDataURL('image/png');
-            const pdf = new jsPDF({
-                orientation: 'landscape',
-                unit: 'px',
-                format: [canvas.width, canvas.height],
-            });
-            pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
+          const canvas = await html2canvas(chartRef.current);
+          const imgData = canvas.toDataURL('image/png');
+          const pdf = new jsPDF({
+            orientation: 'landscape',
+            unit: 'px',
+            format: [canvas.width, canvas.height + 150],
+          });
+      
+          const baseUrl = window.location.origin;
+          const logoUrl = `${baseUrl}/logo.png`;
+      
+          const logo = new Image();
+          logo.src = logoUrl;
+          logo.onload = () => {
+            const logoWidth = 110;
+            const logoHeight = 50;
+            const logoX = (canvas.width / 2) - (logoWidth + 150); // Adjust to place the logo before the text
+            const logoY = 50;
+      
+            // Add the logo to the PDF
+            pdf.addImage(logo, 'PNG', logoX, logoY, logoWidth, logoHeight);
+      
+            // Set text color to blue
+            pdf.setTextColor(0, 113 ,193); // RGB for blue
+      
+            // Set larger font size and align text with the logo
+            pdf.setFontSize(30);
+            pdf.text('Dashboard - Overall Efficiency', logoX + logoWidth + 10, 83, { align: 'left' });
+      
+            // Add the chart image to the PDF
+            pdf.addImage(imgData, 'PNG', 0, 150, canvas.width, canvas.height);
+      
+            // Save the PDF
             pdf.save('chart.pdf');
-        }
-    };
+          };
+        }
+      };
 
     
 //create Excel sheet
@@ -152,21 +178,14 @@ const BarChartGraphEfficiencyRate = ({ date, obbSheetId }: BarChartGraphProps) =
        </div>
     
     
-        <div className='mb-3 '>
-            <Button type="button" className='mr-3' onClick={saveAsPDF}>Save as PDF</Button>
-            <Button type="button" onClick={saveAsExcel}>Save as Excel</Button>
-        </div>
+       
 
             {chartData.length > 0 ?
                     // <div className='bg-slate-100 pt-5 -pl-8 rounded-lg border w-full mb-16 overflow-x-auto'>
 
                 <div className='bg-slate-50 pt-5 -pl-8 rounded-lg border w-full mb-16 overflow-x-auto'>
                 <Card className='pr-2 pt-1 pb-2 border rounded-xl bg-slate-50 w-11/12' >
-                <h1 className='text-2xl font-semibold m-12'>  Overall Efficiency Data</h1>
-                    {/* <CardTitle className="text-center">
-                {" "}
-                Overall Efficiency Data
-              </CardTitle> */}
+               
                     <CardContent>
                         {/* <ChartContainer config={chartConfig} className={`min-h-[300px] max-h-[600px] w-[${chartWidth.toString()}%]`}> */}
                         <ChartContainer 
@@ -230,12 +249,27 @@ const BarChartGraphEfficiencyRate = ({ date, obbSheetId }: BarChartGraphProps) =
                     <p className="text-center text-slate-500">No Data Available.</p>
                 </div>
             }
-            <div className="flex justify-center gap-2 mt-5 ">
+           {chartData.length > 0 && (
+      <div className="flex flex-col items-center mt-5">
+        <div className="flex gap-2">
+          <Button onClick={() => setChartWidth((p) => p + 20)} className="rounded-full bg-gray-300">
+            +
+          </Button>
+          <Button onClick={() => setChartWidth((p) => p - 20)} className="rounded-full bg-gray-300">
+            -
+          </Button>
+        </div>
 
-                <Button onClick={() => setChartWidth((p) => p + 20)} className="rounded-full bg-gray-300"><FaPlus size={12} color="#007bff" /></Button>
-                <Button onClick={() => setChartWidth((p) => p - 20)} className="rounded-full bg-gray-300"> <FaMinus size={12} color="#007bff" /></Button>
-
-            </div>
+        <div className="flex gap-3 mt-3">
+          <Button type="button" className="mr-3" onClick={saveAsPDF}>
+            Save as PDF
+          </Button>
+          <Button type="button" onClick={saveAsExcel}>
+            Save as Excel
+          </Button>
+        </div>
+      </div>
+    )}
             
         </>
     )
