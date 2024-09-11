@@ -360,6 +360,7 @@ const saveAsExcel = () => {
             </ChartContainer>
           </CardContent>
         </Card>
+        
       ) : (
         <div className="mt-12 w-full">
           <p className="text-center text-slate-500">No Data Available...</p>
@@ -367,7 +368,31 @@ const saveAsExcel = () => {
       )
       }
       </div>
-      {<div className="flex justify-center gap-2 mt-5 2xl:hidden block">
+      {chartData.length > 0 && (
+      <div className="flex flex-col items-center mt-5">
+        <div className="flex gap-2">
+          <Button onClick={() => setChartWidth((p) => p + 20)} className="rounded-full bg-gray-300">
+            +
+          </Button>
+          <Button onClick={() => setChartWidth((p) => p - 20)} className="rounded-full bg-gray-300">
+            -
+          </Button>
+        </div>
+
+        <div className="flex gap-3 mt-3">
+          <Button type="button" className="mr-3" onClick={saveAsPDF}>
+            Save as PDF
+          </Button>
+          <Button type="button" onClick={saveAsExcel}>
+            Save as Excel
+          </Button>
+        </div>
+      </div>
+    )}
+
+
+
+      {/* {<div className="flex justify-center gap-2 mt-5 2xl:hidden block">
 
 <Button onClick={() => setChartWidth((p) => p + 20)} className="rounded-full bg-gray-300">+</Button>
 <Button onClick={() => setChartWidth((p) => p - 20)} className="rounded-full bg-gray-300"> -</Button>
@@ -377,7 +402,7 @@ const saveAsExcel = () => {
         </div>
 
 </div>
-}
+} */}
     </>
   );
 };
