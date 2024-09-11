@@ -29,7 +29,7 @@ import {
 import { Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import * as XLSX from 'xlsx';
@@ -61,20 +61,50 @@ const SmvBarChart = ({
     }));
 
 
+    const[chartWidth,setChartWidth] = useState<number>(100)
+
+
+
     
 //create pdf
 const saveAsPDF = async () => {
-    if (chartRef.current) {
-        const canvas = await html2canvas(chartRef.current);
-        const imgData = canvas.toDataURL('image/png');
-        const pdf = new jsPDF({
-            orientation: 'landscape',
-            unit: 'px',
-            format: [canvas.width, canvas.height],
-        });
-        pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
-        pdf.save('chart.pdf');
-    }
+  if (chartRef.current) {
+    const canvas = await html2canvas(chartRef.current);
+    const imgData = canvas.toDataURL('image/png');
+    const pdf = new jsPDF({
+      orientation: 'landscape',
+      unit: 'px',
+      format: [canvas.width, canvas.height + 150],
+    });
+
+    const baseUrl = window.location.origin;
+    const logoUrl = `${baseUrl}/logo.png`;
+
+    const logo = new Image();
+    logo.src = logoUrl;
+    logo.onload = () => {
+      const logoWidth = 110;
+      const logoHeight = 50;
+      const logoX = (canvas.width / 2) - (logoWidth + 250); // Adjust to place the logo before the text
+      const logoY = 50;
+
+      // Add the logo to the PDF
+      pdf.addImage(logo, 'PNG', logoX, logoY, logoWidth, logoHeight);
+
+      // Set text color to blue
+      pdf.setTextColor(0, 113 ,193); // RGB for blue
+
+      // Set larger font size and align text with the logo
+      pdf.setFontSize(30);
+      pdf.text('Dashboard - Hourly Cycle Time vs Target SMV ', logoX + logoWidth + 20, 83, { align: 'left' });
+
+      // Add the chart image to the PDF
+      pdf.addImage(imgData, 'PNG', 0, 150, canvas.width, canvas.height);
+
+      // Save the PDF
+      pdf.save('chart.pdf');
+    };
+  }
 };
 
 
@@ -101,6 +131,7 @@ const saveAsExcel = () => {
               ref={chartRef}
               config={chartConfig}
               className="min-h-[576px] w-full"
+              style={{width:chartWidth+"%"}} 
             >
               <BarChart
                 accessibilityLayer
@@ -165,18 +196,28 @@ const saveAsExcel = () => {
             </ChartContainer>
           </CardContent>
         </Card>
-        {
-                <div className="flex justify-center gap-2 mt-5 2xl:hidden block">
-                  <div className="mb-3 ">
-                    <Button type="button" className="mr-3" onClick={saveAsPDF}>
-                      Save as PDF
-                    </Button>
-                    <Button type="button" onClick={saveAsExcel}>
-                      Save as Excel
-                    </Button>
-                  </div>
-                </div>
-              }
+        {chartData.length > 0 && (
+      <div className="flex flex-col items-center mt-5">
+        <div className="flex gap-2">
+          <Button onClick={() => setChartWidth((p) => p + 20)} className="rounded-full bg-gray-300">
+            +
+          </Button>
+          <Button onClick={() => setChartWidth((p) => p - 20)} className="rounded-full bg-gray-300">
+            -
+          </Button>
+        </div>
+
+        <div className="flex gap-3 mt-3">
+          <Button type="button" className="mr-3" onClick={saveAsPDF}>
+            Save as PDF
+          </Button>
+          <Button type="button" onClick={saveAsExcel}>
+            Save as Excel
+          </Button>
+        </div>
+      </div>
+    )}
+       
       </>
     );
 }

@@ -222,6 +222,7 @@ const saveAsExcel = () => {
             <Button type="button" onClick={saveAsExcel}>Save as Excel</Button>
         </div> */}
 
+<div className=' pt-5 -pl-8 rounded-lg border w-full mb-16 overflow-x-auto'>
 
       {chartData.length > 0 ? (
         <Card className="pr-2 pt-6  border rounded-xl  w-auto" >
@@ -306,6 +307,7 @@ const saveAsExcel = () => {
         </div>
       )
       }
+</div>
        {chartData.length > 0 && (
       <div className="flex flex-col items-center mt-5">
         <div className="flex gap-2">

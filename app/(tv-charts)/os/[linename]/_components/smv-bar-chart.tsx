@@ -203,8 +203,8 @@ const renderCustomLabel = ({ x, y, width, value, index }: any) => {
 
 
 
-        <div className=' pt-5 -pl-8  bg-slate-50 rounded-lg border w-full mb-16 overflow-x-auto'>
-        <Card className='pr-2 pt-6 pb-4 border rounded-xl bg-slate-50 w-fit'style={{width:chartWidth*2+"%"}} >
+        <div className=' pt-28 -pl-8   '>
+        <Card className='pr-2 pt-6 pb-4 border rounded-xl  w-fit' >
             {/* <div className="px-8">
                 <CardHeader>
                     <CardTitle>SMV vs Cycle Time</CardTitle>
@@ -212,7 +212,7 @@ const renderCustomLabel = ({ x, y, width, value, index }: any) => {
                 </CardHeader>
             </div> */}
             <CardContent className="w-auto h-auto" style={{width:chartWidth+"%"}}  >
-                <ChartContainer ref={chartRef} config={chartConfig} className="min-h-[300px] max-h-[800px]w-auto"  style={{width:chartWidth+"%", height:1000}} >
+                <ChartContainer ref={chartRef} config={chartConfig} className="min-h-[300px] w-auto"  style={{width:chartWidth+"%", height:1500}} >
                     <BarChart 
                         accessibilityLayer 
                         data={chartData}
@@ -221,6 +221,7 @@ const renderCustomLabel = ({ x, y, width, value, index }: any) => {
                             bottom: 400
                         }}
                         startAngle={10}
+                        // barCategoryGap={50}
                     >
                         <CartesianGrid vertical={false} />
                         <YAxis
@@ -253,7 +254,7 @@ const renderCustomLabel = ({ x, y, width, value, index }: any) => {
                             margin={{top:10}}
                                 
                         />
-                        <Bar dataKey="smv" fill="var(--color-smv)" radius={5} barSize={5}>
+                        <Bar dataKey="smv" fill="var(--color-smv)" radius={5} barSize={5} >
                             <LabelList
                                 position="top"
                                 // content={renderCustomLabel}
@@ -263,7 +264,7 @@ const renderCustomLabel = ({ x, y, width, value, index }: any) => {
                                 fontFamily="Inter"
                             />
                         </Bar>
-                         <Bar dataKey="avg" fill="var(--color-avg)" radius={5} barSize={5}>
+                         <Bar dataKey="avg" fill="var(--color-avg)" radius={5} barSize={5} >
                             <LabelList
                                 position="top"
                                 offset={12}
@@ -287,7 +288,7 @@ const renderCustomLabel = ({ x, y, width, value, index }: any) => {
             </CardContent>
         </Card>
         </div>
-        {chartData.length > 0 && (
+        {/* {chartData.length > 0 && (
       <div className="flex flex-col items-center mt-5">
         <div className="flex gap-2">
           <Button onClick={() => setChartWidth((p) => p + 20)} className="rounded-full bg-gray-300">
@@ -307,7 +308,7 @@ const renderCustomLabel = ({ x, y, width, value, index }: any) => {
           </Button>
         </div>
       </div>
-    )}
+    )} */}
 
      
         </>

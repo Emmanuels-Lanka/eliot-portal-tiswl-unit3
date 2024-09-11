@@ -164,16 +164,11 @@ const EfficiencyAnalyticsChart = ({ linename }: { linename: string }) => {
       },[filterApplied])
     return (
         <>
-            {/* <div className="mx-auto max-w-7xl">
-                <SelectObbSheetAndDate 
-                    obbSheets={obbSheets}
-                    handleSubmit={Fetchdata}
-                />
-            </div> */}
+            
 
             <div className="mx-auto max-w-[1680px]">
             <div className='flex justify-center items-center gap-3'>
-        {/* <Cog className='w-7 h-7 text-voilet' /> */}
+
         <LogoImporter/>
         <h1 className='text-[#0071c1] my-4 text-3xl '>Dashboard - Overall Efficiency {linename}</h1>
       </div>
