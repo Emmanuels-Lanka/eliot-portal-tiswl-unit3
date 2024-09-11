@@ -65,7 +65,7 @@ const AnalyticsChart = ({ linename }: { linename: string }) => {
   
    const date =  yyyyMMdd.toString()+"%"
     setDate(date)
-    console.log("date",date)
+    console.log("Build done")
 
   }, [])
 
