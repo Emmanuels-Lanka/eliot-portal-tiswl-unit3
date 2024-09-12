@@ -39,9 +39,9 @@ model Staff {
   indEngineer        ObbSheet[]     @relation("IndEngineer")
   mechanic           ObbSheet[]     @relation("Mechanic")
   qualityIns         ObbSheet[]     @relation("QI")
-  supervisorFront    ObbSheet[]     @relation("front")
-  supervisorBack     ObbSheet[]     @relation("back")
   supervisorAssembly ObbSheet[]     @relation("assembly")
+  supervisorBack     ObbSheet[]     @relation("back")
+  supervisorFront    ObbSheet[]     @relation("front")
   supervisorLineEnd  ObbSheet[]     @relation("line-end")
   staffSessions      StaffSession[]
 }
@@ -131,10 +131,6 @@ model ObbSheet {
   productionLineId     String
   unitId               String
   indEngineerId        String?
-  supervisorFrontId    String?
-  supervisorBackId     String?
-  supervisorAssemblyId String?
-  supervisorLineEndId  String?
   mechanicId           String?
   qualityInsId         String?
   accInputManId        String?
@@ -166,6 +162,10 @@ model ObbSheet {
   createdAt            DateTime       @default(now())
   updatedAt            DateTime       @updatedAt
   isActive             Boolean        @default(false)
+  supervisorAssemblyId String?
+  supervisorBackId     String?
+  supervisorFrontId    String?
+  supervisorLineEndId  String?
   obbOperations        ObbOperation[]
   accInputMan          Staff?         @relation("AccInputMan", fields: [accInputManId], references: [id])
   fabInputMan          Staff?         @relation("FabricInputMan", fields: [fabInputManId], references: [id])
@@ -173,9 +173,9 @@ model ObbSheet {
   mechanic             Staff?         @relation("Mechanic", fields: [mechanicId], references: [id])
   productionLine       ProductionLine @relation(fields: [productionLineId], references: [id], onDelete: Cascade)
   qualityIns           Staff?         @relation("QI", fields: [qualityInsId], references: [id])
-  supervisorFront      Staff?         @relation("front", fields: [supervisorFrontId], references: [id])
-  supervisorBack       Staff?         @relation("back", fields: [supervisorBackId], references: [id])
   supervisorAssembly   Staff?         @relation("assembly", fields: [supervisorAssemblyId], references: [id])
+  supervisorBack       Staff?         @relation("back", fields: [supervisorBackId], references: [id])
+  supervisorFront      Staff?         @relation("front", fields: [supervisorFrontId], references: [id])
   supervisorLineEnd    Staff?         @relation("line-end", fields: [supervisorLineEndId], references: [id])
   unit                 Unit           @relation(fields: [unitId], references: [id], onDelete: Cascade)
 

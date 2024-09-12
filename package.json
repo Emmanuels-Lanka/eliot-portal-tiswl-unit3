@@ -30,6 +30,7 @@
     "@types/cookie": "^0.6.0",
     "@types/jsonwebtoken": "^9.0.6",
     "@types/node": "^20.12.8",
+    "@yudiel/react-qr-scanner": "^2.0.8",
     "apexcharts": "^3.52.0",
     "autoprefixer": "^10.0.1",
     "axios": "^1.6.7",

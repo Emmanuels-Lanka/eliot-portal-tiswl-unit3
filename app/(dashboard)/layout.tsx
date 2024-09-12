@@ -25,6 +25,8 @@ const DashboardLayout = ({
         
     if (verified.role === 'quality-controller') {
         return redirect('/qc-dashboard');
+    } else if (verified.role === 'roming-quality-inspector') {
+        return redirect('/roaming-qc');
     } else {
         return (
             <div className="h-screen w-full">
