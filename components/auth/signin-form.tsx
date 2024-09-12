@@ -72,7 +72,7 @@ const SignInForm = () => {
     }
 
     return (
-        <div className="mx-auto max-w-2xl border px-12 pt-8 pb-12 rounded-xl shadow-xl bg-white">
+        <div className="mx-auto max-w-2xl border px-8 md:px-12 pt-8 pb-12 rounded-xl shadow-xl bg-white">
             <div className="w-full mb-8 flex flex-col justify-center items-center">
                 <Image 
                     src="/eliot-logo.png"
