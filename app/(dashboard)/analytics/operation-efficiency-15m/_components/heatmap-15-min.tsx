@@ -86,7 +86,7 @@ const HmapChart15Compo = ({
     const [EliotDeviceList, setEliotDeviceList] = useState<any[]>([]);
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
     const [eliotIdList, seteliotIdList] = useState<any[]>([])
-    const [chartWidth, setChartWidth] = useState<number>(3000)
+    const [chartWidth, setChartWidth] = useState<number>(4500)
     const [timeList, settimeList] = useState<string>("")
 
 
@@ -265,7 +265,7 @@ const HmapChart15Compo = ({
     }, [obbSheetId, date])
 
     const totalCount = Object.keys(timeList).reduce((acc, curr) => acc + curr.length, 0);
-    const height: string = totalCount < 50 ? '430%' : totalCount < 60 ? '300%' : '500%';
+    const height: string = totalCount < 20 ? '220%' :totalCount < 50 ? '430%' : totalCount < 60 ? '300%' : '500%';
     return (
         <>
 

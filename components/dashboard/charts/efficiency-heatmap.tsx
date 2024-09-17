@@ -106,7 +106,7 @@ const EffiencyHeatmap = ({
         },
     };
 
-    const width: string = heatmapData.categories.length < 21 ? '100%' : heatmapData.categories.length < 30 ? '150%' : '350%';
+    const width: string = heatmapData.categories.length < 15 ? '100%' :heatmapData.categories.length < 21 ? '100%' : heatmapData.categories.length < 30 ? '100%' : '500%';
 
     return (
         <div className='bg-slate-100 pt-5 pl-8 rounded-lg border w-full mb-16 overflow-x-auto'>
