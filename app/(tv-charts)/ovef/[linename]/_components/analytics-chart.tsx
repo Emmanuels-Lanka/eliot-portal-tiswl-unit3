@@ -170,7 +170,7 @@ const EfficiencyAnalyticsChart = ({ linename }: { linename: string }) => {
             <div className='flex justify-center items-center gap-3'>
 
         <LogoImporter/>
-        <h1 className='text-[#0071c1] my-4 text-3xl '>Dashboard - Overall Efficiency {linename}</h1>
+        <h1 className='text-[#0071c1] my-4 text-3xl '>Dashboard - Overall Operation Efficiency {linename}</h1>
       </div>
                 {obbSheetId.length > 0 ?
                     <div className="my-8">

@@ -150,7 +150,7 @@ const BarChartGraphEfficiencyRate = ({ date, obbSheetId }: BarChartGraphProps) =
       
             // Set larger font size and align text with the logo
             pdf.setFontSize(24);
-            pdf.text('Dashboard - Overall Efficiency', logoX + logoWidth + 20, 83, { align: 'left' });
+            pdf.text('Dashboard - Overall Operation Efficiency', logoX + logoWidth + 20, 83, { align: 'left' });
       
             // Add the chart image to the PDF
             pdf.addImage(imgData, 'PNG', 0, 150, canvas.width, canvas.height);
