@@ -15,7 +15,11 @@ import { geOperatorList, getOperatorEfficiencyData15M } from "./actions";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
-
+import  { useRef } from "react";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
+import * as XLSX from 'xlsx';
+// import { Button } from "@/components/ui/button";
 
 
 interface AnalyticsChartProps {
@@ -52,6 +56,9 @@ const efficiencyLow = 5
 const efficiencyHigh = 50
 
 
+
+
+
 const ensureAllCategoriesHaveData = (series: any, categories: any, defaultValue = -1) => {
     console.log("categories", categories)
     return series.map((serie: any) => {
@@ -85,6 +92,8 @@ const HmapChart15Compo = ({
     const [timeList, settimeList] = useState<string>("")
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
 
+    const chartRef = useRef<HTMLDivElement>(null);
+    const [chartData, setChartData] = useState<any>([]);
 
 
 
@@ -246,8 +255,96 @@ const HmapChart15Compo = ({
     }, [obbSheetId, date])
 
     //const height: string = timeList.length < 21 ? '200%' : timeList.length < 30 ? '300%' : '500%';
-    const totalCount = Object.keys(timeList).reduce((acc, curr) => acc + curr.length, 0);
-    const height: string = totalCount < 21 ? '200%' : totalCount < 30 ? '300%' : '500%';
+    // const totalCount = Object.keys(timeList).reduce((acc, curr) => acc + curr.length, 0);
+    // const height: string = totalCount < 21 ? '200%' : totalCount < 30 ? '300%' : '500%';
+
+
+    const saveAsPDF = async () => {
+        if (chartRef.current) {
+          // Get the SVG from the ApexChart
+          const svg = chartRef.current.querySelector("svg");
+          
+          if (!svg) {
+            console.error("SVG not found");
+            return;
+          }
+      
+          // Create a canvas
+          const canvas = document.createElement("canvas");
+          const context = canvas.getContext("2d");
+      
+          // Set the canvas dimensions
+          const svgRect = svg.getBoundingClientRect();
+          canvas.width = svgRect.width;
+          canvas.height = svgRect.height;
+      
+          // Create an image from the SVG data
+          const svgData = new XMLSerializer().serializeToString(svg);
+          const img = new Image();
+          img.src = "data:image/svg+xml;base64," + window.btoa(svgData);
+      
+          img.onload = () => {
+            context?.drawImage(img, 0, 0);
+      
+            // Convert the canvas to an image
+            const imgData = canvas.toDataURL("image/png");
+      
+            // Initialize jsPDF
+            const pdf = new jsPDF({
+              orientation: "landscape",
+              unit: "px",
+              format: [canvas.width, canvas.height + 150],
+            });
+      
+            // Add the image to the PDF
+            pdf.addImage(imgData, "PNG", 0, 150, canvas.width, canvas.height);
+
+             const baseUrl = window.location.origin;
+          const logoUrl = `${baseUrl}/logo.png`;
+      
+         const logo = new Image();
+      logo.src = logoUrl;
+    // //       logo.onload = () => {
+             const logoWidth = 110; 
+             const logoHeight = 50;
+             const logoX = (canvas.width / 2) - (logoWidth + 250); // Adjust to place the logo before the text
+             const logoY = 50;
+      
+    // //         // Add the logo to the PDF
+          pdf.addImage(logo, 'PNG', logoX, logoY, logoWidth, logoHeight);
+      
+    // //         // Set text color to blue
+         pdf.setTextColor(0, 113 ,193); // RGB for blue
+      
+    // //         // Set larger font size and align text with the logo
+            pdf.setFontSize(30);
+            pdf.text('Dashboard - Operation Efficiency (60) ', logoX + logoWidth + 10, 83, { align: 'left' });
+      
+    // //         // Add the chart image to the PDF
+             pdf.addImage(imgData, 'PNG', 0, 150, canvas.width, canvas.height);
+      
+            // Add your title or logo here, as you did before
+      
+            // Save the PDF
+            pdf.save("chart.pdf");
+          };
+        }
+      };
+      const saveAsExcel = () => {
+        const worksheet = XLSX.utils.json_to_sheet(chartData);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Chart Data");
+        XLSX.writeFile(workbook, `chart-data.xlsx`);
+    };
+
+
+let timeSlots = heatmapData ? heatmapData.length : 0;
+let operatorCount = operationList ? operationList.length : 0;
+
+let height = timeSlots < 15 ? 700 : timeSlots * 30; // Adjust height based on time slots
+let width = operatorCount > 15 ? operatorCount * 40 : "100%";
+    // let width = heatmapData && heatmapData?.length > 15  ? 3000 :  100+"%"; 
+    // let height = heatmapData && heatmapData?.length < 15  ?  900 : 1500;
 
     return (
         <>
@@ -264,18 +361,34 @@ const HmapChart15Compo = ({
                 {heatmapFullData !== null ?
                     <div className="mt-12 bg-slate-100 pt-5 pl-8 rounded-lg border w-full mb-16 overflow-x-auto ">
                         <h2 className="text-lg mb-2 font-medium text-slate-700">{" "}</h2>
-                        <ReactApexChart options={options} series={heatmapFullData} type="heatmap" height={height} width={chartWidth} />
+                        <div id="chart"  ref={chartRef}>
+                        <ReactApexChart options={options} series={heatmapFullData} type="heatmap" height={height} width={width} />
+                        </div>
                     </div>
+                    
                     :
                     <div className="mt-12 w-full">
-                        <p className="text-center text-slate-500">Please select the OBB sheet and date ☝️</p>
+                        <p className="text-center text-slate-500">No data Available</p>
                     </div>
-                }{<div className="flex justify-center gap-2 mt-5 2xl:hidden block">
 
-                    <Button onClick={() => setChartWidth((p) => p + 200)} className="rounded-full bg-gray-300">+</Button>
-                    <Button onClick={() => setChartWidth((p) => p - 200)} className="rounded-full bg-gray-300"> -</Button>
+                    
 
-                </div>
+                    
+                }
+                
+                   
+                
+                {
+                    <div className="flex flex-col items-center mt-5">
+                    <div className="flex gap-3 mt-3">
+                    <Button type="button" className="mr-3" onClick={saveAsPDF}>
+                      Save as PDF
+                    </Button>
+                    <Button type="button" onClick={saveAsExcel}>
+                      Save as Excel
+                    </Button>
+                  </div>
+                    </div>
                 }
             </div>
         </>

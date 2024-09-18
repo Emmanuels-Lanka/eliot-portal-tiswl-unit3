@@ -116,6 +116,8 @@ const EffiencyHeatmap = ({
 
     const width: string = heatmapData.categories.length < 21 ? '100%' : heatmapData.categories.length < 30 ? '150%' : '350%';
 
+    let nwidth = heatmapData && heatmapData?.categories.length > 15  ? 3000 : 100+"%"; 
+    let nheight = heatmapData && heatmapData?.categories.length < 15  ? 900 : 900
 
     const saveAsPDF = async () => {
         if (chartRef.current) {
@@ -198,7 +200,7 @@ const EffiencyHeatmap = ({
     return (
         <div className='bg-slate-100 pt-5 pl-8 rounded-lg border w-full mb-16 overflow-x-auto'>
             <div id="chart"  ref={chartRef}>
-                <ReactApexChart options={options} series={series} type="heatmap" height={height} width={width} />
+                <ReactApexChart options={options} series={series} type="heatmap" height={nheight} width={nwidth} />
             </div>
             <div id="html-dist"></div>
  {/* Button Section */}

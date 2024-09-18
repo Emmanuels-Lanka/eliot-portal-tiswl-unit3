@@ -352,8 +352,11 @@ const HmapChart15Compo = ({
 
     }, [obbSheetId, date])
 
-    const totalCount = Object.keys(timeList).reduce((acc, curr) => acc + curr.length, 0);
-    const height: string = totalCount < 50 ? '430%' : totalCount < 60 ? '300%' : '500%';
+    // const totalCount = Object.keys(timeList).reduce((acc, curr) => acc + curr.length, 0);
+    // const height: string = totalCount < 50 ? '430%' : totalCount < 60 ? '300%' : '500%';
+
+    let width = heatmapData && heatmapData?.length > 15  ? 3000 : 3000; 
+    let height = heatmapData && heatmapData?.length < 15  ?  500 : 1500
     return (
         <>
 
