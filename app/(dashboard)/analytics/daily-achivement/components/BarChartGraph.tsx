@@ -115,9 +115,15 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
         const adjustedTarget = (targetPerMinute * elapsedMinutes);
     
         return {
+            // name: item.name,
+            // target: item.target*10, // Use the calculated target
+            // count: item.count,
+
             name: item.name,
-            target: item.target*10, // Use the calculated target
-            count: item.count,
+  target: Math.min(item.target*10, 5000),
+  count: Math.min(item.count, 5000),   
+  originalTarget: item.target*10,         
+  originalCount: item.count    
         };
     });
       setChartData(chartData1);
@@ -236,14 +242,14 @@ const saveAsExcel = () => {
             <ChartContainer
             ref={chartRef}
               config={chartConfig}
-              className=" max-h-screen  min-h-[300px] w-full " 
-              style={{width:chartWidth+"%", height:chartWidth+"%"}} 
+              className="  max-h-screen min-h-[300px] w-full " 
+              style={{width:chartWidth+"%"}} 
             >
               <BarChart
                 accessibilityLayer
                 data={chartData}
                 margin={{
-                  top: 20,
+                
                   bottom: 200,
                 }}
 
@@ -255,6 +261,8 @@ const saveAsExcel = () => {
                   tickLine={true}
                   tickMargin={10}
                   axisLine={true}
+                  domain={[0, 5000]}
+                  
                 />
                 <XAxis
                   dataKey="name"
@@ -280,6 +288,7 @@ const saveAsExcel = () => {
                 />
                 <Bar dataKey="target" fill="var(--color-target)" radius={5}>
                   <LabelList
+                    dataKey="originalTarget"
                     position="top"
                     offset={7} // Increase the offset value
                     className="fill-foreground"
