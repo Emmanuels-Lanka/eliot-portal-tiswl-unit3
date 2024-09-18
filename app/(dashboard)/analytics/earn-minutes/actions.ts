@@ -19,3 +19,37 @@ export async function getData(obbsheetid:string,date:string) : Promise<Productio
  
     return new Promise((resolve) => resolve(data as ProductionDataType[] ))
 }
+
+export async function getSMV() {
+    
+    const sql = neon(process.env.DATABASE_URL || "");
+  
+    // const datef = `${date}%`; // Start of the day
+
+  
+  const smv = await sql`SELECT 
+      o.smv,
+      concat(o."seqNo",' - ',op.name) as name,
+      o."seqNo",
+      AVG(CAST(p.smv AS NUMERIC)) AS avg,
+      sm."machineId"
+  FROM 
+      "ProductionSMV" p
+  JOIN 
+      "ObbOperation" o ON p."obbOperationId" = o.id
+  JOIN 
+      "Operation" op ON o."operationId" = op.id
+  inner JOIN "SewingMachine" sm ON sm."id"= o."sewingMachineId"
+  WHERE 
+      o."obbSheetId" = 'm0uk89ef-wleHBGo6tNxf'
+      AND p.timestamp like '2024-09-17%'
+  group by  o.smv,
+      op.name,
+      o."seqNo",
+      sm."machineId" 
+  ORDER BY 
+       o."seqNo" ASC;`
+    console.log("SMV Data",smv)
+  
+    return new Promise((resolve) => resolve(smv))
+  }

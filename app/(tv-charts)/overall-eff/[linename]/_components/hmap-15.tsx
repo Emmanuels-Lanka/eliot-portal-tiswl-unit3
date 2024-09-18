@@ -42,7 +42,7 @@ const Hmap15CompoOperation = ({ linename }: { linename: string }) => {
     <div className="h-[200]">
       <div className='flex justify-center items-center gap-3'>
         <Cog className='w-7 h-7 text-voilet' />
-        <h1 className='text-slate-500 m-4 text-3xl'>ELIoT Web Portal - Overall Efficiency {linename}</h1>
+        <h1 className='text-slate-500 m-4 text-3xl'>ELIoT Web Portal - Overall Operation Efficiency {linename}</h1>
       </div>
 
       {obbSheetId.length > 0 ? <BarChartGraphEfficiencyRate

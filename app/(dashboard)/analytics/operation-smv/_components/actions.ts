@@ -51,7 +51,9 @@ group by  o.smv,
     sm."machineId" 
 ORDER BY 
      o."seqNo" ASC;`
-  console.log("SMV Data",smv)
+//   console.log("SMV Data",smv)
+
+  console.log("date, ",date,"ob",obbSheetId)
 
   return new Promise((resolve) => resolve(smv as SMVChartData[] ))
 }

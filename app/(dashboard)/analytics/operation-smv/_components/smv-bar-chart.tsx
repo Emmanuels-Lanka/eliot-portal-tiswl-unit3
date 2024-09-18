@@ -72,7 +72,7 @@ const BarChartGraphOpSmv = ({ date, obbSheetId }: BarChartGraphProps) => {
     const [chartData, setChartData] = useState<BarChartData[]>([])
     const [productionData, setProductionData] = useState<BarChartData[]>([]);
 
-    const[chartWidth,setChartWidth] = useState<number>(130)
+    const[chartWidth,setChartWidth] = useState<number>(150)
     const[isSubmitting,setisSubmitting]=useState<boolean>(false)
 
     const chartRef = useRef<HTMLDivElement>(null);
@@ -183,7 +183,7 @@ const saveAsExcel = () => {
 const renderCustomLabel = ({ x, y, width, value, index }: any) => {
     const realAvgValue = chartData[index]?.realavg || 0;
     return (
-        <text x={x + width -5} y={y - 5} fill="black" fontSize={11} fontFamily="Inter">
+        <text x={x + width -15} y={y - 5} fill="black" fontSize={11} fontFamily="Inter">
             {`${value} (${realAvgValue})`}
         </text>
     );
@@ -254,7 +254,7 @@ const renderCustomLabel = ({ x, y, width, value, index }: any) => {
                             margin={{top:10}}
                                 
                         />
-                        <Bar dataKey="smv" fill="var(--color-smv)" radius={5} barSize={5}>
+                        <Bar dataKey="smv" fill="var(--color-smv)" radius={5} barSize={25}>
                             <LabelList
                                 position="top"
                                 // content={renderCustomLabel}
@@ -264,7 +264,7 @@ const renderCustomLabel = ({ x, y, width, value, index }: any) => {
                                 fontFamily="Inter"
                             />
                         </Bar>
-                         <Bar dataKey="avg" fill="var(--color-avg)" radius={5} barSize={5}>
+                         <Bar dataKey="avg" fill="var(--color-avg)" radius={5} barSize={25}>
                             <LabelList
                                 position="top"
                                 offset={12}

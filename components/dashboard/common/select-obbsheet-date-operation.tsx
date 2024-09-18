@@ -42,7 +42,7 @@ interface SelectObbSheetDateOperationProps {
         id: string;
         name: string;
     }[] | null;
-    handleSubmit: (data: { obbSheetId: string; obbOperationId: string; date: Date }) => void;
+    handleSubmit: (data: { obbSheetId: string; obbOperationId: string; date: Date;operationName:string }) => void;
 };
 
 type ObbOperationsType = {
@@ -61,7 +61,8 @@ const formSchema = z.object({
     obbOperationId: z.string().min(1, {
         message: "OBB Sheet is required"
     }),
-    date: z.date()
+    date: z.date(),
+    operationName: z.string().min(1)
 });
 
 const SelectObbSheetDateOperation = ({
@@ -214,6 +215,8 @@ const SelectObbSheetDateOperation = ({
                                                                     value={op.operation.name}
                                                                     onSelect={() => {
                                                                         form.setValue("obbOperationId", op.id)
+                                                                        form.setValue("operationName", op.operation.name)
+                                                                        
                                                                         setOpen2(false)
                                                                     }}
                                                                 >
