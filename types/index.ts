@@ -121,3 +121,13 @@ type DHUDefectsDataTypes = {
     operatorName: string;
     defects: string[];
 }[];
+
+type DataTypesForRoamingQC = {
+    style: string;
+    buyerName: string;
+    obbOperationId: string;
+    operationName: string;
+    operationCode?: string;
+    operatorName: string;
+    operatorRfid: string;
+}

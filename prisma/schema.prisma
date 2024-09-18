@@ -63,6 +63,7 @@ model Operator {
   productionData           ProductionData[]
   productionSMV            ProductionSMV[]
   tslRecords               TrafficLightSystem[]
+  roamingQC                RoamingQC[]
 }
 
 model Unit {
@@ -121,6 +122,7 @@ model SewingMachine {
   unit                 Unit                 @relation(fields: [unitId], references: [id], onDelete: Cascade)
   tslRecords           TrafficLightSystem[]
   productionLines      ProductionLine[]     @relation("ProductionLineToSewingMachine")
+  roamingQC            RoamingQC[]
 
   @@index([eliotDeviceId, unitId])
 }
@@ -216,6 +218,7 @@ model ObbOperation {
   productionSMV    ProductionSMV[]
   staffSessions    StaffSession[]
   tslRecords       TrafficLightSystem[]
+  roamingQC        RoamingQC[]
 
   @@index([operationId, obbSheetId])
 }
@@ -342,4 +345,23 @@ model ProductionSMV {
   operator       Operator     @relation(fields: [operatorRfid], references: [rfid], onDelete: Cascade)
 
   @@index([obbOperationId, operatorRfid])
+}
+
+model RoamingQC {
+  id             String        @id @default(uuid())
+  machineId      String
+  unit           String?
+  lineId         String
+  obbOperationId String
+  operatorRfid   String
+  timestamp      String
+  colorStatus    String
+  inspectedQty   String
+  createdAt      DateTime      @default(now())
+  defects        String[]      @default([])
+  obbOperation   ObbOperation  @relation(fields: [obbOperationId], references: [id], onDelete: Cascade)
+  operator       Operator      @relation(fields: [operatorRfid], references: [rfid], onDelete: Cascade)
+  sewingMachine  SewingMachine @relation(fields: [machineId], references: [machineId], onDelete: Cascade)
+
+  @@index([obbOperationId, operatorRfid, machineId])
 }

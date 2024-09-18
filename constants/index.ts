@@ -22,6 +22,17 @@ import {
     UserRoundPlus
 } from "lucide-react";
 
+export const ROAMING_QC_DEFECTS = [
+    "Broken, Skip , Loose, Stitche",
+    "Pucker,Easing, Pleated, Run of",
+    "Uneven, Hilow, Unbaance",
+    "Oil",
+    "Dirt",
+    "Shad/unmatching",
+    "Fabric Flaws",
+    "Other"
+]
+
 export const MACHINE_TYPES = [
     { name: "CHAIN STITCH MACHINE", code: "CSM" },
     { name: "APW MACHINE", code: "APW" },
