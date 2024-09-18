@@ -120,8 +120,8 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
             // count: item.count,
 
             name: item.name,
-  target: Math.min(item.target*10, 5000),
-  count: Math.min(item.count, 5000),   
+  target: Math.min(item.target*10, 4000),
+  count: Math.min(item.count, 4000),   
   originalTarget: item.target*10,         
   originalCount: item.count    
         };
@@ -261,7 +261,7 @@ const saveAsExcel = () => {
                   tickLine={true}
                   tickMargin={10}
                   axisLine={true}
-                  domain={[0, 5000]}
+                  domain={[0, 4000]}
                   
                 />
                 <XAxis
