@@ -40,7 +40,8 @@ interface SmvBarChartProps {
         hourGroup: string;
         smv: number | null;
     }[],
-    tsmv: number
+    tsmv: number,
+    operationName:string;
 }
 
 const chartConfig = {
@@ -51,7 +52,7 @@ const chartConfig = {
 } satisfies ChartConfig
 
 const SmvBarChart = ({
-    data, tsmv
+    data, tsmv,operationName
 }: SmvBarChartProps) => {
     const chartRef = useRef<HTMLDivElement>(null);
 
@@ -64,7 +65,7 @@ const SmvBarChart = ({
     const[chartWidth,setChartWidth] = useState<number>(100)
 
 
-
+console.log("data",operationName )
     
 //create pdf
 const saveAsPDF = async () => {
@@ -97,6 +98,8 @@ const saveAsPDF = async () => {
       // Set larger font size and align text with the logo
       pdf.setFontSize(24);
       pdf.text('Dashboard - Hourly Cycle Time vs Target SMV', logoX + logoWidth + 20, 83, { align: 'left' });
+      pdf.text(`Dashboard - Hourly Cycle Time vs Target SMVasadasda ${operationName}`, logoX + logoWidth + 70, 100, { align: 'left' });
+      
 
       // Add the chart image to the PDF
       pdf.addImage(imgData, 'PNG', 0, 150, canvas.width, canvas.height);
@@ -143,6 +146,7 @@ const saveAsExcel = () => {
                 margin={{
                   top: 30,
                   left: 30,
+                  bottom:30
                 }}
               >
                 <CartesianGrid vertical={false} />
