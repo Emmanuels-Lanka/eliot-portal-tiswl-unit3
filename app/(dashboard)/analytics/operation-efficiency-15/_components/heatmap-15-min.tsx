@@ -379,7 +379,8 @@ const   HmapChart15Compo = ({
       };
       
     
-    
+      let width = heatmapData && heatmapData?.length > 15  ? 3000 : 3000; 
+      let height = heatmapData && heatmapData?.length < 15  ? 600 : 1500
     
     
     
@@ -405,7 +406,7 @@ const   HmapChart15Compo = ({
                 {heatmapFullData !== null ?
                     <div className="mt-12 bg-slate-100 pt-5 pl-8 rounded-lg border w-full mb-16 overflow-x-auto "   ref={chartRef}>
                         <h2 className="text-lg mb-2 font-medium text-slate-700">{" "}</h2>
-                        <ReactApexChart options={options} series={heatmapFullData} type="heatmap" height={1000} width={2000} />
+                        <ReactApexChart options={options} series={heatmapFullData} type="heatmap" height={height} width={2000} />
                     </div>
                     :
                     <div className="mt-12 w-full">

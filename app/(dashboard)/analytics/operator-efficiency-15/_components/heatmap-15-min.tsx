@@ -246,8 +246,20 @@ const HmapChart15Compo = ({
     }, [obbSheetId, date])
 
     //const height: string = timeList.length < 21 ? '200%' : timeList.length < 30 ? '300%' : '500%';
-    const totalCount = Object.keys(timeList).reduce((acc, curr) => acc + curr.length, 0);
-    const height: string = totalCount < 21 ? '200%' : totalCount < 30 ? '300%' : '500%';
+    // const totalCount = Object.keys(timeList).reduce((acc, curr) => acc + curr.length, 0);
+    // const height: string = totalCount < 21 ? '200%' : totalCount < 30 ? '300%' : '500%';
+
+
+
+
+
+let timeSlots = heatmapData ? heatmapData.length : 0;
+let operatorCount = operationList ? operationList.length : 0;
+
+let height = timeSlots < 15 ? 700 : timeSlots * 30; // Adjust height based on time slots
+let width = operatorCount > 15 ? operatorCount * 40 : "100%";
+    // let width = heatmapData && heatmapData?.length > 15  ? 3000 :  100+"%"; 
+    // let height = heatmapData && heatmapData?.length < 15  ?  900 : 1500;
 
     return (
         <>
@@ -264,13 +276,19 @@ const HmapChart15Compo = ({
                 {heatmapFullData !== null ?
                     <div className="mt-12 bg-slate-100 pt-5 pl-8 rounded-lg border w-full mb-16 overflow-x-auto ">
                         <h2 className="text-lg mb-2 font-medium text-slate-700">{" "}</h2>
-                        <ReactApexChart options={options} series={heatmapFullData} type="heatmap" height={height} width={chartWidth} />
+                        <ReactApexChart options={options} series={heatmapFullData} type="heatmap" height={height} width={width} />
                     </div>
                     :
                     <div className="mt-12 w-full">
-                        <p className="text-center text-slate-500">Please select the OBB sheet and date ☝️</p>
+                        <p className="text-center text-slate-500">No data Available</p>
                     </div>
-                }{<div className="flex justify-center gap-2 mt-5 2xl:hidden block">
+                    
+
+                    
+                }
+                   
+                
+                {<div className="flex justify-center gap-2 mt-5 2xl:hidden block">
 
                     <Button onClick={() => setChartWidth((p) => p + 200)} className="rounded-full bg-gray-300">+</Button>
                     <Button onClick={() => setChartWidth((p) => p - 200)} className="rounded-full bg-gray-300"> -</Button>
