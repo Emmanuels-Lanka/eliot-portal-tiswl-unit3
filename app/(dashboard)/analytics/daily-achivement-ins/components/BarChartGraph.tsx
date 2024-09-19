@@ -116,8 +116,14 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
     
         return {
             name: item.name,
-            target: adjustedTarget, // Use the calculated target
-            count: item.count,
+            target: Math.min(adjustedTarget,4000), // Use the calculated target
+            count: Math.min(item.count, 4000),
+
+            // name: item.name,
+            // target: Math.min(item.target*10, 4000),
+            // count: Math.min(item.count, 4000),   
+            originalTarget: adjustedTarget,         
+            originalCount: item.count   
         };
     });
       setChartData(chartData1);
@@ -257,6 +263,7 @@ const saveAsExcel = () => {
                   tickLine={true}
                   tickMargin={10}
                   axisLine={true}
+                  domain={[0, 4000]}
                 />
                 <XAxis
                   dataKey="name"
@@ -282,6 +289,7 @@ const saveAsExcel = () => {
                 />
                 <Bar dataKey="target" fill="var(--color-target)" radius={5}>
                   <LabelList
+                   dataKey="originalTarget"
                     position="top"
                     offset={7} // Increase the offset value
                     className="fill-foreground"

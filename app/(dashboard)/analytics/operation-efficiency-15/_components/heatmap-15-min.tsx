@@ -212,7 +212,7 @@ const   HmapChart15Compo = ({
             const prod: any[] = await getData(obbSheetId, sqlDate)
             const eliot = prod.map((m)=>(m.eliotid))
             
-            const opList = await geOperationList(obbSheetId)
+            const opList = await geOperationList(obbSheetId,sqlDate)
             setoperationList(opList)
             const heatmapDatas = getProcessData(prod as any[], operationList as any[]);
             setHeatmapData(heatmapDatas);
@@ -255,7 +255,7 @@ const   HmapChart15Compo = ({
     useEffect(() => {
      
         const e= async ()=>{
-        const s =  await getEliotMachineList(obbSheetId)
+        const s =  await getEliotMachineList(obbSheetId,date)
 
         seteliotIdList(s)
         }

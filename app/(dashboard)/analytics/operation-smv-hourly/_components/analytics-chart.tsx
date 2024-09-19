@@ -44,6 +44,7 @@ const AnalyticsChart = ({
 
     const [barchartData, setBarchartData] = useState<{ hourGroup: string; smv: number | null }[]>([]);
     const [tsmv, settsmv] = useState< number>(0);
+    const [operationName, setOperationName] = useState< string>("");
 
     const groupSMVByHour = (data: ProductionSMVDataTypes[]): { hourGroup: string; smv: number | null }[] => {
         const hourGroups = [
@@ -76,10 +77,12 @@ const AnalyticsChart = ({
         }));
     };
 
-    const handleFetchSmv = async (data: { obbSheetId: string; obbOperationId: string; date: Date }) => {
+    const handleFetchSmv = async (data: { obbSheetId: string; obbOperationId: string; date: Date; operationName:string}) => {
         try {
             // console.log("dateqq1",data.date)
            // data.date.setDate(data.date.getDate() +1);
+
+           console.log("data",data)
             const formattedDate = getFormattedTime(data.date.toString())
              
             const response = await axios.get(`/api/smv/fetch-by-operation?obbOperationId=${data.obbOperationId}&date=${formattedDate}`);
@@ -88,6 +91,7 @@ const AnalyticsChart = ({
 
             const tsmv = response.data.tsmv.smv
             settsmv(tsmv)
+            
             setBarchartData(result);
        
 
@@ -112,7 +116,7 @@ const AnalyticsChart = ({
             <div className="mx-auto max-w-[1680px]">
                 {barchartData.length > 0 ?
                     <div className="mt-12">
-                        <SmvBarChart tsmv={tsmv} data={barchartData} />
+                        <SmvBarChart tsmv={tsmv} data={barchartData} operationName={operationName} />
                     </div>
                     :
                     <div className="mt-12 w-full">

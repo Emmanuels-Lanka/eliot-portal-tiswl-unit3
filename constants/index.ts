@@ -158,7 +158,7 @@ export const SIDEBAR_ROUTES = [
                 icon: BarChartHorizontal
             },
             {
-                label: "Overall Efficiency",
+                label: "Overall Operation Efficiency",
                 href: "/analytics/efficiency-rate",
                 icon: BarChart3
             },
@@ -517,7 +517,7 @@ export const HEADER_INFO = [
         icon: Sliders
     },
     {
-        label: "Overall Efficiency ",
+        label: "Overall Operation Efficiency ",
         href: "/analytics/efficiency-rate",
         icon: Sliders
     },

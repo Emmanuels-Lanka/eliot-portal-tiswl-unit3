@@ -299,7 +299,7 @@ const HmapChart15Compo = ({
             const prod: any[] = await getData(obbSheetId, sqlDate)
             const eliot = prod.map((m) => (m.eliotid))
           
-            const opList = await geOperationList(obbSheetId)
+            const opList = await geOperationList(obbSheetId,sqlDate)
             setoperationList(opList)
             const heatmapDatas = getProcessData(prod as any[], operationList as any[]);
             //rem 0 ops
