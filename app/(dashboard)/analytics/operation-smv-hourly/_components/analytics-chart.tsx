@@ -45,6 +45,7 @@ const AnalyticsChart = ({
     const [barchartData, setBarchartData] = useState<{ hourGroup: string; smv: number | null }[]>([]);
     const [tsmv, settsmv] = useState< number>(0);
     const [operationName, setOperationName] = useState< string>("");
+    
 
     const groupSMVByHour = (data: ProductionSMVDataTypes[]): { hourGroup: string; smv: number | null }[] => {
         const hourGroups = [

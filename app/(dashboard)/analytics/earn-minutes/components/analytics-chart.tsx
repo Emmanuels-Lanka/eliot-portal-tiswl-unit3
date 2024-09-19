@@ -12,6 +12,8 @@ import { useToast } from "@/components/ui/use-toast";
 import EffiencyHeatmap from "@/components/dashboard/charts/efficiency-heatmap";
 import { getData } from "../actions";
 import BarChartGraph from "./BarChartGraph";
+import { VerticalGraph } from "./vertical-graph";
+import SelectObbSheetDateOperation from "./select-obbsheet-date-operation";
 
 interface AnalyticsChartProps {
     obbSheets: {
@@ -91,10 +93,12 @@ const AnalyticsChart = ({
     return (
         <>
             <div className="mx-auto max-w-7xl">
-                <SelectObbSheetAndDate 
+            <SelectObbSheetDateOperation  
                     obbSheets={obbSheets}
                     handleSubmit={handleFetchProductions}
                 />
+                            
+
             </div>
             <div className="mx-auto max-w-[1680px]">
                 { obbSheetId.length > 0 ?
@@ -102,11 +106,7 @@ const AnalyticsChart = ({
                         {/* <LineChartGraph 
                             data={production}
                         />  */}
-                        <BarChartGraph
-                            obbSheetId={obbSheetId}
-                            date={date}
-                                                      
-                        />
+                        <VerticalGraph/>
                     </div>
                     :
                     <div className="mt-12 w-full">
