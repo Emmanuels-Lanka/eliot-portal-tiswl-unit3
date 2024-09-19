@@ -29,7 +29,7 @@ export async function getSMV() {
   
   const smv = await sql`SELECT 
       o.smv,
-      concat(o."seqNo",' - ',op.name) as name,
+      concat(o."seqNo",'-',op.name) as name,
       o."seqNo",   
       AVG(CAST(pd.smv AS NUMERIC)) AS avg
       
@@ -90,28 +90,13 @@ export async function getSMV() {
     // const datef = `${date}%`; // Start of the day
 
   
-  const smv = await sql`SELECT 
-    SUM(pd."productionCount") AS count,
-    CONCAT(oo."seqNo", '-', o.name) AS name,
-    DATE_TRUNC('hour', pd.timestamp::TIMESTAMP) AS hour_interval  -- Truncate timestamp to the hour
-FROM 
-    "ProductionData" pd
-INNER JOIN 
-    "ObbOperation" oo ON pd."obbOperationId" = oo.id
-INNER JOIN 
-    "ObbSheet" os ON oo."obbSheetId" = os.id
-INNER JOIN 
-    "Operation" o ON o.id = oo."operationId"
-WHERE 
-    os.id = 'm0uk89ef-wleHBGo6tNxf'
-    AND pd.timestamp LIKE '2024-09-17%'  -- Keep LIKE for date filtering
-GROUP BY 
-    o.name,
-    oo."seqNo",
-    hour_interval  -- Group by hourly intervals
-ORDER BY 
-    oo."seqNo" ASC,
-    hour_interval;  -- Order by sequence number and hour`
+  const smv = await sql`SELECT SUM(pd."productionCount") as count,concat(oo."seqNo",'-',o.name ) as name 
+    FROM "ProductionData" pd
+    INNER JOIN "ObbOperation" oo ON pd."obbOperationId" = oo.id
+    INNER JOIN "ObbSheet" os ON oo."obbSheetId" = os.id
+    INNER JOIN "Operation" o ON o.id= oo."operationId"
+    WHERE os.id = 'm0uk89ef-wleHBGo6tNxf' and  pd.timestamp like '2024-09-17 08:%'
+    group by o.name,oo."seqNo" order by  oo."seqNo" ASC ;`
     console.log("SMV Data",smv)
 
 

@@ -32,24 +32,31 @@ export const description = "A horizontal bar chart"
 //     { month: "June", desktop: 214, mobile: 140 },
 //   ]
 const chartConfig = {
-  desktop: {
-    label: "workedTime",
+  earnMinutes: {
+    label: "Earn Minutes",
     color: "hsl(var(--chart-1))",
   },
-  mobile: {
-    label: "neutralTime",
+  nonStandardTime: {
+    label: "Non Standard Time",
     color: "hsl(var(--chart-2))",
   },
 } satisfies ChartConfig
 
 type BarChartData = {
-    smv:number;
-    name:string;
-    avg: number;
-    machineId?:string;
-    realavg?:any;
+  earnMinutes: number;
+  count: number;
+  name: string;
+  seqNo: string;
+  nonStandardTime: number;
 };
 
+type smvData = {
+  earnMinutes: number;
+count: number;
+name: string;
+seqNo: string;
+nonStandardTime: number;
+}
 
 
 export function VerticalGraph() {
@@ -57,7 +64,8 @@ export function VerticalGraph() {
 
     const [chartData, setChartData] = useState<BarChartData[]>([])
     const[isSubmitting,setisSubmitting]=useState<boolean>(false)
-    const[chartWidth,setChartWidth] = useState<number>(50)
+    const[chartWidth,setChartWidth] = useState<number>(120)
+    const[smvData,setSmvData] = useState<smvData[]>([])
 
 
 
@@ -69,6 +77,23 @@ export function VerticalGraph() {
     const smv :any = await getSMV()
 
     const pCount : any = await getProduction();
+    const joined =[];
+    
+
+      for (const nsmv of smv) {
+         
+          for(const npCount of pCount)
+          {
+            if(nsmv.name === npCount.name)
+            joined.push({...nsmv,...npCount})
+          }
+          
+      }
+        console.log("comb",joined)
+        setSmvData(joined)
+
+
+
     console.log("count",pCount)
 
 
@@ -96,23 +121,45 @@ export function VerticalGraph() {
 
         // })});
 
+
         console.log("smv,",smv)
-        const chartData1: BarChartData[] = smv.map((item: any) => {
-            const workedTime = item.avg * 60; 
-            const neutralTime = 60 - workedTime;
+
+
+        const chartData : smvData[] = smvData.map((item:any) => {
+
+          const workedTime =item.avg*item.count;
+          const neutralTime = Math.max(60 - workedTime);
+
           
-            return {
-              name: item.name,
-              avg: Number(parseFloat(item.avg.toString()).toFixed(2)),
-              smv: item.smv,
-              workedTime: workedTime.toFixed(2),
-              neutralTime: neutralTime.toFixed(2),
-            };
-          });
+          return{
+            earnMinutes:item.avg*item.count,
+            count: item.count,
+            name: item.name,
+            seqNo: item.seqNo,
+            nonStandardTime: neutralTime
+
+          }
+    })
+
+        // const chartData1: smvData[] = smvData.map((item: any) => {
+
+        //     const workedTime = item.avg * 60; 
+        //     const neutralTime = 60 - workedTime;
+          
+        //     return {
+        //       name: item.name,
+        //       avg: Number(parseFloat(item.avg.toString()).toFixed(2)),
+        //       smv: item.smv,
+        //       workedTime: workedTime.toFixed(2),
+        //       neutralTime: neutralTime.toFixed(2),
+        //     };
+        //   });
 
         // setProductionData(chartData1)
-         setChartData(chartData1)
-        console.log("chart data",chartData1)
+         setChartData(chartData)
+         const longestLabel = Math.max(...chartData.map(item => item.name.length));
+    setChartWidth(longestLabel * 8); 
+        console.log("chart data",chartData)
         
         
         } 
@@ -134,12 +181,24 @@ useEffect(() => {
 
 }, [])
 
+
 useEffect(() => {
-    if (chartData.length > 0) {
-      const longestLabel = Math.max(...chartData.map(item => item.name.length));
-      setChartWidth(longestLabel * 10);  
-    }
-  }, [chartData]);
+
+        
+   
+  Fetchdata()
+
+
+}, [chartData])
+
+
+
+// useEffect(() => {
+//     if (chartData.length > 0) {
+//       const longestLabel = Math.max(...chartData.map(item => item.name.length));
+//       setChartWidth(longestLabel * 10);  
+//     }
+//   }, [chartData]);
 
 
 
@@ -156,8 +215,8 @@ useEffect(() => {
 
 
 
-        <div className=' pt-5 -pl-8  bg-slate-50 rounded-lg border w-full mb-16 overflow-x-auto'>
-    <Card className='pr-2 pt-6 pb-4 border rounded-xl bg-slate-50 w-fit'style={{width:chartWidth*2+"%"}}>
+        <div className=' pt-5 -pl-8  bg-slate-50 rounded-lg border w-screen h-screen mb-16 overflow-x-auto overflow-y-auto'>
+    <Card className='pr-2 pt-6 pb-4 border rounded-xl '>
       {/* <CardHeader>
         <CardTitle>Bar Chart - Horizontal</CardTitle>
         <CardDescription>January - June 2024</CardDescription>
@@ -166,29 +225,33 @@ useEffect(() => {
         <ChartContainer config={chartConfig}>
           <BarChart
 
-            height={1300}
+            
             accessibilityLayer
             data={chartData}
+            
             layout="vertical"
             margin={{
-              left: 10,    
+              left: 150,    
             }}
           >
             <XAxis type="number"  hide />
             <YAxis
 
-
+              height={1000}
               dataKey="name"
               type="category"
               tickLine={false}
-              tickMargin={10}
+              tickMargin={150}
               axisLine={false}
              
-               tickFormatter={(value) => value.slice(0, 30)}
+               tickFormatter={(value) => value.slice(0, 20)}
                interval={0}
                tick={{
                 
-                textAnchor: 'end', 
+                textAnchor: 'start', // Ensure the text remains on a single line
+                    width: 200, // Optional: Set a max width for the label area
+                    overflow: 'hidden', // Hide any overflow if the label is too long
+                    // whiteSpace: 'nowrap',
               }}
             />
             <ChartTooltip
@@ -196,16 +259,19 @@ useEffect(() => {
               content={<ChartTooltipContent  />}
             />
             <Bar
-              dataKey="workedTime"
+              dataKey="earnMinutes"
               stackId="a"
-              fill="var(--color-desktop)"
+              fill="var(--color-earnMinutes)"
               radius={[12, 0, 0, 12]}
+              barSize={25}
             />
             <Bar
-              dataKey="neutralTime"
+              dataKey="nonStandardTime"
               stackId="a"
-              fill="var(--color-mobile)"
+              fill="var(--color-nonStandardTime)"
               radius={[0, 12, 12, 0]}
+              barSize={25}
+
             />
           </BarChart>
         </ChartContainer>
