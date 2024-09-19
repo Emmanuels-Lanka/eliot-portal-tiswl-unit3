@@ -149,6 +149,7 @@ const RoamingQcDashboard = ({
                                 <div className="flex flex-col gap-y-2">
                                     {roamingQcData.map(data => (
                                         <div
+                                            key={data.id}
                                             className={cn(
                                                 "w-full text-white bg-slate-500 rounded-lg py-2 px-4 flex justify-between",
                                                 data.colorStatus === 'green' && "bg-green-600",
