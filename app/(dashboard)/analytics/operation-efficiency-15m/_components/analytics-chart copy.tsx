@@ -230,7 +230,7 @@ const AnalyticsChartHmap15x = ({
 
 
             const prod:any []  = await getData(data.obbSheetId, sqlDate)
-            const opList = await geOperationList(data.obbSheetId )
+            const opList = await geOperationList(data.obbSheetId,sqlDate )
             setoperationList(opList)
             //console.log("FOrmatted", getProcessData(prod))
             //console.log("daraaaaaaa", prod)
