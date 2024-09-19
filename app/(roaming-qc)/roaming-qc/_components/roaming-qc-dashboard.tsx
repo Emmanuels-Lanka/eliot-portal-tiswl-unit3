@@ -1,20 +1,20 @@
 "use client"
 
+import axios from "axios";
 import { useEffect, useState } from "react";
 import { RoamingQC, Unit } from "@prisma/client";
+import { Loader2, Zap } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 import { useToast } from "@/components/ui/use-toast";
 import SelectUnitLineObbSheet from "@/components/roaming-qc/select-unit-line-obbsheet";
 import QrCodeReader from "@/components/roaming-qc/qr-code-reader";
 import { fetchDataForRoamingQC } from "@/actions/roaming-qc/fetch-data-for-roaming-qc";
 import OperationOperatorDetails from "./operation-operator-details";
-import { fetchRoamingQcData } from "@/actions/roaming-qc/fetch-data-for-roaming-qc copy";
-import { cn } from "@/lib/utils";
+import { fetchRoamingQcData } from "@/actions/roaming-qc/fetch-roaming-qc-data";
 import { ROAMING_QC_DEFECTS } from "@/constants";
 import { Button } from "@/components/ui/button";
-import { Loader2, Zap } from "lucide-react";
-import axios from "axios";
-import { useRouter } from "next/navigation";
+import { cn } from "@/lib/utils";
 
 interface RoamingQcDashboardProps {
     units: Unit[];
@@ -50,8 +50,20 @@ const RoamingQcDashboard = ({
     const fetchData = async () => {
         const data = await fetchDataForRoamingQC(obbSheetId, qrCode);
         const roamingQcData = await fetchRoamingQcData(qrCode);
-        setFetchedData(data);
         setRoamingQcData(roamingQcData);
+        if (data) {
+            setFetchedData(data);
+            toast({
+                title: "Machine is scanned successfully",
+                variant: "success"
+            })
+        } else {
+            toast({
+                title: "The machine is not active for this OBB",
+                description: "Please scan active machine ID with OBB",
+                variant: "error"
+            });
+        }
     };
 
     useEffect(() => {
