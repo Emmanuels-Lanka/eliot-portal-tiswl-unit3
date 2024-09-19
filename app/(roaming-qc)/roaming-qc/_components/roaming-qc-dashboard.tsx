@@ -74,7 +74,7 @@ const RoamingQcDashboard = ({
     }, {});
 
     const handleSubmitQC = async () => {
-        const color = selectedDefects.length === 0 ? "green" : selectedDefects.length === 1 ? "yellow" : selectedDefects.length === 2 ? "orange" : "red";
+        const color = selectedDefects.length === 0 ? "green" : selectedDefects.length === 1 ? "yellow" : selectedDefects.length === 2 ? "red" : "black";
 
         if (qrCode && selectedData && fetchedData && qtyInspected) {
             setIsLoading(true);
