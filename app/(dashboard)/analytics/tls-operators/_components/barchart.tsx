@@ -99,7 +99,7 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
       });
     }
   };
-  ///
+ 
 
   useEffect(() => {
     if (date.length > 0 && obbSheetId.length > 0) {
