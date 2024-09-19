@@ -17,7 +17,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
-import { getSMV } from "../actions"
+import { getProduction, getSMV } from "../actions"
 import { useEffect, useState } from "react"
 import { cn } from "@/lib/utils"
 
@@ -66,12 +66,19 @@ export function VerticalGraph() {
         
     try {
         // setisSubmitting(true)
-    const prod :any = await getSMV()
-    // setProductionData(prod)
+    const smv :any = await getSMV()
+
+    const pCount : any = await getProduction();
+    console.log("count",pCount)
+
+
+
+    // setsmvuctionData(smv)
+
     
           
   
-        // const chartData1: BarChartData[] =  prod.map((item:any) =>
+        // const chartData1: BarChartData[] =  smv.map((item:any) =>
         //      {
         //         const workedTime = item.avg * 60; // Convert avg to minutes per hour
         //         const neutralTime = 60 - workedTime;
@@ -89,7 +96,8 @@ export function VerticalGraph() {
 
         // })});
 
-        const chartData1: BarChartData[] = prod.map((item: any) => {
+        console.log("smv,",smv)
+        const chartData1: BarChartData[] = smv.map((item: any) => {
             const workedTime = item.avg * 60; 
             const neutralTime = 60 - workedTime;
           
