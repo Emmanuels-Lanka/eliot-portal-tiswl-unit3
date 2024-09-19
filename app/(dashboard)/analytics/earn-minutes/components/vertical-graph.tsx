@@ -64,7 +64,8 @@ export function VerticalGraph() {
 
     const [chartData, setChartData] = useState<BarChartData[]>([])
     const[isSubmitting,setisSubmitting]=useState<boolean>(false)
-    const[chartWidth,setChartWidth] = useState<number>(120)
+    // const[chartWidth,setChartWidth] = useState<number>(120)
+    const[chartWidth,setChartWidth] = useState<number>(50)
     const[smvData,setSmvData] = useState<smvData[]>([])
 
 
@@ -215,14 +216,17 @@ useEffect(() => {
 
 
 
-        <div className=' pt-5 -pl-8  bg-slate-50 rounded-lg border w-screen h-screen mb-16 overflow-x-auto overflow-y-auto'>
-    <Card className='pr-2 pt-6 pb-4 border rounded-xl '>
+        <div className=' pt-5 -pl-8 rounded-lg border w-screen h-[1000px] mb-16 overflow-x-auto'>
+        <Card className="pr-2 pt-6  border rounded-xl  w-screen h-[1000px]" >
       {/* <CardHeader>
         <CardTitle>Bar Chart - Horizontal</CardTitle>
         <CardDescription>January - June 2024</CardDescription>
       </CardHeader> */}
       <CardContent>
-        <ChartContainer config={chartConfig}>
+        <ChartContainer config={chartConfig}
+        style={{height:chartWidth+"%"}}
+        
+         >
           <BarChart
 
             
@@ -231,13 +235,13 @@ useEffect(() => {
             
             layout="vertical"
             margin={{
-              left: 150,    
+              left: 120,    
             }}
           >
             <XAxis type="number"  hide />
             <YAxis
 
-              height={1000}
+              
               dataKey="name"
               type="category"
               tickLine={false}
