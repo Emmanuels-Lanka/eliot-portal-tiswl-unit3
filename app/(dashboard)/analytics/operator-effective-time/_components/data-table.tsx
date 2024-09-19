@@ -35,12 +35,13 @@ export function DataTable<TData, TValue>({
 }: DataTableProps<TData, TValue>) {
     const [sorting, setSorting] = React.useState<SortingState>([])
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
+    const [selectedDate, setSelectedDate] = React.useState<string>("")
+    const [filteredData, setFilteredData] = React.useState<TData[]>(data)
 
     const table = useReactTable({
-        data,
+        data: filteredData,  // Pass filtered data here
         columns,
         getCoreRowModel: getCoreRowModel(),
-        getPaginationRowModel: getPaginationRowModel(),
         onSortingChange: setSorting,
         getSortedRowModel: getSortedRowModel(),
         onColumnFiltersChange: setColumnFilters,
@@ -51,21 +52,41 @@ export function DataTable<TData, TValue>({
         },
     })
 
+    const handleFilterByDate = () => {
+        if (!selectedDate) {
+            setFilteredData(data)  // Reset to original data if no date is selected
+            return
+        }
+
+        const filtered = data.filter((row: any) => {
+            const logintimestamp=new Date(row.loginTimestamp)
+            const rowDate = new Date(row.date)
+            const filterDate = new Date(selectedDate)
+            return (
+                logintimestamp.getFullYear() === filterDate.getFullYear() &&
+                logintimestamp.getMonth() === filterDate.getMonth() &&
+                logintimestamp.getDate() === filterDate.getDate()
+            )
+        })
+
+        setFilteredData(filtered)
+    }
+
+    console.log("dataaaaaaa",data)
     return (
-        <div>
-            {/* Search bar */}
-            {/* <div className="flex items-center py-4">
+        <>
+            <div className="flex items-center py-4 space-x-2">
                 <Input
-                    placeholder="Search by Operator RFID"
-                    value={(table.getColumn("operatorRfid")?.getFilterValue() as string) ?? ""}
-                    onChange={(event) =>
-                        table.getColumn("operatorRfid")?.setFilterValue(event.target.value)
-                    }
+                    type="date"
+                    value={selectedDate}
+                    onChange={(event) => setSelectedDate(event.target.value)}
                     className="max-w-sm"
                 />
-            </div> */}
+                <Button onClick={handleFilterByDate}>
+                    Filter by Date
+                </Button>
+            </div>
 
-            {/* Table */}
             <div className="rounded-md border bg-white box-shadow">
                 <Table>
                     <TableHeader className="bg-slate-50 py-8">
@@ -111,7 +132,6 @@ export function DataTable<TData, TValue>({
                 </Table>
             </div>
 
-            {/* Pagination */}
             <div className="flex items-center justify-end space-x-2 py-4">
                 <Button
                     variant="outline"
@@ -132,6 +152,6 @@ export function DataTable<TData, TValue>({
                     Next
                 </Button>
             </div>
-        </div>
+        </>
     )
 }
