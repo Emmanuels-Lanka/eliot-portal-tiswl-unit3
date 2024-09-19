@@ -59,8 +59,8 @@ const RoamingQcDashboard = ({
             })
         } else {
             toast({
-                title: "The machine is not active for this OBB",
-                description: "Please scan active machine ID with OBB",
+                title: "This machine is not working today",
+                description: "Please scan active machine ID",
                 variant: "error"
             });
         }
