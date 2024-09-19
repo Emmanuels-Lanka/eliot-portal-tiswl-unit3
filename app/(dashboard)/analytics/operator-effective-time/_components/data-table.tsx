@@ -42,6 +42,7 @@ export function DataTable<TData, TValue>({
         data: filteredData,  // Pass filtered data here
         columns,
         getCoreRowModel: getCoreRowModel(),
+        // getPaginationRowModel: getPaginationRowModel(),
         onSortingChange: setSorting,
         getSortedRowModel: getSortedRowModel(),
         onColumnFiltersChange: setColumnFilters,
@@ -132,7 +133,7 @@ export function DataTable<TData, TValue>({
                 </Table>
             </div>
 
-            <div className="flex items-center justify-end space-x-2 py-4">
+            {/* <div className="flex items-center justify-end space-x-2 py-4">
                 <Button
                     variant="outline"
                     size="sm"
@@ -151,7 +152,7 @@ export function DataTable<TData, TValue>({
                 >
                     Next
                 </Button>
-            </div>
+            </div> */}
         </>
     )
 }
