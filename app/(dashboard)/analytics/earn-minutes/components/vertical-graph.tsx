@@ -58,8 +58,13 @@ seqNo: string;
 nonStandardTime: number;
 }
 
+export type propItems = {
+  obbSheet:string;
+  date:string;
+  timeslot:string;
+}
 
-export function VerticalGraph() {
+export function VerticalGraph({obbSheet,date,timeslot}:propItems) {
 
 
     const [chartData, setChartData] = useState<BarChartData[]>([])
@@ -71,13 +76,16 @@ export function VerticalGraph() {
 
 
     
+    console.log("data", obbSheet,timeslot,date)
+
+
     const Fetchdata = async () => {
         
     try {
         // setisSubmitting(true)
-    const smv :any = await getSMV()
+    const smv :any = await getSMV({obbSheet,timeslot,date})
 
-    const pCount : any = await getProduction();
+    const pCount : any = await getProduction({obbSheet,timeslot,date});
     const joined =[];
     
 
@@ -142,21 +150,7 @@ export function VerticalGraph() {
           }
     })
 
-        // const chartData1: smvData[] = smvData.map((item: any) => {
-
-        //     const workedTime = item.avg * 60; 
-        //     const neutralTime = 60 - workedTime;
-          
-        //     return {
-        //       name: item.name,
-        //       avg: Number(parseFloat(item.avg.toString()).toFixed(2)),
-        //       smv: item.smv,
-        //       workedTime: workedTime.toFixed(2),
-        //       neutralTime: neutralTime.toFixed(2),
-        //     };
-        //   });
-
-        // setProductionData(chartData1)
+       
          setChartData(chartData)
          const longestLabel = Math.max(...chartData.map(item => item.name.length));
     setChartWidth(longestLabel * 8); 
@@ -178,6 +172,7 @@ useEffect(() => {
         
    
     Fetchdata()
+    
 
 
 }, [])
@@ -190,7 +185,8 @@ useEffect(() => {
   Fetchdata()
 
 
-}, [chartData])
+
+}, [obbSheet,date,timeslot,chartData])
 
 
 

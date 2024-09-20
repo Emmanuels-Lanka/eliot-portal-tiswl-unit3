@@ -46,16 +46,19 @@ const AnalyticsChart = ({
     const [filterApplied,setFilterApplied] = useState<boolean>(false)
 
     const [obbSheetId,setObbSheetId] = useState<string>("")
+    const [timeslot,setTimeslot] = useState<string>("")
     const [date,setDate] = useState<string>("")
 
 
   
 
-    const handleFetchProductions = async (data: { obbSheetId: string; date: Date }) => {
+    const handleFetchProductions = async (data: { obbSheetId: string; timeSlot: number; date: Date; }) => {
         try {
             data.date.setDate(data.date.getDate() + 1);
             const formattedDate = data.date.toISOString().split('T')[0].toString() + "%";
-            
+            console.log("dataaa",data)
+            setTimeslot(data.timeSlot.toString());
+
             setObbSheetId(data.obbSheetId);
             setDate(formattedDate);
             setFilterApplied(true);
@@ -106,7 +109,12 @@ const AnalyticsChart = ({
                         {/* <LineChartGraph 
                             data={production}
                         />  */}
-                        <VerticalGraph/>
+                        <VerticalGraph
+                        obbSheet={obbSheetId}
+                        date={date}
+                        timeslot={timeslot}
+
+                        />
                     </div>
                     :
                     <div className="mt-12 w-full">

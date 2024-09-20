@@ -2,7 +2,7 @@
 
 import axios from "axios";
 import * as z from "zod";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FieldValues, useForm } from "react-hook-form";
 import { CalendarIcon, Check, ChevronsUpDown, Filter, Loader2 } from "lucide-react";
@@ -42,7 +42,7 @@ interface SelectObbSheetDateOperationProps {
         id: string;
         name: string;
     }[] | null;
-    handleSubmit: (data: { obbSheetId: string; obbOperationId: string; date: Date;operationName:string }) => void;
+    handleSubmit: (data: { obbSheetId: string; timeSlot: number; date: Date; }) => void;
 };
 
 type ObbOperationsType = {
@@ -53,16 +53,20 @@ type ObbOperationsType = {
         code: string
     };
 }
-
+type timeSlots = {
+    key:number;
+    value:string;
+}
 const formSchema = z.object({
     obbSheetId: z.string().min(1, {
         message: "OBB Sheet is required"
     }),
-    obbOperationId: z.string().min(1, {
-        message: "OBB Sheet is required"
-    }),
+    // obbOperationId: z.string().min(1, {
+    //     message: "OBB Sheet is required"
+    // }),
     date: z.date(),
-    operationName: z.string().min(1)
+    // operationName: z.string().min(1),
+    timeSlot: z.number().min(1)
 });
 
 const SelectObbSheetDateOperation = ({
@@ -75,17 +79,46 @@ const SelectObbSheetDateOperation = ({
     const [obbOperations, setObbOperations] = useState<ObbOperationsType[]>([]);
     const [open, setOpen] = useState(false);
     const [open2, setOpen2] = useState(false);
+    const [times,setTimes] = useState<timeSlots []> ([])
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
             obbSheetId: "",
-            obbOperationId: "",
+            // obbOperationId: "",
             date: undefined,
+            timeSlot:undefined
         },
     });
 
     const { isSubmitting, isValid } = form.formState;
+
+    const setTime = () => {
+
+        const timeValues =[];
+
+    for (let hour = 8 ; hour<=18; hour++)
+    {
+        const key = hour ; 
+        const startTime = `${hour}:00`;
+        const endTime = `${hour+1}:00`;
+        const value = `${startTime} - ${endTime}`;
+        timeValues.push({key,value});
+
+    }
+    // console.log(timeValues)
+    setTimes(timeValues)
+    console.log(times)
+
+       
+    }
+
+    useEffect (()=> {
+        
+       setTime();
+    },[])
+
+
 
     const handleFetchObbOperations = async (obbSheetId: string) => {
         try {
@@ -174,71 +207,69 @@ const SelectObbSheetDateOperation = ({
                                 )}
                             />
                         </div>
+
+                        
                         <div className="md:w-2/5">
-                            <FormField
-                                control={form.control}
-                                name="obbOperationId"
-                                render={({ field }) => (
-                                    <FormItem className="flex flex-col">
-                                        <FormLabel className="text-base">
-                                            OBB Operation
-                                        </FormLabel>
-                                        <Popover open={open2} onOpenChange={setOpen2}>
-                                            <PopoverTrigger asChild>
-                                                <Button
-                                                    variant="outline"
-                                                    role="combobox"
-                                                    aria-expanded={open2}
-                                                    className="w-full justify-between font-normal"
+            <FormField
+                control={form.control}
+                name="timeSlot"
+                render={({ field }) => (
+                    <FormItem className="flex flex-col">
+                        <FormLabel className="text-base">Time Slot</FormLabel>
+                        <Popover open={open2} onOpenChange={setOpen2}>
+                            <PopoverTrigger asChild>
+                                <Button
+                                    variant="outline"
+                                    role="combobox"
+                                    aria-expanded={open2}
+                                    className="w-full justify-between font-normal"
+                                >
+                                    {times.length > 0 ? (
+                                        <>
+                                            {field.value
+                                                ? times.find((time) => time.key === field.value)?.value
+                                                : "Select Time Slot..."}
+                                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                        </>
+                                    ) : (
+                                        "Loading time slots..."
+                                    )}
+                                </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="p-0">
+                                <Command>
+                                    <CommandInput placeholder="Search Time Slot..." />
+                                    <CommandList>
+                                        <CommandEmpty>No time slots found!</CommandEmpty>
+                                        <CommandGroup>
+                                            {times.map((time) => (
+                                                <CommandItem
+                                                    key={time.key}
+                                                    value={time.value}
+                                                    onSelect={() => {
+                                                        form.setValue("timeSlot", time.key);
+                                                        setOpen2(false);
+                                                    }}
                                                 >
-                                                    {obbOperations ?
-                                                        <>
-                                                            {field.value
-                                                                ? obbOperations.find((op) => op.id === field.value)?.operation.name
-                                                                : "Select OBB Operation..."}
-                                                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                                                        </>
-                                                        :
-                                                        "No OBB Operations available!"
-                                                    }
-                                                </Button>
-                                            </PopoverTrigger>
-                                            <PopoverContent className="p-0">
-                                                <Command>
-                                                    <CommandInput placeholder="Search OBB Operation..." />
-                                                    <CommandList>
-                                                        <CommandEmpty>No OBB operation found!</CommandEmpty>
-                                                        <CommandGroup>
-                                                            {obbOperations && obbOperations.map((op) => (
-                                                                <CommandItem
-                                                                    key={op.id}
-                                                                    value={op.operation.name}
-                                                                    onSelect={() => {
-                                                                        form.setValue("obbOperationId", op.id)
-                                                                        form.setValue("operationName", op.operation.name)
-                                                                        
-                                                                        setOpen2(false)
-                                                                    }}
-                                                                >
-                                                                    <Check
-                                                                        className={cn(
-                                                                            "mr-2 h-4 w-4",
-                                                                            field.value === op.id ? "opacity-100" : "opacity-0"
-                                                                        )}
-                                                                    />
-                                                                    {op.seqNo}: {op.operation.code} - {op.operation.name}
-                                                                </CommandItem>
-                                                            ))}
-                                                        </CommandGroup>
-                                                    </CommandList>
-                                                </Command>
-                                            </PopoverContent>
-                                        </Popover>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                        </div>
+                                                    <Check
+                                                        className={cn(
+                                                            "mr-2 h-4 w-4",
+                                                            field.value === time.key ? "opacity-100" : "opacity-0"
+                                                        )}
+                                                    />
+                                                    {time.value}
+                                                </CommandItem>
+                                            ))}
+                                        </CommandGroup>
+                                    </CommandList>
+                                </Command>
+                            </PopoverContent>
+                        </Popover>
+                        <FormMessage />
+                    </FormItem>
+                )}
+            />
+        </div>
                         <div className="md:w-2/5">
                             <FormField
                                 control={form.control}
