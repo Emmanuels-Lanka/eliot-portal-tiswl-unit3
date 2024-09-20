@@ -36,6 +36,7 @@ export type ReportData = {
   machineid: string;
   linename: string;
   buyer: string;
+  employeeId:string;
 };
 
 const ReportTable = ({ obbSheets }: AnalyticsChartProps) => {
@@ -218,7 +219,7 @@ const ReportTable = ({ obbSheets }: AnalyticsChartProps) => {
           <TableBody>
             {data.map((d, rid) => (
               <TableRow key={rid}>
-                <TableCell>{rid + 1}</TableCell>
+                <TableCell>{d.employeeId}</TableCell>
                 <TableCell>{d.operatorname}</TableCell>
                 <TableCell>{d.operationname}</TableCell>
                 <TableCell>{d.machineid}</TableCell>

@@ -72,7 +72,8 @@ export async function getDailyData(obbsheetid: string, date: string): Promise<Re
                sm."machineId" as machineid,
                pl.name as linename,
                COUNT(pd."operatorRfid") as inspect,
-               obbop."seqNo"
+               obbop."seqNo",
+               opr."employeeId"
         FROM "ProductionData" pd
         INNER JOIN "Operator" opr ON pd."operatorRfid" = opr.rfid 
         INNER JOIN "ObbOperation" obbop ON pd."obbOperationId" = obbop.id
@@ -82,7 +83,7 @@ export async function getDailyData(obbsheetid: string, date: string): Promise<Re
         INNER JOIN "SewingMachine" sm ON obbop."sewingMachineId" = sm.id
         INNER JOIN "ProductionLine" pl ON pl.id = obbs."productionLineId"
         WHERE pd."timestamp" LIKE ${date} AND obbs.id = ${obbsheetid}
-        GROUP BY opr.id, opr.name, op.name, obbop.smv, obbop.target, unt.name, obbs.style, sm.id, pl.name, obbs.buyer, obbop."seqNo"
+        GROUP BY opr.id, opr.name, op.name, obbop.smv, obbop.target, unt.name, obbs.style, sm.id, pl.name, obbs.buyer, obbop."seqNo",opr."employeeId"
         ORDER BY obbop."seqNo" ASC;
     `;
 

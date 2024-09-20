@@ -37,6 +37,7 @@ export type ReportData1 = {
   buyer: string;
   seqNo:number;
   inspect:number;
+  employeeId:string;
 };
 type combinedData={
  count:number;
@@ -54,6 +55,7 @@ type combinedData={
   defectcount:number;
   seqNo:number;
   inspectcount:number;
+  employeeId:string;
   
 
 }
@@ -374,7 +376,7 @@ const DhuReport=({ obbSheets }: AnalyticsChartProps)=>{
           <TableBody>
             {combined.map((d, rid) => (
               <TableRow key={rid}>
-                <TableCell>{rid+1}</TableCell>
+                <TableCell>{d.employeeId}</TableCell>
                 <TableCell>{d.name}</TableCell>
                 <TableCell>{d.operationname}</TableCell>
                 <TableCell>{d.machineid}</TableCell>

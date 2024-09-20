@@ -192,7 +192,7 @@ const AddObbOperationForm = ({
         setIsEditing(false);
         setUpdatingData(undefined);
         form.reset({
-            seqNo:undefined,
+            seqNo:0,
             operationId: "",
             sewingMachineId: "",
             smv: undefined,
@@ -240,11 +240,15 @@ const AddObbOperationForm = ({
                                             Seq
                                         </FormLabel>
                                         <FormControl>
-                                            <Input
-                                            value={field.value}
-                                            onChange={(e) => form.setValue("seqNo", parseInt(e.target.value))}
-                                            placeholder="Enter seq number"
-                                            />
+                                        <Input
+          value={field.value || ""} // Display empty string if value is 0 or falsy
+          onChange={(e) => {
+            const value = e.target.value;
+            // Set the value to 0 if the input is empty, else convert it to a number
+            form.setValue("seqNo", value === "" ? 0 : Number(value));
+          }}
+          placeholder="seqNo"
+        />
                                         </FormControl>
                                         <FormMessage />
                                         </FormItem>

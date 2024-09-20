@@ -51,6 +51,9 @@ export function DataTable<TData, TValue>({
         },
     })
 
+
+    
+
     return (
         <div>
             {/* Search bar */}
@@ -63,7 +66,17 @@ export function DataTable<TData, TValue>({
                     }
                     className="max-w-sm"
                 />
+                
+                <Input
+                    placeholder="Search Device IDs..."
+                    value={(table.getColumn("eliotDevice.serialNumber")?.getFilterValue() as string) ?? ""}
+                    onChange={(event) =>
+                        table.getColumn("eliotDevice.serialNumber")?.setFilterValue(event.target.value)
+                    }
+                    className="max-w-sm"
+                />
             </div>
+            
 
             {/* Table */}
             <div className="rounded-md border bg-white box-shadow">
