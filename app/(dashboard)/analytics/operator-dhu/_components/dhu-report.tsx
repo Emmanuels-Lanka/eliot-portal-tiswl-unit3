@@ -237,8 +237,6 @@ const DhuReport=({ obbSheets }: AnalyticsChartProps)=>{
   }, [obbSheetId, date]);
 
 
-
-
   const handlePrint = () => {
     const baseUrl = window.location.origin;
     const printContent = reportRef.current?.innerHTML;
