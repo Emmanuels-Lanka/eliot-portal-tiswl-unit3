@@ -2,7 +2,7 @@
 "use client"
 
 import { TrendingUp } from "lucide-react"
-import { Bar, BarChart, CartesianGrid, XAxis } from "recharts"
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts"
 
 import {
   Card,
@@ -59,12 +59,13 @@ interface BarChartGraphProps {
   obbSheetId: string
 }
 
-type smvDatas = {
-  avg: number
-  count: number
-  name: string
-  seqNo: string
-  target: number
+type smvData = {
+  earnMinutes: number;
+count: number;
+name: string;
+seqNo: string;
+smv:number;
+
 }
 
 
@@ -107,12 +108,16 @@ const Fetchdata = async () => {
 
       
      
-      const chartData: BarChartData[] = prods.map((item,index) => ({
-          name:item.name,
-         
-          count: item.count,
-          target: item.target * workingHrs,
-          ratio: parseFloat((item.count / (item.target * workingHrs)*100).toFixed(2)),
+      const chartData: smvData[] = joined.map((item) => ({
+          
+        name:item.name,
+        seqNo:item.seqNo,
+        count:item.count,
+        earnMinutes:item.count*item.avg,
+        smv:item.avg
+
+
+
           // ratio: (item.count / (item.target * workingHrs)) * 100,
           // ratio: parseFloat((item.count / (item.target * workingHrs)).toFixed(2))*100,
           
@@ -120,7 +125,7 @@ const Fetchdata = async () => {
       })
       
       );
-     
+     console.log(chartData)
       setChartDatas(chartData)
 
   }
@@ -145,25 +150,34 @@ useEffect(() => {
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig}>
-          <BarChart accessibilityLayer data={chartData}>
+          <BarChart accessibilityLayer data={chartDatas}>
             <CartesianGrid vertical={false} />
             <XAxis
-              dataKey="month"
-              tickLine={false}
-              tickMargin={10}
-              axisLine={false}
-              tickFormatter={(value) => value.slice(0, 3)}
-            />
+                                    dataKey="name"
+                                    tickLine={true}
+                                    tickMargin={10}
+                                    axisLine={true}
+                                    angle={90}
+                                    interval={0}
+                                    textAnchor='start'
+                                />
+                                <YAxis
+                                    dataKey="count"
+                                    type="number"
+                                    tickLine={true}
+                                    tickMargin={10}
+                                    axisLine={true}
+                                />
             <ChartTooltip content={<ChartTooltipContent hideLabel />} />
             <ChartLegend content={<ChartLegendContent />} />
             <Bar
-              dataKey="desktop"
+              dataKey="earnMinutes"
               stackId="a"
               fill="var(--color-desktop)"
               radius={[0, 0, 4, 4]}
             />
             <Bar
-              dataKey="mobile"
+              dataKey="count"
               stackId="a"
               fill="var(--color-mobile)"
               radius={[4, 4, 0, 0]}

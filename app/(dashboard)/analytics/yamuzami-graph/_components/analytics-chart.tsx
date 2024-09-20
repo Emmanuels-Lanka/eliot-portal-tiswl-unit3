@@ -19,13 +19,13 @@ interface AnalyticsChartProps {
     }[] | null;
 }
 
-export type ProductionDataType = {
-    seqNo?: string;
-    seqno?: string;
-    name: string;
-    count: number;
-    target: number;
-}
+// export type ProductionDataType = {
+//     seqNo?: string;
+//     seqno?: string;
+//     name: string;
+//     count: number;
+//     target: number;
+// }
 
 const EfficiencyAnalyticsChart = ({
     obbSheets
@@ -33,7 +33,7 @@ const EfficiencyAnalyticsChart = ({
     const { toast } = useToast();
     const router = useRouter();
 
-    const [production, setProduction] = useState<ProductionDataType[]>([]);
+    // const [production, setProduction] = useState<ProductionDataType[]>([]);
     const [userMessage,setUserMessage]=useState<string>("Please select style and date")
     const [filterApplied,setFilterApplied]=useState<boolean>(false)
     const [obbSheetId,setObbSheetId]=useState<string>("")
