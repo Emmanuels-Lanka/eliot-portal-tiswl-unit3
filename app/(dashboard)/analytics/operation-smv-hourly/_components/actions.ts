@@ -11,6 +11,7 @@ export async function getHrSmv(obbOperationId:string,date:string) : Promise<Prod
     const data = await sql`SELECT p.id, 
        p."obbOperationId", 
        p.timestamp,
+       op.name,
        o.smv AS "obbOperationSmv",
        op.name AS "operationName",
        op.code AS "operationCode"

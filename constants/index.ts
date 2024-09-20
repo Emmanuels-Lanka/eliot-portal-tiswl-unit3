@@ -229,6 +229,11 @@ export const SIDEBAR_ROUTES = [
                 href: "/analytics/tls-operators",
                 icon: BarChartHorizontal
             },
+            {
+                label: "Operator DHU Report",
+                href: "/analytics/operator-dhu",
+                icon: BarChartHorizontal
+            },
         ]
     },
 

@@ -89,9 +89,14 @@ const   HmapChart15Compo = ({
     const [EliotDeviceList, setEliotDeviceList] = useState<any[]>([]);
     const [ isSubmitting, setIsSubmitting ] = useState<boolean>(false)
     const [ eliotIdList, seteliotIdList ] = useState<any[]>([])
+<<<<<<< HEAD
     const chartRef = useRef<HTMLDivElement>(null);
     
   const [chartData, setChartData] = useState<any>([]);
+=======
+    const [timeList, settimeList] = useState<string>("")
+    const [chartWidth, setChartWidth] = useState<number>(4500)
+>>>>>>> e5a7927e2a6ed888305eda1ef826b5caada94ea7
 
 
     const options = {
@@ -262,6 +267,7 @@ const   HmapChart15Compo = ({
         e()
 
     }, [obbSheetId,date])
+<<<<<<< HEAD
 
     // const saveAsPDF = async () => {
     //     if (chartRef.current) {
@@ -390,6 +396,11 @@ const   HmapChart15Compo = ({
         XLSX.utils.book_append_sheet(workbook, worksheet, "Chart Data");
         XLSX.writeFile(workbook, `chart-data.xlsx`);
     };
+=======
+    const totalCount = Object.keys(timeList).reduce((acc, curr) => acc + curr.length, 0);
+    const height: string = totalCount<30?"390%":totalCount < 50 ? '500%' : totalCount < 60 ? '400%' : '900%';
+    
+>>>>>>> e5a7927e2a6ed888305eda1ef826b5caada94ea7
  
 
     return (
@@ -406,7 +417,11 @@ const   HmapChart15Compo = ({
                 {heatmapFullData !== null ?
                     <div className="mt-12 bg-slate-100 pt-5 pl-8 rounded-lg border w-full mb-16 overflow-x-auto "   ref={chartRef}>
                         <h2 className="text-lg mb-2 font-medium text-slate-700">{" "}</h2>
+<<<<<<< HEAD
                         <ReactApexChart options={options} series={heatmapFullData} type="heatmap" height={height} width={2000} />
+=======
+                        <ReactApexChart options={options} series={heatmapFullData} type="heatmap" height={height} width={chartWidth} />
+>>>>>>> e5a7927e2a6ed888305eda1ef826b5caada94ea7
                     </div>
                     :
                     <div className="mt-12 w-full">
