@@ -62,15 +62,11 @@ const SmvBarChart = ({
         smv: item.smv,
     }));
 
-<<<<<<< HEAD
 
     const[chartWidth,setChartWidth] = useState<number>(100)
 
 
 console.log("data",operationName )
-=======
- console.log("datanbnhjhjhjhkhh",data)
->>>>>>> e5a7927e2a6ed888305eda1ef826b5caada94ea7
     
 //create pdf
 const saveAsPDF = async () => {
@@ -105,13 +101,8 @@ const saveAsPDF = async () => {
       // Set larger font size and align text with the logo
       pdf.setFontSize(24);
       pdf.text('Dashboard - Hourly Cycle Time vs Target SMV', logoX + logoWidth + 20, 83, { align: 'left' });
-<<<<<<< HEAD
       pdf.text(`Dashboard - Hourly Cycle Time vs Target SMVasadasda ${operationName}`, logoX + logoWidth + 70, 100, { align: 'left' });
       
-=======
-      
-      pdf.setTextColor(0, 0, 255);
->>>>>>> e5a7927e2a6ed888305eda1ef826b5caada94ea7
 
       pdf.setFontSize(18);
       pdf.text(`Operation Name: ${operationName}`, logoX + logoWidth + 20, 120, { align: 'left' });

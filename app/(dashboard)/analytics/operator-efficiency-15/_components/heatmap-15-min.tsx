@@ -255,7 +255,6 @@ const HmapChart15Compo = ({
     }, [obbSheetId, date])
 
     //const height: string = timeList.length < 21 ? '200%' : timeList.length < 30 ? '300%' : '500%';
-<<<<<<< HEAD
     // const totalCount = Object.keys(timeList).reduce((acc, curr) => acc + curr.length, 0);
     // const height: string = totalCount < 21 ? '200%' : totalCount < 30 ? '300%' : '500%';
 
@@ -346,10 +345,6 @@ let height = timeSlots < 15 ? 700 : timeSlots * 30; // Adjust height based on ti
 let width = operatorCount > 15 ? operatorCount * 40 : "100%";
     // let width = heatmapData && heatmapData?.length > 15  ? 3000 :  100+"%"; 
     // let height = heatmapData && heatmapData?.length < 15  ?  900 : 1500;
-=======
-    const totalCount = Object.keys(timeList).reduce((acc, curr) => acc + curr.length, 0);
-    const height: string = totalCount < 15 ? '50%' :totalCount < 21 ? '200%' : totalCount < 30 ? '300%' : '500%';
->>>>>>> e5a7927e2a6ed888305eda1ef826b5caada94ea7
 
     return (
         <>

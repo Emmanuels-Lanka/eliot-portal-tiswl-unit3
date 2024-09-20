@@ -90,13 +90,7 @@ const AnalyticsChart = ({
             const response = await axios.get(`/api/smv/fetch-by-operation?obbOperationId=${data.obbOperationId}&date=${formattedDate}`);
            
             const result = groupSMVByHour(response.data.data);
-<<<<<<< HEAD
            
-=======
-            
-            console.log("Result data",response)
-            console.log("dateqq11111111111",result)
->>>>>>> e5a7927e2a6ed888305eda1ef826b5caada94ea7
 
             response.data.data.forEach((entry: any) => {
                 console.log("Operation Name:", entry.obbOperation.operation.name);
@@ -131,11 +125,7 @@ const AnalyticsChart = ({
             <div className="mx-auto max-w-[1680px]">
                 {barchartData.length > 0 ?
                     <div className="mt-12">
-<<<<<<< HEAD
                         <SmvBarChart tsmv={tsmv} data={barchartData} operationName={operationName} />
-=======
-                        <SmvBarChart tsmv={tsmv} data={barchartData}  />
->>>>>>> e5a7927e2a6ed888305eda1ef826b5caada94ea7
                     </div>
                     :
                     <div className="mt-12 w-full">
