@@ -237,8 +237,6 @@ const DhuReport=({ obbSheets }: AnalyticsChartProps)=>{
   }, [obbSheetId, date]);
 
 
-
-
   const handlePrint = () => {
     const baseUrl = window.location.origin;
     const printContent = reportRef.current?.innerHTML;
@@ -254,7 +252,7 @@ const DhuReport=({ obbSheets }: AnalyticsChartProps)=>{
     const htmlContent = `
       <html>
         <head>
-          <title>Operator Daily Efficiency Report</title>
+          <title>Operator DHU Report </title>
           <style>
             body {
               font-family: Arial, sans-serif;
@@ -304,7 +302,7 @@ const DhuReport=({ obbSheets }: AnalyticsChartProps)=>{
             <img src="${baseUrl}/ha-meem.png" alt="Ha-Meem Logo" style="margin-top:10px;"/>
             <h5 style="margin-top:10px;">~ Bangladesh ~</h5>
           </div>
-          <h1 class="text-center">Operator Daily Efficiency Report</h1>
+          <h1 class="text-center">Operator DHU Report </h1>
           <hr />
           <div>
             <h5>Factory Name: Apparel Gallery LTD</h5>
