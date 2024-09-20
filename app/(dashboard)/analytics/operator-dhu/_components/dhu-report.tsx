@@ -54,6 +54,7 @@ type combinedData={
   defectcount:number;
   seqNo:number;
   inspectcount:number;
+  
 
 }
 type ReportData2={
@@ -307,9 +308,13 @@ const DhuReport=({ obbSheets }: AnalyticsChartProps)=>{
           <hr />
           <div>
             <h5>Factory Name: Apparel Gallery LTD</h5>
-            <h5>Title: Operator Daily Efficiency Report</h5>
+            <h5>Title: Operator DHU Report</h5>
             <h5>Date: ${formattedDate}</h5>
-           
+ 
+          <h5>Unit: ${data1[0].unitname}</h5>
+         <h5>Style Name: ${data1[0].style}</h5>
+           <h5>Line Name: ${data1[0].linename}</h5>
+                
           </div>
           ${printContent}
           <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 50px;">
@@ -355,11 +360,11 @@ const DhuReport=({ obbSheets }: AnalyticsChartProps)=>{
         <></>
       )
     }
-     <div  className="container mt-5 mb-10">
+        <div ref={reportRef} className="container mt-5 mb-10">
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>SeqNO:</TableHead>
+              <TableHead>Emp ID:</TableHead>
               <TableHead>Operator Name</TableHead>
               <TableHead>Operation Name</TableHead>
               <TableHead>Operated Machine</TableHead>
@@ -371,7 +376,7 @@ const DhuReport=({ obbSheets }: AnalyticsChartProps)=>{
           <TableBody>
             {combined.map((d, rid) => (
               <TableRow key={rid}>
-                <TableCell>{d.seqNo}</TableCell>
+                <TableCell>{rid+1}</TableCell>
                 <TableCell>{d.name}</TableCell>
                 <TableCell>{d.operationname}</TableCell>
                 <TableCell>{d.machineid}</TableCell>
