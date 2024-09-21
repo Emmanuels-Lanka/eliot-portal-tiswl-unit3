@@ -129,6 +129,10 @@ const RoamingQcDashboard = ({
 
     return (
         <div>
+            <h2 className="w-full my-4 md:mt-6 md:mb-8 text-center text-xl font-medium text-slate-600">
+                Roaming Quality Inspection System
+            </h2>
+            
             {!selectedData &&
                 <SelectUnitLineObbSheet
                     units={units}
@@ -157,6 +161,7 @@ const RoamingQcDashboard = ({
                     />
                     <div className="mt-8 border flex">
                         <div className="w-[280px] border-r p-2">
+                            <h2 className="w-full text-center font-medium text-slate-600">Hourly Quality Status</h2>
                             {roamingQcData.length > 0 ?
                                 <div className="flex flex-col gap-y-2">
                                     {roamingQcData.map(data => (

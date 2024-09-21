@@ -117,7 +117,7 @@ const AddLineEfficiencyResourcesForm = ({
                 units={units}
                 handleSubmit={handleUnitObbDate}
             />
-            <div className='mx-auto max-w-7xl mys-4 border px-12 pt-6 pb-10 rounded-lg bg-slate-100'>
+            <div className='mx-auto max-w-7xl my-4 border px-12 pt-6 pb-10 rounded-lg bg-slate-100'>
                 <Form {...form}>
                     <form
                         onSubmit={form.handleSubmit(onSubmit)}
