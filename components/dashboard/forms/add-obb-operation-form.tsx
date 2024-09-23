@@ -317,7 +317,7 @@ const AddObbOperationForm = ({
                         className="w-full space-y-6 mt-4"
                     >
                         <div className="flex flex-row gap-x-2">
-                                <div className="w-18">
+                                <div className="w-14">
                                     <FormField
                                     control={form.control}
                                     name="seqNo"
