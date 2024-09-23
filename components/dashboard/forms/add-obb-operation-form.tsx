@@ -98,12 +98,27 @@ const AddObbOperationForm = ({
     const [isUpdating, setIsUpdating] = useState(false);
     const [updatingData, setUpdatingData] = useState<ObbOperationData | undefined>();
 
+    const [obbOperationData, setObbOperationData] = useState<ObbOperationData[]>([]);
+
+    useEffect(() => {
+        const fetchObbOperations = async () => {
+            try {
+                const response = await axios.get('/api/obb-operation');
+                setObbOperationData(response.data);
+                console.log("seq data",response)
+            } catch (error) {
+                console.error("Error fetching OBB Operations", error);
+            }
+        };
+
+        fetchObbOperations();
+    }, []);
     
 
     const form = useForm<FormValues>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            seqNo:0,
+            seqNo:obbOperationData.length > 0 ? Math.max(...obbOperationData.map(op => op.seqNo)) : 1,
             operationId: "",
             sewingMachineId: "",
             smv: "0.1",
@@ -134,6 +149,11 @@ const AddObbOperationForm = ({
             });
         }
     }, [updatingData, form]);
+
+
+
+
+
 
     const onSubmit = async (data: FormValues) => {
         if (!isUpdating) {
@@ -230,7 +250,7 @@ const AddObbOperationForm = ({
                         className="w-full space-y-6 mt-4"
                     >
                         <div className="flex flex-row gap-x-2">
-                                <div className="w-14">
+                                <div className="w-18">
                                     <FormField
                                     control={form.control}
                                     name="seqNo"
@@ -241,14 +261,14 @@ const AddObbOperationForm = ({
                                         </FormLabel>
                                         <FormControl>
                                         <Input
-          value={field.value || ""} // Display empty string if value is 0 or falsy
-          onChange={(e) => {
-            const value = e.target.value;
-            // Set the value to 0 if the input is empty, else convert it to a number
-            form.setValue("seqNo", value === "" ? 0 : Number(value));
-          }}
-          placeholder="seqNo"
-        />
+                                            value={field.value || ""} // Display empty string if value is 0 or falsy
+                                            onChange={(e) => {
+                                                const value = e.target.value;
+                                                // Set the value to 0 if the input is empty, else convert it to a number
+                                                form.setValue("seqNo", value === "" ? 0 : Number(value));
+                                            }}
+                                            placeholder="seqNo"
+                                            />
                                         </FormControl>
                                         <FormMessage />
                                         </FormItem>

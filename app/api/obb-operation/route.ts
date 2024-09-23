@@ -28,6 +28,7 @@ export async function POST(
             },
             select: {
                 supervisorId: true,
+                seqNo:true,
                 supervisor: {
                     select: {
                         id: true,
