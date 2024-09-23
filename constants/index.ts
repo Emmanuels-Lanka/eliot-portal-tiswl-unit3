@@ -4,6 +4,7 @@ import {
     BarChart3,
     BarChartHorizontal,
     Blocks,
+    Cable,
     Cog,
     FileCog,
     FileSpreadsheet,
@@ -362,6 +363,16 @@ export const SIDEBAR_ROUTES = [
             },
         ]
     },
+    {
+        categoryName: "Line Efficiency Resources",
+        routes: [
+            {
+                label: "Create for today",
+                href: "/line-efficiency-resources",
+                icon: Cable
+            },
+        ]
+    },
 ];
 
 export const HEADER_INFO = [
@@ -535,6 +546,11 @@ export const HEADER_INFO = [
         label: "Operation Efficiency-(15minute)",
         href: "/analytics/operation-efficiency-15m",
         icon: Sliders
+    },
+    {
+        label: "Line Efficiency Resources",
+        href: "/line-efficiency-resources",
+        icon: Cable
     },
 ]
 

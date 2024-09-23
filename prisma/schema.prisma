@@ -67,13 +67,14 @@ model Operator {
 }
 
 model Unit {
-  id              String           @id @default(uuid())
-  name            String
-  createdAt       DateTime         @default(now())
-  updatedAt       DateTime         @updatedAt
-  obbSheets       ObbSheet[]
-  productionLines ProductionLine[]
-  sewingMachines  SewingMachine[]
+  id                      String                    @id @default(uuid())
+  name                    String
+  createdAt               DateTime                  @default(now())
+  updatedAt               DateTime                  @updatedAt
+  obbSheets               ObbSheet[]
+  productionLines         ProductionLine[]
+  sewingMachines          SewingMachine[]
+  lineEfficiencyResources LineEfficiencyResources[]
 }
 
 model ProductionLine {
@@ -128,58 +129,59 @@ model SewingMachine {
 }
 
 model ObbSheet {
-  id                   String         @id @default(uuid())
-  name                 String
-  productionLineId     String
-  unitId               String
-  indEngineerId        String?
-  mechanicId           String?
-  qualityInsId         String?
-  accInputManId        String?
-  fabInputManId        String?
-  buyer                String
-  style                String
-  item                 String
-  operators            Int
-  helpers              Int
-  startingDate         String
-  endingDate           String
-  workingHours         Int
-  efficiencyLevel1     Int
-  efficiencyLevel2     Int
-  efficiencyLevel3     Int
-  itemReference        String?
-  totalMP              Int?
-  totalSMV             Int?
-  bottleNeckTarget     Int?
-  target100            Int?
-  ucl                  Int?
-  lcl                  Int?
-  balancingLoss        Int?
-  balancingRatio       Int?
-  colour               String?
-  supResponseTime      Int?
-  mecResponseTime      Int?
-  qiResponseTime       Int?
-  createdAt            DateTime       @default(now())
-  updatedAt            DateTime       @updatedAt
-  isActive             Boolean        @default(false)
-  supervisorAssemblyId String?
-  supervisorBackId     String?
-  supervisorFrontId    String?
-  supervisorLineEndId  String?
-  obbOperations        ObbOperation[]
-  accInputMan          Staff?         @relation("AccInputMan", fields: [accInputManId], references: [id])
-  fabInputMan          Staff?         @relation("FabricInputMan", fields: [fabInputManId], references: [id])
-  indEngineer          Staff?         @relation("IndEngineer", fields: [indEngineerId], references: [id])
-  mechanic             Staff?         @relation("Mechanic", fields: [mechanicId], references: [id])
-  productionLine       ProductionLine @relation(fields: [productionLineId], references: [id], onDelete: Cascade)
-  qualityIns           Staff?         @relation("QI", fields: [qualityInsId], references: [id])
-  supervisorAssembly   Staff?         @relation("assembly", fields: [supervisorAssemblyId], references: [id])
-  supervisorBack       Staff?         @relation("back", fields: [supervisorBackId], references: [id])
-  supervisorFront      Staff?         @relation("front", fields: [supervisorFrontId], references: [id])
-  supervisorLineEnd    Staff?         @relation("line-end", fields: [supervisorLineEndId], references: [id])
-  unit                 Unit           @relation(fields: [unitId], references: [id], onDelete: Cascade)
+  id                      String                    @id @default(uuid())
+  name                    String
+  productionLineId        String
+  unitId                  String
+  indEngineerId           String?
+  mechanicId              String?
+  qualityInsId            String?
+  accInputManId           String?
+  fabInputManId           String?
+  buyer                   String
+  style                   String
+  item                    String
+  operators               Int
+  helpers                 Int
+  startingDate            String
+  endingDate              String
+  workingHours            Int
+  efficiencyLevel1        Int
+  efficiencyLevel2        Int
+  efficiencyLevel3        Int
+  itemReference           String?
+  totalMP                 Int?
+  totalSMV                Int?
+  bottleNeckTarget        Int?
+  target100               Int?
+  ucl                     Int?
+  lcl                     Int?
+  balancingLoss           Int?
+  balancingRatio          Int?
+  colour                  String?
+  supResponseTime         Int?
+  mecResponseTime         Int?
+  qiResponseTime          Int?
+  createdAt               DateTime                  @default(now())
+  updatedAt               DateTime                  @updatedAt
+  isActive                Boolean                   @default(false)
+  supervisorAssemblyId    String?
+  supervisorBackId        String?
+  supervisorFrontId       String?
+  supervisorLineEndId     String?
+  obbOperations           ObbOperation[]
+  lineEfficiencyResources LineEfficiencyResources[]
+  accInputMan             Staff?                    @relation("AccInputMan", fields: [accInputManId], references: [id])
+  fabInputMan             Staff?                    @relation("FabricInputMan", fields: [fabInputManId], references: [id])
+  indEngineer             Staff?                    @relation("IndEngineer", fields: [indEngineerId], references: [id])
+  mechanic                Staff?                    @relation("Mechanic", fields: [mechanicId], references: [id])
+  productionLine          ProductionLine            @relation(fields: [productionLineId], references: [id], onDelete: Cascade)
+  qualityIns              Staff?                    @relation("QI", fields: [qualityInsId], references: [id])
+  supervisorAssembly      Staff?                    @relation("assembly", fields: [supervisorAssemblyId], references: [id])
+  supervisorBack          Staff?                    @relation("back", fields: [supervisorBackId], references: [id])
+  supervisorFront         Staff?                    @relation("front", fields: [supervisorFrontId], references: [id])
+  supervisorLineEnd       Staff?                    @relation("line-end", fields: [supervisorLineEndId], references: [id])
+  unit                    Unit                      @relation(fields: [unitId], references: [id], onDelete: Cascade)
 
   @@index([productionLineId, unitId, indEngineerId, supervisorFrontId, supervisorBackId, supervisorAssemblyId, supervisorLineEndId, mechanicId, qualityInsId, accInputManId, fabInputManId])
 }
@@ -364,4 +366,25 @@ model RoamingQC {
   sewingMachine  SewingMachine @relation(fields: [machineId], references: [machineId], onDelete: Cascade)
 
   @@index([obbOperationId, operatorRfid, machineId])
+}
+
+model LineEfficiencyResources {
+  id               String   @id @default(uuid())
+  sewingOperators  Int
+  ironOperators    Int
+  helpers          Int
+  manPowers        Int
+  frontQcTarget    Int
+  backQcTarget     Int
+  endQcTarget      Int
+  workingHours     Int
+  totalSMV         Float
+  targetEfficiency Float
+  date             String
+  unitId           String
+  obbSheetId       String
+  unit             Unit     @relation(fields: [unitId], references: [id], onDelete: Cascade)
+  obbSheet         ObbSheet @relation(fields: [obbSheetId], references: [id], onDelete: Cascade)
+
+  @@index([unitId, obbSheetId])
 }
