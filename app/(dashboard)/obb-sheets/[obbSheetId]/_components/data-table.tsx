@@ -86,7 +86,8 @@ export function DataTable<TData, TValue>({
             if (row.original.isActive === true) {
                 try {
                     setIsLoading(true);
-                    await axios.patch(`/api/obb-operation/${obbOperationId}/deactive`);
+                    const ata=await axios.patch(`/api/obb-operation/${obbOperationId}/deactive`);
+                    
                     router.refresh();
                     toast({
                         title: `Successfully deactivated OBB operation!`,
@@ -179,8 +180,9 @@ export function DataTable<TData, TValue>({
 
         try {
             setIsBulkUpdating(true);
-            await axios.put(`/api/obb-operation/bulk/${type}`, { obbOperationIds });
+           const data= await axios.put(`/api/obb-operation/bulk/${type}`, { obbOperationIds });
             router.refresh();
+            console.log("dsereterrrtrt",data)
             toast({
                 title: `Successfully ${type === "active" ? "activated" : "deactivated"} the selected operations!`,
                 variant: "success",
@@ -312,6 +314,15 @@ export function DataTable<TData, TValue>({
                         value={(table.getColumn("sewingMachine.machineId")?.getFilterValue() as string) ?? ""}
                         onChange={(event) =>
                             table.getColumn("sewingMachine.machineId")?.setFilterValue(event.target.value)
+                        }
+                        className="max-w-sm"
+                    />
+
+                 <Input 
+                        placeholder="Search part..."
+                        value={(table.getColumn("part")?.getFilterValue() as string) ?? ""}
+                        onChange={(event) =>
+                            table.getColumn("part")?.setFilterValue(event.target.value)
                         }
                         className="max-w-sm"
                     />

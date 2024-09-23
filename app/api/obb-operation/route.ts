@@ -27,7 +27,7 @@ export async function POST(
                 part
             },
             select: {
-                supervisorId: true,
+                // supervisorId: true,
                 seqNo:true,
                 supervisor: {
                     select: {
@@ -43,6 +43,8 @@ export async function POST(
                 }
             }
         });
+
+        
         const supervisorid = susupervisorIdnew.map(operation => 
             operation.supervisor ? operation.supervisor.id : 'No supervisor'
         );
@@ -50,6 +52,12 @@ export async function POST(
 
 
 
+       
+
+
+
+       
+        
 
 
         const newObbOperation = await db.obbOperation.create({
@@ -68,7 +76,7 @@ export async function POST(
                 part
             }
         });
-       console.log("data",newObbOperation)
+       console.log("data123456",newObbOperation)
         // Update the active operation on Machine table
         // await db.sewingMachine.update({
         //     where: {
@@ -86,3 +94,87 @@ export async function POST(
         return new NextResponse("Internal Error", { status: 500 });
     }
   }
+
+
+
+
+// export async function GET(req: Request) {
+//     try {
+//         const { searchParams } = new URL(req.url);
+//         const obbSheetId = searchParams.get("obbSheetId"); // Get the obbSheetId from the query parameters
+
+//         if (!obbSheetId) {
+//             return new NextResponse("obbSheetId is required", { status: 400 });
+//         }
+
+//         // Find the operation with the maximum seqNo for the given obbSheetId
+//         const maxSeqOperation = await db.obbOperation.findFirst({
+//             where: {
+//                 obbSheetId: obbSheetId, // Filter by obbSheetId
+//             },
+//             select: {
+//                 seqNo: true, // Only select the seqNo
+//                 obbSheet: {
+//                     select: {
+//                         id: true,
+//                     },
+//                 },
+//             },
+//             orderBy: {
+//                 seqNo: "desc", // Order by seqNo in descending order to get the max
+//             },
+//         });
+
+//         if (!maxSeqOperation) {
+//             return new NextResponse("No operations found for the given obbSheetId", { status: 404 });
+//         }
+
+//         return NextResponse.json({ data: maxSeqOperation, message: 'Max sequence number fetched successfully' }, { status: 200 });
+
+//     } catch (error) {
+//         console.error("[OBB_OPERATION_ERROR]", error);
+//         return new NextResponse("Internal Error", { status: 500 });
+//     }
+// }
+
+
+
+export async function GET(req: Request) {
+    try {
+        const { searchParams } = new URL(req.url);
+        const obbSheetId = searchParams.get("obbSheetId");
+
+        if (!obbSheetId) {
+            return new NextResponse("obbSheetId is required", { status: 400 });
+        }
+
+        // Find all operations for the given obbSheetId, ordered by seqNo in descending order
+        const operations = await db.obbOperation.findMany({
+            where: {
+                obbSheetId: obbSheetId,
+            },
+            select: {
+                seqNo: true, // Select seqNo
+                obbSheet: {
+                    select: {
+                        id: true,
+                    },
+                },
+            },
+            orderBy: {
+                seqNo: "desc", // Order by seqNo in descending order
+            },
+        });
+
+        if (!operations || operations.length === 0) {
+            return new NextResponse("No operations found for the given obbSheetId", { status: 404 });
+        }
+
+        return NextResponse.json({ data: operations, message: 'Operations fetched successfully' }, { status: 200 });
+
+    } catch (error) {
+        console.error("[OBB_OPERATION_ERROR]", error);
+        return new NextResponse("Internal Error", { status: 500 });
+    }
+}
+

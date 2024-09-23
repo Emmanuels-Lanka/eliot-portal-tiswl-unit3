@@ -57,6 +57,8 @@ interface AddObbOperationFormProps {
     
 }
 
+
+
 type FormValues = z.infer<typeof formSchema>;
 
 const formSchema = z.object({
@@ -100,25 +102,88 @@ const AddObbOperationForm = ({
 
     const [obbOperationData, setObbOperationData] = useState<ObbOperationData[]>([]);
 
+   
+
+
+   
+    
+    
+    
+
+    // useEffect(() => {
+    //     console.log("OBBSheet ID:", obbSheetId); 
+    
+    //     const fetchObbOperations = async () => {
+    //         if (!obbSheetId) {
+    //             console.warn("OBBSheet ID is not defined");
+    //             return; 
+    //         }
+    
+    //         try {
+    //             const response = await axios.get(`/api/obb-operation?obbSheetId=${obbSheetId}`);
+    //             const data = response.data;
+    //             setObbOperationData(data);
+    //             console.log("Fetched OBB operations:", data);
+    //             console.log("seq Numbers",data.seqNo)
+    //             const maxSeqNo = Math.max(...obbOperationData.map(operation => operation.seqNo));
+    //              console.log("max seqNo",maxSeqNo)
+           
+    //         } catch (error) {
+    //             console.error("Error fetching OBB Operations", error);
+    //         }
+    //     };
+    
+    //     fetchObbOperations();
+    // }, [obbSheetId]);
+    
+
+
     useEffect(() => {
+        console.log("OBBSheet ID:", obbSheetId); 
+    
         const fetchObbOperations = async () => {
+            if (!obbSheetId) {
+                console.warn("OBBSheet ID is not defined");
+                return; 
+            }
+    
             try {
-                const response = await axios.get('/api/obb-operation');
-                setObbOperationData(response.data);
-                console.log("seq data",response)
+                const response = await axios.get(`/api/obb-operation?obbSheetId=${obbSheetId}`);
+                const data = response.data;
+                console.log("dataaaaaaa", data);
+                console.log("Sequence Number:", data.data[0].seqNo);
+                const nextseqNo=data.data[0].seqNo+1
+                form.reset({
+                    seqNo: nextseqNo,
+                    operationId: "",
+                    sewingMachineId: "",
+                    smv: "0.1",
+                    target: undefined,
+                    spi: 0,
+                    length: 0,
+                    totalStitches: 0,
+                    obbSheetId: obbSheetId,
+                    part: ""
+                });
+                
+                console.log("next seq No",nextseqNo)
             } catch (error) {
                 console.error("Error fetching OBB Operations", error);
             }
         };
-
-        fetchObbOperations();
-    }, []);
     
+        fetchObbOperations();
+    }, [obbSheetId]);
+    
+    
+
+    
+
 
     const form = useForm<FormValues>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            seqNo:obbOperationData.length > 0 ? Math.max(...obbOperationData.map(op => op.seqNo)) : 1,
+            seqNo:0,
             operationId: "",
             sewingMachineId: "",
             smv: "0.1",
@@ -160,6 +225,8 @@ const AddObbOperationForm = ({
             try {
                 console.log("dataaa",data)
                 const res = await axios.post('/api/obb-operation', data);
+                console.log("submited data ", res.data);
+
                 toast({
                     title: "Successfully added new OBB operation",
                     variant: "success",
