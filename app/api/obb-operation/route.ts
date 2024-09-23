@@ -23,6 +23,7 @@ export async function POST(
         // };
         
         const susupervisorIdnew = await db.obbOperation.findMany({
+            
             where: {
                 part
             },

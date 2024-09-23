@@ -39,6 +39,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import ConfirmModel from "@/components/model/confirm-model";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/components/ui/use-toast";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface DataTableProps<TData, TValue> {
     data: TData[];
@@ -318,14 +319,22 @@ export function DataTable<TData, TValue>({
                         className="max-w-sm"
                     />
 
-                 <Input 
-                        placeholder="Search part..."
+                        <Select
+                        
                         value={(table.getColumn("part")?.getFilterValue() as string) ?? ""}
-                        onChange={(event) =>
-                            table.getColumn("part")?.setFilterValue(event.target.value)
-                        }
-                        className="max-w-sm"
-                    />
+                        onValueChange={(value) => table.getColumn("part")?.setFilterValue(value)}
+                        >
+                        <SelectTrigger className="max-w-sm">
+                            <SelectValue placeholder="Select Part" />
+                        </SelectTrigger>
+                        <SelectContent>
+                     
+                            <SelectItem value="Front">Front</SelectItem>
+                            <SelectItem value="Back">Back</SelectItem>
+                            <SelectItem value="line-end">Line-end</SelectItem>
+                            <SelectItem value="assembly">Assembly</SelectItem>
+                        </SelectContent>
+                        </Select>
                 </div>
 
                 {/* Bulk Update buttons */}
