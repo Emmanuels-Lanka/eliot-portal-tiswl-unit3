@@ -121,7 +121,7 @@ const EfficiencyAnalyticsChart = ({
             const m=(data.date.getMonth() + 1).toString().padStart(2,"0")
             const d=data.date.getDate().toString().padStart(2,"0")
             setObbSheetId(data.obbSheetId)
-            setDate(`${y}-${m}-${d}%`)
+            setDate(`${y}-${m}-${d}`)
        
             setFilterApplied(true)
           

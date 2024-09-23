@@ -1,10 +1,12 @@
 "use server";
 import { neon } from "@neondatabase/serverless";
-import { ProductionDataType } from "./analytics-chart";
+// import { ProductionDataType } from "./analytics-chart";
 
-export async function getOperatorEfficiency(obbsheetid:string,date:string) : Promise<ProductionDataType[]>   {
+export async function getOperatorEfficiency(obbsheetid:string,date:string)    {
     const sql = neon(process.env.DATABASE_URL || "");
 
+
+    date=date+" 10:%";
     // const data1 = await sql`SELECT sum(pd."productionCount") as count,o.name  ,oo.target
     //         FROM "ProductionData" pd
     //         INNER JOIN "ObbOperation" oo ON pd."obbOperationId" = oo.id
@@ -21,18 +23,18 @@ export async function getOperatorEfficiency(obbsheetid:string,date:string) : Pro
             WHERE pd.timestamp like  ${date} and  obbs.id = ${obbsheetid}
             group by opn.name,obbopn."seqNo",obbopn.target order by  obbopn."seqNo"`
     
-            console.log(data)
+            console.log(date)
     
     
-    return new Promise((resolve) => resolve(data as ProductionDataType[] ))
+    return new Promise((resolve) => resolve(data ))
 }
 
 
 
-export async function getSMV(obbsheetid:string,date:string) : Promise<ProductionDataType[]>   {
+export async function getSMV(obbsheetid:string,date:string)    {
     const sql = neon(process.env.DATABASE_URL || "");
 
-   
+   date=date+"%";
     
      const data = await sql`SELECT 
     AVG(CAST(p.smv AS NUMERIC)) AS avg,
@@ -60,5 +62,5 @@ order by o."seqNo"`;
             console.log(data)
     
     
-    return new Promise((resolve) => resolve(data as ProductionDataType[] ))
+    return new Promise((resolve) => resolve(data  ))
 }

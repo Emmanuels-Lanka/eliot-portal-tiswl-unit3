@@ -83,8 +83,8 @@ const Fetchdata = async () => {
   try {
      
       setisSubmitting(true)
-      const smvs = await getSMV(obbSheetId, date)
-      const prods = await getOperatorEfficiency(obbSheetId,date)
+      const smvs :any = await getSMV(obbSheetId, date)
+      const prods:any = await getOperatorEfficiency(obbSheetId,date)
 
 
       console.log(smvs)
@@ -168,7 +168,7 @@ useEffect(() => {
                                     tickMargin={10}
                                     axisLine={true}
                                 />
-            <ChartTooltip content={<ChartTooltipContent hideLabel />} />
+            <ChartTooltip content={<ChartTooltipContent  />} />
             <ChartLegend content={<ChartLegendContent />} />
             <Bar
               dataKey="earnMinutes"
