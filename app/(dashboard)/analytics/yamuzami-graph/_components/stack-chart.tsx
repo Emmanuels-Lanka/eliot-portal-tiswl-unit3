@@ -74,7 +74,7 @@ smv:number;
 }
 
 
-export function StackChart({ date, obbSheetId,timeValue }: BarChartGraphProps) {
+export function  StackChart({ date, obbSheetId,timeValue }: BarChartGraphProps) {
 
 
   const [chartDatas, setChartDatas] = useState<any[]>([])

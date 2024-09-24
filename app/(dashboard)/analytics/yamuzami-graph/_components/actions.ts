@@ -5,7 +5,8 @@ import { neon } from "@neondatabase/serverless";
 export async function getOperatorEfficiency(obbsheetid:string,date:string,timeValue:string)    {
     const sql = neon(process.env.DATABASE_URL || "");
 
-    date = date+" "+timeValue+":%"
+    // date = date+" "+timeValue+":%"
+    date = date+"%";
     // date=date+" 10:%";
     // const data1 = await sql`SELECT sum(pd."productionCount") as count,o.name  ,oo.target
     //         FROM "ProductionData" pd
@@ -23,7 +24,8 @@ export async function getOperatorEfficiency(obbsheetid:string,date:string,timeVa
             WHERE pd.timestamp like  ${date} and  obbs.id = ${obbsheetid}
             group by opn.name,obbopn."seqNo",obbopn.target order by  obbopn."seqNo"`
     
-            console.log(date)
+            // console.log(date)
+            console.log("date, ",date,"ob",obbsheetid)
     
     
     return new Promise((resolve) => resolve(data ))
@@ -35,10 +37,10 @@ export async function getSMV(obbsheetid:string,date:string,timeValue:string)    
     const sql = neon(process.env.DATABASE_URL || "");
 
    date=date+"%";
-   date = date+" "+timeValue+":%"
+//    date = date+" "+timeValue+":%"
     
      const data = await sql`SELECT 
-    CAST(p.smv AS NUMERIC) AS avg,
+    AVG(CAST(p.smv AS NUMERIC)) AS avg,
     
      concat(o."seqNo",'-',op.name) as name,
     o."seqNo"
@@ -56,7 +58,7 @@ JOIN
       AND p.timestamp like ${date}
       
           
-group by name,o."seqNo",avg
+group by name,o."seqNo"
 
 order by o."seqNo"`;
     
