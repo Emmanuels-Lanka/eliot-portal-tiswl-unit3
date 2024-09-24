@@ -49,7 +49,7 @@ export async function POST(
         const supervisorid = susupervisorIdnew.map(operation => 
             operation.supervisor ? operation.supervisor.id : 'No supervisor'
         );
-        console.log("Supervisor Names:", supervisorid);
+        // console.log("Supervisor Names:", supervisorid);
 
 
 
@@ -77,7 +77,7 @@ export async function POST(
                 part
             }
         });
-       console.log("data123456",newObbOperation)
+    //    console.log("data123456",newObbOperation)
         // Update the active operation on Machine table
         // await db.sewingMachine.update({
         //     where: {

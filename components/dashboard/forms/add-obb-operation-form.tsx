@@ -102,42 +102,6 @@ const AddObbOperationForm = ({
 
     const [obbOperationData, setObbOperationData] = useState<ObbOperationData[]>([]);
 
-   
-
-
-   
-    
-    
-    
-
-    // useEffect(() => {
-    //     console.log("OBBSheet ID:", obbSheetId); 
-    
-    //     const fetchObbOperations = async () => {
-    //         if (!obbSheetId) {
-    //             console.warn("OBBSheet ID is not defined");
-    //             return; 
-    //         }
-    
-    //         try {
-    //             const response = await axios.get(`/api/obb-operation?obbSheetId=${obbSheetId}`);
-    //             const data = response.data;
-    //             setObbOperationData(data);
-    //             console.log("Fetched OBB operations:", data);
-    //             console.log("seq Numbers",data.seqNo)
-    //             const maxSeqNo = Math.max(...obbOperationData.map(operation => operation.seqNo));
-    //              console.log("max seqNo",maxSeqNo)
-           
-    //         } catch (error) {
-    //             console.error("Error fetching OBB Operations", error);
-    //         }
-    //     };
-    
-    //     fetchObbOperations();
-    // }, [obbSheetId]);
-    
-
-
     useEffect(() => {
         console.log("OBBSheet ID:", obbSheetId); 
     
@@ -215,11 +179,6 @@ const AddObbOperationForm = ({
         }
     }, [updatingData, form]);
 
-
-
-
-
-
     const onSubmit = async (data: FormValues) => {
         if (!isUpdating) {
             try {
@@ -291,11 +250,7 @@ const AddObbOperationForm = ({
             
         });
     }
-
-
     
-
-
     return (
         <div className="mx-auto max-w-7xl border px-6 pt-4 pb-6 rounded-lg bg-slate-100">
             <div className="font-medium flex items-center justify-between">
