@@ -39,6 +39,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import ConfirmModel from "@/components/model/confirm-model";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/components/ui/use-toast";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface DataTableProps<TData, TValue> {
     data: TData[];
@@ -86,7 +87,8 @@ export function DataTable<TData, TValue>({
             if (row.original.isActive === true) {
                 try {
                     setIsLoading(true);
-                    await axios.patch(`/api/obb-operation/${obbOperationId}/deactive`);
+                    const ata=await axios.patch(`/api/obb-operation/${obbOperationId}/deactive`);
+                    
                     router.refresh();
                     toast({
                         title: `Successfully deactivated OBB operation!`,
@@ -179,8 +181,9 @@ export function DataTable<TData, TValue>({
 
         try {
             setIsBulkUpdating(true);
-            await axios.put(`/api/obb-operation/bulk/${type}`, { obbOperationIds });
+           const data= await axios.put(`/api/obb-operation/bulk/${type}`, { obbOperationIds });
             router.refresh();
+            console.log("dsereterrrtrt",data)
             toast({
                 title: `Successfully ${type === "active" ? "activated" : "deactivated"} the selected operations!`,
                 variant: "success",
@@ -315,6 +318,23 @@ export function DataTable<TData, TValue>({
                         }
                         className="max-w-sm"
                     />
+
+                        <Select
+                        
+                        value={(table.getColumn("part")?.getFilterValue() as string) ?? ""}
+                        onValueChange={(value) => table.getColumn("part")?.setFilterValue(value)}
+                        >
+                        <SelectTrigger className="max-w-sm">
+                            <SelectValue placeholder="Select Part" />
+                        </SelectTrigger>
+                        <SelectContent>
+                     
+                            <SelectItem value="Front">Front</SelectItem>
+                            <SelectItem value="Back">Back</SelectItem>
+                            <SelectItem value="line-end">Line-end</SelectItem>
+                            <SelectItem value="assembly">Assembly</SelectItem>
+                        </SelectContent>
+                        </Select>
                 </div>
 
                 {/* Bulk Update buttons */}

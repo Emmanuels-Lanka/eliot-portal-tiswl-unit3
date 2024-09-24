@@ -57,7 +57,7 @@ export function DataTable<TData, TValue>({
     return (
         <div>
             {/* Search bar */}
-            <div className="flex items-center py-4">
+            <div className="flex items-center py-4 gap-5">
                 <Input
                     placeholder="Search machine IDs..."
                     value={(table.getColumn("machineId")?.getFilterValue() as string) ?? ""}
@@ -67,14 +67,14 @@ export function DataTable<TData, TValue>({
                     className="max-w-sm"
                 />
                 
-                <Input
+                {/* <Input
                     placeholder="Search Device IDs..."
-                    value={(table.getColumn("eliotDevice.serialNumber")?.getFilterValue() as string) ?? ""}
+                    value={(table.getColumn("serialNumber")?.getFilterValue() as string) ?? ""}
                     onChange={(event) =>
-                        table.getColumn("eliotDevice.serialNumber")?.setFilterValue(event.target.value)
+                        table.getColumn("serialNumber")?.setFilterValue(event.target.value)
                     }
                     className="max-w-sm"
-                />
+                /> */}
             </div>
             
 
