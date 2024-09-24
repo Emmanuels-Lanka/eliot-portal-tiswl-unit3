@@ -129,6 +129,11 @@ export const SIDEBAR_ROUTES = [
                 label: "SMV vs Cycle Time",
                 href: "/analytics/operation-smv",
                 icon: BarChart3
+            },
+            {
+                label: "Yamuzami Graph",
+                href: "/analytics/yamuzami-graph",
+                icon: BarChart3
             }
         ]
     },
@@ -447,6 +452,11 @@ export const HEADER_INFO = [
     {
         label: "SMV vs Cycle Time",
         href: "/analytics/operation-smv",
+        icon: BarChart3
+    },
+    {
+        label: "Yamuzami Graph",
+        href: "/analytics/yamuzami-graph",
         icon: BarChart3
     },
     {

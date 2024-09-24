@@ -35,13 +35,17 @@ const chartData = [
 ]
 
 const chartConfig = {
-  desktop: {
-    label: "Desktop",
+  earnMinutes: {
+    label: "Earn Minutes",
     color: "hsl(var(--chart-1))",
   },
-  mobile: {
-    label: "Mobile",
+  count: {
+    label: "Count",
     color: "hsl(var(--chart-2))",
+  },
+  smv: {
+    label: "Non Standerd",
+    color: "hsl(var(--chart-4))",
   },
 } satisfies ChartConfig
 
@@ -57,6 +61,7 @@ interface BarChartGraphProps {
 
   date: string
   obbSheetId: string
+  timeValue:string
 }
 
 type smvData = {
@@ -69,7 +74,7 @@ smv:number;
 }
 
 
-export function StackChart({ date, obbSheetId }: BarChartGraphProps) {
+export function StackChart({ date, obbSheetId,timeValue }: BarChartGraphProps) {
 
 
   const [chartDatas, setChartDatas] = useState<any[]>([])
@@ -83,10 +88,10 @@ const Fetchdata = async () => {
   try {
      
       setisSubmitting(true)
-      const smvs :any = await getSMV(obbSheetId, date)
-      const prods:any = await getOperatorEfficiency(obbSheetId,date)
+      const smvs :any = await getSMV(obbSheetId, date,timeValue)
+      const prods:any = await getOperatorEfficiency(obbSheetId,date,timeValue)
 
-
+     console.log("test",date,obbSheetId,timeValue)
       console.log(smvs)
       console.log(prods)
       const joined = [] 
@@ -103,26 +108,25 @@ const Fetchdata = async () => {
 
   
    
-      let workingHrs = (new Date().getHours() - 8) + new Date().getMinutes() / 60;
-      workingHrs > 10 ? 10 : workingHrs
+     
 
       
      
-      const chartData: smvData[] = joined.map((item) => ({
+      const chartData: smvData[] = joined.map((item) => 
+        
+        { 
+          const em = item.count*item.avg;
+          const nm = 60-em;          
+          
+          return {
           
         name:item.name,
         seqNo:item.seqNo,
         count:item.count,
-        earnMinutes:item.count*item.avg,
-        smv:item.avg
-
-
-
-          // ratio: (item.count / (item.target * workingHrs)) * 100,
-          // ratio: parseFloat((item.count / (item.target * workingHrs)).toFixed(2))*100,
-          
-
-      })
+        earnMinutes:em,
+        smv:nm
+       
+      }}
       
       );
      console.log(chartData)
@@ -140,14 +144,14 @@ const Fetchdata = async () => {
 
 useEffect(() => {
   Fetchdata()
-}, [date, obbSheetId])
+}, [date, obbSheetId,timeValue])
 
   return (
     <Card>
-      <CardHeader>
+      {/* <CardHeader>
         <CardTitle>Bar Chart - Stacked + Legend</CardTitle>
         <CardDescription>January - June 2024</CardDescription>
-      </CardHeader>
+      </CardHeader> */}
       <CardContent>
         <ChartContainer config={chartConfig}>
           <BarChart accessibilityLayer data={chartDatas}>
@@ -173,13 +177,19 @@ useEffect(() => {
             <Bar
               dataKey="earnMinutes"
               stackId="a"
-              fill="var(--color-desktop)"
+              fill="var(--color-earnMinutes)"
               radius={[0, 0, 4, 4]}
             />
             <Bar
               dataKey="count"
               stackId="a"
-              fill="var(--color-mobile)"
+              fill="var(--color-count)"
+              radius={[0, 0, 0, 0]}
+            />
+            <Bar
+              dataKey="smv"
+              stackId="a"
+              fill="var(--color-smv)"
               radius={[4, 4, 0, 0]}
             />
           </BarChart>

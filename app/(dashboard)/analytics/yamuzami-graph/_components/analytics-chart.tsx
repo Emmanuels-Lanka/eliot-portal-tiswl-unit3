@@ -6,9 +6,10 @@ import { useRouter } from "next/navigation";
 import { ProductionData } from "@prisma/client";
 
 import { useToast } from "@/components/ui/use-toast";
-import SelectObbSheetAndDate  from "@/components/dashboard/common/select-obbsheet-and-date";
+// import SelectObbSheetAndDate  from "@/components/dashboard/common/select-obbsheet-and-date";
 import BarChartGraph from "./bar-chart-graph";
 import { StackChart } from "./stack-chart";
+import SelectObbSheetAndDate from "./select-obbsheet-and-date";
 
 
 
@@ -37,6 +38,7 @@ const EfficiencyAnalyticsChart = ({
     const [userMessage,setUserMessage]=useState<string>("Please select style and date")
     const [filterApplied,setFilterApplied]=useState<boolean>(false)
     const [obbSheetId,setObbSheetId]=useState<string>("")
+    const [timeValue,setTimeValue]=useState<string>("")
     const[date,setDate]=useState<string>("")
     
 
@@ -115,7 +117,9 @@ const EfficiencyAnalyticsChart = ({
     //     }
     // }
     
-    const Fetchdata = async (data: { obbSheetId: string; date: Date }) => {
+    
+
+    const Fetchdata = async (data: { obbSheetId: string; date: Date ,timeValue:string}) => {
         try {
             const y=data.date.getFullYear().toString()
             const m=(data.date.getMonth() + 1).toString().padStart(2,"0")
@@ -124,6 +128,11 @@ const EfficiencyAnalyticsChart = ({
             setDate(`${y}-${m}-${d}`)
        
             setFilterApplied(true)
+            setTimeValue(data.timeValue)
+
+            console.log(data)
+
+            
           
         } catch (error) {
           console.error("Error fetching data:", error);
@@ -136,10 +145,12 @@ const EfficiencyAnalyticsChart = ({
         }
         
       },[filterApplied])
+
+      
     return (
         <>
             <div className="mx-auto max-w-7xl">
-                <SelectObbSheetAndDate 
+                <SelectObbSheetAndDate
                     obbSheets={obbSheets}
                     handleSubmit={Fetchdata}
                 />
@@ -158,6 +169,7 @@ const EfficiencyAnalyticsChart = ({
                     <StackChart
                     obbSheetId={obbSheetId}
                     date={date}
+                    timeValue={timeValue}
                     ></StackChart>
                     </div>
                     :

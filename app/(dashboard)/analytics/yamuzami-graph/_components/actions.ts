@@ -2,11 +2,11 @@
 import { neon } from "@neondatabase/serverless";
 // import { ProductionDataType } from "./analytics-chart";
 
-export async function getOperatorEfficiency(obbsheetid:string,date:string)    {
+export async function getOperatorEfficiency(obbsheetid:string,date:string,timeValue:string)    {
     const sql = neon(process.env.DATABASE_URL || "");
 
-
-    date=date+" 10:%";
+    date = date+" "+timeValue+":%"
+    // date=date+" 10:%";
     // const data1 = await sql`SELECT sum(pd."productionCount") as count,o.name  ,oo.target
     //         FROM "ProductionData" pd
     //         INNER JOIN "ObbOperation" oo ON pd."obbOperationId" = oo.id
@@ -31,13 +31,14 @@ export async function getOperatorEfficiency(obbsheetid:string,date:string)    {
 
 
 
-export async function getSMV(obbsheetid:string,date:string)    {
+export async function getSMV(obbsheetid:string,date:string,timeValue:string)    {
     const sql = neon(process.env.DATABASE_URL || "");
 
    date=date+"%";
+   date = date+" "+timeValue+":%"
     
      const data = await sql`SELECT 
-    AVG(CAST(p.smv AS NUMERIC)) AS avg,
+    CAST(p.smv AS NUMERIC) AS avg,
     
      concat(o."seqNo",'-',op.name) as name,
     o."seqNo"
@@ -55,7 +56,7 @@ JOIN
       AND p.timestamp like ${date}
       
           
-group by name,o."seqNo"
+group by name,o."seqNo",avg
 
 order by o."seqNo"`;
     
