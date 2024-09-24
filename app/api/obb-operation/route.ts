@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 
 import { db } from "@/lib/db";
 import { generateUniqueId } from "@/actions/generate-unique-id";
+import ObbSheet from "@/app/(dashboard)/obb-sheets/page";
 
 export async function POST(
     req: Request,
@@ -22,38 +23,82 @@ export async function POST(
         //     return new NextResponse("This sewing machine is already assigned to another operation.", { status: 409 })
         // };
         
-        const susupervisorIdnew = await db.obbOperation.findMany({
+
+
+
+
+        // const susupervisorIdnew = await db.obbOperation.findMany({
             
-            where: {
-                part
-            },
-            select: {
-                // supervisorId: true,
-                seqNo:true,
-                supervisor: {
-                    select: {
-                        id: true,
-                        name:true
-                    }
-                },
-                obbSheet: { // Include the obbSheet relationship
-                    select: {
-                        id: true, // Select the id from obbSheet
+        //     where: {
+        //         part
+        //     },
+        //     select: {
+        //         supervisorId: true,
+        //         seqNo:true,
+        //         supervisor: {
+        //             select: {
+        //                 id: true,
+        //                 name:true
+        //             }
+        //         },
+        //         obbSheet: { // Include the obbSheet relationship
+        //             select: {
+        //                 id: true, // Select the id from obbSheet
                          
-                    }
-                }
-            }
-        });
+        //             }
+        //         }
+        //     }
+        // });
 
         
-        const supervisorid = susupervisorIdnew.map(operation => 
-            operation.supervisor ? operation.supervisor.id : 'No supervisor'
-        );
-        console.log("Supervisor Names:", supervisorid);
+        // const supervisorid = susupervisorIdnew.map(ObbSheet => 
+        //     ObbSheet.supervisor ? ObbSheet.supervisor.id : 'No supervisor'
+        // );
+        // console.log("Supervisor Names:", supervisorid);
 
 
+
+
+        const susupervisorIdnew = await db.obbOperation.findMany({
+            where: {
+              part, 
+              obbSheet: {
+                id: obbSheetId, 
+              },
+            },
+            select: {
+              supervisorId: true,
+              seqNo: true,
+              supervisor: {
+                select: {
+                  id: true,
+                  name: true,
+                },
+              },
+              obbSheet: {
+                select: {
+                  id: true,
+                },
+              },
+            },
+            distinct: ['supervisorId', 'part'], 
+          });
+          
+          const supervisorid = susupervisorIdnew.map(obbOperation =>
+            obbOperation.supervisor ? obbOperation.supervisor.id : 'No supervisor'
+          );
+          
+          console.log("Supervisor Names:", supervisorid);
+          
 
        
+
+
+
+
+
+
+          
 
 
 
