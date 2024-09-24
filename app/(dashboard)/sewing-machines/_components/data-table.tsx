@@ -67,14 +67,14 @@ export function DataTable<TData, TValue>({
                     className="max-w-sm"
                 />
                 
-                {/* <Input
-                    placeholder="Search Device IDs..."
+                <Input
+                    placeholder="Search Eliot Device IDs..."
                     value={(table.getColumn("serialNumber")?.getFilterValue() as string) ?? ""}
                     onChange={(event) =>
                         table.getColumn("serialNumber")?.setFilterValue(event.target.value)
                     }
                     className="max-w-sm"
-                /> */}
+                />
             </div>
             
 
