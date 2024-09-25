@@ -42,12 +42,12 @@ const chartConfig = {
   },
   nva: {
     label: "Non Value Added",
-    color: "hsl(var(--chart-2))",
+    color: "hsl(var(--chart-1))",
   },
   
   earnMinutes: {
     label: "Earn Minutes",
-    color: "hsl(var(--chart-1))",
+    color: "hsl(var(--chart-2))",
   }
 } satisfies ChartConfig
 
