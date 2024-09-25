@@ -41,7 +41,7 @@ const AchievementRateOperation = ({ linename }: { linename: string }) => {
       <div className='flex justify-center items-center gap-3'>
         {/* <Cog className='w-7 h-7 text-voilet' /> */}
         <LogoImporter/> 
-        <h1 className='text-[#0071c1] mx-4 text-3xl'>Dashboard - Operation Overall Achievement for {linename}</h1>
+        <h1 className='text-[#0071c1] mx-4 text-3xl'>Dashboard - Overall Operation  Achievement - {linename}</h1>
       </div>
 
       {obbSheetId.length > 0 ? <BarChartGraph
