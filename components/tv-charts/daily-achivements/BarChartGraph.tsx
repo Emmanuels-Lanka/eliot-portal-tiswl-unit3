@@ -288,7 +288,7 @@ const saveAsExcel = () => {
                   content={<ChartLegendContent />}
                   className="mt-2 text-sm"
                 />
-                <Bar dataKey="target" fill="var(--color-target)" radius={5}>
+                <Bar dataKey="target" fill="var(--color-actual)" radius={5}>
                   <LabelList
                     dataKey="originalTarget"
                     position="top"
@@ -297,7 +297,7 @@ const saveAsExcel = () => {
                     fontSize={9}
                   />
                 </Bar>
-                <Bar dataKey="count" fill="var(--color-actual)" radius={5}>
+                <Bar dataKey="count" fill="orange" radius={5}>
                   <LabelList
                     position="top"
                     offset={20} // Increase the offset value
