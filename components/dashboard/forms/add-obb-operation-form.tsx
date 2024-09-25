@@ -682,7 +682,9 @@ const AddObbOperationForm = ({
                     {obbOperations && obbOperations?.length > 0 ?
                         <DataTable
                             data={obbOperations}
-                            handleEdit={handleEdit}
+                            obbSheetId={obbSheetId}
+                            operations={operations}
+                            machines={machines}
                         />
                         : (
                             <p className="text-sm mt-2 text-slate-500 italic">
