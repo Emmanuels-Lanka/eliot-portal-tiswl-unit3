@@ -25,7 +25,7 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import { useEffect, useState } from "react";
-import { getData } from "../actions";
+import { getData } from "./actions";
 
 import { useRouter } from "next/navigation";
 import { useToast } from "@/components/ui/use-toast";
@@ -73,7 +73,7 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
 
   const [chartData, setChartData] = useState<BarchartData[]>([]);
 
-  const[chartWidth,setChartWidth] = useState<number>(380)
+  const[chartWidth,setChartWidth] = useState<number>(220)
 
   const chartRef = useRef<HTMLDivElement>(null);
 
@@ -115,15 +115,15 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
         const adjustedTarget = (targetPerMinute * elapsedMinutes);
     
         return {
-            name: item.name,
-            target: Math.min(adjustedTarget,3000), // Use the calculated target
-            count: Math.min(item.count, 3000),
-
             // name: item.name,
-            // target: Math.min(item.target*10, 4000),
-            // count: Math.min(item.count, 4000),   
-            originalTarget: adjustedTarget,         
-            originalCount: item.count   
+            // target: item.target*10, // Use the calculated target
+            // count: item.count,
+
+            name: item.name,
+  target: Math.min(item.target*10, 4000),
+  count: Math.min(item.count, 4000),   
+  originalTarget: item.target*10,         
+  originalCount: item.count    
         };
     });
       setChartData(chartData1);
@@ -183,30 +183,35 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
       logo.onload = () => {
         const logoWidth = 110;
         const logoHeight = 50;
-        const logoX = (canvas.width / 2) - (logoWidth + 250); // Adjust to place the logo before the text
+        const logoX = (canvas.width / 2) - (logoWidth + 150); // Adjust to place the logo before the text
         const logoY = 50;
   
         // Add the logo to the PDF
         pdf.addImage(logo, 'PNG', logoX, logoY, logoWidth, logoHeight);
   
         // Set text color to blue
-        pdf.setTextColor(0, 113 ,193); // RGB for blue
+        pdf.setTextColor(0,113,193); // RGB for blue
   
         // Set larger font size and align text with the logo
-        pdf.setFontSize(30);
-        pdf.text('Dashboard - Target vs Actual (Instance) ', logoX + logoWidth + 10, 83, { align: 'left' });
+        pdf.setFontSize(24);
+        pdf.text('Dashboard -Target vs Actual - Production', logoX + logoWidth + 20, 83, { align: 'left' });
   
         // Add the chart image to the PDF
         pdf.addImage(imgData, 'PNG', 0, 150, canvas.width, canvas.height);
   
         // Save the PDF
         pdf.save('chart.pdf');
-      };
-    }
+      };
+    }
   };
+  
 
 
 //create Excel sheet
+
+
+
+
 const saveAsExcel = () => {
     const worksheet = XLSX.utils.json_to_sheet(chartData);
     const workbook = XLSX.utils.book_new();
@@ -214,6 +219,8 @@ const saveAsExcel = () => {
     XLSX.writeFile(workbook, `chart-data.xlsx`);
 };
   
+
+
 
   return (
     <>
@@ -223,36 +230,29 @@ const saveAsExcel = () => {
        </div>
     
     
-        {/* <div className='mb-3'>
-            <Button type="button" className='mr-3' onClick={saveAsPDF}>Save as PDF</Button>
-            <Button type="button" onClick={saveAsExcel}>Save as Excel</Button>
-        </div> */}
+       
 
-<div className=' pt-5 -pl-8 rounded-lg border w-full mb-16 overflow-x-auto'>
 
       {chartData.length > 0 ? (
-        <Card className="pr-2 pt-6  border rounded-xl  w-auto" >
-          {/* <div className="px-8">
-            <CardHeader>
-              <CardTitle className="text-center">
-                {" "}
-                Daily Target vs Actual Production (LIVE Data)
-              </CardTitle>
-            </CardHeader>
-          </div> */}
+        
+        <div className=' pt-5 -pl-8 rounded-lg border w-full'>
+        <Card className="pr-2 pt-6  border rounded-xl  w-auto" style={{width:(chartWidth*1.5)+"%"}}>
+         
           <CardContent>
-            <ChartContainer
+            {/* <ChartContainer
             ref={chartRef}
-            config={chartConfig}
-            className=" max-h-screen  min-h-[300px] w-full " 
-            style={{width:chartWidth+"%", height:chartWidth+"%"}} 
-            >
+              config={chartConfig}
+              className="  max-h-screen min-h-[300px] w-full " 
+              style={{width:chartWidth+"%"}} 
+            > */}
+                        <ChartContainer ref={chartRef}   config={chartConfig} className={`min-h-[300px]  `} style={{ width: chartWidth + "%", height: 800 + "%" }}>
+
               <BarChart
                 accessibilityLayer
                 data={chartData}
                 margin={{
-                  top: 20,
-                  bottom: 250,
+                
+                  bottom: 300,
                 }}
 
               >
@@ -263,7 +263,8 @@ const saveAsExcel = () => {
                   tickLine={true}
                   tickMargin={10}
                   axisLine={true}
-                  domain={[0, 3000]}
+                  domain={[0, 4000]}
+                  
                 />
                 <XAxis
                   dataKey="name"
@@ -289,7 +290,7 @@ const saveAsExcel = () => {
                 />
                 <Bar dataKey="target" fill="var(--color-target)" radius={5}>
                   <LabelList
-                   dataKey="originalTarget"
+                    dataKey="originalTarget"
                     position="top"
                     offset={7} // Increase the offset value
                     className="fill-foreground"
@@ -309,14 +310,15 @@ const saveAsExcel = () => {
             </ChartContainer>
           </CardContent>
         </Card>
+        </div>
       ) : (
         <div className="mt-12 w-full">
           <p className="text-center text-slate-500">No Data Available...</p>
         </div>
       )
       }
-</div>
-       {chartData.length > 0 && (
+     {/* Button Section */}
+    {/* {chartData.length > 0 && (
       <div className="flex flex-col items-center mt-5">
         <div className="flex gap-2">
           <Button onClick={() => setChartWidth((p) => p + 20)} className="rounded-full bg-gray-300">
@@ -336,19 +338,7 @@ const saveAsExcel = () => {
           </Button>
         </div>
       </div>
-    )}
-
-      {/* {<div className="flex justify-center gap-2 mt-5 2xl:hidden block">
-
-<Button onClick={() => setChartWidth((p) => p + 20)} className="rounded-full bg-gray-300">+</Button>
-<Button onClick={() => setChartWidth((p) => p - 20)} className="rounded-full bg-gray-300"> -</Button>
-<div className='mb-3 '>
-            <Button type="button" className='mr-3' onClick={saveAsPDF}>Save as PDF</Button>
-            <Button type="button" onClick={saveAsExcel}>Save as Excel</Button>
-        </div>
-
-</div>
-} */}
+    )} */}
     </>
   );
 };

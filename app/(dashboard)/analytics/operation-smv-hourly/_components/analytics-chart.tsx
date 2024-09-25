@@ -45,6 +45,7 @@ const AnalyticsChart = ({
     const [barchartData, setBarchartData] = useState<{ hourGroup: string; smv: number | null }[]>([]);
     const [tsmv, settsmv] = useState< number>(0);
     const [operationName, setOperationName] = useState< string>("");
+    
 
     const groupSMVByHour = (data: ProductionSMVDataTypes[]): { hourGroup: string; smv: number | null }[] => {
         const hourGroups = [
@@ -68,6 +69,7 @@ const AnalyticsChart = ({
             const hourGroup = getHourGroup(entry.timestamp);
             const smvValue = parseFloat(entry.smv); // convert the SMV string to a float
             smvByHour[hourGroup] = smvValue; // This assumes there is only one SMV value per hour group in the data
+            console.log("data",entry.smv,entry.timestamp)
         });
 
         // Create the final structured array from the map
@@ -86,10 +88,13 @@ const AnalyticsChart = ({
             const formattedDate = getFormattedTime(data.date.toString())
              
             const response = await axios.get(`/api/smv/fetch-by-operation?obbOperationId=${data.obbOperationId}&date=${formattedDate}`);
+            
             const result = groupSMVByHour(response.data.data);
-           
+            console.log("resultsss",result)
+            console.log("resssss",response)
 
             const tsmv = response.data.tsmv.smv
+            console.log("tsmv",tsmv)
             settsmv(tsmv)
             
             setBarchartData(result);

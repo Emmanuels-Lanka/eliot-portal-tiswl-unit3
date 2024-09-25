@@ -10,7 +10,7 @@ export async function getObbSheetID(linename: string): Promise<string> {
   INNER JOIN "ObbSheet" oo 
   ON pl.id = oo."productionLineId"
   WHERE oo."isActive"=true and pl.name=${linename}
-  order by oo."updatedAt" asc
+  order by oo."createdAt" desc
 `;
 
   console.log("data", data.length)
