@@ -242,6 +242,16 @@ export const SIDEBAR_ROUTES = [
             },
         ]
     },
+    {
+        categoryName: "Roaming QC Analytics",
+        routes: [
+            {
+                label: "Roaming QC",
+                href: "/analytics/roaming-qc",
+                icon: AlignHorizontalDistributeCenter
+            }
+        ]
+    },
 
     {
         categoryName: null,
