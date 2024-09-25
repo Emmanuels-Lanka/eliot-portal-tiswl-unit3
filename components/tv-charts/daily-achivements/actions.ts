@@ -23,23 +23,20 @@ export async function getObbID(linename: string): Promise<string> {
   }
 }
 
-// export async function getProducts(
-//   obbsheetid: string,
-//   date: string
-// ): Promise<ProductionDataType[]> {
-//   const sql = neon(process.env.DATABASE_URL || "");
+export async function getData(obbsheetid:string,date:string) : Promise<ProductionDataType[]>   {
+  const sql = neon(process.env.DATABASE_URL || "");
 
-//   const data =
-//     await sql`SELECT Max(pd."productionCount") as count,o.code as name   ,oo.target
-//             FROM "ProductionData" pd
-//             INNER JOIN "ObbOperation" oo ON pd."obbOperationId" = oo.id
-//             INNER JOIN "ObbSheet" os ON oo."obbSheetId" = os.id
-//             INNER JOIN "Operation" o ON o.id= oo."operationId"
-//             WHERE os.id = ${obbsheetid} and pd.timestamp like ${date}
-//             group by o.code,oo."seqNo",oo.target order by  oo."seqNo" ;`;
-//   //console.log("data",data,)
+  const data = await sql`SELECT SUM(pd."productionCount") as count,concat(oo."seqNo",'-',o.name ) as name ,oo.target
+  FROM "ProductionData" pd
+  INNER JOIN "ObbOperation" oo ON pd."obbOperationId" = oo.id
+  INNER JOIN "ObbSheet" os ON oo."obbSheetId" = os.id
+  INNER JOIN "Operation" o ON o.id= oo."operationId"
+  WHERE os.id = ${obbsheetid} and pd.timestamp like ${date}
+  group by o.name,oo.target,oo."seqNo" order by  oo."seqNo" ;`;
 
-//   console.log("aaaa", data);
+  //console.log("data fetched",data,111)
 
-//   return new Promise((resolve) => resolve(data as ProductionDataType[]));
-// }
+
+
+  return new Promise((resolve) => resolve(data as ProductionDataType[] ))
+}
