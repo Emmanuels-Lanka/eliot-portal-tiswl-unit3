@@ -38,7 +38,7 @@ interface SelectObbSheetAndDateProps {
         id: string;
         name: string;
     }[] | null;
-    handleSubmit: (data: { obbSheetId: string; date: Date,timeValue:string }) => void;
+    handleSubmit: (data: { obbSheetId: string; date: Date }) => void;
 };
 
 const formSchema = z.object({
@@ -46,9 +46,7 @@ const formSchema = z.object({
         message: "OBB Sheet is required"
     }),
     date: z.date(),
-    timeValue:z.string().min(1, {
-        message: "Time is required"
-    })
+    
 });
 
 const SelectObbSheetAndDate = ({
@@ -64,7 +62,7 @@ const SelectObbSheetAndDate = ({
         defaultValues: {
             obbSheetId: "",
             date: undefined,
-            timeValue: "",
+            // timeValue: "",
         },
     });
 
@@ -239,7 +237,7 @@ const SelectObbSheetAndDate = ({
 
 
  
-                        <div className="md:w-1/3">
+                        {/* <div className="md:w-1/3">
                             <FormField
                                 control={form.control}
                                 name="timeValue"
@@ -294,7 +292,7 @@ const SelectObbSheetAndDate = ({
                                     </FormItem>
                                 )}
                             />
-                        </div>
+                        </div> */}
 
 
 

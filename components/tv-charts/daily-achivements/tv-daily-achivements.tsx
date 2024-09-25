@@ -20,7 +20,6 @@ const TvDailyAchivements = ({linename}:{linename:string}) => {
  
   const dParam = searchParams.get('d')
 
-  
 
 
   const [obbSheet,setObbSheet]=useState<string>("")

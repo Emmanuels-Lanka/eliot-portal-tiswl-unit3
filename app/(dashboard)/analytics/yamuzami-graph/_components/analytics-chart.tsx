@@ -119,7 +119,7 @@ const EfficiencyAnalyticsChart = ({
     
     
 
-    const Fetchdata = async (data: { obbSheetId: string; date: Date ,timeValue:string}) => {
+    const Fetchdata = async (data: { obbSheetId: string; date: Date}) => {
         try {
             const y=data.date.getFullYear().toString()
             const m=(data.date.getMonth() + 1).toString().padStart(2,"0")
@@ -128,7 +128,7 @@ const EfficiencyAnalyticsChart = ({
             setDate(`${y}-${m}-${d}`)
        
             setFilterApplied(true)
-            setTimeValue(data.timeValue)
+            
 
             console.log(data)
 
