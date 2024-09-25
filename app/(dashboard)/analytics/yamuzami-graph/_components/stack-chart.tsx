@@ -35,18 +35,20 @@ const chartData = [
 ]
 
 const chartConfig = {
+ 
+  nnva: {
+    label: "Necessary Non Value Added",
+    color: "hsl(var(--chart-4))",
+  },
+  nva: {
+    label: "Non Value Added",
+    color: "hsl(var(--chart-2))",
+  },
+  
   earnMinutes: {
     label: "Earn Minutes",
     color: "hsl(var(--chart-1))",
-  },
-  count: {
-    label: "Count",
-    color: "hsl(var(--chart-2))",
-  },
-  smv: {
-    label: "Non Standerd",
-    color: "hsl(var(--chart-4))",
-  },
+  }
 } satisfies ChartConfig
 
 
@@ -110,22 +112,52 @@ const Fetchdata = async () => {
    
      
 
-      
+      const convertToMinutes = (timeString: string) => {
+        const [hours, minutes, seconds] = timeString.split(' ').map(time => parseInt(time.replace(/\D/g, ''), 10) || 0);
+        return hours * 60 + minutes + seconds / 60;
+      };
      
       const chartData: smvData[] = joined.map((item) => 
         
         { 
           const em = item.count*item.avg;
-          const nm = 60-em;          
-          
+          const nm = 60-em; 
+
+         
+           console.log(item)         
+
+
+           const lb=convertToMinutes(item.lunchBreakTime);
+           const md=convertToMinutes(item.mechanicDownTime);
+           const ne=convertToMinutes(item.nonEffectiveTime);
+           const os=convertToMinutes(item.offStandTime);
+           const pd=convertToMinutes(item.productionDownTime);
+           const tt=convertToMinutes(item.totalTime);
+
+           const nnva= os+lb;
+           const nva = (tt-(em+md+pd)-nnva);
+
+          //  console.log(nnva,nva,item.name) 
+           
+
+
+          // Process mechanic down time
+
           return {
           
-        name:item.name,
-        seqNo:item.seqNo,
-        count:item.count,
-        earnMinutes:em,
-        smv:nm
-       
+            // name:item.name,
+            // seqNo:item.seqNo,
+            // count:item.count,
+            // earnMinutes:em,
+            // smv:nm
+            name:item.name,
+            seqNo:item.seqNo,
+            count:item.count,
+            earnMinutes:em,
+            nva:nva,
+            nnva:nnva,
+            smv:nm
+            
       }}
       
       );
@@ -147,14 +179,22 @@ useEffect(() => {
 }, [date, obbSheetId,timeValue])
 
   return (
-    <Card>
+    <div className='bg-slate-50 pt-5 -pl-8 rounded-lg border w-full mb-16 overflow-x-auto'>
+
+    <Card style={{ width: 200 + "%", height: 200 + "%" }}>
       {/* <CardHeader>
         <CardTitle>Bar Chart - Stacked + Legend</CardTitle>
         <CardDescription>January - June 2024</CardDescription>
       </CardHeader> */}
-      <CardContent>
-        <ChartContainer config={chartConfig}>
-          <BarChart accessibilityLayer data={chartDatas}>
+      <CardContent >
+        <ChartContainer config={chartConfig} >
+          <BarChart accessibilityLayer data={chartDatas}
+          margin={{
+            top: 0,
+            bottom: 200
+        }}
+        
+        barGap={10}>
             <CartesianGrid vertical={false} />
             <XAxis
                                     dataKey="name"
@@ -166,14 +206,18 @@ useEffect(() => {
                                     textAnchor='start'
                                 />
                                 <YAxis
-                                    dataKey="count"
+                                    dataKey="nva"
                                     type="number"
                                     tickLine={true}
                                     tickMargin={10}
                                     axisLine={true}
+
                                 />
             <ChartTooltip content={<ChartTooltipContent  />} />
-            <ChartLegend content={<ChartLegendContent />} />
+            <ChartLegend content={<ChartLegendContent />} 
+                  verticalAlign="top"
+            
+            />
             <Bar
               dataKey="earnMinutes"
               stackId="a"
@@ -181,15 +225,15 @@ useEffect(() => {
               radius={[0, 0, 4, 4]}
             />
             <Bar
-              dataKey="count"
+              dataKey="nva"
               stackId="a"
-              fill="var(--color-count)"
+              fill="var(--color-nva)"
               radius={[0, 0, 0, 0]}
             />
             <Bar
-              dataKey="smv"
+              dataKey="nnva"
               stackId="a"
-              fill="var(--color-smv)"
+              fill="var(--color-nnva)"
               radius={[4, 4, 0, 0]}
             />
           </BarChart>
@@ -197,5 +241,6 @@ useEffect(() => {
       </CardContent>
      
     </Card>
+    </div>
   )
 }

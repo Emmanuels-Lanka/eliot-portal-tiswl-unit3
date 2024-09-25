@@ -8,21 +8,51 @@ export async function getOperatorEfficiency(obbsheetid:string,date:string,timeVa
     // date = date+" "+timeValue+":%"
     date = date+"%";
     // date=date+" 10:%";
-    // const data1 = await sql`SELECT sum(pd."productionCount") as count,o.name  ,oo.target
-    //         FROM "ProductionData" pd
-    //         INNER JOIN "ObbOperation" oo ON pd."obbOperationId" = oo.id
-    //         INNER JOIN "ObbSheet" os ON oo."obbSheetId" = os.id
-    //         INNER JOIN "Operation" o ON o.id= pd."obbOperationId"
-    //         WHERE os.id = ${obbsheetid} and pd.timestamp like ${date}
-    //         group by o.name,oo."seqNo",oo.target order by  oo."seqNo" ;`;
+    // 
     
-     const data = await sql`SELECT concat(obbopn."seqNo",'-',opn.name ) as name,sum(pd."productionCount")  as count, obbopn.target,obbopn."seqNo"
-            FROM "ProductionData" pd
-            INNER JOIN "ObbOperation" obbopn ON pd."obbOperationId" = obbopn.id
-            INNER JOIN "Operation" opn ON opn.id= obbopn."operationId"
-            INNER JOIN "ObbSheet" obbs ON obbopn."obbSheetId" = obbs.id
-            WHERE pd.timestamp like  ${date} and  obbs.id = ${obbsheetid}
-            group by opn.name,obbopn."seqNo",obbopn.target order by  obbopn."seqNo"`
+     const data = await sql`SELECT 
+    concat(obbopn."seqNo", '-', opn.name) AS name,
+    SUM(pd."productionCount") AS count,
+    obbopn.target,
+    obbopn."seqNo",
+    MAX(oet."NoTime") AS "nonEffectiveTime",
+    MAX(oet."DTime") AS "mechanicDownTime",
+    MAX(oet."PTime") AS "productionDownTime",
+    MAX(oet."LTime") AS "lunchBreakTime",
+    MAX(oet."OTime") AS "offStandTime",
+    MAX(oet."TTime") AS "totalTime"
+    
+    
+FROM 
+    "ProductionData" pd
+INNER JOIN 
+    "ObbOperation" obbopn ON pd."obbOperationId" = obbopn.id
+INNER JOIN 
+    "Operation" opn ON opn.id = obbopn."operationId"
+INNER JOIN 
+    "ObbSheet" obbs ON obbopn."obbSheetId" = obbs.id
+-- Subquery to select distinct nonEffectiveTime per operator
+LEFT JOIN (
+    SELECT 
+        "operatorRfid", 
+        MAX("nonEffectiveTime") AS "NoTime",
+        MAX("mechanicDownTime") AS "DTime",
+        MAX("productionDownTime") AS "PTime",
+        MAX("lunchBreakTime") AS "LTime",
+        MAX("offStandTime") AS "OTime",
+        MAX("totalTime") AS "TTime"
+    FROM 
+        "OperatorEffectiveTime"
+    GROUP BY 
+        "operatorRfid"
+) oet ON oet."operatorRfid" = pd."operatorRfid"
+WHERE 
+    pd.timestamp LIKE ${date}  
+    AND obbs.id = ${obbsheetid}
+GROUP BY 
+    opn.name, obbopn."seqNo", obbopn.target
+ORDER BY 
+    obbopn."seqNo";`
     
             // console.log(date)
             console.log("date, ",date,"ob",obbsheetid)

@@ -155,16 +155,11 @@ const EfficiencyAnalyticsChart = ({
                     handleSubmit={Fetchdata}
                 />
             </div>
-            <div className="mx-auto max-w-[1680px]">
+            <div className="mx-auto max-w-screen">
                 {obbSheetId.length > 0 ?
                     <div className="my-8">
                         
-                        {/* <BarChartGraph
-                            obbSheetId={obbSheetId}
-                            date={date}
-                           
-                            
-                        /> */}
+                        
 
                     <StackChart
                     obbSheetId={obbSheetId}
