@@ -36,6 +36,7 @@ export type ReportData = {
   machineid: string;
   linename: string;
   buyer: string;
+  employeeId:string;
 };
 
 const ReportTable = ({ obbSheets }: AnalyticsChartProps) => {
@@ -81,7 +82,13 @@ const ReportTable = ({ obbSheets }: AnalyticsChartProps) => {
   const handlePrint = () => {
   const baseUrl = window.location.origin;
   const printContent = reportRef.current?.innerHTML;
-  const date = new Date().toLocaleDateString();
+  let selectedDate = new Date(date);
+
+  // Subtract one day from the selected date
+  selectedDate.setDate(selectedDate.getDate() - 1);
+
+  // Format the adjusted date back to a string
+  const formattedDate = selectedDate.toISOString().split('T')[0];
   
 
   const htmlContent = `
@@ -142,7 +149,7 @@ const ReportTable = ({ obbSheets }: AnalyticsChartProps) => {
         <div>
           <h5>Factory Name: Apparel Gallery LTD</h5>
           <h5>Title: Operator Daily Efficiency Report</h5>
-          <h5>Date: ${date}</h5>
+          <h5>Date: ${formattedDate}</h5>
           <h5>Unit: ${data[0]?.unitname}</h5>
           <h5>Buyer: ${data[0]?.buyer}</h5>
           <h5>Style Name: ${data[0]?.style}</h5>
@@ -187,7 +194,14 @@ const ReportTable = ({ obbSheets }: AnalyticsChartProps) => {
         obbSheets={obbSheets}
         handleSubmit={handleFetchProductions}
       />
-      <Button className="mt-5" onClick={handlePrint}>Print</Button>
+      {data.length>0?(
+ <Button className="mt-5" onClick={handlePrint}>Print</Button>
+      ):(
+        <></>
+      )
+
+      }
+     
       <div ref={reportRef} className="container mt-5 mb-10">
         <Table>
           <TableHeader>
@@ -205,7 +219,7 @@ const ReportTable = ({ obbSheets }: AnalyticsChartProps) => {
           <TableBody>
             {data.map((d, rid) => (
               <TableRow key={rid}>
-                <TableCell>{rid + 1}</TableCell>
+                <TableCell>{d.employeeId}</TableCell>
                 <TableCell>{d.operatorname}</TableCell>
                 <TableCell>{d.operationname}</TableCell>
                 <TableCell>{d.machineid}</TableCell>

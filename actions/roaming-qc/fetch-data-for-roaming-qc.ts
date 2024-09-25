@@ -13,46 +13,36 @@ export async function fetchDataForRoamingQC(obbSheetId: string, machineId: strin
         const startDate = `${today} 00:00:00`;
         const endDate = `${today} 23:59:59`;
 
-        const obbOperation = await db.obbOperation.findMany({
+        const operatorSession = await db.operatorSession.findMany({
             where: {
-                obbSheetId,
-                sewingMachine: {
-                    machineId
-                }
-            },
-            select: {
-                id: true,
-                obbSheet: {
-                    select: {
-                        style: true,
-                        buyer: true
+                obbOperation: {
+                    sewingMachine: {
+                        machineId
                     }
                 },
-                operation: {
-                    select: {
-                        name: true,
-                        code: true
-                    }
-                }
-            }
-        });
-
-        if (obbOperation.length === 0) {
-            return null;
-        }
-        // console.log("Working 2");
-
-        const opSession = await db.operatorSession.findMany({
-            where: {
-                isLoggedIn: true,
-                obbOperationId: obbOperation[0].id,
-                LoginTimestamp: { 
-                    gte: startDate, 
-                    lte: endDate 
+                LoginTimestamp: {
+                    gte: startDate,
+                    lte: endDate
                 }
             },
             select: {
-                id: true,
+                obbOperation: {
+                    select: {
+                        id: true,
+                        operation: {
+                            select: {
+                                name: true,
+                                code: true
+                            }
+                        },
+                        obbSheet: {
+                            select: {
+                                style: true,
+                                buyer: true
+                            }
+                        }
+                    }
+                },
                 operator: {
                     select: {
                         name: true,
@@ -60,21 +50,21 @@ export async function fetchDataForRoamingQC(obbSheetId: string, machineId: strin
                     }
                 }
             }
-        });
+        })
 
-        if (opSession.length === 0) {
+        if (operatorSession.length === 0) {
             return null;
         }
-        // console.log("Working 3");
+        // console.log("Working 2");
 
         const formattedData = {
-            style: obbOperation[0].obbSheet.style,
-            buyerName: obbOperation[0].obbSheet.buyer,
-            obbOperationId: obbOperation[0].id,
-            operationName: obbOperation[0].operation.name,
-            operationCode: obbOperation[0].operation.code,
-            operatorName: opSession[0].operator.name,
-            operatorRfid: opSession[0].operator.rfid,
+            style: operatorSession[0].obbOperation.obbSheet.style,
+            buyerName: operatorSession[0].obbOperation.obbSheet.buyer,
+            obbOperationId: operatorSession[0].obbOperation.id,
+            operationName: operatorSession[0].obbOperation.operation.name,
+            operationCode: operatorSession[0].obbOperation.operation.code,
+            operatorName: operatorSession[0].operator.name,
+            operatorRfid: operatorSession[0].operator.rfid,
         };
 
         // console.log("DATAA:", formattedData);

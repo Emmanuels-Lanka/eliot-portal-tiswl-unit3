@@ -4,7 +4,7 @@ import * as React from "react";
 import { Ban, Edit, Loader2, Sparkle, Trash2, MoreHorizontal } from "lucide-react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import { ObbOperation } from "@prisma/client";
+import { ObbOperation, Operation, SewingMachine } from "@prisma/client";
 import {
     ColumnDef,
     ColumnFiltersState,
@@ -39,25 +39,31 @@ import { Checkbox } from "@/components/ui/checkbox";
 import ConfirmModel from "@/components/model/confirm-model";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/components/ui/use-toast";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import ObbOperationsForm from "./obb-operations-form";
 
 interface DataTableProps<TData, TValue> {
     data: TData[];
-    handleEdit: (data: ObbOperation) => void;
+    obbSheetId: string;
+    operations: Operation[] | null;
+    machines: SewingMachine[] | null;
 }
 
 export function DataTable<TData, TValue>({
     data,
-    handleEdit
+    obbSheetId,
+    operations,
+    machines,
 }: DataTableProps<TData, TValue>) {
     const [sorting, setSorting] = React.useState<SortingState>([])
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
     const [rowSelection, setRowSelection] = React.useState({});
     const [isLoading, setIsLoading] = React.useState(false);
     const [isBulkUpdating, setIsBulkUpdating] = React.useState(false)
-    
+
     const { toast } = useToast();
     const router = useRouter();
-    
+
     // From the `columns.tsx` file
     const ActionCell = ({ row }: { row: any }) => {
         const { id } = row.original;
@@ -86,7 +92,8 @@ export function DataTable<TData, TValue>({
             if (row.original.isActive === true) {
                 try {
                     setIsLoading(true);
-                    await axios.patch(`/api/obb-operation/${obbOperationId}/deactive`);
+                    const ata = await axios.patch(`/api/obb-operation/${obbOperationId}/deactive`);
+
                     router.refresh();
                     toast({
                         title: `Successfully deactivated OBB operation!`,
@@ -130,26 +137,24 @@ export function DataTable<TData, TValue>({
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                         {/* <DropdownMenuLabel>Actions</DropdownMenuLabel> */}
-                        <DropdownMenuItem
-                            disabled={isLoading}
-                            onClick={() => handleEdit(row.original)}
-                            className="gap-2"
-                        >
-                            <Edit className="w-4 h-4" />
-                            Edit
-                        </DropdownMenuItem>
+                        <ObbOperationsForm
+                            defaultData={row.original}
+                            obbSheetId={obbSheetId}
+                            operations={operations}
+                            machines={machines}
+                        />
                         <DropdownMenuSeparator />
                         <DropdownMenuItem
                             disabled={isLoading}
                             onClick={() => handleStatus(id)}
                             className={cn(
-                                "gap-2 font-medium", 
+                                "gap-2 font-medium",
                                 row.original.isActive === true ? "text-red-500 hover:text-red-500" : "text-green-600"
                             )}
                         >
                             {row.original.isActive === true ?
                                 <Ban className="w-4 h-4" />
-                            :
+                                :
                                 <Sparkle className="w-4 h-4" />
                             }
                             {row.original.isActive === true ? "Deactive" : "Active"}
@@ -169,7 +174,7 @@ export function DataTable<TData, TValue>({
                         </ConfirmModel>
                     </DropdownMenuContent>
                 </DropdownMenu>
-                <div className={cn("w-2.5 h-2.5 bg-orange-600 rounded-full", row.original.isActive === true && "w-2 h-2 bg-green-600 animate-ping")}/>
+                <div className={cn("w-2.5 h-2.5 bg-orange-600 rounded-full", row.original.isActive === true && "w-2 h-2 bg-green-600 animate-ping")} />
             </div>
         )
     }
@@ -179,8 +184,9 @@ export function DataTable<TData, TValue>({
 
         try {
             setIsBulkUpdating(true);
-            await axios.put(`/api/obb-operation/bulk/${type}`, { obbOperationIds });
+            const data = await axios.put(`/api/obb-operation/bulk/${type}`, { obbOperationIds });
             router.refresh();
+            console.log("dsereterrrtrt", data)
             toast({
                 title: `Successfully ${type === "active" ? "activated" : "deactivated"} the selected operations!`,
                 variant: "success",
@@ -289,7 +295,7 @@ export function DataTable<TData, TValue>({
         manualPagination: false,
         initialState: {
             pagination: {
-                pageSize: 50
+                pageSize: 100
             }
         }
     });
@@ -315,6 +321,23 @@ export function DataTable<TData, TValue>({
                         }
                         className="max-w-sm"
                     />
+
+                    <Select
+
+                        value={(table.getColumn("part")?.getFilterValue() as string) ?? ""}
+                        onValueChange={(value) => table.getColumn("part")?.setFilterValue(value)}
+                    >
+                        <SelectTrigger className="max-w-sm">
+                            <SelectValue placeholder="Select Part" />
+                        </SelectTrigger>
+                        <SelectContent>
+
+                            <SelectItem value="Front">Front</SelectItem>
+                            <SelectItem value="Back">Back</SelectItem>
+                            <SelectItem value="line-end">Line-end</SelectItem>
+                            <SelectItem value="assembly">Assembly</SelectItem>
+                        </SelectContent>
+                    </Select>
                 </div>
 
                 {/* Bulk Update buttons */}
@@ -334,7 +357,7 @@ export function DataTable<TData, TValue>({
                             className="gap-1"
                             disabled={isBulkUpdating}
                         >
-                            <Ban className="w-4 h-4"/>
+                            <Ban className="w-4 h-4" />
                             Deactive
                         </Button>
                     </div>
@@ -347,8 +370,8 @@ export function DataTable<TData, TValue>({
                     <div className="w-full h-[600px] flex flex-col justify-center items-center gap-2 text-slate-500">
                         <Loader2 className="animate-spin w-6 h-6" />
                         Bulk operation in progress...
-                    </div> 
-                : 
+                    </div>
+                    :
                     <Table>
                         <TableHeader className="bg-slate-50">
                             {table.getHeaderGroups().map((headerGroup) => (

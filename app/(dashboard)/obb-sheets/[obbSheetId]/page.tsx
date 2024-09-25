@@ -3,6 +3,7 @@ import { ObbOperation, ObbSheet, Operation, SewingMachine, Staff } from "@prisma
 import AddObbOperationForm from "@/components/dashboard/forms/add-obb-operation-form";
 import CreateObbSheetForm from "@/components/dashboard/forms/create-obb-sheet-form";
 import { db } from "@/lib/db";
+import ObbOperationsList from "./_components/obb-operations-list";
 
 interface CategorizedStaff {
   [key: string]: Staff[];
@@ -102,7 +103,7 @@ const ObbSheetId = async ({
 
   return (
     <section className="mt-16 mx-auto max-w-7xl space-y-12">
-      <AddObbOperationForm 
+      {/* <AddObbOperationForm 
         operations={operations}
         machines={machines}
         // assignedMachinesToOperations={assignedMachinesToOperations}
@@ -110,6 +111,12 @@ const ObbSheetId = async ({
         obbSheetId={params.obbSheetId}
         supervisor1={obbOperations?.supervisorFront || null}
         supervisor2={obbOperations?.supervisorBack || null}
+      /> */}
+      <ObbOperationsList 
+        operations={operations}
+        machines={machines}
+        obbOperations={obbOperations?.obbOperations}
+        obbSheetId={params.obbSheetId}
       />
       <div className="space-y-4">
         <div>

@@ -36,6 +36,8 @@ const AnalyticsChart = ({
     const [heatmapData, setHeatmapData] = useState<number[][] | null>(null);
     const [heatmapCategories, setHeatmapCategories] = useState<string[] | null>(null);
     const [obbSheet, setObbSheet] = useState<ObbSheet | null>(null);
+    const [timeList, settimeList] = useState<string>("")
+    const [chartWidth, setChartWidth] = useState<number>(3500)
 
     function processForHeatmap(productionData: ProductionData[]) {
         // Create an array to store hour groups, each as a map of operation IDs to production totals and targets
@@ -105,6 +107,11 @@ const AnalyticsChart = ({
             });
         }
     }
+    
+    const totalCount = Object.keys(timeList).reduce((acc, curr) => acc + curr.length, 0);
+    const height: string = totalCount < 50 ? '390%' : totalCount < 60 ? '300%' : '500%';
+    const width: string = totalCount < 50 ? '350%' : totalCount < 60 ? '300%' : '500%';
+ 
 
     return (
         <>

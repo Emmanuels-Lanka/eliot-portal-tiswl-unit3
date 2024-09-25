@@ -39,6 +39,7 @@ interface SmvBarChartProps {
     data: {
         hourGroup: string;
         smv: number | null;
+        operationName:string;
     }[],
     tsmv: number,
     operationName:string;
@@ -89,6 +90,8 @@ const saveAsPDF = async () => {
       const logoX = (canvas.width / 2) - (logoWidth + 100); // Adjust to place the logo before the text
       const logoY = 50;
 
+      const operationName = data.length > 0 ? data[0].operationName : "Unknown Operation";
+
       // Add the logo to the PDF
       pdf.addImage(logo, 'PNG', logoX, logoY, logoWidth, logoHeight);
 
@@ -101,6 +104,8 @@ const saveAsPDF = async () => {
       pdf.text(`Dashboard - Hourly Cycle Time vs Target SMVasadasda ${operationName}`, logoX + logoWidth + 70, 100, { align: 'left' });
       
 
+      pdf.setFontSize(18);
+      pdf.text(`Operation Name: ${operationName}`, logoX + logoWidth + 20, 120, { align: 'left' });
       // Add the chart image to the PDF
       pdf.addImage(imgData, 'PNG', 0, 150, canvas.width, canvas.height);
 

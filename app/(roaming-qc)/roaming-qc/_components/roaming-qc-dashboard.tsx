@@ -1,20 +1,20 @@
 "use client"
 
+import axios from "axios";
 import { useEffect, useState } from "react";
 import { RoamingQC, Unit } from "@prisma/client";
+import { Loader2, Zap } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 import { useToast } from "@/components/ui/use-toast";
 import SelectUnitLineObbSheet from "@/components/roaming-qc/select-unit-line-obbsheet";
 import QrCodeReader from "@/components/roaming-qc/qr-code-reader";
 import { fetchDataForRoamingQC } from "@/actions/roaming-qc/fetch-data-for-roaming-qc";
 import OperationOperatorDetails from "./operation-operator-details";
-import { fetchRoamingQcData } from "@/actions/roaming-qc/fetch-data-for-roaming-qc copy";
-import { cn } from "@/lib/utils";
+import { fetchRoamingQcData } from "@/actions/roaming-qc/fetch-roaming-qc-data";
 import { ROAMING_QC_DEFECTS } from "@/constants";
 import { Button } from "@/components/ui/button";
-import { Loader2, Zap } from "lucide-react";
-import axios from "axios";
-import { useRouter } from "next/navigation";
+import { cn } from "@/lib/utils";
 
 interface RoamingQcDashboardProps {
     units: Unit[];
@@ -50,8 +50,20 @@ const RoamingQcDashboard = ({
     const fetchData = async () => {
         const data = await fetchDataForRoamingQC(obbSheetId, qrCode);
         const roamingQcData = await fetchRoamingQcData(qrCode);
-        setFetchedData(data);
         setRoamingQcData(roamingQcData);
+        if (data) {
+            setFetchedData(data);
+            toast({
+                title: "Machine is scanned successfully",
+                variant: "success"
+            })
+        } else {
+            toast({
+                title: "This machine is not working today",
+                description: "Please scan active machine ID",
+                variant: "error"
+            });
+        }
     };
 
     useEffect(() => {
@@ -74,7 +86,7 @@ const RoamingQcDashboard = ({
     }, {});
 
     const handleSubmitQC = async () => {
-        const color = selectedDefects.length === 0 ? "green" : selectedDefects.length === 1 ? "yellow" : selectedDefects.length === 2 ? "orange" : "red";
+        const color = selectedDefects.length === 0 ? "green" : selectedDefects.length === 1 ? "yellow" : selectedDefects.length === 2 ? "red" : "black";
 
         if (qrCode && selectedData && fetchedData && qtyInspected) {
             setIsLoading(true);
@@ -117,6 +129,10 @@ const RoamingQcDashboard = ({
 
     return (
         <div>
+            <h2 className="w-full my-4 md:mt-6 md:mb-8 text-center text-xl font-medium text-slate-600">
+                Roaming Quality Inspection System
+            </h2>
+            
             {!selectedData &&
                 <SelectUnitLineObbSheet
                     units={units}
@@ -145,6 +161,7 @@ const RoamingQcDashboard = ({
                     />
                     <div className="mt-8 border flex">
                         <div className="w-[280px] border-r p-2">
+                            <h2 className="w-full text-center font-medium text-slate-600">Hourly Quality Status</h2>
                             {roamingQcData.length > 0 ?
                                 <div className="flex flex-col gap-y-2">
                                     {roamingQcData.map(data => (

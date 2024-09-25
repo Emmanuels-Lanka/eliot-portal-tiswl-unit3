@@ -114,7 +114,7 @@ const EffiencyHeatmap = ({
         },
     };
 
-    const width: string = heatmapData.categories.length < 21 ? '100%' : heatmapData.categories.length < 30 ? '150%' : '350%';
+    const width: string = heatmapData.categories.length < 15 ? '100%' :heatmapData.categories.length < 21 ? '100%' : heatmapData.categories.length < 30 ? '100%' : '500%';
 
     let nwidth = heatmapData && heatmapData?.categories.length > 15  ? 3000 : 100+"%"; 
     let nheight = heatmapData && heatmapData?.categories.length < 15  ? 900 : 900

@@ -4,6 +4,7 @@ import {
     BarChart3,
     BarChartHorizontal,
     Blocks,
+    Cable,
     Cog,
     FileCog,
     FileSpreadsheet,
@@ -234,6 +235,11 @@ export const SIDEBAR_ROUTES = [
                 href: "/analytics/tls-operators",
                 icon: BarChartHorizontal
             },
+            {
+                label: "Operator DHU Report",
+                href: "/analytics/operator-dhu",
+                icon: BarChartHorizontal
+            },
         ]
     },
 
@@ -359,6 +365,16 @@ export const SIDEBAR_ROUTES = [
                 label: "Alert logs",
                 href: "/alert-logs",
                 icon: Send
+            },
+        ]
+    },
+    {
+        categoryName: "Line Efficiency Resources",
+        routes: [
+            {
+                label: "Create for today",
+                href: "/line-efficiency-resources",
+                icon: Cable
             },
         ]
     },
@@ -540,6 +556,11 @@ export const HEADER_INFO = [
         label: "Operation Efficiency-(15minute)",
         href: "/analytics/operation-efficiency-15m",
         icon: Sliders
+    },
+    {
+        label: "Line Efficiency Resources",
+        href: "/line-efficiency-resources",
+        icon: Cable
     },
 ]
 
