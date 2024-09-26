@@ -11,6 +11,31 @@ export async function POST(
         
         let id = generateUniqueId();
 
+
+
+
+       const existingOperation = await db.obbOperation.findFirst({
+        where: {
+        sewingMachineId: sewingMachineId,
+            },
+            select:{
+                obbSheet: { // Include the obbSheet relationship
+                    select: {
+                        id: true,
+                        isActive:true, 
+                         
+                    }
+                }
+            }
+        }); 
+
+        if (existingOperation) {
+            return new NextResponse("This sewing machine is already assigned to another operation.", { status: 409 });
+        }
+
+
+
+
         // const existingMachine = await db.sewingMachine.findUnique({
         //     where: {
         //         id: sewingMachineId,
@@ -178,4 +203,5 @@ export async function GET(req: Request) {
         return new NextResponse("Internal Error", { status: 500 });
     }
 }
+
 

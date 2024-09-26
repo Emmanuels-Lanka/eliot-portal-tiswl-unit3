@@ -378,16 +378,6 @@ export const SIDEBAR_ROUTES = [
             },
         ]
     },
-    {
-        categoryName: "Line Efficiency Resources",
-        routes: [
-            {
-                label: "Create for today",
-                href: "/line-efficiency-resources",
-                icon: Cable
-            },
-        ]
-    },
 ];
 
 export const HEADER_INFO = [

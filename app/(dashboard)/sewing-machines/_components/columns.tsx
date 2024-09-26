@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ArrowUpDown, Loader2, Trash2, Edit } from "lucide-react";
 import axios from "axios";
 import { SewingMachine } from "@prisma/client"
+import { EliotDevice } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import { ColumnDef } from "@tanstack/react-table"
 
@@ -67,7 +68,7 @@ const ActionCell = ({ row }: { row: any }) => {
     )
 }
 
-export const columns: ColumnDef<SewingMachine>[] = [
+export const columns: ColumnDef<SewingMachine | any>[] = [
     {
         accessorKey: "serialNumber",
         header: "Serial No.",
