@@ -241,7 +241,7 @@ const AddObbOperationForm = ({
             seqNo:0,
             operationId: "",
             sewingMachineId: "",
-            smv: undefined,
+            smv: undefined, 
             target: undefined,
             spi: undefined,
             length: undefined,
@@ -250,6 +250,10 @@ const AddObbOperationForm = ({
             
         });
     }
+
+
+
+
     
     return (
         <div className="mx-auto max-w-7xl border px-6 pt-4 pb-6 rounded-lg bg-slate-100">
