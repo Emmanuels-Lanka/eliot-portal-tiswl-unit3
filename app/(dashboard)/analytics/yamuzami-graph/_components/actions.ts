@@ -68,9 +68,11 @@ export async function getSMV(obbsheetid:string,date:string,timeValue:string)    
 
    date=date+"%";
 //    date = date+" "+timeValue+":%"
+
+    ///data avg is target smv and not the real one , change p.smv for the real one
     
      const data = await sql`SELECT 
-    AVG(CAST(p.smv AS NUMERIC)) AS avg,
+    AVG(CAST(o.smv AS NUMERIC)) AS avg,
     
      concat(o."seqNo",'-',op.name) as name,
     o."seqNo"
