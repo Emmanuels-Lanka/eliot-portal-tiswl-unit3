@@ -202,24 +202,19 @@ const renderCustomLabel = ({ x, y, width, value, index }: any) => {
 
 
 
+        {chartData.length > 0 && (
 
-
-        <div className=' pt-5 -pl-8  bg-slate-50 rounded-lg border w-full mb-16 overflow-x-auto'>
-        <Card className='pr-2 pt-6 pb-4 border rounded-xl bg-slate-50 w-fit'style={{width:chartWidth*2+"%"}} >
-            {/* <div className="px-8">
-                <CardHeader>
-                    <CardTitle>SMV vs Cycle Time</CardTitle>
-                    <CardDescription>Number of items came across each scanning points today</CardDescription>
-                </CardHeader>
-            </div> */}
-            <CardContent className="w-auto h-auto" style={{width:chartWidth+"%"}}  >
-                <ChartContainer ref={chartRef} config={chartConfig} className="min-h-[300px] max-h-[800px]w-auto"  style={{width:chartWidth+"%", height:1000}} >
+        <div className='bg-slate-50 pt-5 -pl-8 rounded-lg border w-full h-[450px] mb-16 overflow-scroll'>
+        <Card className='bg-slate-50' style={{width:(chartWidth*2)+"%"}}>
+           
+            <CardContent  >
+            <ChartContainer config={chartConfig} style={{width:chartWidth*2+"%", height:800}} ref={chartRef} >
                     <BarChart 
                         accessibilityLayer 
                         data={chartData}
                         margin={{
-                            top: 10,
-                            bottom: 400
+                            top: 100,
+                            bottom: 300
                         }}
                         startAngle={10}
                     >
@@ -234,7 +229,7 @@ const renderCustomLabel = ({ x, y, width, value, index }: any) => {
                         <XAxis
                             dataKey="name"
                             tickLine={false}
-                            tickMargin={70}
+                            // tickMargin={70}
                             axisLine={false}
                             angle={90}
                             fontSize={11}
@@ -252,6 +247,7 @@ const renderCustomLabel = ({ x, y, width, value, index }: any) => {
                             content={<ChartLegendContent />} 
                             className="-mb-10 text-xs text-blue-500 font-bold" 
                             margin={{top:10}}
+                            verticalAlign="top"
                                 
                         />
                         <Bar dataKey="smv" fill="var(--color-smv)" radius={5} barSize={25}>
@@ -288,6 +284,8 @@ const renderCustomLabel = ({ x, y, width, value, index }: any) => {
             </CardContent>
         </Card>
         </div>
+        )}
+        
         {chartData.length > 0 && (
       <div className="flex flex-col items-center mt-5">
         <div className="flex gap-2">

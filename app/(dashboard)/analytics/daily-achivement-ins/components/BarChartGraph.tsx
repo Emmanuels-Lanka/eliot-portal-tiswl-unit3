@@ -228,7 +228,7 @@ const saveAsExcel = () => {
             <Button type="button" onClick={saveAsExcel}>Save as Excel</Button>
         </div> */}
 
-<div className=' pt-5 -pl-8 rounded-lg border w-full mb-16 overflow-x-auto'>
+<div className=' pt-5 -pl-8 rounded-lg border w-full mb-16  overflow-scroll h-[450px]'>
 
       {chartData.length > 0 ? (
         <Card className="pr-2 pt-6  border rounded-xl  w-auto" >
