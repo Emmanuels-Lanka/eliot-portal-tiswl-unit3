@@ -141,6 +141,11 @@ export const SIDEBAR_ROUTES = [
                 label: "SMV vs Cycle Time",
                 href: "/analytics/operation-smv",
                 icon: BarChart3
+            },
+            {
+                label: "Yamuzami Graph",
+                href: "/analytics/yamuzami-graph",
+                icon: BarChart3
             }
         ]
     },
@@ -235,6 +240,16 @@ export const SIDEBAR_ROUTES = [
                 href: "/analytics/operator-dhu",
                 icon: BarChartHorizontal
             },
+        ]
+    },
+    {
+        categoryName: "Roaming QC Analytics",
+        routes: [
+            {
+                label: "Roaming QC",
+                href: "/analytics/roaming-qc",
+                icon: AlignHorizontalDistributeCenter
+            }
         ]
     },
 
@@ -474,6 +489,11 @@ export const HEADER_INFO = [
     {
         label: "SMV vs Cycle Time",
         href: "/analytics/operation-smv",
+        icon: BarChart3
+    },
+    {
+        label: "Yamuzami Graph",
+        href: "/analytics/yamuzami-graph",
         icon: BarChart3
     },
     {

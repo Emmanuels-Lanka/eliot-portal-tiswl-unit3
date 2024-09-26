@@ -84,7 +84,7 @@ const BarChartGraphEfficiencyRate = ({ date, obbSheetId }: BarChartGraphProps) =
                
                 count: item.count,
                 target: item.target * workingHrs,
-                ratio: parseFloat((item.count / (item.target * workingHrs)*100).toFixed(2)),
+                ratio: (parseFloat((item.count / (item.target * workingHrs)*100).toFixed(2))),
                 // ratio: (item.count / (item.target * workingHrs)) * 100,
                 // ratio: parseFloat((item.count / (item.target * workingHrs)).toFixed(2))*100,
                 
@@ -211,6 +211,7 @@ const BarChartGraphEfficiencyRate = ({ date, obbSheetId }: BarChartGraphProps) =
                                         offset={12}
                                         className="fill-foreground"
                                         fontSize={12}
+                                        formatter={(value: any) => `${value}%`}
                                     />
                                 </Bar>
                                 {/* <Bar dataKey="count" fill="var(--color-actual)" radius={5}>

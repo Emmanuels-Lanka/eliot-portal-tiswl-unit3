@@ -98,6 +98,7 @@ const AnalyticsChart = ({
             });
 
             const tsmv = response.data.tsmv.smv
+            console.log("tsmv",tsmv)
             settsmv(tsmv)
             
             setBarchartData(result);

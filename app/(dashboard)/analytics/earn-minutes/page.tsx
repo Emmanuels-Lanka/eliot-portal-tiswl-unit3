@@ -2,6 +2,7 @@ import { db } from '@/lib/db';
 import AnalyticsChart from './components/analytics-chart';
 import { VerticalGraph } from './components/vertical-graph';
 import { StackedComponent } from './components/stacked-graph';
+import SelectObbSheetDateOperation from './components/select-obbsheet-date-operation';
 // import VerticalGraph from './components/vertical-graph';
 
 
@@ -24,11 +25,11 @@ const page = async() => {
 
     return (
         <div>
-            {/* <AnalyticsChart
+            <AnalyticsChart
                 obbSheets={obbSheets}
                 title='Daily Efficiency Chart'
-            /> */}
-            <VerticalGraph/>
+            />
+           
             {/* <StackedComponent></StackedComponent> */}
         </div>
     )
