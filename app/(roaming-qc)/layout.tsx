@@ -1,32 +1,34 @@
 import React from "react";
-
 import { cookies } from "next/headers";
-import { verify } from "jsonwebtoken";
+import { JwtPayload, verify } from "jsonwebtoken";
+import { redirect } from "next/navigation";
 
-const RootLayout = ({
+const RoamingQcLayout = ({
     children
 }: {
     children: React.ReactNode;
 }) => {
     const cookieStore = cookies();
-    const token: any = cookieStore.get('AUTH_TOKEN');
+    const token = cookieStore.get('AUTH_TOKEN');
 
-    let isLoggedIn: boolean = false;
-    let email: string = '';
-
-    if (token) {
-        isLoggedIn = true;
-        const { value } = token;
-        const secret = process.env.JWT_SECRET || "";
-        const data: any = verify(value, secret);
-        email = data.email;
+    if (!token) {
+        return redirect('/sign-in');
     }
 
-    return (
-        <div className="mx-auto max-w-screen-xl p-4">
-            {children}
-        </div>
-    )
+    const { value } = token;
+    const secret = process.env.JWT_SECRET || "";
+    
+    const verified = verify(value, secret) as JwtPayload;
+
+    if (verified.role === 'roming-quality-inspector' || verified.role === 'admin') {
+        return (
+            <div className="mx-auto max-w-screen-xl p-4">
+                {children}
+            </div>
+        )
+    } else {
+        return redirect('/');
+    }
 }
 
-export default RootLayout;
+export default RoamingQcLayout;

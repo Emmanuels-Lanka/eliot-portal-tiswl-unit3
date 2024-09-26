@@ -131,3 +131,47 @@ type DataTypesForRoamingQC = {
     operatorName: string;
     operatorRfid: string;
 }
+
+type RoamingQcDataTypes = {
+    id: string;
+    machineId: string;
+    unit: string | null;
+    lineId: string;
+    obbOperationId: string;
+    operatorRfid: string;
+    timestamp: string;
+    colorStatus: string;
+    inspectedQty: string;
+    createdAt: Date;
+    defects: String[];
+    operator: {
+        name: string;
+        employeeId: string;
+        rfid: string;
+    };
+    obbOperation: {
+        id: string;
+        seqNo: number;
+        operation: {
+            name: string;
+            code: string;
+        };
+    };
+    sewingMachine: {
+        id: string;
+        brandName: string;
+        machineType: string;
+        machineId: string;
+    }
+};
+
+type RoamingQcChartFunctionOutputTypes = {
+    data: {
+        hourGroup: string,
+        operation: {
+            name: string,
+            color: string,
+        }[];
+    }[];
+    categories: string[];
+};
