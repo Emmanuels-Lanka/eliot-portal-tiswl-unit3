@@ -157,7 +157,7 @@ const EfficiencyAnalyticsChart = ({
             </div>
             <div className="mx-auto max-w-screen">
                 {obbSheetId.length > 0 ?
-                    <div className="my-8">
+                    <div className="mt-8">
                         
                         
 
