@@ -235,7 +235,7 @@ const saveAsExcel = () => {
 
       {chartData.length > 0 ? (
         
-        <div className=' pt-5 -pl-8 rounded-lg border w-full mb-16 overflow-x-auto'>
+        <div className=' pt-5 -pl-8 rounded-lg border w-full h-[450px] mb-16 overflow-scroll'>
         <Card className="pr-2 pt-6  border rounded-xl  w-auto" style={{width:(chartWidth*1.5)+"%"}}>
          
           <CardContent>
