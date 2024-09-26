@@ -404,7 +404,7 @@ const   HmapChart15Compo = ({
             <Loader2 className={cn("animate-spin w-5 h-5 hidden", isSubmitting && "flex")} />
             </div>}
                 {heatmapFullData !== null ?
-                    <div className="mt-12 bg-slate-100 pt-5 pl-8 rounded-lg border w-full mb-16 overflow-x-auto "   ref={chartRef}>
+                    <div className="mt-12 bg-slate-100 pt-5 pl-8 rounded-lg border w-full mb-16 overflow-x-auto overflow-y-scroll "   ref={chartRef}>
                         <h2 className="text-lg mb-2 font-medium text-slate-700">{" "}</h2>
                         <ReactApexChart options={options} series={heatmapFullData} type="heatmap" height={height} width={2000} />
                     </div>
