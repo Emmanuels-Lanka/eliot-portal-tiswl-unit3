@@ -269,7 +269,7 @@ const AddObbOperationForm = ({
                 </Button>
             </div>
 
-            {(isUpdating || isEditing) && (
+            {(isUpdating || isEditing ||updatingData) && (
                 <Form {...form}>
                     <form
                         onSubmit={form.handleSubmit(onSubmit)}

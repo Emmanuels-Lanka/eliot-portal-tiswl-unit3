@@ -64,6 +64,7 @@ export function DataTable<TData, TValue>({
     const { toast } = useToast();
     const router = useRouter();
 
+    
     // From the `columns.tsx` file
     const ActionCell = ({ row }: { row: any }) => {
         const { id } = row.original;
@@ -202,6 +203,8 @@ export function DataTable<TData, TValue>({
             setIsBulkUpdating(false);
         }
     }
+
+    
 
     const columns: ColumnDef<ObbOperation | any>[] = [
         {

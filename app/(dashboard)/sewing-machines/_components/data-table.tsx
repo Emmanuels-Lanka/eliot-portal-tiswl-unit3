@@ -36,6 +36,10 @@ export function DataTable<TData, TValue>({
     const [sorting, setSorting] = React.useState<SortingState>([])
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
 
+
+
+    
+
     const table = useReactTable({
         data,
         columns,
@@ -69,9 +73,9 @@ export function DataTable<TData, TValue>({
                 
                 <Input
                     placeholder="Search Eliot Device IDs..."
-                    value={(table.getColumn("serialNumber")?.getFilterValue() as string) ?? ""}
+                    value={(table.getColumn("eliotDevice.serialNumber")?.getFilterValue() as string) ?? ""}
                     onChange={(event) =>
-                        table.getColumn("serialNumber")?.setFilterValue(event.target.value)
+                        table.getColumn("eliotDevice.serialNumber")?.setFilterValue(event.target.value)
                     }
                     className="max-w-sm"
                 />
