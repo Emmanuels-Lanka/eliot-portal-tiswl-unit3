@@ -168,7 +168,7 @@ const Fetchdata = async () => {
             earnMinutes:em,
             nva:nva,
             nnva:nnva,
-            smv:nm,
+            smv:item.avg,
             total:tt
             
       }}
