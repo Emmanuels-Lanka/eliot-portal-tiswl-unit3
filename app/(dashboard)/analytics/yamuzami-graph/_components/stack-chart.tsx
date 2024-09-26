@@ -22,8 +22,17 @@ import {
 } from "@/components/ui/chart"
 import { useEffect, useRef, useState } from "react"
 import { getOperatorEfficiency, getSMV } from "./actions"
+import { Button } from "@/components/ui/button"
 
 export const description = "A stacked bar chart with a legend"
+
+import { Loader2 } from 'lucide-react';
+import { cn } from '@/lib/utils';
+
+// import React, { useRef } from "react";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
+import * as XLSX from 'xlsx';
 
 const chartData = [
   { month: "January", desktop: 186, mobile: 80 },
@@ -42,13 +51,14 @@ const chartConfig = {
   },
   nva: {
     label: "Non Value Added",
-    color: "hsl(var(--chart-2))",
+    color: "hsl(var(--chart-1))",
   },
   
   earnMinutes: {
     label: "Earn Minutes",
-    color: "hsl(var(--chart-1))",
+    color: "hsl(var(--chart-2))",
   }
+  
 } satisfies ChartConfig
 
 
@@ -80,11 +90,13 @@ export function  StackChart({ date, obbSheetId,timeValue }: BarChartGraphProps) 
 
 
   const [chartDatas, setChartDatas] = useState<any[]>([])
-    const [chartWidth, setChartWidth] = useState<number>(250);
+    const [chartWidth, setChartWidth] = useState<number>(100);
     const [isSubmitting,setisSubmitting]=useState<boolean>(false)
     const chartRef = useRef<HTMLDivElement>(null);
     const[smvData,setSmvData] = useState<any[]>([])
+    
 
+    
 
 const Fetchdata = async () => {
   try {
@@ -135,7 +147,7 @@ const Fetchdata = async () => {
            const tt=convertToMinutes(item.totalTime);
 
            const nnva= os+lb;
-           const nva = (tt-(em+md+pd)-nnva);
+           const nva = (tt-nnva);
 
           //  console.log(nnva,nva,item.name) 
            
@@ -156,7 +168,8 @@ const Fetchdata = async () => {
             earnMinutes:em,
             nva:nva,
             nnva:nnva,
-            smv:nm
+            smv:item.avg,
+            total:tt
             
       }}
       
@@ -173,74 +186,162 @@ const Fetchdata = async () => {
 
 };
 
+const saveAsPDF = async () => {
+  if (chartRef.current) {
+    const canvas = await html2canvas(chartRef.current);
+    const imgData = canvas.toDataURL('image/png');
+    const pdf = new jsPDF({
+      orientation: 'landscape',
+      unit: 'px',
+      format: [canvas.width, canvas.height + 150],
+    });
+
+    const baseUrl = window.location.origin;
+    const logoUrl = `${baseUrl}/logo.png`;
+
+    const logo = new Image();
+    logo.src = logoUrl;
+    logo.onload = () => {
+      const logoWidth = 110;
+      const logoHeight = 50;
+      const logoX = (canvas.width / 2) - (logoWidth + 150); // Adjust to place the logo before the text
+      const logoY = 50;
+
+      // Add the logo to the PDF
+      pdf.addImage(logo, 'PNG', logoX, logoY, logoWidth, logoHeight);
+
+      // Set text color to blue
+      pdf.setTextColor(0,113,193); // RGB for blue
+
+      // Set larger font size and align text with the logo
+      pdf.setFontSize(24);
+      pdf.text('Dashboard -Yamuzami Graph', logoX + logoWidth + 20, 83, { align: 'left' });
+
+      // Add the chart image to the PDF
+      pdf.addImage(imgData, 'PNG', 0, 150, canvas.width, canvas.height);
+
+      // Save the PDF
+      pdf.save('chart.pdf');
+    };
+  }
+};
+
+
+
+//create Excel sheet
+
+
+
+
+const saveAsExcel = () => {
+  const worksheet = XLSX.utils.json_to_sheet(chartData);
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, "Chart Data");
+  XLSX.writeFile(workbook, `chart-data.xlsx`);
+};
+
 
 useEffect(() => {
   Fetchdata()
 }, [date, obbSheetId,timeValue])
 
   return (
-    <div className='bg-slate-50 pt-5 -pl-8 rounded-lg border w-full mb-16 overflow-x-auto'>
 
-    <Card style={{ width: 200 + "%", height: 200 + "%" }}>
-      {/* <CardHeader>
-        <CardTitle>Bar Chart - Stacked + Legend</CardTitle>
-        <CardDescription>January - June 2024</CardDescription>
-      </CardHeader> */}
-      <CardContent >
-        <ChartContainer config={chartConfig} >
-          <BarChart accessibilityLayer data={chartDatas}
-          margin={{
-            top: 0,
-            bottom: 200
-        }}
+
+    <>
+    {chartDatas.length>0 ? (
+      <div className='bg-slate-50 pt-5 -pl-8 rounded-lg border w-full h-[450px] mb-16 overflow-scroll'>
+
+<Card style={{width:(chartWidth*2)+"%"}}>
+  {/* <CardHeader>
+    <CardTitle>Bar Chart - Stacked + Legend</CardTitle>
+    <CardDescription>January - June 2024</CardDescription>
+  </CardHeader> */}
+  <CardContent >
+    <ChartContainer config={chartConfig} style={{width:chartWidth+"%", height:600}} ref={chartRef} >
+      <BarChart accessibilityLayer data={chartDatas}
+      margin={{
+        top: 100,
+        bottom: 200
+    }}
+    barGap={50}>
+        <CartesianGrid vertical={false} />
+        <XAxis
+                                dataKey="name"
+                                tickLine={true}
+                                tickMargin={10}
+                                axisLine={true}
+                                angle={90}
+                                interval={0}
+                                textAnchor='start'
+                            />
+                            <YAxis
+                                dataKey="nva"
+                                type="number"
+                                tickLine={true}
+                                tickMargin={10}
+                                axisLine={true}
+
+                            />
+        <ChartTooltip content={<ChartTooltipContent  />} />
+        <ChartLegend content={<ChartLegendContent />} 
+              verticalAlign="top"
         
-        barGap={10}>
-            <CartesianGrid vertical={false} />
-            <XAxis
-                                    dataKey="name"
-                                    tickLine={true}
-                                    tickMargin={10}
-                                    axisLine={true}
-                                    angle={90}
-                                    interval={0}
-                                    textAnchor='start'
-                                />
-                                <YAxis
-                                    dataKey="nva"
-                                    type="number"
-                                    tickLine={true}
-                                    tickMargin={10}
-                                    axisLine={true}
+        />
+        <Bar
+          dataKey="earnMinutes"
+          stackId="a"
+          fill="var(--color-earnMinutes)"
+          radius={[0, 0, 4, 4]}
+          barSize={15}
+        />
+        <Bar
+          dataKey="nva"
+          stackId="a"
+          fill="var(--color-nva)"
+          radius={[0, 0, 0, 0]}
+          barSize={15}
+        />
+        <Bar
+          dataKey="nnva"
+          stackId="a"
+          fill="var(--color-nnva)"
+          radius={[4, 4, 0, 0]}
+          barSize={15}
+        />
+      </BarChart>
+    </ChartContainer>
+  </CardContent>
+ 
+</Card>
+</div>
+    ):(
+      <div className="mt-12 w-full">
+        <p className="text-center text-slate-500">No Data Available...</p>
+      </div>)}
 
-                                />
-            <ChartTooltip content={<ChartTooltipContent  />} />
-            <ChartLegend content={<ChartLegendContent />} 
-                  verticalAlign="top"
-            
-            />
-            <Bar
-              dataKey="earnMinutes"
-              stackId="a"
-              fill="var(--color-earnMinutes)"
-              radius={[0, 0, 4, 4]}
-            />
-            <Bar
-              dataKey="nva"
-              stackId="a"
-              fill="var(--color-nva)"
-              radius={[0, 0, 0, 0]}
-            />
-            <Bar
-              dataKey="nnva"
-              stackId="a"
-              fill="var(--color-nnva)"
-              radius={[4, 4, 0, 0]}
-            />
-          </BarChart>
-        </ChartContainer>
-      </CardContent>
-     
-    </Card>
-    </div>
+      {chartData.length > 0 && (
+      <div className="flex flex-col items-center mt-5">
+        <div className="flex gap-2">
+          <Button onClick={() => setChartWidth((p) => p + 20)} className="rounded-full bg-gray-300">
+            +
+          </Button>
+          <Button onClick={() => setChartWidth((p) => p - 20)} className="rounded-full bg-gray-300">
+            -
+          </Button>
+        </div>
+
+        <div className="flex gap-3 mt-3">
+          <Button type="button" className="mr-3" onClick={saveAsPDF}>
+            Save as PDF
+          </Button>
+          <Button type="button" onClick={saveAsExcel}>
+            Save as Excel
+          </Button>
+        </div>
+      </div>
+    )}
+    
+    </>
   )
 }
