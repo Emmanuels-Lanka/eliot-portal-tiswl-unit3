@@ -109,7 +109,7 @@ const AnalyticsChart = ({
             <div className="mx-auto max-w-[1680px]">
                 {heatmapData ?
                     <div className="mt-12">
-                        <h2 className="text-lg mb-2 font-medium text-slate-700">{title}</h2>
+                        {/* <h2 className="text-lg mb-2 font-medium text-slate-700">{title}</h2> */}
                         <EffiencyHeatmap
                             xAxisLabel='Operations'
                             height={800}

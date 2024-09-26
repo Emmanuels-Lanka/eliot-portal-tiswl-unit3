@@ -359,7 +359,9 @@ let width = operatorCount > 15 ? operatorCount * 40 : "100%";
                 </div>}
 
                 {heatmapFullData !== null ?
-                    <div className="mt-12 bg-slate-100 pt-5 pl-8 rounded-lg border w-full mb-16 overflow-x-auto ">
+                    // <div className="mt-12 bg-slate-100 pt-5 pl-8 rounded-lg border w-full mb-16 overflow-x-auto ">
+                    <div className='bg-slate-50 pt-5 -pl-8 rounded-lg border w-full h-[400px] mb-16 overflow-scroll'>
+
                         <h2 className="text-lg mb-2 font-medium text-slate-700">{" "}</h2>
                         <div id="chart"  ref={chartRef}>
                         <ReactApexChart options={options} series={heatmapFullData} type="heatmap" height={height} width={width} />

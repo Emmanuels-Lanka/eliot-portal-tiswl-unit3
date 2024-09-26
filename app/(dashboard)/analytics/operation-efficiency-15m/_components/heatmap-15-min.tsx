@@ -365,13 +365,15 @@ const HmapChart15Compo = ({
                     <Loader2 className={cn("animate-spin w-5 h-5 hidden", isSubmitting && "flex")} />
                 </div>}
                 {heatmapFullData !== null ?
-                    <Card className="mt-5 bg-slate-100 pt-5 pl-8 rounded-lg border w-full mb-16 overflow-x-auto " >
+                    // <Card className="mt-5 bg-slate-100 pt-5 pl-8 rounded-lg border w-full mb-16 overflow-x-auto " >
+                    <div className='bg-slate-50 pt-5 -pl-8 rounded-lg border w-full h-[500px] mb-16 overflow-scroll'>
+
                         <div   ref={chartRef}>
                             
                             <h2 className="text-lg mb-2 font-medium text-slate-700">{" "}</h2>
                             <ReactApexChart options={options} series={heatmapFullData} type="heatmap" height={height} width={chartWidth} />
                         </div>
-                    </Card>
+                    </div>
                     :
                     <div className="mt-12 w-full">
                         <p className="text-center text-slate-500">Please select the OBB sheet and date ☝️</p>

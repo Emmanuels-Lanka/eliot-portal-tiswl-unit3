@@ -97,7 +97,7 @@ const EffiencyHeatmap = ({
                     fontSize: '12px',
                     fontFamily: 'Inter, sans-serif',
                 }, rotate: -90,
-                minHeight: 350,
+                minHeight: 250,
             },
             categories: categories,
         
@@ -198,12 +198,18 @@ const EffiencyHeatmap = ({
     };
 
     return (
-        <div className='bg-slate-100 pt-5 pl-8 rounded-lg border w-full mb-16 overflow-x-auto'>
+        // <div className='bg-slate-100 pt-5 pl-8 rounded-lg border w-full mb-16 overflow-x-auto'>
+                    <div>
+                    <div className='bg-slate-50 pt-5 -pl-8 rounded-lg border w-full h-[500px] mb-16 overflow-scroll'>
+
             <div id="chart"  ref={chartRef}>
                 <ReactApexChart options={options} series={series} type="heatmap" height={nheight} width={nwidth} />
             </div>
             <div id="html-dist"></div>
- {/* Button Section */}
+ 
+
+        </div>
+        {/* Button Section */}
  {true && (
       <div className="flex flex-col items-center mt-5">
         {/* <div className="flex gap-2">
@@ -225,8 +231,8 @@ const EffiencyHeatmap = ({
         </div>
       </div>
     )}
-
-        </div>
+                    </div>
+        
         
     )
 }
