@@ -73,6 +73,11 @@ export const columns: ColumnDef<SewingMachine | any>[] = [
         accessorKey: "serialNumber",
         header: "Serial No.",
     },
+    // {
+    //     id: 'eliotDevice.serialNumber',
+    //     header: 'Serial Number',
+       
+    //   },
     {
         accessorKey: "brandName",
         header: ({ column }) => {
@@ -125,6 +130,8 @@ export const columns: ColumnDef<SewingMachine | any>[] = [
         },
     },
     {
+        id: 'eliotDevice.serialNumber',
+    
         accessorKey: "eliotDevice.serialNumber",
         header: ({ column }) => {
             return (
