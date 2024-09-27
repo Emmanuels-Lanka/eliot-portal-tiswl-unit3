@@ -2,7 +2,7 @@
 "use client"
 
 import { TrendingUp } from "lucide-react"
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts"
+import { Bar, BarChart, CartesianGrid, LabelList, XAxis, YAxis } from "recharts"
 
 import {
   Card,
@@ -21,7 +21,7 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart"
 import { useEffect, useRef, useState } from "react"
-import { getOperatorEfficiency, getSMV } from "./actions"
+import { getOperatorEfficiency} from "./actions"
 import { Button } from "@/components/ui/button"
 
 export const description = "A stacked bar chart with a legend"
@@ -45,19 +45,11 @@ const chartData = [
 
 const chartConfig = {
  
-  nnva: {
-    label: "Necessary Non Value Added",
-    color: "hsl(var(--chart-4))",
-  },
-  nva: {
-    label: "Non Value Added",
+  count: {
+    label: "No. of machines",
     color: "hsl(var(--chart-1))",
-  },
-  
-  earnMinutes: {
-    label: "Earn Minutes",
-    color: "hsl(var(--chart-2))",
   }
+  
   
 } satisfies ChartConfig
 
@@ -102,75 +94,23 @@ const Fetchdata = async () => {
   try {
      
       setisSubmitting(true)
-      const smvs :any = await getSMV(obbSheetId, date,timeValue)
-      const prods:any = await getOperatorEfficiency(obbSheetId,date,timeValue)
-
-     console.log("test",date,obbSheetId,timeValue)
+      const smvs :any = await getOperatorEfficiency(obbSheetId, date,timeValue)
       console.log(smvs)
-      console.log(prods)
-      const joined = [] 
 
-      for (const smv of smvs) {
-        for (const prod of prods){
-          if(smv.name === prod.name)
-            joined.push({...smv,...prod})
-        }
-      }
-
-      console.log("j",joined)
-      setSmvData(joined)
+    
 
       
   
    
      
-
-      const convertToMinutes = (timeString: string) => {
-        const [hours, minutes, seconds] = timeString.split(' ').map(time => parseInt(time.replace(/\D/g, ''), 10) || 0);
-        return hours * 60 + minutes + seconds / 60;
-      };
      
-      const chartData: smvData[] = joined.map((item) => 
+      const chartData: any[] = smvs.map((i:any) => 
         
         { 
-          const em = item.count*item.avg;
-          const nm = 60-em; 
-
-         
-           console.log(item)         
-
-
-           const lb=convertToMinutes(item.lunchBreakTime);
-           const md=convertToMinutes(item.mechanicDownTime);
-           const ne=convertToMinutes(item.nonEffectiveTime);
-           const os=convertToMinutes(item.offStandTime);
-           const pd=convertToMinutes(item.productionDownTime);
-           const tt=convertToMinutes(item.totalTime);
-
-           const nnva= os+lb;
-           const nva = (tt-nnva);
-
-          //  console.log(nnva,nva,item.name) 
-           
-
-
-          // Process mechanic down time
-
           return {
-          
-            // name:item.name,
-            // seqNo:item.seqNo,
-            // count:item.count,
-            // earnMinutes:em,
-            // smv:nm
-            name:item.name,
-            seqNo:item.seqNo,
-            count:item.count,
-            earnMinutes:em,
-            nva:nva,
-            nnva:nnva,
-            smv:item.avg,
-            total:tt
+            count:Math.min(i.count,12),
+            realCount:i.count,
+            type:i.type
             
       }}
       
@@ -216,7 +156,7 @@ const saveAsPDF = async () => {
 
       // Set larger font size and align text with the logo
       pdf.setFontSize(24);
-      pdf.text('Dashboard -Yamuzami Graph', logoX + logoWidth + 20, 83, { align: 'left' });
+      pdf.text('Dashboard -Machine Types', logoX + logoWidth + 20, 83, { align: 'left' });
 
       // Add the chart image to the PDF
       pdf.addImage(imgData, 'PNG', 0, 150, canvas.width, canvas.height);
@@ -255,71 +195,83 @@ useEffect(() => {
 
     <>
     {chartDatas.length>0 ? (
-      <div className='bg-slate-50 pt-5 -pl-8 rounded-lg border w-full h-[450px] mb-16 overflow-scroll'>
+     <div className=' pt-5 -pl-8 rounded-lg border w-full h-[450px] mb-16 overflow-scroll'>
+     <Card className="pr-2 pt-6  border rounded-xl  w-auto" style={{width:(chartWidth)+"%"}}>
+      
+       <CardContent>
+         <ChartContainer
+         ref={chartRef}
+           config={chartConfig}
+           className="  h-[500px] w-full pt-12" 
+           style={{width:chartWidth+"%"}} 
+         >
+           <BarChart
+             accessibilityLayer
+             data={chartDatas}
+             margin={{
+              
+             
+               bottom:50
+             }}
 
-<Card style={{width:(chartWidth*2)+"%"}}>
-  {/* <CardHeader>
-    <CardTitle>Bar Chart - Stacked + Legend</CardTitle>
-    <CardDescription>January - June 2024</CardDescription>
-  </CardHeader> */}
-  <CardContent >
-    <ChartContainer config={chartConfig} style={{width:chartWidth+"%", height:600}} ref={chartRef} >
-      <BarChart accessibilityLayer data={chartDatas}
-      margin={{
-        top: 100,
-        bottom: 200
-    }}
-    barGap={50}>
-        <CartesianGrid vertical={false} />
-        <XAxis
-                                dataKey="name"
-                                tickLine={true}
-                                tickMargin={10}
-                                axisLine={true}
-                                angle={90}
-                                interval={0}
-                                textAnchor='start'
-                            />
-                            <YAxis
-                                dataKey="nva"
-                                type="number"
-                                tickLine={true}
-                                tickMargin={10}
-                                axisLine={true}
+           >
+             <CartesianGrid vertical={false} />
+             <YAxis
+               dataKey="count"
+               type="number"
+               tickLine={true}
+               tickMargin={10}
+               axisLine={true}
+              //  domain={[0, 4000]}
+               
+             />
+             <XAxis
+               dataKey="type"
+               tickLine={true}
+               tickMargin={15}
+               axisLine={true}
+               angle={90}
+               fontSize={10}
+               interval={0}
+               textAnchor="start"
+               
 
-                            />
-        <ChartTooltip content={<ChartTooltipContent  />} />
-        <ChartLegend content={<ChartLegendContent />} 
-              verticalAlign="top"
-        
-        />
-        <Bar
-          dataKey="earnMinutes"
-          stackId="a"
-          fill="var(--color-earnMinutes)"
-          radius={[0, 0, 4, 4]}
-          barSize={15}
-        />
-        <Bar
-          dataKey="nva"
-          stackId="a"
-          fill="var(--color-nva)"
-          radius={[0, 0, 0, 0]}
-          barSize={15}
-        />
-        <Bar
-          dataKey="nnva"
-          stackId="a"
-          fill="var(--color-nnva)"
-          radius={[4, 4, 0, 0]}
-          barSize={15}
-        />
-      </BarChart>
-    </ChartContainer>
-  </CardContent>
- 
-</Card>
-</div>
+
+             />
+             <ChartTooltip
+               cursor={false}
+               content={<ChartTooltipContent indicator="line"
+                 />}
+             />
+             <ChartLegend
+               verticalAlign="top"
+               content={<ChartLegendContent />}
+               className="mt-2 text-sm"
+             />
+             <Bar dataKey="count" fill="var(--color-count)" radius={5}>
+               <LabelList
+                //  dataKey="originalTarget"
+                dataKey="realCount"
+                 position="top"
+                 offset={7} // Increase the offset value
+                 className="fill-foreground"
+                 fontSize={9}
+               />
+             </Bar>
+             {/* <Bar dataKey="count" fill="var(--color-actual)" radius={5}>
+               <LabelList
+                 position="top"
+                 offset={20} // Increase the offset value
+                 className="fill-foreground"
+                 fontSize={9}
+                 
+               />
+             </Bar> */}
+           </BarChart>
+         </ChartContainer>
+       </CardContent>
+     </Card>
+     </div>
     ):(
       <div className="mt-12 w-full">
         <p className="text-center text-slate-500">No Data Available...</p>

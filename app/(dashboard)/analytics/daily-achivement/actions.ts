@@ -14,8 +14,47 @@ export async function getData(obbsheetid:string,date:string) : Promise<Productio
     group by o.name,oo.target,oo."seqNo" order by  oo."seqNo" ;`;
 
     //console.log("data fetched",data,111)
+    console.log("data",obbsheetid,date)
 
 
  
     return new Promise((resolve) => resolve(data as ProductionDataType[] ))
+}
+
+
+export async function getExelData(obbsheetid:string,date:string)    {
+    const sql = neon(process.env.DATABASE_URL || "");
+
+    const data = await sql`SELECT 
+    SUM(pd."productionCount") AS count,
+    CONCAT(oo."seqNo", '-', o.name) AS name,
+    oo.target,
+    EXTRACT(HOUR FROM pd.timestamp::timestamp) AS hour -- Cast to timestamp
+FROM 
+    "ProductionData" pd
+INNER JOIN 
+    "ObbOperation" oo ON pd."obbOperationId" = oo.id
+INNER JOIN 
+    "ObbSheet" os ON oo."obbSheetId" = os.id
+INNER JOIN 
+    "Operation" o ON o.id = oo."operationId"
+WHERE 
+    os.id = ${obbsheetid}
+    AND pd.timestamp LIKE ${date}
+GROUP BY 
+    o.name, 
+    oo.target, 
+    oo."seqNo", 
+    EXTRACT(HOUR FROM pd.timestamp::timestamp) -- Grouping by hour
+ORDER BY 
+    oo."seqNo", 
+    hour;  -- Ordering by sequence number and hour
+`;
+
+    //console.log("data fetched",data,111)
+    console.log("data",obbsheetid,date)
+
+
+ 
+    return new Promise((resolve) => resolve(data  ))
 }
