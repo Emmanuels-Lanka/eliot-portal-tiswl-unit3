@@ -17,9 +17,10 @@ export async function POST(
        const existingOperation = await db.obbOperation.findFirst({
         where: {
         sewingMachineId: sewingMachineId,
+        obbSheetId: obbSheetId,
             },
             select:{
-                obbSheet: { // Include the obbSheet relationship
+                obbSheet: { 
                     select: {
                         id: true,
                         isActive:true, 

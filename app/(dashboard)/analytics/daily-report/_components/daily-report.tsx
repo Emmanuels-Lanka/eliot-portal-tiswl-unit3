@@ -189,7 +189,7 @@ const ReportTable = ({ obbSheets }: AnalyticsChartProps) => {
   
   
   return (
-    <>
+    <div>
       <SelectObbSheetAndDate
         obbSheets={obbSheets}
         handleSubmit={handleFetchProductions}
@@ -197,7 +197,7 @@ const ReportTable = ({ obbSheets }: AnalyticsChartProps) => {
       {data.length>0?(
  <Button className="mt-5" onClick={handlePrint}>Print</Button>
       ):(
-        <></>
+        <div></div>
       )
 
       }
@@ -232,7 +232,7 @@ const ReportTable = ({ obbSheets }: AnalyticsChartProps) => {
           </TableBody>
         </Table>
       </div>
-    </>
+    </div>
   );
 };
 
