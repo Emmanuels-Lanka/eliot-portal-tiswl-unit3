@@ -59,3 +59,31 @@ export async function POST(
         return new NextResponse("Internal Error", { status: 500 });
     }
 }
+
+
+
+
+
+export async function GET(req: Request) {
+    try {
+        const { searchParams } = new URL(req.url);
+        const obbSheetId = searchParams.get("obbSheetId");
+        if (!obbSheetId) {
+            return new NextResponse("obbSheetId is required", { status: 400 });
+          }
+        const obbsheetDetails=await db.obbOperation.findMany({
+            where:{
+                obbSheetId:obbSheetId,
+            },
+
+            
+        })
+        return NextResponse.json({ data: obbsheetDetails, message: 'ObbOperation Data Fetched Successfuly' }, { status: 201 });
+        
+    } catch (error) {
+        console.error("[OBB_OPERATION_ERROR]", error);
+        return new NextResponse("Internal Error", { status: 500 });
+    }
+}
+
+
