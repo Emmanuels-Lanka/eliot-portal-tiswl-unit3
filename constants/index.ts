@@ -291,6 +291,11 @@ export const SIDEBAR_ROUTES = [
                 href: "/sewing-machines",
                 icon: Blocks
             },
+            {
+                label: "Machine types",
+                href: "/analytics/machine-type",
+                icon: BarChart3
+            },
         ]
     },
     {
@@ -410,6 +415,11 @@ export const HEADER_INFO = [
         label: "Manage Sewing Machines",
         href: "/sewing-machines",
         icon: Settings
+    },
+    {
+        label: "Sewing Machine types",
+        href: "/analytics/machine-type",
+        icon: BarChart3
     },
     {
         label: "Add Sewing Operators",
