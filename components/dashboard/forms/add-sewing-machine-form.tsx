@@ -62,9 +62,7 @@ const formSchema = z.object({
     machineId: z.string().min(1, {
         message: "Sewing Machine ID is required"
     }),
-    eliotDeviceId: z.string().min(1, {
-        message: "Eliot Device is required"
-    }),
+    eliotDeviceId: z.string(),
     ownership: z.string().min(1, {
         message: "Machine Type is required"
     }),
