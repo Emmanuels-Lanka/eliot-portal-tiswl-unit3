@@ -228,12 +228,12 @@ useEffect(() => {
              <XAxis
                dataKey="type"
                tickLine={true}
-               tickMargin={15}
+               tickMargin={20}
                axisLine={true}
-               angle={90}
+               angle={-90}
                fontSize={10}
                interval={0}
-               textAnchor="start"
+               textAnchor="end"
                
 
 
