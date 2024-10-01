@@ -199,7 +199,7 @@ export async function PUT(
                 length, 
                 totalStitches, 
                 supervisorId,
-                sewingMachineId:sewingMachineId||null, // Only update if provided
+                sewingMachineId:sewingMachineId||null,
                 part
             }
         });
