@@ -281,9 +281,9 @@ useEffect(() => {
                                 textAnchor='start'
                             />
                             <YAxis
-                                dataKey="nva"
+                                dataKey={(entry) => entry.earnMinutes + entry.nva + entry.nnva}
                                 type="number"
-                                tickLine={true}
+                                tickLine={true} 
                                 tickMargin={10}
                                 axisLine={true}
 
