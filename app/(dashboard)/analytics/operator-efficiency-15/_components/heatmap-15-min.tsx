@@ -341,8 +341,27 @@ const HmapChart15Compo = ({
 let timeSlots = heatmapData ? heatmapData.length : 0;
 let operatorCount = operationList ? operationList.length : 0;
 
-let height = timeSlots < 15 ? 1300 : timeSlots * 50; // Adjust height based on time slots
-let width = operatorCount > 15 ? operatorCount * 40 : "100%";
+let heights = timeSlots < 15 ? 1300 : timeSlots * 50; // Adjust height based on time slots
+// let width = operatorCount > 15 ? operatorCount * 40 : "100%";
+
+
+let height;
+if (heatmapData) {
+    if (heatmapData.length > 30) {
+      height = heatmapData.length * 60
+    } else if (heatmapData.length > 20) {
+      height = heatmapData.length * 50
+    } else { 
+      height = heatmapData.length * 30
+    }
+  }
+const width = operationList && operationList.length > 0 ? operationList.length * 50 : 600;
+
+
+
+
+
+
     // let width = heatmapData && heatmapData?.length > 15  ? 3000 :  100+"%"; 
     // let height = heatmapData && heatmapData?.length < 15  ?  900 : 1500;
 
