@@ -77,7 +77,6 @@ const ObbSheetId = async ({
     }
   });
   
-  
   // const assignedMachinesToOperations = obbOperations?.obbOperations
   //   .filter(item => item.sewingMachine !== null)
   //   .filter(item => item.sewingMachine?.activeObbOperationId !== null)
