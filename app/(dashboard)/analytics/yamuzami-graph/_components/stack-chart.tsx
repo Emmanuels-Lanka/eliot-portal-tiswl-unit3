@@ -244,6 +244,7 @@ const saveAsExcel = () => {
 
 useEffect(() => {
   Fetchdata()
+  
 }, [date, obbSheetId,timeValue])
 
 
@@ -263,7 +264,7 @@ useEffect(() => {
     <CardDescription>January - June 2024</CardDescription>
   </CardHeader> */}
   <CardContent >
-    <ChartContainer config={chartConfig} style={{width:chartWidth+"%", height:600}} ref={chartRef} >
+    <ChartContainer config={chartConfig} style={{width:(chartWidth*2)+"%", height:600}} ref={chartRef} >
       <BarChart accessibilityLayer data={chartDatas}
       margin={{
         top: 100,
