@@ -48,7 +48,7 @@ export async function PUT(
     { params }: { params: { obbOperationId: string } }
 ) {
     try {
-        const { operationId, sewingMachineId, smv, target, spi, length, totalStitches, obbSheetId, supervisorId, part } = await req.json();
+        const { seqNo,operationId, sewingMachineId, smv, target, spi, length, totalStitches, obbSheetId, supervisorId, part } = await req.json();
 
         const existingObbOperation = await db.obbOperation.findUnique({
             where: {
@@ -94,13 +94,16 @@ export async function PUT(
                     activeObbOperationId: params.obbOperationId
                 }
             });
+            
         }
 
+        
         const updatedOperation = await db.obbOperation.update({
             where: {
                 id: params.obbOperationId
             },
             data: {
+                seqNo,
                 operationId, 
                 obbSheetId,
                 smv: parseFloat(smv), 
