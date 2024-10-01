@@ -7,227 +7,92 @@ export async function POST(
     req: Request,
 ) {
     try {
-        const { seqNo,operationId, sewingMachineId, smv, target, spi, length, totalStitches, obbSheetId, part,supervisorId } = await req.json();
-        
+        const {
+            seqNo,
+            operationId,
+            sewingMachineId,
+            smv,
+            target,
+            spi,
+            length,
+            totalStitches,
+            obbSheetId,
+            part
+        } = await req.json();
+
         let id = generateUniqueId();
 
-
-
-
-       const existingOperation = await db.obbOperation.findFirst({
-        where: {
-        sewingMachineId: sewingMachineId || null,
-        obbSheetId: obbSheetId,
-            },
-            select:{
-                obbSheet: { 
-                    select: {
-                        id: true,
-                        isActive:true, 
-                         
-                    }
-                }
-            }
-        }); 
-
-        if (existingOperation) {
-            return new NextResponse("This sewing machine is already assigned to another operation.", { status: 409 });
-        }
-
-
-
-
-        // const existingMachine = await db.sewingMachine.findUnique({
-        //     where: {
-        //         id: sewingMachineId,
-        //         activeObbOperationId: { not: null }
-        //     }
-        // });
-
-        // if (existingMachine) {
-        //     return new NextResponse("This sewing machine is already assigned to another operation.", { status: 409 })
-        // };
-        
-        const susupervisorIdnew = await db.obbOperation.findMany({
-            
+        // Fetch the ObbSheet
+        const obbSheet = await db.obbSheet.findUnique({
             where: {
-                part
+                id: obbSheetId
             },
             select: {
-                // supervisorId: true,
-                seqNo:true,
-                supervisor: {
-                    select: {
-                        id: true,
-                        name:true
-                    }
-                },
-                obbSheet: { // Include the obbSheet relationship
-                    select: {
-                        id: true, // Select the id from obbSheet
-                         
-                    }
-                }
+                supervisorFrontId: true,
+                supervisorBackId: true,
+                supervisorAssemblyId: true,
+                supervisorLineEndId: true
             }
         });
 
-        
-        const supervisorid = susupervisorIdnew.map(operation => 
-            operation.supervisor ? operation.supervisor.id : 'No supervisor'
-        );
-        // console.log("Supervisor Names:", supervisorid);
+        if (!obbSheet) {
+            return new NextResponse("Obb Sheet not found.", { status: 409 });
+        }
 
+        // Find the supervisorId according to the part
+        let supervisorId: string;
+        switch (part) {
+            case 'front':
+                supervisorId = obbSheet.supervisorFrontId || "";
+                break;
+            case 'back':
+                supervisorId = obbSheet.supervisorBackId || "";
+                break;
+            case 'assembly':
+                supervisorId = obbSheet.supervisorAssemblyId || "";
+                break;
+            case 'line-end':
+                supervisorId = obbSheet.supervisorLineEndId || "";
+                break;
+            default:
+                return new NextResponse("Invalid part specified", { status: 400 });
+        }
 
+        // Check if a machine is already assigned to another operation for the same obbSheet
+        if (sewingMachineId) {
+            const existingOperation = await db.obbOperation.findFirst({
+                where: {
+                    sewingMachineId,
+                    obbSheetId,
+                }
+            });
 
+            if (existingOperation) {
+                return new NextResponse("This sewing machine is already assigned to another operation.", { status: 409 });
+            }
+        }
 
-
-       
-
-
-
+        // Create the new ObbOperation
         const newObbOperation = await db.obbOperation.create({
-            
             data: {
                 id,
                 seqNo,
-                operationId, 
+                operationId,
                 obbSheetId,
-                smv: parseFloat(smv), 
-                target, 
-                spi, 
-                length, 
-                totalStitches, 
-                supervisorId:supervisorid[0],
-                sewingMachineId:sewingMachineId || null,
+                smv: parseFloat(smv),
+                target,
+                spi,
+                length,
+                totalStitches,
+                supervisorId: supervisorId,
+                sewingMachineId: sewingMachineId || null,
                 part
             }
-            
-        });
-    //    console.log("data123456",newObbOperation)
-        // Update the active operation on Machine table
-        // await db.sewingMachine.update({
-        //     where: {
-        //         id: sewingMachineId
-        //     },
-        //     data: {
-        //         activeObbOperationId: newObbOperation.id
-        //     }
-        // });
-
-        return NextResponse.json({ data: newObbOperation, message: 'OBB Operation created successfully'}, { status: 201 });
-
-    } catch (error) {
-        console.error("[OBB_OPERATION_ERROR]", error);
-        return new NextResponse("Internal Error", { status: 500 });
-    }
-  }
-
-
-
-
-// export async function GET(req: Request) {
-//     try {
-//         const { searchParams } = new URL(req.url);
-//         const obbSheetId = searchParams.get("obbSheetId"); // Get the obbSheetId from the query parameters
-
-//         if (!obbSheetId) {
-//             return new NextResponse("obbSheetId is required", { status: 400 });
-//         }
-
-//         // Find the operation with the maximum seqNo for the given obbSheetId
-//         const maxSeqOperation = await db.obbOperation.findFirst({
-//             where: {
-//                 obbSheetId: obbSheetId, // Filter by obbSheetId
-//             },
-//             select: {
-//                 seqNo: true, // Only select the seqNo
-//                 obbSheet: {
-//                     select: {
-//                         id: true,
-//                     },
-//                 },
-//             },
-//             orderBy: {
-//                 seqNo: "desc", // Order by seqNo in descending order to get the max
-//             },
-//         });
-
-//         if (!maxSeqOperation) {
-//             return new NextResponse("No operations found for the given obbSheetId", { status: 404 });
-//         }
-
-//         return NextResponse.json({ data: maxSeqOperation, message: 'Max sequence number fetched successfully' }, { status: 200 });
-
-//     } catch (error) {
-//         console.error("[OBB_OPERATION_ERROR]", error);
-//         return new NextResponse("Internal Error", { status: 500 });
-//     }
-// }
-
-
-
-export async function GET(req: Request) {
-    try {
-        const { searchParams } = new URL(req.url);
-        const obbSheetId = searchParams.get("obbSheetId");
-
-        if (!obbSheetId) {
-            return new NextResponse("obbSheetId is required", { status: 400 });
-        }
-
-        // Find all operations for the given obbSheetId, ordered by seqNo in descending order
-        const operations = await db.obbOperation.findMany({
-            where: {
-                obbSheetId: obbSheetId,
-            },
-            select: {
-                seqNo: true, // Select seqNo
-                obbSheet: {
-                    select: {
-                        id: true,
-                    },
-                },
-            },
-            orderBy: {
-                seqNo: "desc", // Order by seqNo in descending order
-            },
         });
 
-        if (!operations || operations.length === 0) {
-            return new NextResponse("No operations found for the given obbSheetId", { status: 404 });
-        }
-
-        return NextResponse.json({ data: operations, message: 'Operations fetched successfully' }, { status: 200 });
-
+        return NextResponse.json({ data: newObbOperation, message: 'OBB Operation created successfully' }, { status: 201 });
     } catch (error) {
         console.error("[OBB_OPERATION_ERROR]", error);
         return new NextResponse("Internal Error", { status: 500 });
     }
 }
-
-
-
-
-export async function PUT(req: Request) {
-    try {
-        const body = await req.json();
-        console.log("Incoming Request Data:", body); // This should print in your terminal
-        const { id, seqNo } = body;
-
-        // Log specific values to ensure they are coming through
-        console.log(`Updating operation with ID: ${id} and SeqNo: ${seqNo}`);
-
-        const updatedOperation = await db.obbOperation.update({
-            where: { id },
-            data: { seqNo },
-        });
-
-        console.log("Database Update Successful:", updatedOperation);
-        return NextResponse.json({ data: updatedOperation, message: 'OBB Operation updated successfully' }, { status: 200 });
-    } catch (error) {
-        console.error("[OBB_OPERATION_UPDATE_ERROR]", error);
-        return new NextResponse("Internal Error", { status: 500 });
-    }
-}
-
-

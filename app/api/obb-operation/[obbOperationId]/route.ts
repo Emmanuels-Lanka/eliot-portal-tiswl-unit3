@@ -43,98 +43,24 @@ export async function DELETE(
     }
 }
 
-// export async function PUT(
-//     req: Request,
-//     { params }: { params: { obbOperationId: string } }
-// ) {
-//     try {
-//         const { seqNo,operationId, sewingMachineId, smv, target, spi, length, totalStitches, obbSheetId, supervisorId, part } = await req.json();
-
-//         const existingObbOperation = await db.obbOperation.findUnique({
-//             where: {
-//                 id: params.obbOperationId
-//             }
-//         });
-
-//         if (!existingObbOperation) {
-//             return new NextResponse("OBB operation does not exist!", { status: 408 })
-//         }
-
-//         if (existingObbOperation?.sewingMachineId !== sewingMachineId) {
-//             // Checking the machine is available
-//             const availableMachine = await db.sewingMachine.findUnique({
-//                 where: {
-//                     id: sewingMachineId,
-//                     activeObbOperationId: null
-//                 }
-//             });
-    
-//             if (!availableMachine) {
-//                 return new NextResponse("This sewing machine is already assigned to another operation.", { status: 409 })
-//             }
-
-//             if (existingObbOperation.sewingMachineId) {
-//                 // Set null the active operation in Machine table
-//                 await db.sewingMachine.update({
-//                     where: {
-//                         id: existingObbOperation.sewingMachineId
-//                     },
-//                     data: {
-//                         activeObbOperationId: null,
-//                     }
-//                 });
-//             }
-
-//             // Update the current active OBB Operation
-//             await db.sewingMachine.update({
-//                 where: {
-//                     id: sewingMachineId 
-//                 },
-//                 data: {
-//                     activeObbOperationId: params.obbOperationId
-//                 }
-//             });
-            
-//         }
-
-
-
-
-
-        
-//         const updatedOperation = await db.obbOperation.update({
-//             where: {
-//                 id: params.obbOperationId
-//             },
-//             data: {
-//                 seqNo,
-//                 operationId, 
-//                 obbSheetId,
-//                 smv: parseFloat(smv), 
-//                 target, 
-//                 spi, 
-//                 length, 
-//                 totalStitches, 
-//                 supervisorId,
-//                 sewingMachineId,
-//                 part
-//             }
-//         });
-
-//         return NextResponse.json({ data: updatedOperation, message: 'OBB sheet updated successfully' }, { status: 201 });
-//     } catch (error) {
-//         console.error("[OBB_OPERATION_UPDATE_ERROR]", error);
-//         return new NextResponse("Internal Error", { status: 500 });
-//     }
-// }
-
 
 export async function PUT(
     req: Request,
     { params }: { params: { obbOperationId: string } }
 ) {
     try {
-        const { seqNo, operationId, sewingMachineId, smv, target, spi, length, totalStitches, obbSheetId, supervisorId, part } = await req.json();
+        const {
+            seqNo,
+            operationId,
+            sewingMachineId,
+            smv,
+            target,
+            spi,
+            length,
+            totalStitches,
+            obbSheetId,
+            part
+        } = await req.json();
 
         const existingObbOperation = await db.obbOperation.findUnique({
             where: {
@@ -146,9 +72,45 @@ export async function PUT(
             return new NextResponse("OBB operation does not exist!", { status: 408 })
         }
 
+        // Fetch the ObbSheet
+        const obbSheet = await db.obbSheet.findUnique({
+            where: {
+                id: obbSheetId
+            },
+            select: {
+                supervisorFrontId: true,
+                supervisorBackId: true,
+                supervisorAssemblyId: true,
+                supervisorLineEndId: true
+            }
+        });
+
+        if (!obbSheet) {
+            return new NextResponse("Obb Sheet not found.", { status: 409 });
+        }
+
+        // Find the supervisorId according to the part
+        let supervisorId: string;
+        switch (part) {
+            case 'front':
+                supervisorId = obbSheet.supervisorFrontId || "";
+                break;
+            case 'back':
+                supervisorId = obbSheet.supervisorBackId || "";
+                break;
+            case 'assembly':
+                supervisorId = obbSheet.supervisorAssemblyId || "";
+                break;
+            case 'line-end':
+                supervisorId = obbSheet.supervisorLineEndId || "";
+                break;
+            default:
+                return new NextResponse("Invalid part specified", { status: 400 });
+        }
+
         // If sewingMachineId is not provided, skip the machine assignment logic
         if (sewingMachineId) {
-            if (existingObbOperation?.sewingMachineId !== sewingMachineId) {
+            if (existingObbOperation.sewingMachineId !== sewingMachineId) {
                 // Checking the machine is available
                 const availableMachine = await db.sewingMachine.findUnique({
                     where: {
@@ -162,7 +124,7 @@ export async function PUT(
                 }
 
                 if (existingObbOperation.sewingMachineId) {
-                    // Set null the active operation in Machine table
+                    // Set null the active operation to available this machine
                     await db.sewingMachine.update({
                         where: {
                             id: existingObbOperation.sewingMachineId
@@ -185,40 +147,6 @@ export async function PUT(
             }
         }
 
-
-
-
-        const susupervisorIdnew = await db.obbOperation.findMany({
-            
-            where: {
-                part
-            },
-            select: {
-                // supervisorId: true,
-                seqNo:true,
-                supervisor: {
-                    select: {
-                        id: true,
-                        name:true
-                    }
-                },
-                obbSheet: { // Include the obbSheet relationship
-                    select: {
-                        id: true, // Select the id from obbSheet
-                         
-                    }
-                }
-            }
-        });
-
-        
-        const supervisorid = susupervisorIdnew.map(operation => 
-            operation.supervisor ? operation.supervisor.id : 'No supervisor'
-        );
-
-
-
-
         const updatedOperation = await db.obbOperation.update({
             where: {
                 id: params.obbOperationId
@@ -232,8 +160,8 @@ export async function PUT(
                 spi, 
                 length, 
                 totalStitches, 
-                supervisorId:supervisorid[0],
-                sewingMachineId:sewingMachineId||null,
+                supervisorId,
+                sewingMachineId: sewingMachineId || null,
                 part
             }
         });
