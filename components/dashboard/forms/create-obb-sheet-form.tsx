@@ -227,6 +227,28 @@ const CreateObbSheetForm = ({
         }
     }
 
+
+    useEffect(()=>{
+        const fetchOBBOperations = async () => {
+            try {
+              const response = await axios.get(`/api/obb-sheet?obbSheetId=${obbSheetId}`);
+              
+              console.log(response.data);
+            } catch (error) {
+           
+              if (axios.isAxiosError(error)) {
+                console.error('Axios error:', error.message);
+              } else {
+                console.error('Unknown error:', error);
+              }
+            }
+          };
+        
+          fetchOBBOperations();
+    },[])
+
+
+    
     return (
         <div className={cn('mx-auto max-w-7xl border rounded-lg', mode === 'create' ? 'shadow-xl my-16 px-12 pt-6 pb-10 max-xl:px-8 max-xl:pt-4' : 'bg-slate-100 px-8 pt-4 pb-8')}>
             <Form {...form}>

@@ -37,6 +37,7 @@ const DashboardLayout = ({
                 <div className="ml-64 h-full">
                     <div className="sticky top-0 w-full z-10 border-b shadow-sm">
                         <DashboardHeader />
+                       
                     </div>
                     <main className="dashboard-body-height px-4">
                         {children}

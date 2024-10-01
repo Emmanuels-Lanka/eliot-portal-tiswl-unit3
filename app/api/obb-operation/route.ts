@@ -16,10 +16,11 @@ export async function POST(
 
        const existingOperation = await db.obbOperation.findFirst({
         where: {
-        sewingMachineId: sewingMachineId,
+        sewingMachineId: sewingMachineId || null,
+        obbSheetId: obbSheetId,
             },
             select:{
-                obbSheet: { // Include the obbSheet relationship
+                obbSheet: { 
                     select: {
                         id: true,
                         isActive:true, 
@@ -78,15 +79,14 @@ export async function POST(
 
 
 
+
+
        
 
-
-
-       
-        
 
 
         const newObbOperation = await db.obbOperation.create({
+            
             data: {
                 id,
                 seqNo,
@@ -98,9 +98,10 @@ export async function POST(
                 length, 
                 totalStitches, 
                 supervisorId:supervisorid[0],
-                sewingMachineId,
+                sewingMachineId:sewingMachineId || null,
                 part
             }
+            
         });
     //    console.log("data123456",newObbOperation)
         // Update the active operation on Machine table
@@ -200,6 +201,31 @@ export async function GET(req: Request) {
 
     } catch (error) {
         console.error("[OBB_OPERATION_ERROR]", error);
+        return new NextResponse("Internal Error", { status: 500 });
+    }
+}
+
+
+
+
+export async function PUT(req: Request) {
+    try {
+        const body = await req.json();
+        console.log("Incoming Request Data:", body); // This should print in your terminal
+        const { id, seqNo } = body;
+
+        // Log specific values to ensure they are coming through
+        console.log(`Updating operation with ID: ${id} and SeqNo: ${seqNo}`);
+
+        const updatedOperation = await db.obbOperation.update({
+            where: { id },
+            data: { seqNo },
+        });
+
+        console.log("Database Update Successful:", updatedOperation);
+        return NextResponse.json({ data: updatedOperation, message: 'OBB Operation updated successfully' }, { status: 200 });
+    } catch (error) {
+        console.error("[OBB_OPERATION_UPDATE_ERROR]", error);
         return new NextResponse("Internal Error", { status: 500 });
     }
 }
