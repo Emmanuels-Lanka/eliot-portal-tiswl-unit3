@@ -61,7 +61,7 @@ interface ObbOperationsFormProps {
 const formSchema = z.object({
     seqNo: z.number(),
     operationId: z.string().min(1, "Operation is required"),
-    sewingMachineId: z.string().min(1, "Sewing machine is required"),
+    sewingMachineId: z.string(),
     smv: z.string(),
     target: z.number(),
     spi: z.number(),
