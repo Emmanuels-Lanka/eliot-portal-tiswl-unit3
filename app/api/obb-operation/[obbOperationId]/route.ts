@@ -185,6 +185,40 @@ export async function PUT(
             }
         }
 
+
+
+
+        const susupervisorIdnew = await db.obbOperation.findMany({
+            
+            where: {
+                part
+            },
+            select: {
+                // supervisorId: true,
+                seqNo:true,
+                supervisor: {
+                    select: {
+                        id: true,
+                        name:true
+                    }
+                },
+                obbSheet: { // Include the obbSheet relationship
+                    select: {
+                        id: true, // Select the id from obbSheet
+                         
+                    }
+                }
+            }
+        });
+
+        
+        const supervisorid = susupervisorIdnew.map(operation => 
+            operation.supervisor ? operation.supervisor.id : 'No supervisor'
+        );
+
+
+
+
         const updatedOperation = await db.obbOperation.update({
             where: {
                 id: params.obbOperationId
@@ -198,7 +232,7 @@ export async function PUT(
                 spi, 
                 length, 
                 totalStitches, 
-                supervisorId,
+                supervisorId:supervisorid[0],
                 sewingMachineId:sewingMachineId||null,
                 part
             }
