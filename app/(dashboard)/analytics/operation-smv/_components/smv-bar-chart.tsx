@@ -72,7 +72,7 @@ const BarChartGraphOpSmv = ({ date, obbSheetId }: BarChartGraphProps) => {
     const [chartData, setChartData] = useState<BarChartData[]>([])
     const [productionData, setProductionData] = useState<BarChartData[]>([]);
 
-    const[chartWidth,setChartWidth] = useState<number>(150)
+    const[chartWidth,setChartWidth] = useState<number>(120)
     const[isSubmitting,setisSubmitting]=useState<boolean>(false)
 
     const chartRef = useRef<HTMLDivElement>(null);
@@ -189,7 +189,7 @@ const renderCustomLabel = ({ x, y, width, value, index }: any) => {
     );
 };
 
-
+const chartWidths = Math.min(250, 100 + (chartData.length * 2));    
 
     return (
         <>
@@ -205,16 +205,16 @@ const renderCustomLabel = ({ x, y, width, value, index }: any) => {
         {chartData.length > 0 && (
 
         <div className='bg-slate-50 pt-5 -pl-8 rounded-lg border w-full h-[450px] mb-16 overflow-scroll'>
-        <Card className='bg-slate-50' style={{width:(chartWidth*2)+"%"}}>
+        <Card className='bg-slate-50' style={{width:(chartWidths)+"%"}}>
            
             <CardContent  >
-            <ChartContainer config={chartConfig} style={{width:chartWidth*2+"%", height:800}} ref={chartRef} >
+            <ChartContainer config={chartConfig} style={{width:chartWidths+"%", height:800}} ref={chartRef} >
                     <BarChart 
                         accessibilityLayer 
                         data={chartData}
                         margin={{
-                            top: 100,
-                            bottom: 300
+                            top:50,
+                            bottom: 250
                         }}
                         startAngle={10}
                     >
@@ -243,14 +243,13 @@ const renderCustomLabel = ({ x, y, width, value, index }: any) => {
                             cursor={false}
                             content={<ChartTooltipContent indicator="line" />}
                         />
-                        <ChartLegend 
-                            content={<ChartLegendContent />} 
-                            className="-mb-10 text-xs text-blue-500 font-bold" 
-                            margin={{top:10}}
-                            verticalAlign="top"
-                                
-                        />
-                        <Bar dataKey="smv" fill="var(--color-smv)" radius={5} barSize={25}>
+                        
+                        <ChartLegend content={<ChartLegendContent />} 
+              verticalAlign="top"
+              margin={{bottom:50}}
+        
+        />
+                        <Bar dataKey="smv" fill="var(--color-avg)" radius={5} barSize={25}>
                             <LabelList
                                 position="top"
                                 // content={renderCustomLabel}
@@ -260,7 +259,7 @@ const renderCustomLabel = ({ x, y, width, value, index }: any) => {
                                 fontFamily="Inter"
                             />
                         </Bar>
-                         <Bar dataKey="avg" fill="var(--color-avg)" radius={5} barSize={25}>
+                         <Bar dataKey="avg" fill="orange" radius={5} barSize={25}>
                             <LabelList
                                 position="top"
                                 offset={12}
