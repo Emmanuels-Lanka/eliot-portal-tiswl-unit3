@@ -43,7 +43,7 @@ const LogTable = ({
   const [date, setDate] = useState<string>("");
   const [obbSheetId, setObbSheetId] = useState<string>("");
 
-  const [data, setData] = useState<ProductionDataType[]>([]);
+  const [data, setData] = useState<any>({});
 
 
   
@@ -53,27 +53,35 @@ const LogTable = ({
     
 
       const details = await getData(obbSheetId, date);
-      // const result = Object.groupBy(details, (d) => getTimeSlotLabel(d.hour,d.qtrIndex));
-      const result = Object.groupBy(details, ({ type }) => type);
+      console.log("details",details)
+      const typesObj = Object.groupBy(details, ({ type }) => type);
+
+      console.log("typesObj",typesObj)
+      // const result = Object.groupBy(details, ({ type }) => type);
+      // console.log("result",result)
+
+      // const res = Object.values(result);
+      // console.log("res",res)
       
-      console.log("details", result);
-      setData(details)
-
-
-
-
-  
-    
-
+      // console.log("details",res );
+      
+      setData(typesObj)
 
   };
 
-  
+
 
   useEffect(() => {
     handleFetchProductions();
   }, []);
 
+  useEffect(() => {
+    
+
+
+
+
+  }, [data]);
   return (
 
     <div>
@@ -82,17 +90,7 @@ const LogTable = ({
 
       </div>
       <Card x-chunk="dashboard-05-chunk-3" className='my-4 pt-4'>
-        {/* <CardHeader className="px-7">
-          <CardTitle> </CardTitle>
-          <CardDescription>
-
-          </CardDescription>
-          <SelectObbSheetAndDate
-            obbSheets={obbSheets}
-            handleSubmit={handleFetchProductions}
-          />
-
-        </CardHeader> */}
+       
 
 
         <CardContent>

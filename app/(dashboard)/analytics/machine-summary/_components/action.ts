@@ -6,8 +6,8 @@ import { ProductionDataType } from "./LogTable";
 export async function getData(obbsheetid:string,date:string)  : Promise<ProductionDataType[]>   {
     const sql = neon(process.env.DATABASE_URL || "");
 
-    const data = await sql`Select count(*) ,"machineType" as type, pl.name as lineName,
-count(case when sm."isAssigned" = false then 1 end) as notAssigned
+    const data = await sql`Select CAST(count(*) AS int) ,"machineType" as type, pl.name as lineName,
+CAST(count(case when sm."isAssigned" = false then 1 end)AS int) as notAssigned
 from "SewingMachine" sm
 inner join "ObbOperation" oo ON oo."sewingMachineId" = sm.id
 inner join "ObbSheet" os ON os.id = oo."obbSheetId"
@@ -19,6 +19,22 @@ group by type,lineName`;
 
  
     return new Promise((resolve) => resolve(data as ProductionDataType[]  ))
+}
+export async function getDatas(obbsheetid:string,date:string)  : Promise<ProductionDataType[]>   {
+  const sql = neon(process.env.DATABASE_URL || "");
+
+  const data = await sql`Select count(*),"machineType" as type
+from "SewingMachine" sm
+inner join "ObbOperation" oo ON oo."sewingMachineId" = sm.id
+inner join "ObbSheet" os ON os.id = oo."obbSheetId"
+inner join "ProductionLine" pl on pl.id = os."productionLineId" 
+group by type`;
+
+   
+
+
+
+  return new Promise((resolve) => resolve(data as ProductionDataType[]  ))
 }
 
 
