@@ -108,6 +108,9 @@ const BarChartGraphEfficiencyRate = ({ date, obbSheetId }: BarChartGraphProps) =
 
     useEffect(() => {
         Fetchdata()
+        const chartWidths = Math.min(250, 110 + (chartData.length * 2));
+
+    setChartWidth(chartWidths)
     }, [date, obbSheetId])
 
     useEffect(() => {
@@ -170,6 +173,8 @@ const BarChartGraphEfficiencyRate = ({ date, obbSheetId }: BarChartGraphProps) =
         XLSX.writeFile(workbook, `chart-data.xlsx`);
     };
 
+    
+
 
     return (
         <>
@@ -184,20 +189,20 @@ const BarChartGraphEfficiencyRate = ({ date, obbSheetId }: BarChartGraphProps) =
                     // <div className='bg-slate-100 pt-5 -pl-8 rounded-lg border w-full mb-16 overflow-x-auto'>
 
                 <div className='bg-slate-50 pt-5 -pl-8 rounded-lg border w-full h-[450px] mb-16 overflow-scroll'>
-                <Card className='pr-2 pt-1 pb-2 border rounded-xl bg-slate-50 w-11/12' >
+                 <Card className='bg-slate-50' style={{width:(chartWidth)+"%"}}>
                
                     <CardContent>
                         {/* <ChartContainer config={chartConfig} className={`min-h-[300px] max-h-[600px] w-[${chartWidth.toString()}%]`}> */}
                         <ChartContainer 
                         ref={chartRef}
-                        config={chartConfig} className={`min-h-[300px] max-h-[600px] `} style={{ width: chartWidth + "%", height: chartWidth + "%" }}>
+                        config={chartConfig} className={`min-h-[300px] max-h-[600px] `} style={{ width: chartWidth + "%", height: 600 + "%" }}>
 
                             <BarChart
                                 accessibilityLayer
                                 data={chartData}
                                 margin={{
-                                    top: 0,
-                                    bottom: 300
+                                    top: 20,
+                                    bottom: 250
                                 }}
                                 barGap={10}
                                 className="h-[300px] "
