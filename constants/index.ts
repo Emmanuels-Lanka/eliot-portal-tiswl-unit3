@@ -20,6 +20,7 @@ import {
     Sliders,
     Table,
     UserRoundCog,
+    TableProperties,
     UserRoundPlus
 } from "lucide-react";
 
@@ -296,6 +297,11 @@ export const SIDEBAR_ROUTES = [
                 href: "/analytics/machine-type",
                 icon: BarChart3
             },
+            {
+                label: "Machine Summary",
+                href: "/analytics/machine-summary",
+                icon: TableProperties
+            },
         ]
     },
     {
@@ -430,6 +436,11 @@ export const HEADER_INFO = [
         label: "Sewing Machine types",
         href: "/analytics/machine-type",
         icon: BarChart3
+    },
+    {
+        label: "Machine Summary",
+        href: "/analytics/machine-summary",
+        icon: TableProperties
     },
     {
         label: "Add Sewing Operators",

@@ -57,22 +57,22 @@ const TableComponent: React.FC<TableProps> = ({ data }) => {
           {Object.entries(data).map(([key, value]) => (
             <TableRow key={key} className="bg-accent">
               <TableCell>
-                <div className="font-medium">{key}</div>
+                <div className="font-medium text-center">{key}</div>
               </TableCell>
               <TableCell>
-                <div className="font-medium">
+                <div className="font-medium text-center">
                   {value.reduce((acc, current) => acc + current.count, 0)}
                 </div>
               </TableCell>
               {staticLineNames.map((lineName) => (
                 <TableCell key={lineName}>
-                  <div className="font-medium">
+                  <div className="font-medium text-center">
                     {value.find((row) => row.linename === lineName)?.count || '-'}
                   </div>
                 </TableCell>
               ))}
               <TableCell>
-                <div className="font-medium">
+                <div className="font-medium text-center">
                   {value.reduce((acc, current) => acc + current.notassigned, 0)}
                 </div>
               </TableCell>
