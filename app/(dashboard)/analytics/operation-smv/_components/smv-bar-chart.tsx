@@ -80,6 +80,9 @@ const BarChartGraphOpSmv = ({ date, obbSheetId }: BarChartGraphProps) => {
     const Fetchdata = async () => {
         
         try {
+const chartWidths = Math.min(250, 100 + (chartData.length * 2));    
+setChartWidth(chartWidths)
+
             setisSubmitting(true)
         const prod = await getSMV(obbSheetId, date)
         // setProductionData(prod)
@@ -189,7 +192,6 @@ const renderCustomLabel = ({ x, y, width, value, index }: any) => {
     );
 };
 
-const chartWidths = Math.min(250, 100 + (chartData.length * 2));    
 
     return (
         <>
@@ -205,10 +207,10 @@ const chartWidths = Math.min(250, 100 + (chartData.length * 2));
         {chartData.length > 0 && (
 
         <div className='bg-slate-50 pt-5 -pl-8 rounded-lg border w-full h-[450px] mb-16 overflow-scroll'>
-        <Card className='bg-slate-50' style={{width:(chartWidths)+"%"}}>
+        <Card className='bg-slate-50' style={{width:(chartWidth)+"%"}}>
            
             <CardContent  >
-            <ChartContainer config={chartConfig} style={{width:chartWidths+"%", height:800}} ref={chartRef} >
+            <ChartContainer config={chartConfig} style={{width:chartWidth+"%", height:800}} ref={chartRef} >
                     <BarChart 
                         accessibilityLayer 
                         data={chartData}
