@@ -10,12 +10,13 @@ export async function getOperatorEfficiency(obbsheetid:string,date:string,timeVa
     // date=date+" 10:%";
     // 
     
-     const data = await sql`Select count(*) ,"machineType" as type from "SewingMachine" sm
-
+     const data = await sql`Select count(*) ,"machineType" as type, pl.name as lineName,
+count(case when sm."isAssigned" = false then 1 end) as notAssigned
+from "SewingMachine" sm
 inner join "ObbOperation" oo ON oo."sewingMachineId" = sm.id
 inner join "ObbSheet" os ON os.id = oo."obbSheetId"
-where oo."obbSheetId" = ${obbsheetid}
-group by type`
+inner join "ProductionLine" pl on pl.id = os."productionLineId" 
+group by type,lineName`
     
             
     

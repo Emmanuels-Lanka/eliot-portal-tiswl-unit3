@@ -43,12 +43,98 @@ export async function DELETE(
     }
 }
 
+// export async function PUT(
+//     req: Request,
+//     { params }: { params: { obbOperationId: string } }
+// ) {
+//     try {
+//         const { seqNo,operationId, sewingMachineId, smv, target, spi, length, totalStitches, obbSheetId, supervisorId, part } = await req.json();
+
+//         const existingObbOperation = await db.obbOperation.findUnique({
+//             where: {
+//                 id: params.obbOperationId
+//             }
+//         });
+
+//         if (!existingObbOperation) {
+//             return new NextResponse("OBB operation does not exist!", { status: 408 })
+//         }
+
+//         if (existingObbOperation?.sewingMachineId !== sewingMachineId) {
+//             // Checking the machine is available
+//             const availableMachine = await db.sewingMachine.findUnique({
+//                 where: {
+//                     id: sewingMachineId,
+//                     activeObbOperationId: null
+//                 }
+//             });
+    
+//             if (!availableMachine) {
+//                 return new NextResponse("This sewing machine is already assigned to another operation.", { status: 409 })
+//             }
+
+//             if (existingObbOperation.sewingMachineId) {
+//                 // Set null the active operation in Machine table
+//                 await db.sewingMachine.update({
+//                     where: {
+//                         id: existingObbOperation.sewingMachineId
+//                     },
+//                     data: {
+//                         activeObbOperationId: null,
+//                     }
+//                 });
+//             }
+
+//             // Update the current active OBB Operation
+//             await db.sewingMachine.update({
+//                 where: {
+//                     id: sewingMachineId 
+//                 },
+//                 data: {
+//                     activeObbOperationId: params.obbOperationId
+//                 }
+//             });
+            
+//         }
+
+
+
+
+
+        
+//         const updatedOperation = await db.obbOperation.update({
+//             where: {
+//                 id: params.obbOperationId
+//             },
+//             data: {
+//                 seqNo,
+//                 operationId, 
+//                 obbSheetId,
+//                 smv: parseFloat(smv), 
+//                 target, 
+//                 spi, 
+//                 length, 
+//                 totalStitches, 
+//                 supervisorId,
+//                 sewingMachineId,
+//                 part
+//             }
+//         });
+
+//         return NextResponse.json({ data: updatedOperation, message: 'OBB sheet updated successfully' }, { status: 201 });
+//     } catch (error) {
+//         console.error("[OBB_OPERATION_UPDATE_ERROR]", error);
+//         return new NextResponse("Internal Error", { status: 500 });
+//     }
+// }
+
+
 export async function PUT(
     req: Request,
     { params }: { params: { obbOperationId: string } }
 ) {
     try {
-        const { operationId, sewingMachineId, smv, target, spi, length, totalStitches, obbSheetId, supervisorId, part } = await req.json();
+        const { seqNo, operationId, sewingMachineId, smv, target, spi, length, totalStitches, obbSheetId, supervisorId, part } = await req.json();
 
         const existingObbOperation = await db.obbOperation.findUnique({
             where: {
@@ -60,47 +146,85 @@ export async function PUT(
             return new NextResponse("OBB operation does not exist!", { status: 408 })
         }
 
-        if (existingObbOperation?.sewingMachineId !== sewingMachineId) {
-            // Checking the machine is available
-            const availableMachine = await db.sewingMachine.findUnique({
-                where: {
-                    id: sewingMachineId,
-                    activeObbOperationId: null
-                }
-            });
-    
-            if (!availableMachine) {
-                return new NextResponse("This sewing machine is already assigned to another operation.", { status: 409 })
-            }
+        // If sewingMachineId is not provided, skip the machine assignment logic
+        if (sewingMachineId) {
+            if (existingObbOperation?.sewingMachineId !== sewingMachineId) {
+                // Checking the machine is available
+                const availableMachine = await db.sewingMachine.findUnique({
+                    where: {
+                        id: sewingMachineId,
+                        activeObbOperationId: null
+                    }
+                });
 
-            if (existingObbOperation.sewingMachineId) {
-                // Set null the active operation in Machine table
+                if (!availableMachine) {
+                    return new NextResponse("This sewing machine is already assigned to another operation.", { status: 409 })
+                }
+
+                if (existingObbOperation.sewingMachineId) {
+                    // Set null the active operation in Machine table
+                    await db.sewingMachine.update({
+                        where: {
+                            id: existingObbOperation.sewingMachineId
+                        },
+                        data: {
+                            activeObbOperationId: null,
+                        }
+                    });
+                }
+
+                // Update the current active OBB Operation
                 await db.sewingMachine.update({
                     where: {
-                        id: existingObbOperation.sewingMachineId
+                        id: sewingMachineId 
                     },
                     data: {
-                        activeObbOperationId: null,
+                        activeObbOperationId: params.obbOperationId
                     }
                 });
             }
-
-            // Update the current active OBB Operation
-            await db.sewingMachine.update({
-                where: {
-                    id: sewingMachineId
-                },
-                data: {
-                    activeObbOperationId: params.obbOperationId
-                }
-            });
         }
+
+
+
+
+        const susupervisorIdnew = await db.obbOperation.findMany({
+            
+            where: {
+                part
+            },
+            select: {
+                // supervisorId: true,
+                seqNo:true,
+                supervisor: {
+                    select: {
+                        id: true,
+                        name:true
+                    }
+                },
+                obbSheet: { // Include the obbSheet relationship
+                    select: {
+                        id: true, // Select the id from obbSheet
+                         
+                    }
+                }
+            }
+        });
+
+        
+        const supervisorid = susupervisorIdnew.map(operation => 
+            operation.supervisor ? operation.supervisor.id : 'No supervisor'
+        );
+
+
+
 
         const updatedOperation = await db.obbOperation.update({
             where: {
                 id: params.obbOperationId
             },
             data: {
+                seqNo,
                 operationId, 
                 obbSheetId,
                 smv: parseFloat(smv), 
@@ -108,8 +232,8 @@ export async function PUT(
                 spi, 
                 length, 
                 totalStitches, 
-                supervisorId,
-                sewingMachineId,
+                supervisorId:supervisorid[0],
+                sewingMachineId:sewingMachineId||null,
                 part
             }
         });

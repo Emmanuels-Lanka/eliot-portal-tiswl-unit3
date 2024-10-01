@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Check, ChevronsUpDown, Edit, Loader2, Plus, PlusCircle, Zap } from "lucide-react";
 import { ObbOperation, Operation, SewingMachine } from "@prisma/client";
+import { useWatch } from 'react-hook-form';
 
 import {
     Form,
@@ -87,7 +88,8 @@ const ObbOperationsForm = ({
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            seqNo: defaultData?.seqNo,
+            // seqNo: defaultData?.seqNo,
+            seqNo: defaultData?.seqNo || 0,
             operationId: defaultData?.operationId || "",
             sewingMachineId: defaultData?.sewingMachineId || "",
             smv: defaultData?.smv.toString() || "",
@@ -102,28 +104,52 @@ const ObbOperationsForm = ({
 
     const { register, handleSubmit, reset, formState: { isSubmitting, isValid } } = form;
 
+  
+
+    // useEffect(() => {
+    //     const fetchObbOperations = async () => {
+    //         try {
+    //             const response = await axios.get(`/api/obb-operation?obbSheetId=${obbSheetId}`);
+    //             const nextseqNo = response.data.data[0].seqNo + 1
+    //             form.setValue("seqNo", nextseqNo);
+    //         } catch (error) {
+    //             console.error("Error fetching OBB Operations", error);
+    //         }
+    //     };
+
+    //     if (!defaultData) {
+    //         fetchObbOperations();
+    //     }
+    // }, [obbSheetId, form,defaultData]);
+
     useEffect(() => {
         const fetchObbOperations = async () => {
             try {
                 const response = await axios.get(`/api/obb-operation?obbSheetId=${obbSheetId}`);
-                const nextseqNo = response.data.data[0].seqNo + 1
-                form.setValue("seqNo", nextseqNo);
+                const nextSeqNo = response.data.data[0].seqNo + 1;
+                
+                // Only update seqNo if it's a new entry (no defaultData)
+              
+                    form.setValue("seqNo", nextSeqNo);
+                
             } catch (error) {
                 console.error("Error fetching OBB Operations", error);
             }
         };
 
-        if (!defaultData) {
-            fetchObbOperations();
-        }
+        fetchObbOperations();
     }, [obbSheetId, form]);
 
+
+
     const onSubmit = async (data: z.infer<typeof formSchema>) => {
+        console.log("Form Data on Submit:", data);
         try {
             const endpoint = defaultData ? `/api/obb-operation/${defaultData.id}` : '/api/obb-operation';
             const method = defaultData ? axios.put : axios.post;
 
             const response = await method(endpoint, data);
+            console.log("end point Data",endpoint)
             toast({
                 title: `Successfully ${defaultData ? 'updated' : 'created'} OBB operation`,
                 variant: "success",
@@ -143,17 +169,32 @@ const ObbOperationsForm = ({
         setIsDialogOpen(false);
         form.reset({
             // seqNo: 0,
-            operationId: "",
-            sewingMachineId: "",
-            smv: undefined,
-            target: undefined,
-            spi: undefined,
-            length: undefined,
-            totalStitches: undefined,
+            // operationId: "",
+            // sewingMachineId: "",
+            // smv: undefined,
+            // target: undefined,
+            // spi: undefined,
+            // length: undefined,
+            // totalStitches: undefined,
+            // obbSheetId: obbSheetId,
+            // part: ''
+
+            seqNo: defaultData?.seqNo || 0, // Reset to original seqNo
+            operationId: defaultData?.operationId || "",
+            sewingMachineId: defaultData?.sewingMachineId || "",
+            smv: defaultData?.smv.toString() || "",
+            target: defaultData?.target || 0,
+            spi: defaultData?.spi || 0,
+            length: defaultData?.length || 0,
+            totalStitches: defaultData?.totalStitches || 0,
             obbSheetId: obbSheetId,
-            part: ''
+            part: defaultData?.part || ''
         });
     }
+
+
+
+ 
 
     return (
         <Dialog open={isDialogOpen}>
@@ -321,12 +362,16 @@ const ObbOperationsForm = ({
                                             </FormLabel>
                                             <FormControl>
                                                 <Input
-                                                    value={field.value || ""} // Display empty string if value is 0 or falsy
+                                                    value={field.value || ""} 
                                                     onChange={(e) => {
                                                         const value = e.target.value;
                                                         // Set the value to 0 if the input is empty, else convert it to a number
                                                         form.setValue("seqNo", value === "" ? 0 : Number(value));
                                                     }}
+                                                    // onChange={(e) => {
+                                                    //     const value: number = parseInt(e.target.value);
+                                                    //     form.setValue('seqNo', value, { shouldValidate: true, shouldDirty: true });
+                                                    // }}
                                                     placeholder="seqNo"
                                                 />
                                             </FormControl>
@@ -334,6 +379,36 @@ const ObbOperationsForm = ({
                                         </FormItem>
                                     )}
                                 />
+
+{/* 
+                                    <FormField
+                                    control={form.control}
+                                    name="seqNo"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                        <FormLabel>
+                                            Seq
+                                        </FormLabel>
+                                        <FormControl>
+                                            <Input
+                                            value={field.value || ""} // Display empty string if value is 0 or falsy
+                                            onChange={(e) => {
+                                                const value = e.target.value;
+                                                // Set the value to 0 if the input is empty, else convert it to a number
+                                                form.setValue("seqNo", value === "" ? 0 : Number(value));
+                                            }}
+                                            onBlur={(e) => {
+                                                const value = e.target.value;
+                                                // Set the value to 0 if the input is empty, else convert it to a number
+                                                form.setValue("seqNo", value === "" ? 0 : Number(value));
+                                            }}
+                                            placeholder="seqNo"
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                        </FormItem>
+                                    )}
+                                    /> */}
                             </div>
                             <div className="w-2/3">
                                 <FormField

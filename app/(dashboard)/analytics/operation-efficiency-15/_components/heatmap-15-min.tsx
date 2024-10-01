@@ -190,6 +190,7 @@ const   HmapChart15Compo = ({
                 }
             },
             labels: {
+                rotate: 0,  
                 style: {
                     colors: '#0070c0',
                     fontSize: '12px',
@@ -380,7 +381,7 @@ const   HmapChart15Compo = ({
       
     
       let width = heatmapData && heatmapData?.length > 15  ? 3000 : 3000; 
-      let height = heatmapData && heatmapData?.length < 15  ? 600 : 1500
+      let height = heatmapData && heatmapData?.length < 15  ? 600 : 1900
     
     
     
@@ -475,6 +476,7 @@ const getProcessData = (data: any[], operationList: any[]) :any[]=> {
     )
 
     )
+    // console.log("adooo",dataWithQuarter)
     
     
     //   const result = Object.groupBy(dataWithQuarter, (d) => d.hour.toString() + d.qtrIndex.toString());
