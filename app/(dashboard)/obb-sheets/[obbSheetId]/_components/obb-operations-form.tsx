@@ -129,16 +129,16 @@ const ObbOperationsForm = ({
                 const nextSeqNo = response.data.data[0].seqNo + 1;
                 
                 // Only update seqNo if it's a new entry (no defaultData)
-                if (!defaultData) {
+              
                     form.setValue("seqNo", nextSeqNo);
-                }
+                
             } catch (error) {
                 console.error("Error fetching OBB Operations", error);
             }
         };
 
         fetchObbOperations();
-    }, [obbSheetId, form, defaultData]);
+    }, [obbSheetId, form]);
 
 
 
@@ -363,15 +363,15 @@ const ObbOperationsForm = ({
                                             <FormControl>
                                                 <Input
                                                     value={field.value || ""} 
-                                                    // onChange={(e) => {
-                                                    //     const value = e.target.value;
-                                                    //     // Set the value to 0 if the input is empty, else convert it to a number
-                                                    //     form.setValue("seqNo", value === "" ? 0 : Number(value));
-                                                    // }}
                                                     onChange={(e) => {
-                                                        const value: number = parseInt(e.target.value);
-                                                        form.setValue('seqNo', value, { shouldValidate: true, shouldDirty: true });
+                                                        const value = e.target.value;
+                                                        // Set the value to 0 if the input is empty, else convert it to a number
+                                                        form.setValue("seqNo", value === "" ? 0 : Number(value));
                                                     }}
+                                                    // onChange={(e) => {
+                                                    //     const value: number = parseInt(e.target.value);
+                                                    //     form.setValue('seqNo', value, { shouldValidate: true, shouldDirty: true });
+                                                    // }}
                                                     placeholder="seqNo"
                                                 />
                                             </FormControl>

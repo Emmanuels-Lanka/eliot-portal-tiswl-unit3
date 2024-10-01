@@ -16,7 +16,7 @@ export async function POST(
 
        const existingOperation = await db.obbOperation.findFirst({
         where: {
-        sewingMachineId: sewingMachineId,
+        sewingMachineId: sewingMachineId || null,
         obbSheetId: obbSheetId,
             },
             select:{
@@ -78,8 +78,6 @@ export async function POST(
         // console.log("Supervisor Names:", supervisorid);
 
 
-
-       
 
 
 
