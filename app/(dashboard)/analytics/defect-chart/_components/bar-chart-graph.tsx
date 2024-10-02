@@ -37,7 +37,7 @@ import * as XLSX from 'xlsx';
 
 const chartConfig = {
     defectCount: {
-        label: "Garments",
+        label: "No of Defective Garments",
         color: "hsl(var(--chart-1))",
     },
 

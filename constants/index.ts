@@ -241,11 +241,11 @@ export const SIDEBAR_ROUTES = [
                 href: "/analytics/operator-dhu",
                 icon: BarChartHorizontal
             },
-            {
-                label: "Defective Garment",
-                href: "/analytics/defect-chart",
-                icon: BarChartHorizontal
-            },
+            // {
+            //     label: "Sectional DHU",
+            //     href: "/analytics/defect-chart",
+            //     icon: BarChartHorizontal
+            // },
         ]
     },
     {
@@ -549,7 +549,7 @@ export const HEADER_INFO = [
         icon: Sliders
     },
     {
-        label: "Defective Garment",
+        label: "Sectional DHU",
         href: "/analytics/defect-chart",
         icon: BarChartHorizontal
     },
