@@ -72,15 +72,15 @@ const EditOperationModel = ({
     const handleUnassignMachine = async () => {
         if (machineData) {
             try {
-                await axios.post(`/api/obb-operation/${obbOperationId}/unassign-machine?machineId=${machineData.id}`);
+                await axios.put(`/api/obb-operation/${obbOperationId}/unassign-machine?machineId=${machineData.id}`);
                 toast({
-                    title: "Unassigned the machine successfully",
+                    title: "Successfully unassigned machine",
                     variant: "success",
                 });
             } catch (error: any) {
                 toast({
-                    title: error.response.data || "Something went wrong! Try again",
-                    variant: "error",
+                    title: error.response?.data || "Something went wrong! Try again",
+                    variant: "error"
                 });
             } finally {
                 router.refresh();
@@ -167,6 +167,7 @@ const EditOperationModel = ({
                         obbOperationId={obbOperationId}
                     />
                 }
+
                 {machine &&
                     <DialogFooter>
                         <Button
