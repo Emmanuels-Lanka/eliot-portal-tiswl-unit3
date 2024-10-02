@@ -19,6 +19,8 @@ import MachineBinder from "./machine-binder";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { fetchMachineDataByMachineId } from "../_actions/fetch-machine-data-by-machineid";
+import { useToast } from "@/components/ui/use-toast";
+import axios from "axios";
 
 type MachineWithDeviceDataType = {
     id: string;
@@ -44,6 +46,9 @@ const EditOperationModel = ({
     machine,
     obbOperationId
 }: EditOperationModelProps) => {
+    const { toast } = useToast();
+    const router = useRouter();
+
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [machineData, setMachineData] = useState<MachineWithDeviceDataType | null>(null);
 
@@ -64,9 +69,26 @@ const EditOperationModel = ({
         }
     }, [machine, isDialogOpen]);
 
-    const handleUnassignMachine = () => {
-
-    }
+    const handleUnassignMachine = async () => {
+        if (machineData) {
+            try {
+                await axios.post(`/api/obb-operation/${obbOperationId}/unassign-machine?machineId=${machineData.id}`);
+                toast({
+                    title: "Unassigned the machine successfully",
+                    variant: "success",
+                });
+            } catch (error: any) {
+                toast({
+                    title: error.response.data || "Something went wrong! Try again",
+                    variant: "error",
+                });
+            } finally {
+                router.refresh();
+                setIsDialogOpen(false);
+                setMachineData(null);
+            }
+        }
+    };
 
     return (
         <Dialog open={isDialogOpen}>
