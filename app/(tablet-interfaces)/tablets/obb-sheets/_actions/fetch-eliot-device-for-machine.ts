@@ -1,7 +1,5 @@
 "use server"
 
-import { RoamingQC } from '@prisma/client';
-
 import { db } from '@/lib/db';
 
 type EliotDeviceData = {
@@ -10,7 +8,7 @@ type EliotDeviceData = {
     serialNumber: string;
 };
 
-export async function fetchEliotDeviceDetails(machineId: string): Promise<EliotDeviceData | null> {
+export async function fetchEliotDeviceForMachine(machineId: string): Promise<EliotDeviceData | null> {
     try {
         const data = await db.sewingMachine.findUnique({
             where: {
@@ -29,7 +27,7 @@ export async function fetchEliotDeviceDetails(machineId: string): Promise<EliotD
 
         return new Promise((resolve) => resolve(formattedData as EliotDeviceData | null));
     } catch (error) {
-        console.error("[FETCH_MACHINE_DATA_ERROR]", error);
+        console.error("[FETCH_ELIOT_DEVICE_ERROR]", error);
         return null;
     }
 }
