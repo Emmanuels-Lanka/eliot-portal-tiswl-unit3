@@ -17,7 +17,29 @@ export async function DELETE(
             return new NextResponse("OBB sheet does not exist!", { status: 409 })
         }
 
-        const deletedSheet = await db.obbSheet.delete({
+        // Fetch the obb operations for this sheet
+        const obbOperations = await db.obbOperation.findMany({
+            where: {
+                obbSheetId: params.obbSheetId
+            }
+        });
+
+        // Change the activeObbOperation on each assigned machine
+        for (const operation of obbOperations) {
+            if (operation.sewingMachineId) {
+                await db.sewingMachine.update({
+                    where: {
+                        id: operation.sewingMachineId
+                    },
+                    data: {
+                        activeObbOperationId: null,
+                    }
+                });
+            }
+        }
+
+        // Delete the OBB sheet
+        await db.obbSheet.delete({
             where: {
                 id: params.obbSheetId
             }

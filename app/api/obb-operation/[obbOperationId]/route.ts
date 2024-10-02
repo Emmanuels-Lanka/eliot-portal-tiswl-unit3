@@ -112,15 +112,15 @@ export async function PUT(
         if (sewingMachineId) {
             if (existingObbOperation.sewingMachineId !== sewingMachineId) {
                 // Checking the machine is available
-                const availableMachine = await db.sewingMachine.findUnique({
+                const existingOperation = await db.obbOperation.findFirst({
                     where: {
-                        id: sewingMachineId,
-                        activeObbOperationId: null
+                        sewingMachineId,
+                        obbSheetId,
                     }
                 });
-
-                if (!availableMachine) {
-                    return new NextResponse("This sewing machine is already assigned to another operation.", { status: 409 })
+    
+                if (existingOperation) {
+                    return new NextResponse("This sewing machine is already assigned to another operation.", { status: 409 });
                 }
 
                 if (existingObbOperation.sewingMachineId) {

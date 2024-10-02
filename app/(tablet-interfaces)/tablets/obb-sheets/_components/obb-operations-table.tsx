@@ -8,7 +8,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
-import MachineBindingModel from "./machine-binding-model";
+import EditOperationModel from "./edit-operation-model";
 
 interface ObbOperationsTableProps {
     obbOperations: {
@@ -72,7 +72,7 @@ const ObbOperationsTable = ({
                                         {operation.sewingMachine ? operation.sewingMachine.machineId : <Badge className="font-normal bg-orange-600">Not assigned</Badge>}
                                     </TableCell>
                                     <TableCell>
-                                        <MachineBindingModel machine={machine} />
+                                        <EditOperationModel machine={machine} obbOperationId={operation.id} />
                                     </TableCell>
                                 </TableRow>
                             )
