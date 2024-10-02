@@ -36,8 +36,8 @@ import html2canvas from "html2canvas";
 import * as XLSX from 'xlsx';
 
 const chartConfig = {
-    target: {
-        label: "",
+    defectCount: {
+        label: "Garments",
         color: "hsl(var(--chart-1))",
     },
 
@@ -62,7 +62,7 @@ export type defectData = {
 
 const BarChartGraphEfficiencyRate = ({ date, obbSheetId }: BarChartGraphProps) => {
     const [chartData, setChartData] = useState<defectData[]>([])
-    const [chartWidth, setChartWidth] = useState<number>(250);
+    const [chartWidth, setChartWidth] = useState<number>(50);
     const [isSubmitting,setisSubmitting]=useState<boolean>(false)
     const chartRef = useRef<HTMLDivElement>(null);
 
@@ -147,7 +147,7 @@ const BarChartGraphEfficiencyRate = ({ date, obbSheetId }: BarChartGraphProps) =
       
             // Set larger font size and align text with the logo
             pdf.setFontSize(24);
-            pdf.text('Dashboard - Overall Operation Efficiency', logoX + logoWidth + 20, 83, { align: 'left' });
+            pdf.text('Dashboard - Defective Garment', logoX + logoWidth + 20, 83, { align: 'left' });
       
             // Add the chart image to the PDF
             pdf.addImage(imgData, 'PNG', 0, 150, canvas.width, canvas.height);
@@ -183,20 +183,21 @@ const BarChartGraphEfficiencyRate = ({ date, obbSheetId }: BarChartGraphProps) =
                     // <div className='bg-slate-100 pt-5 -pl-8 rounded-lg border w-full mb-16 overflow-x-auto'>
 
                 <div className='bg-slate-50 pt-5 -pl-8 rounded-lg border w-full h-[450px] mb-16 overflow-scroll'>
-                 <Card className='bg-slate-50' style={{width:(chartWidth)+"%"}}>
+                 <Card className='bg-slate-50' >
                
                     <CardContent>
                         {/* <ChartContainer config={chartConfig} className={`min-h-[300px] max-h-[600px] w-[${chartWidth.toString()}%]`}> */}
                         <ChartContainer 
                         ref={chartRef}
-                        config={chartConfig} className={`min-h-[300px] max-h-[600px] `} style={{ width: chartWidth + "%", height: 600 + "%" }}>
+                        config={chartConfig} className={`min-h-[300px] max-h-[450px] `} >
 
                             <BarChart
                                 accessibilityLayer
                                 data={chartData}
+                                
                                 margin={{
-                                    top: 20,
-                                    bottom: 250
+                                    top: 100,
+                                    bottom: 50
                                 }}
                                 barGap={10}
                                 className="h-[300px] "
@@ -222,6 +223,8 @@ const BarChartGraphEfficiencyRate = ({ date, obbSheetId }: BarChartGraphProps) =
                                     cursor={false}
                                     content={<ChartTooltipContent indicator="line" />}
                                 />
+
+<ChartLegend content={<ChartLegendContent />} className="mt-2 text-sm" verticalAlign='top' />
 
                                 <Bar dataKey="defectCount" fill="orange" radius={5}>
                                     <LabelList

@@ -16,10 +16,24 @@ const AchivementRateoperation = async () => {
         }
     });
 
+    const units = await db.unit.findMany({
+        select: {
+            id: true,
+            name: true
+        },orderBy: {
+            createdAt: "desc",
+        }
+
+        
+    });
+
+
+
     return (
         <div>
             <EfficiencyAnalyticsChart
                 obbSheets={obbSheets}
+                units={units}
             />
         </div>
     )

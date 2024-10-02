@@ -6,16 +6,20 @@ import { useRouter } from "next/navigation";
 import { ProductionData } from "@prisma/client";
 
 import { useToast } from "@/components/ui/use-toast";
-import SelectObbSheetAndDate  from "@/components/dashboard/common/select-obbsheet-and-date";
+// import SelectObbSheetAndDate  from "@/components/dashboard/common/select-obbsheet-and-date";
 import BarChartGraph from "./bar-chart-graph";
+import SelectObbSheetAndDate from "./select-obbsheet-and-date";
 
 
 
 interface AnalyticsChartProps {
+    units:string;
     obbSheets: {
         id: string;
         name: string;
     }[] | null;
+
+    
 }
 
 export type ProductionDataType = {
@@ -27,8 +31,8 @@ export type ProductionDataType = {
 }
 
 const EfficiencyAnalyticsChart = ({
-    obbSheets
-}: AnalyticsChartProps) => {
+    obbSheets,units
+}: any) => {
     const { toast } = useToast();
     const router = useRouter();
 
@@ -37,6 +41,8 @@ const EfficiencyAnalyticsChart = ({
     const [filterApplied,setFilterApplied]=useState<boolean>(false)
     const [obbSheetId,setObbSheetId]=useState<string>("")
     const[date,setDate]=useState<string>("")
+
+
     
 
    
@@ -65,9 +71,10 @@ const EfficiencyAnalyticsChart = ({
     return (
         <>
             <div className="mx-auto max-w-7xl">
-                <SelectObbSheetAndDate 
+                <SelectObbSheetAndDate
                     obbSheets={obbSheets}
                     handleSubmit={Fetchdata}
+                    units={units}
                 />
             </div>
             <div className="mx-auto max-w-[1680px]">

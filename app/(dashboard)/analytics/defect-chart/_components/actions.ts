@@ -43,8 +43,30 @@ GROUP BY
     pd."part";
 `
     
-            console.log(data)
+            // console.log(data)
     
     
     return new Promise((resolve) => resolve(data as defectData[] ))
+}
+
+
+
+export async function getObb(unit:any) : Promise<{ id: string; name: string }[]>  {
+    const sql = neon(process.env.DATABASE_URL || "");
+
+    
+     const data = await sql`
+    select os.name as name ,os.id as id from "ObbSheet" os 
+
+inner join "Unit" u on u.id= os."unitId"
+
+where os."unitId"=${unit}
+ order by os."createdAt" desc
+
+`
+            // console.log("unit",unit)
+            // console.log("data",data)
+    
+    
+    return new Promise((resolve) => resolve(data as { id: string; name: string }[]))
 }
