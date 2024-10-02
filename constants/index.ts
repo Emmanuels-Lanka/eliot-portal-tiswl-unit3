@@ -241,6 +241,11 @@ export const SIDEBAR_ROUTES = [
                 href: "/analytics/operator-dhu",
                 icon: BarChartHorizontal
             },
+            {
+                label: "Defective Garment",
+                href: "/analytics/defect-chart",
+                icon: BarChartHorizontal
+            },
         ]
     },
     {
@@ -537,11 +542,18 @@ export const HEADER_INFO = [
         href: "/analytics/tls-productions",
         icon: Sliders
     },
+    
     {
         label: "Opertor Wise DHU",
         href: "/analytics/tls-operators",
         icon: Sliders
     },
+    {
+        label: "Defective Garment",
+        href: "/analytics/defect-chart",
+        icon: BarChartHorizontal
+    },
+    
     {
         label: "Target vs Actual - Production",
         href: "/analytics/daily-achivement",

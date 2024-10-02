@@ -380,10 +380,6 @@ const   HmapChart15Compo = ({
       };
       
     
-      let width = heatmapData && heatmapData?.length > 15  ? 3000 : 3000; 
-      let height = heatmapData && heatmapData?.length < 15  ? 600 : 1900
-    
-    
     
     const saveAsExcel = () => {
         const worksheet = XLSX.utils.json_to_sheet(chartData);
@@ -392,6 +388,11 @@ const   HmapChart15Compo = ({
         XLSX.writeFile(workbook, `chart-data.xlsx`);
     };
  
+    //   let width = heatmapData && heatmapData?.length > 15  ? 3000 : 3000; 
+    let height = heatmapData && heatmapData?.length > 15 ? 1900 : 1000
+    const chartWidth = heatmapData && heatmapData.length > 0 ? heatmapData.length * 100 : 1000;
+    const width = operationList && operationList.length > 0 ? operationList.length * 50 : 600;
+  
 
     return (
         <>
@@ -406,9 +407,9 @@ const   HmapChart15Compo = ({
             </div>}
                 {heatmapFullData !== null ?
                     // <div className="mt-12 bg-slate-100 pt-5 pl-8 rounded-lg border w-full mb-16 overflow-x-auto overflow-y-scroll "   ref={chartRef}>
-                    <div className='bg-slate-50 pt-5 -pl-8 rounded-lg border w-full h-[500px] mb-16 overflow-scroll'>
+                    <div className='bg-slate-50 pt-5 -pl-8 rounded-lg border w-full h-[500px] mb-16 overflow-scroll' ref={chartRef}>
                     <h2 className="text-lg mb-2 font-medium text-slate-700">{" "}</h2>
-                        <ReactApexChart options={options} series={heatmapFullData} type="heatmap" height={height} width={2000} />
+                        <ReactApexChart options={options} series={heatmapFullData} type="heatmap" height={height} width={width} />
                     </div>
                     :
                     <div className="mt-12 w-full">

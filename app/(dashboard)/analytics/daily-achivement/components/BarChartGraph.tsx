@@ -212,6 +212,8 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
     const intervalId = setInterval(() => {
 
       handleFetchProductions();
+const chartWidths = Math.min(250, 100 + (chartData.length * 2));    
+setChartWidth(chartWidths);
 
     }, 60000);
 
@@ -335,7 +337,7 @@ const saveAsExcel = () => {
 
 
 
-
+    
 
   return (
     <>
@@ -351,7 +353,7 @@ const saveAsExcel = () => {
       {chartData.length > 0 ? (
         
         <div className=' pt-5 -pl-8 rounded-lg border w-full h-[450px] mb-16 overflow-scroll'>
-        <Card className="pr-2 pt-6  border rounded-xl  w-auto" style={{width:(chartWidth*1.5)+"%"}}>
+        <Card className="pr-2 pt-6  border rounded-xl  w-auto" style={{width:(chartWidth)+"%"}}>
          
           <CardContent>
             <ChartContainer

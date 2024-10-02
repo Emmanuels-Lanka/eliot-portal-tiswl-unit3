@@ -18,7 +18,6 @@ interface EffiencyHeatmapProps {
 
 const EffiencyHeatmap = ({
     xAxisLabel,
-    height,
     efficiencyLow = 70,
     efficiencyHigh = 80,
     heatmapData
@@ -114,10 +113,7 @@ const EffiencyHeatmap = ({
         },
     };
 
-    const width: string = heatmapData.categories.length < 15 ? '100%' :heatmapData.categories.length < 21 ? '100%' : heatmapData.categories.length < 30 ? '100%' : '500%';
-
-    let nwidth = heatmapData && heatmapData?.categories.length > 15  ? 3000 : 100+"%"; 
-    let nheight = heatmapData && heatmapData?.categories.length < 15  ? 900 : 900
+   
 
     const saveAsPDF = async () => {
         if (chartRef.current) {
@@ -197,13 +193,27 @@ const EffiencyHeatmap = ({
         XLSX.writeFile(workbook, `chart-data.xlsx`);
     };
 
+
+
+
+
+ // const width: string = heatmapData.categories.length < 15 ? '100%' :heatmapData.categories.length < 21 ? '100%' : heatmapData.categories.length < 30 ? '100%' : '500%';
+
+    // let nwidth = heatmapData && heatmapData?.categories.length > 15  ? 3000 : 100+"%"; 
+    // let nheight = heatmapData && heatmapData?.categories.length < 15  ? 900 : 900
+
+
+
+    let height = 800
+    const chartWidth = heatmapData && heatmapData.categories.length > 0 ? heatmapData.categories.length * 100 : 1000;
+    const width = heatmapData && heatmapData.categories.length > 0 ?heatmapData.categories.length * 60 : 600;
     return (
         // <div className='bg-slate-100 pt-5 pl-8 rounded-lg border w-full mb-16 overflow-x-auto'>
                     <div>
                     <div className='bg-slate-50 pt-5 -pl-8 rounded-lg border w-full h-[500px] mb-16 overflow-scroll'>
 
             <div id="chart"  ref={chartRef}>
-                <ReactApexChart options={options} series={series} type="heatmap" height={nheight} width={nwidth} />
+                <ReactApexChart options={options} series={series} type="heatmap" height={height} width={width} />
             </div>
             <div id="html-dist"></div>
  

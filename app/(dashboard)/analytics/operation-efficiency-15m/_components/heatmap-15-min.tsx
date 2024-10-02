@@ -304,8 +304,10 @@ const HmapChart15Compo = ({
             const heatmapDatas = getProcessData(prod as any[], operationList as any[]);
             //rem 0 ops
             
+            
 
             setHeatmapData(heatmapDatas);
+
             //console.log("heatmapData1", heatmapData)
             setIsSubmitting(false)
 
@@ -355,8 +357,24 @@ const HmapChart15Compo = ({
     // const totalCount = Object.keys(timeList).reduce((acc, curr) => acc + curr.length, 0);
     // const height: string = totalCount < 50 ? '430%' : totalCount < 60 ? '300%' : '500%';
 
-    let width = heatmapData && heatmapData?.length > 15  ? 3000 : 3000; 
-    let height = heatmapData && heatmapData?.length < 15  ?  500 : 1500
+    // let width = heatmapData && heatmapData?.length > 15  ? 3000 : 3000; 
+    // let height = heatmapData && heatmapData?.length < 15  ?  500 : 1500
+
+    //  let height = heatmapData && heatmapData?.length > 15 ? 1200 : 1000
+   
+   
+        let height ;
+        if (heatmapData) {
+            if (heatmapData.length > 30) {
+            height = heatmapData.length * 50
+            } else if (heatmapData.length > 20) {
+            height = heatmapData.length * 40
+            } else { 
+            height = heatmapData.length * 30
+            }
+        }
+        const width = operationList && operationList.length > 0 ? operationList.length * 50 : 600;
+
     return (
         <>
 
@@ -371,7 +389,7 @@ const HmapChart15Compo = ({
                         <div   ref={chartRef}>
                             
                             <h2 className="text-lg mb-2 font-medium text-slate-700">{" "}</h2>
-                            <ReactApexChart options={options} series={heatmapFullData} type="heatmap" height={height} width={chartWidth} />
+                            <ReactApexChart options={options} series={heatmapFullData} type="heatmap" height={height} width={width} />
                         </div>
                     </div>
                     :

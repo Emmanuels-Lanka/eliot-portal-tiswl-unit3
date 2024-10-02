@@ -73,7 +73,7 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
 
   const [chartData, setChartData] = useState<BarchartData[]>([]);
 
-  const[chartWidth,setChartWidth] = useState<number>(380)
+  const[chartWidth,setChartWidth] = useState<number>(200)
 
   const chartRef = useRef<HTMLDivElement>(null);
 
@@ -83,6 +83,9 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
   const handleFetchProductions = async () => {
     try {
       setisSubmitting(true)
+
+      const chartWidths = Math.min(250, 100 + (chartData.length * 2));    
+      setChartWidth(chartWidths)
       const prod = await getData(obbSheetId, date);
 
       setProductionData(prod);
@@ -161,6 +164,7 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
     };
 
 
+
   }, [date, obbSheetId]);
 
 
@@ -227,11 +231,10 @@ const saveAsExcel = () => {
             <Button type="button" className='mr-3' onClick={saveAsPDF}>Save as PDF</Button>
             <Button type="button" onClick={saveAsExcel}>Save as Excel</Button>
         </div> */}
-
-<div className=' pt-5 -pl-8 rounded-lg border w-full mb-16  overflow-scroll h-[450px]'>
-
+ <div className=' pt-5 -pl-8 rounded-lg border w-full h-[450px] mb-16 overflow-scroll'>
+ 
       {chartData.length > 0 ? (
-        <Card className="pr-2 pt-6  border rounded-xl  w-auto" >
+        <Card className="pr-2 pt-6  border rounded-xl  w-auto" style={{width:(chartWidth)+"%"}}>  
           {/* <div className="px-8">
             <CardHeader>
               <CardTitle className="text-center">
@@ -244,8 +247,8 @@ const saveAsExcel = () => {
             <ChartContainer
             ref={chartRef}
             config={chartConfig}
-            className=" max-h-screen  min-h-[300px] w-full " 
-            style={{width:chartWidth+"%", height:chartWidth+"%"}} 
+            className="  max-h-screen min-h-[300px] w-full " 
+              style={{width:chartWidth+"%"}} 
             >
               <BarChart
                 accessibilityLayer
