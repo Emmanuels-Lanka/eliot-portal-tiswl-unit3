@@ -17,6 +17,7 @@ import { useToast } from "@/components/ui/use-toast";
 interface MachineBinderProps {
     handleDialogOpen: () => void;
     obbOperationId: string;
+    defaultMachineData?: MachineWithDeviceDataType
 }
 
 type MachineWithDeviceDataType = {
@@ -33,7 +34,8 @@ type MachineWithDeviceDataType = {
 
 const MachineBinder = ({
     handleDialogOpen,
-    obbOperationId
+    obbOperationId,
+    defaultMachineData
 }: MachineBinderProps) => {
     const { toast } = useToast();
     const router = useRouter();
@@ -42,6 +44,13 @@ const MachineBinder = ({
     const [machineId, setMachineId] = useState<string>('');
     const [eliotSerialNo, setEliotSerialNo] = useState<string>('');
     const [machineData, setMachineData] = useState<MachineWithDeviceDataType | null>(null);
+    
+    useEffect(() => {
+        if (defaultMachineData) {
+            setMachineData(defaultMachineData)
+        }
+    }, [defaultMachineData]);
+    
 
     const fetchMachineData = async () => {
         if (machineId) {
@@ -113,6 +122,27 @@ const MachineBinder = ({
         }
     }
 
+    const handleUnassignMachine = async () => {
+        if (machineData) {
+            try {
+                await axios.put(`/api/obb-operation/${obbOperationId}/unassign-machine?machineId=${machineData.id}`);
+                toast({
+                    title: "Successfully unassigned machine",
+                    variant: "success",
+                });
+            } catch (error: any) {
+                toast({
+                    title: error.response?.data || "Something went wrong! Try again",
+                    variant: "error"
+                });
+            } finally {
+                router.refresh();
+                setMachineData(null);
+                handleDialogOpen();
+            }
+        }
+    };
+
     const handleSave = async () => {
         if (machineId && eliotSerialNo) {
             setIsLoading(true);
@@ -142,7 +172,7 @@ const MachineBinder = ({
         <div>
             <div className='mt-2 w-full p-4 bg-slate-100 rounded-lg border'>
                 <h1 className='mt-2 text-center font-medium text-xl'>{machineId ? "Machine Details" : "Scan the machine"}</h1>
-                {!machineId ? (
+                {!defaultMachineData && !machineId ? (
                     <div className="mt-6 mx-auto max-w-xl w-full camera-box">
                         <QrCodeReader setQrCode={setMachineId} />
                     </div>
@@ -198,6 +228,14 @@ const MachineBinder = ({
                                     <p className='text-sm'>{machineData?.modelNumber}</p>
                                 </div>
                             </div>
+                            <Button
+                                variant="outline"
+                                className='rounded-full -mt-4'
+                                onClick={handleUnassignMachine}
+                                disabled={machineId ? true : false}
+                            >
+                                Unassign Machine
+                            </Button>
                         </div>
                     </div>
                 )
@@ -213,7 +251,7 @@ const MachineBinder = ({
                     Cancel
                 </Button>
                 <Button
-                    disabled={isLoading}
+                    disabled={isLoading || !machineId}
                     className="flex gap-2 pr-5 w-40"
                     onClick={handleSave}
                 >
