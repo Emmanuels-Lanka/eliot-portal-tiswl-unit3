@@ -212,8 +212,8 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
     const intervalId = setInterval(() => {
 
       handleFetchProductions();
-const chartWidths = Math.min(250, 100 + (chartData.length * 2));    
-setChartWidth(chartWidths);
+
+
 
     }, 60000);
 
@@ -224,6 +224,12 @@ setChartWidth(chartWidths);
 
   }, [date, obbSheetId]);
 
+
+  
+  useEffect(() => {
+    const chartWidths = Math.min(250, 100 + (chartData.length * 2));
+    setChartWidth(chartWidths);
+  }, [chartData]); 
 
 
   const saveAsPDF = async () => {

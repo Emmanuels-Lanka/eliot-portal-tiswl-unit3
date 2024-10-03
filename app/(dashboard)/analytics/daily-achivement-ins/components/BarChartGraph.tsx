@@ -84,8 +84,7 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
     try {
       setisSubmitting(true)
 
-      const chartWidths = Math.min(250, 100 + (chartData.length * 2));    
-      setChartWidth(chartWidths)
+      
       const prod = await getData(obbSheetId, date);
 
       setProductionData(prod);
@@ -163,6 +162,11 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
       clearInterval(intervalId);
     };
 
+
+    useEffect(() => {
+      const chartWidths = Math.min(250, 100 + (chartData.length * 2));
+      setChartWidth(chartWidths);
+    }, [chartData]); 
 
 
   }, [date, obbSheetId]);

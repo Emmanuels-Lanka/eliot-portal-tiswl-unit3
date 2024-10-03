@@ -80,8 +80,7 @@ const BarChartGraphOpSmv = ({ date, obbSheetId }: BarChartGraphProps) => {
     const Fetchdata = async () => {
         
         try {
-const chartWidths = Math.min(250, 100 + (chartData.length * 2));    
-setChartWidth(chartWidths)
+
 
             setisSubmitting(true)
         const prod = await getSMV(obbSheetId, date)
@@ -116,8 +115,15 @@ setChartWidth(chartWidths)
         
         if(obbSheetId){
         Fetchdata()
+        
         }
     }, [obbSheetId,date])
+
+
+    useEffect(() => {
+        const chartWidths = Math.min(250, 100 + (chartData.length * 2));
+        setChartWidth(chartWidths);
+      }, [chartData]); 
 
     // useEffect(()=>{
     //     console.log("1firstq")

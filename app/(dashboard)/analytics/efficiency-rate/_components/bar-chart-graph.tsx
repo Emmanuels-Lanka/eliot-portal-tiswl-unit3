@@ -108,9 +108,7 @@ const BarChartGraphEfficiencyRate = ({ date, obbSheetId }: BarChartGraphProps) =
 
     useEffect(() => {
         Fetchdata()
-        const chartWidths = Math.min(250, 110 + (chartData.length * 2));
-
-    setChartWidth(chartWidths)
+        
     }, [date, obbSheetId])
 
     useEffect(() => {
@@ -120,6 +118,12 @@ const BarChartGraphEfficiencyRate = ({ date, obbSheetId }: BarChartGraphProps) =
 
         return () => clearInterval(interval);
     }, [date, obbSheetId]);
+
+    
+    useEffect(() => {
+        const chartWidths = Math.min(250, 100 + (chartData.length * 2));
+        setChartWidth(chartWidths);
+      }, [chartData]); 
 
 
 
