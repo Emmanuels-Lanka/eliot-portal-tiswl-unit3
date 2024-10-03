@@ -21,7 +21,7 @@ export async function getOperatorEfficiency(obbsheetid:string,date:string) : Pro
             WHERE pd.timestamp like  ${date} and  obbs.id = ${obbsheetid}
             group by opn.name,obbopn."seqNo",obbopn.target order by  obbopn."seqNo"`
     
-            console.log(data)
+            // console.log(data)
     
     
     return new Promise((resolve) => resolve(data as ProductionDataType[] ))
