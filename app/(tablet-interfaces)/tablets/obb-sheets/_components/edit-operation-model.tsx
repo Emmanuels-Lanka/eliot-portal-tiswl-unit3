@@ -69,27 +69,6 @@ const EditOperationModel = ({
         }
     }, [machine, isDialogOpen]);
 
-    const handleUnassignMachine = async () => {
-        if (machineData) {
-            try {
-                await axios.put(`/api/obb-operation/${obbOperationId}/unassign-machine?machineId=${machineData.id}`);
-                toast({
-                    title: "Successfully unassigned machine",
-                    variant: "success",
-                });
-            } catch (error: any) {
-                toast({
-                    title: error.response?.data || "Something went wrong! Try again",
-                    variant: "error"
-                });
-            } finally {
-                router.refresh();
-                setIsDialogOpen(false);
-                setMachineData(null);
-            }
-        }
-    };
-
     return (
         <Dialog open={isDialogOpen}>
             <DialogTrigger asChild>
@@ -107,77 +86,19 @@ const EditOperationModel = ({
                         Click save when you&apos;re done.
                     </DialogDescription>
                 </DialogHeader>
-                {machine && machineData && (
-                    <div className="w-full flex justify-center gap-4">
-                        {machineData.eliotDevice &&
-                            <div className='h-full w-1/2 px-4 py-6 border bg-slate-50 rounded-lg flex flex-col items-center justify-between'>
-                                <h1 className='text-center font-semibold text-xl'>ELIoT Device</h1>
-                                <div className='flex justify-start items-center'>
-                                    <Image
-                                        src="/eliot-device.svg"
-                                        alt='sewing machine'
-                                        width={152}
-                                        height={152}
-                                        className='mr-4'
-                                    />
-                                    <div className='ml-4 w-full flex flex-col gap-2 items-center'>
-                                        <p className='font-semibold'>Serial No: {machineData?.eliotDevice.serialNumber}</p>
-                                        <p className=''>{machineData?.eliotDevice.modelNumber}</p>
-                                    </div>
-                                </div>
-                                <Button
-                                    variant="outline"
-                                    className='rounded-full opacity-0'
-                                    // onClick={handleUnassignDevice}
-                                >
-                                    Unassign Device
-                                </Button>
-                            </div>
-                        }
-                        <div className='px-4 py-6 w-1/2 border bg-slate-50 rounded-lg flex flex-col items-center'>
-                            <h1 className='text-center font-semibold text-xl'>Sewing Machine</h1>
-                            <div className='-mt-4 flex justify-start items-center'>
-                                <Image
-                                    src="/sewing-machine.svg"
-                                    alt='sewing machine'
-                                    width={240}
-                                    height={240}
-                                    className='ml-2'
-                                />
-                                <div className='w-full flex flex-col gap-2 items-center'>
-                                    <Badge className='text-lg px-8 tracking-wide bg-gray-600'>{machineData?.brandName.toUpperCase()}</Badge>
-                                    <p className='mt-2 font-medium'>Machine ID: {machine.machineId}</p>
-                                    <p className='text-sm'>{machineData?.modelNumber}</p>
-                                </div>
-                            </div>
-                            <Button
-                                variant="outline"
-                                className='rounded-full -mt-4'
-                                onClick={handleUnassignMachine}
-                            >
-                                Unassign Machine
-                            </Button>
-                        </div>
-                    </div>
-                )}
 
-                {!machine &&
+                {!machine ?
                     <MachineBinder
                         handleDialogOpen={handleToggleDialog}
                         obbOperationId={obbOperationId}
                     />
-                }
+                    :
+                    <MachineBinder
+                        handleDialogOpen={handleToggleDialog}
+                        obbOperationId={obbOperationId}
+                        defaultMachineData={machineData as MachineWithDeviceDataType}
+                    />
 
-                {machine &&
-                    <DialogFooter>
-                        <Button
-                            variant='outline'
-                            className="flex gap-2 pr-5 text-red-600"
-                            onClick={handleToggleDialog}
-                        >
-                            Cancel
-                        </Button>
-                    </DialogFooter>
                 }
             </DialogContent>
         </Dialog>
