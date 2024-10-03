@@ -52,7 +52,8 @@ export function DataTable<TData, TValue>({
     })
 
     return (
-        <div>
+        <div >
+           <div className="flex items-center ">
             {/* Search bar */}
             <div className="flex items-center py-4">
                 <Input
@@ -64,6 +65,30 @@ export function DataTable<TData, TValue>({
                     className="max-w-sm"
                 />
             </div>
+            <div className="flex items-center py-4 px-4">
+                <Input
+                    placeholder="Search By Date..."
+                    value={(table.getColumn("reqTimestamp")?.getFilterValue() as string) ?? ""}
+                    onChange={(event) =>
+                        table.getColumn("reqTimestamp")?.setFilterValue(event.target.value)
+                    }
+                    className="max-w-sm"
+                />
+            </div>
+
+            <div className="flex items-center py-4 px-4">
+                <Input
+                    placeholder="Search By Employee Id..."
+                    value={(table.getColumn("employeeId")?.getFilterValue() as string) ?? ""}
+                    onChange={(event) =>
+                        table.getColumn("employeeId")?.setFilterValue(event.target.value)
+                    }
+                    className="max-w-sm"
+                />
+            </div>
+           </div>
+
+            
 
             {/* Table */}
             <div className="rounded-md border bg-white box-shadow">

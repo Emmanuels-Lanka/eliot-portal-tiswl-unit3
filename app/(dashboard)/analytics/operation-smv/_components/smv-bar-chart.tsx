@@ -212,11 +212,11 @@ const renderCustomLabel = ({ x, y, width, value, index }: any) => {
 
         {chartData.length > 0 && (
 
-        <div className='bg-slate-50 pt-5 -pl-8 rounded-lg border w-full h-[450px] mb-16 overflow-scroll'>
+        <div className='bg-slate-50  -pl-8 rounded-lg border w-full h-[450px]  overflow-scroll'>
         <Card className='bg-slate-50' style={{width:(chartWidth)+"%"}}>
            
             <CardContent  >
-            <ChartContainer config={chartConfig} style={{width:chartWidth+"%", height:800}} ref={chartRef} >
+            <ChartContainer config={chartConfig} style={{width:chartWidth+"%", height:600}} ref={chartRef} >
                     <BarChart 
                         accessibilityLayer 
                         data={chartData}

@@ -256,18 +256,15 @@ useEffect(() => {
 
     <>
     {chartDatas.length>0 ? (
-      <div className='bg-slate-50 pt-5 -pl-8 rounded-lg border w-full h-[450px] mb-16 overflow-scroll'>
+      <div className='  -pl-8 rounded-lg border w-full h-[450px]  overflow-scroll'>
 
 <Card style={{width:(chartWidth*2)+"%"}}>
-  {/* <CardHeader>
-    <CardTitle>Bar Chart - Stacked + Legend</CardTitle>
-    <CardDescription>January - June 2024</CardDescription>
-  </CardHeader> */}
+  
   <CardContent >
-    <ChartContainer config={chartConfig} style={{width:(chartWidth*2)+"%", height:600}} ref={chartRef} >
+    <ChartContainer config={chartConfig} style={{width:(chartWidth*2)+"%", height:500}} ref={chartRef} >
       <BarChart accessibilityLayer data={chartDatas}
       margin={{
-        top: 100,
+        
         bottom: 200
     }}
     barGap={50}>

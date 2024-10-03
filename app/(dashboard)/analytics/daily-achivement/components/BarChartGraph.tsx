@@ -358,15 +358,15 @@ const saveAsExcel = () => {
 
       {chartData.length > 0 ? (
         
-        <div className=' pt-5 -pl-8 rounded-lg border w-full h-[450px] mb-16 overflow-scroll'>
-        <Card className="pr-2 pt-6  border rounded-xl  w-auto" style={{width:(chartWidth)+"%"}}>
+        <div className='  -pl-8 rounded-lg border w-full h-[450px]  overflow-scroll'>
+        <Card className="pr-2   border rounded-xl  w-auto" style={{width:(chartWidth)+"%"}}>
          
           <CardContent>
             <ChartContainer
             ref={chartRef}
               config={chartConfig}
               className="  max-h-screen min-h-[300px] w-full " 
-              style={{width:chartWidth+"%"}} 
+              style={{width:chartWidth+"%",height:600}} 
             >
               <BarChart
                 accessibilityLayer

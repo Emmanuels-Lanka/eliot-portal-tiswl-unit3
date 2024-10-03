@@ -79,7 +79,7 @@ const AnalyticsChart = ({
             </div>
             <div className="mx-auto max-w-[1680px]">
                 {/* {barchartData.length > 0 ? */}
-                    <div className="mt-12">
+                    <div className="">
                         <BarChartGraphOpSmv 
                             obbSheetId={obbSheetId}
                             date={date}
