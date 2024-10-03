@@ -98,7 +98,7 @@ const AnalyticsChart = ({
             </div>
             <div className="mx-auto max-w-[1680px]">
                 { obbSheetId.length > 0 ?
-                    <div className="my-8">
+                    <div className="">
                         {/* <LineChartGraph 
                             data={production}
                         />  */}
