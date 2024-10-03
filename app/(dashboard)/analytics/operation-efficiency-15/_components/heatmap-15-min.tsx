@@ -396,16 +396,13 @@ const   HmapChart15Compo = ({
     let height = 0; // initialize with a default value#
     // console.log(heatmapData?.length)
 
-if (heatmapFullData) {
-  if (heatmapFullData.length > 30) {
-    height = heatmapFullData.length * 50;
-  } else if (heatmapFullData.length > 20) {
-    height = heatmapFullData.length * 40;
-  } else {
-    height = Math.max(heatmapFullData.length * 60, 100); // ensure a minimum height of 100
-  }
-}
-    const width = operationList && operationList.length > 0 ? operationList.length * 50 : 600;
+    
+
+height = heatmapFullData && heatmapFullData.length * 50;
+console.log("length",heatmapFullData && heatmapFullData.length,heatmapFullData && heatmapFullData)
+
+
+const width = operationList && operationList.length > 0 ? operationList.length * 50 : 600;
     return (
         <>
 
