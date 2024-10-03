@@ -163,15 +163,15 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
     };
 
 
-    useEffect(() => {
-      const chartWidths = Math.min(250, 100 + (chartData.length * 2));
-      setChartWidth(chartWidths);
-    }, [chartData]); 
 
 
   }, [date, obbSheetId]);
 
 
+  useEffect(() => {
+    const chartWidths = Math.min(250, 100 + (chartData.length * 2));
+    setChartWidth(chartWidths);
+  }, [chartData]); 
 
   const saveAsPDF = async () => {
     if (chartRef.current) {
