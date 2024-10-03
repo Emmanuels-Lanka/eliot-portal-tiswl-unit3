@@ -370,7 +370,7 @@ const HmapChart15Compo = ({
             } else if (heatmapData.length > 20) {
             height = heatmapData.length * 40
             } else { 
-            height = heatmapData.length * 30
+            height = heatmapData.length * 50
             }
         }
         const width = operationList && operationList.length > 0 ? operationList.length * 50 : 600;
@@ -446,9 +446,13 @@ const getTimeSlotLabel = (hr: number, qtrIndex: number) => {
 
 
 const getProcessData = (data: any[], operationList: any[]): any[] => {
+
     const fmtDataSeries = []
+    
+
 
     const dataWithQuarter = data.map((d) => (
+        
         {
             ...d, hour: new Date(d.timestamp).getHours(),
             qtrIndex: Math.floor(new Date(d.timestamp).getMinutes() / 15),
@@ -460,17 +464,19 @@ const getProcessData = (data: any[], operationList: any[]): any[] => {
 
     )
 
+        // console.log("d",dataWithQuarter)
 
     //   const result = Object.groupBy(dataWithQuarter, (d) => d.hour.toString() + d.qtrIndex.toString());
     const result = Object.groupBy(dataWithQuarter, (d) => getTimeSlotLabel(d.hour, d.qtrIndex));
      
-
+    // console.log("res",result)
     let rc = 0
     for (const [key, value] of Object.entries(result)) {
 
 
 
         const dataGBOp = Object.groupBy(value || [], (d) => d.name);
+
         const dataPoints = []
         for (const [key, value] of Object.entries(dataGBOp)) {
             const target = value?.[0].target ?? 1;

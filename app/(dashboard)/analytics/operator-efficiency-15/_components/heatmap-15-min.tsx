@@ -348,11 +348,11 @@ let heights = timeSlots < 15 ? 1300 : timeSlots * 50; // Adjust height based on 
 let height;
 if (heatmapData) {
     if (heatmapData.length > 30) {
-      height = heatmapData.length * 60
+      height = heatmapData.length * 50
     } else if (heatmapData.length > 20) {
       height = heatmapData.length * 50
     } else { 
-      height = heatmapData.length * 30
+      height = heatmapData.length * 55
     }
   }
 const width = operationList && operationList.length > 0 ? operationList.length * 50 : 600;
