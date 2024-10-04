@@ -49,7 +49,7 @@ export const columns: ColumnDef<AlertLog>[] = [
                     onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
                     className="-ml-3"
                 >
-                    Alert Type
+                    Alert <br></br>Type
                     <ArrowUpDown className="ml-2 h-4 w-4" />
                 </Button>
             )
@@ -97,7 +97,7 @@ export const columns: ColumnDef<AlertLog>[] = [
                     onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
                     className="-ml-3"
                 >
-                    Response Time
+                    Response<br></br>Time
                     <ArrowUpDown className="ml-2 h-4 w-4" />
                 </Button>
             )
@@ -125,7 +125,7 @@ export const columns: ColumnDef<AlertLog>[] = [
                     onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
                     className="-ml-3"
                 >
-                    Working Time
+                    Working <br></br>Time
                     <ArrowUpDown className="ml-2 h-4 w-4" />
                 </Button>
             )
@@ -159,7 +159,7 @@ export const columns: ColumnDef<AlertLog>[] = [
                     onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
                     className="-ml-3"
                 >
-                    Request Time
+                    Request<br></br>Time
                     <ArrowUpDown className="ml-2 h-4 w-4" />
                 </Button>
             )

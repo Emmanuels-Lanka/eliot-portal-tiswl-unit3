@@ -66,7 +66,7 @@ const SelectObbSheetAndDate = ({
     const { isSubmitting, isValid } = form.formState;
 
     return (
-        <div className='mt-16 border px-12 pt-6 pb-10 rounded-lg bg-slate-100'>
+        <div className='mt-6 border px-6 pt-6 pb-10 rounded-lg bg-slate-100'>
             
             <Form {...form}>
                 <form
@@ -185,7 +185,7 @@ const SelectObbSheetAndDate = ({
                     <Button
                         type="submit"
                         disabled={ isSubmitting}
-                        className="flex max-md:w-full w-32 gap-2 pr-5"
+                        className="flex max-md:w-full w-2/3 gap-2 pr-5"
                     >
                         <Filter className={cn("w-5 h-5", isSubmitting && "hidden")} />
                         <Loader2 className={cn("animate-spin w-5 h-5 hidden", isSubmitting && "flex")} />

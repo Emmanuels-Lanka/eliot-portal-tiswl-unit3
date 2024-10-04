@@ -66,7 +66,7 @@ const ensureAllCategoriesHaveData = (series: any, categories: any, defaultValue 
             return {
                 x: category,
                 y: dataPoint ? dataPoint.y : defaultValue,
-                eliotid: serie.eliotid
+                
             };
         });
         return {
@@ -198,9 +198,10 @@ const HmapChart15Compo = ({
         },
         plotOptions: {
             heatmap: {
+                distributed: true,
                 enableShades: false,
-                radius: 100,
-                useFillColorAsStroke: false,
+                radius: 50,
+                useFillColorAsStroke: true,
                 colorScale: {
                     ranges: [
                         {
