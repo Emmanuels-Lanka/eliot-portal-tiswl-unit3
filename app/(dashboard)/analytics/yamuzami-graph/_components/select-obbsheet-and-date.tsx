@@ -95,7 +95,7 @@ const SelectObbSheetAndDate = ({
     
 
     return (
-        <div className='mt-16 border px-12 pt-6 pb-10 rounded-lg bg-slate-100'>
+        <div className='mt-6 border px-6 pt-6 pb-10 rounded-lg bg-slate-100'>
             
             <Form {...form}>
                 <form
