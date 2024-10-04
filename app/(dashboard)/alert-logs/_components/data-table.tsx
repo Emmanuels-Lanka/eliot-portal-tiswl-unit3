@@ -76,7 +76,7 @@ export function DataTable<TData, TValue>({
 
     return (
       <div>
-        <div className='mb-10 border px-12 pt-6 pb-6 rounded-lg bg-slate-100'>
+        <div className='mb-10 border px-12 pt-6 pb-6 rounded-lg bg-slate-100 shadow-md'>
 
 
 

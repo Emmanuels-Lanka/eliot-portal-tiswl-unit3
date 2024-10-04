@@ -66,7 +66,7 @@ const SelectObbSheetAndDate = ({
     const { isSubmitting, isValid } = form.formState;
 
     return (
-        <div className='mt-6 border px-6 pt-6 pb-10 rounded-lg bg-slate-100'>
+        <div className='mt-6 border px-6 pt-6 pb-10 rounded-lg shadow-md bg-slate-100'>
             
             <Form {...form}>
                 <form
