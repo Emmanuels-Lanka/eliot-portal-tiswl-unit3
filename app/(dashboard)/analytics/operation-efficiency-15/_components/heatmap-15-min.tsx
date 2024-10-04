@@ -114,9 +114,10 @@ const   HmapChart15Compo = ({
           },
         plotOptions: {
             heatmap: {
+                distributed: true,
                 enableShades: false,
                 radius: 50,
-                useFillColorAsStroke: false,
+                useFillColorAsStroke: true,
                 colorScale: {
                     ranges: [
                         {

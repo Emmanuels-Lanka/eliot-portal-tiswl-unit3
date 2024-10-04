@@ -60,7 +60,6 @@ const efficiencyHigh = 50
 
 
 const ensureAllCategoriesHaveData = (series: any, categories: any, defaultValue = -1) => {
-    console.log("categories", categories)
     return series.map((serie: any) => {
         const filledData = categories.map((category: any) => {
             const dataPoint = serie.data.find((d: any) => d.x === category);
@@ -491,46 +490,3 @@ const getProcessData = (data: any[], operationList: any[]) => {
 
 
 
-
- 
-//      const fmtDataSeries = [];
-//      const dataWithQuarter = data.map((d) => ({
-//          ...d,
-//          hour: new Date(d.timestamp).getHours(),
-//          qtrIndex: Math.floor(new Date(d.timestamp).getMinutes() / 15),
-//      }));
-
-//      const result = Object.entries(
-//          dataWithQuarter.reduce((acc, current) => {
-//              const key = `${current.hour}${current.qtrIndex}`;
-//              if (!acc[key]) {
-//                  acc[key] = [];
-//              }
-//              acc[key].push(current);
-//              return acc;
-//          }, {})
-//      );
-
-//      for (const [key, value] of result) {
-//          const dataGBOp = Object.entries(
-//              value.reduce((acc, current) => {
-//                  if (!acc[current.name]) {
-//                      acc[current.name] = [];
-//                  }
-//                  acc[current.name].push(current);
-//                  return acc;
-//              }, {})
-//          );
-
-//          const dataPoints = [];
-//          for (const [name, values] of dataGBOp) {
-//              const count = values.reduce((a, d) => a + d.count, 0);
-//              dataPoints.push({ x: name, y: count });
-//          }
-//          fmtDataSeries.push({ name: key, data: dataPoints });
-//      }
-
-//      console.log("dataaaaaa", fmtDataSeries);
-
-//      return fmtDataSeries;
-//  };
