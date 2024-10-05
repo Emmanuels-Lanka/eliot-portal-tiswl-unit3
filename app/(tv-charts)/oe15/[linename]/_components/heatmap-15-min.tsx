@@ -246,7 +246,7 @@ const HmapChart15Compo = ({
         // let count = 1;
         const intervalId = setInterval(() => {
           handleFetchProductions();
-        //   console.log(count++);
+        //   console.log(count++); c
         }, 10 * 60 * 1000);
         return () => clearInterval(intervalId);
       }, [obbSheetId, date]);
