@@ -242,9 +242,14 @@ const HmapChart15Compo = ({
     }, [heatmapData])
 
     useEffect(() => {
-        handleFetchProductions()
-
-    }, [obbSheetId, date])
+        handleFetchProductions(); // Run immediately when the component mounts
+        // let count = 1;
+        const intervalId = setInterval(() => {
+          handleFetchProductions();
+        //   console.log(count++);
+        }, 10 * 60 * 1000);
+        return () => clearInterval(intervalId);
+      }, [obbSheetId, date]);
 
     //const height: string = timeList.length < 21 ? '200%' : timeList.length < 30 ? '300%' : '500%';
     const totalCount = Object.keys(timeList).reduce((acc, curr) => acc + curr.length, 0);
