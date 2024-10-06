@@ -32,7 +32,7 @@ const units = await db.unit.findMany({
     }
 });
 
-console.log(units)
+// console.log(units)
 
 return (
     <div>

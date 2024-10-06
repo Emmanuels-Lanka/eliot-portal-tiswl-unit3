@@ -6,7 +6,7 @@ import { ProductionDataType } from "./LogTable";
 export async function getData(obbsheetid:string,date:string,unitId:string)  : Promise<ProductionDataType[]>   {
     const sql = neon(process.env.DATABASE_URL || "");
 
-    console.log(unitId)
+    // console.log(unitId)
 
     const data = await sql`Select CAST(count(*) AS int) ,"machineType" as type, pl.name as lineName,
 CAST(count(case when sm."isAssigned" = false then 1 end)AS int) as notAssigned
