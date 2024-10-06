@@ -3,8 +3,10 @@ import { neon } from "@neondatabase/serverless";
 import { ProductionDataType } from "./LogTable";
 
 
-export async function getData(obbsheetid:string,date:string)  : Promise<ProductionDataType[]>   {
+export async function getData(obbsheetid:string,date:string,unitId:string)  : Promise<ProductionDataType[]>   {
     const sql = neon(process.env.DATABASE_URL || "");
+
+    console.log(unitId)
 
     const data = await sql`Select CAST(count(*) AS int) ,"machineType" as type, pl.name as lineName,
 CAST(count(case when sm."isAssigned" = false then 1 end)AS int) as notAssigned
@@ -12,6 +14,9 @@ from "SewingMachine" sm
 inner join "ObbOperation" oo ON oo."sewingMachineId" = sm.id
 inner join "ObbSheet" os ON os.id = oo."obbSheetId"
 inner join "ProductionLine" pl on pl.id = os."productionLineId" 
+inner join "Unit" u on u.id= pl."unitId"
+where u.name=${unitId}
+
 group by type,lineName`;
 
      

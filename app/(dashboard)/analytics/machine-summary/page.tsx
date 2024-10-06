@@ -21,13 +21,25 @@ const page = async () => {
         name: true
     }
 });
+const units = await db.unit.findMany({
+    
+    orderBy: {
+        createdAt: "asc",
+    },
+    select: {
+        id: true,
+        name: true
+    }
+});
+
+console.log(units)
 
 return (
     <div>
     
         <div className="container">
           
-        <LogTable obbSheets={obbSheets} ></LogTable>
+        <LogTable obbSheets={obbSheets} units={units} ></LogTable>
       </div>
   </div>
   )
