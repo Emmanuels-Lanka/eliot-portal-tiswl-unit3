@@ -21,8 +21,13 @@ import { getData } from './action';
 // import SelectObbSheetAndDate from '../dashboard/common/select-obbsheet-and-date';
 import TableComponent from './TableComponent';
 import SelectObbSheetAndDate from '@/components/dashboard/common/select-obbsheet-and-date';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 interface AnalyticsChartProps {
+  units: {
+    id: string;
+    name: string;
+  }[] | null;
   obbSheets: {
     id: string;
     name: string;
@@ -38,10 +43,11 @@ export type ProductionDataType = {
 };
 
 const LogTable = ({
-  obbSheets,
+  obbSheets,units
 }: AnalyticsChartProps) => {
   const [date, setDate] = useState<string>("");
   const [obbSheetId, setObbSheetId] = useState<string>("");
+  const [unitId, setUnitId] = useState<string>("");
 
   const [data, setData] = useState<any>({});
 
@@ -52,7 +58,7 @@ const LogTable = ({
 
     
 
-      const details = await getData(obbSheetId, date);
+      const details = await getData(obbSheetId, date,unitId);
       console.log("details",details)
       const typesObj = Object.groupBy(details, ({ type }) => type);
 
@@ -73,7 +79,7 @@ const LogTable = ({
 
   useEffect(() => {
     handleFetchProductions();
-  }, []);
+  }, [unitId]);
 
   useEffect(() => {
     
@@ -87,6 +93,22 @@ const LogTable = ({
     <div>
       
       <div className="mx-auto max-w-7xl">
+
+
+      <div className="flex flex-col gap-2 mt-10 mb-12">
+          <h3 className="font-medium text-slate-600">Select a unit</h3>
+          <Select onValueChange={(value) => setUnitId(value)}>
+            <SelectTrigger className="bg-white">
+              <SelectValue placeholder="Select unit" />
+            </SelectTrigger>
+            <SelectContent>
+              {units && units.map((unit) => (
+                <SelectItem key={unit.id} value={unit.name}>{unit.name}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
 
       </div>
       <Card x-chunk="dashboard-05-chunk-3" className='my-4 pt-4'>
