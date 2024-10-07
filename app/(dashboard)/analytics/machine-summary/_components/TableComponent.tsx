@@ -27,6 +27,10 @@ const TableComponent: React.FC<TableProps> = ({ data }) => {
     'LINE-125-126',
   ];
 
+  
+  const formattedLineNames = staticLineNames.map(line => line.replace('LINE-', 'LINE-\n'));
+
+
   const getCountForLine = (row: ProductionDataType, lineName: string) => {
     return row.linename === lineName ? row.count : '-';
   };
@@ -46,7 +50,7 @@ const TableComponent: React.FC<TableProps> = ({ data }) => {
             </TableHead>
           </TableRow>
           <TableRow>
-            {staticLineNames.map((lineName) => (
+            {formattedLineNames.map((lineName) => (
               <TableHead key={lineName} className="text-center">
                 {lineName}
               </TableHead>
@@ -61,7 +65,7 @@ const TableComponent: React.FC<TableProps> = ({ data }) => {
               </TableCell>
               <TableCell>
                 <div className="font-medium text-center">
-                  {value.reduce((acc, current) => acc + current.count, 0)}
+                  {value.reduce((acc, current) => acc + current.total, 0)}
                 </div>
               </TableCell>
               {staticLineNames.map((lineName) => (

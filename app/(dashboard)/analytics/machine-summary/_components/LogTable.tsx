@@ -35,6 +35,7 @@ interface AnalyticsChartProps {
 }
 
 export type ProductionDataType = {
+  total: number;
   count:number;
   linename:string;
   notassigned: number;
