@@ -7,7 +7,7 @@ const DashboardFooter = () => {
         </p>
         <div className='flex items-end gap-1'>
             <p className='text-sm text-slate-600 font-semibold'>ELIoT Web Portal</p>
-            <p className='hidden md:flex text-[10px] text-slate-500'>v1.0.d17.25</p>
+            <p className='hidden md:flex text-[10px] text-slate-500'>v1.0.d17.26</p>
         </div>
     </footer>
   )
