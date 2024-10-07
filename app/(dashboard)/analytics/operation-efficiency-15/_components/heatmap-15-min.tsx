@@ -265,47 +265,7 @@ const   HmapChart15Compo = ({
 
     }, [obbSheetId,date])
 
-    // const saveAsPDF = async () => {
-    //     if (chartRef.current) {
-    //       const canvas = await html2canvas(chartRef.current);
-    //       const imgData = canvas.toDataURL('image/png');
-    //       const pdf = new jsPDF({
-    //         orientation: 'landscape',
-    //         unit: 'px',
-    //         format: [canvas.width, canvas.height + 150],
-    //       });
-      
-    //       const baseUrl = window.location.origin;
-    //       const logoUrl = `${baseUrl}/logo.png`;
-      
-    //       const logo = new Image();
-    //       logo.src = logoUrl;
-    //       logo.onload = () => {
-    //         const logoWidth = 110; 
-    //         const logoHeight = 50;
-    //         const logoX = (canvas.width / 2) - (logoWidth + 250); // Adjust to place the logo before the text
-    //         const logoY = 50;
-      
-    //         // Add the logo to the PDF
-    //         pdf.addImage(logo, 'PNG', logoX, logoY, logoWidth, logoHeight);
-      
-    //         // Set text color to blue
-    //         pdf.setTextColor(0, 113 ,193); // RGB for blue
-      
-    //         // Set larger font size and align text with the logo
-    //         pdf.setFontSize(30);
-    //         pdf.text('Dashboard - Target vs Actual (Instance) ', logoX + logoWidth + 10, 83, { align: 'left' });
-      
-    //         // Add the chart image to the PDF
-    //         pdf.addImage(imgData, 'PNG', 0, 150, canvas.width, canvas.height);
-      
-    //         // Save the PDF
-    //         pdf.save('chart.pdf');
-    //       };
-    //     }
-    //   };
-    
-    
+   
     //create Excel sheet
     
     const saveAsPDF = async () => {
@@ -394,16 +354,28 @@ const   HmapChart15Compo = ({
     // const chartWidth = heatmapData && heatmapData.length > 0 ? heatmapData.length * 100 : 1000;
     // const width = operationList && operationList.length > 0 ? operationList.length * 50 : 600;
   
-    let height = 0; // initialize with a default value#
+    // let height = 0; // initialize with a default value#
     // console.log(heatmapData?.length)
 
     
+    let height ;
+    if (heatmapData) {
+        if (heatmapData.length > 30) {
+            height = heatmapData.length * 50
+        } else {
+            if (heatmapData.length > 20) {
+                height = heatmapData.length * 60
+            } else { 
+                height = heatmapData.length * 70
+            }
+        }
+        console.log("len",heatmapData.length)
+    }
+        const width = operationList && operationList.length > 0 ? operationList.length * 50 : 600;
 
-height = heatmapFullData && heatmapFullData.length * 50;
-console.log("length",heatmapFullData && heatmapFullData.length,heatmapFullData && heatmapFullData)
 
 
-const width = operationList && operationList.length > 0 ? operationList.length * 50 : 600;
+// const width = operationList && operationList.length > 0 ? operationList.length * 50 : 600;
     return (
         <>
 
@@ -413,20 +385,23 @@ const width = operationList && operationList.length > 0 ? operationList.length *
 
             <div className="mx-auto max-w-[1680px]">
             {<div className=" flex justify-center items-center">
-            <Loader2 className={cn("animate-spin w-5 h-5 hidden", isSubmitting && "flex")} />
-            </div>}
+                    <Loader2 className={cn("animate-spin w-5 h-5 hidden", isSubmitting && "flex")} />
+                </div>}
                 {heatmapFullData !== null ?
-                    // <div className="mt-12 bg-slate-100 pt-5 pl-8 rounded-lg border w-full mb-16 overflow-x-auto overflow-y-scroll "   ref={chartRef}>
-                    <div className='bg-slate-50 pt-5 -pl-8 rounded-lg border w-full h-[500px] mb-16 overflow-scroll' ref={chartRef}>
-                    <h2 className="text-lg mb-2 font-medium text-slate-700">{" "}</h2>
-                        <ReactApexChart options={options} series={heatmapFullData} type="heatmap" height={height} width={width} />
+                    // <Card className="mt-5 bg-slate-100 pt-5 pl-8 rounded-lg border w-full mb-16 overflow-x-auto " >
+                    <div className='bg-slate-50 pt-5 -pl-8 rounded-lg border w-full h-[500px] mb-16 overflow-scroll'>
+
+                        <div   ref={chartRef}>
+                            
+                            <h2 className="text-lg mb-2 font-medium text-slate-700">{" "}</h2>
+                            <ReactApexChart options={options} series={heatmapFullData} type="heatmap" height={height} width={width} />
+                        </div>
                     </div>
                     :
                     <div className="mt-12 w-full">
                         <p className="text-center text-slate-500">Please select the OBB sheet and date ☝️</p>
                     </div>
                 }
-                
             </div>
             {/* Button Section */}
     {true && (
