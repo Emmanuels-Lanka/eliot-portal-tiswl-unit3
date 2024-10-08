@@ -363,18 +363,23 @@ const HmapChart15Compo = ({
 
     //  let height = heatmapData && heatmapData?.length > 15 ? 1200 : 1000
    
-   
-        let height ;
-        if (heatmapData) {
-            if (heatmapData.length > 30) {
+    let height ;
+    if (heatmapData) {
+        if (heatmapData.length > 30) {
             height = heatmapData.length * 50
-            } else if (heatmapData.length > 20) {
-            height = heatmapData.length * 40
-            } else { 
-            height = heatmapData.length * 50
+        } else {
+            if (heatmapData.length > 20) {
+                height = heatmapData.length * 60
+            } else if (heatmapData.length<10) { 
+                height = heatmapData.length * 100
+            }
+            else { 
+                height = heatmapData.length * 100
             }
         }
-        const width = operationList && operationList.length > 0 ? operationList.length * 50 : 600;
+        console.log("len",heatmapData.length)
+    }
+        const width = operationList && operationList.length > 0 ? operationList.length *60 : 600;
 
     return (
         <>

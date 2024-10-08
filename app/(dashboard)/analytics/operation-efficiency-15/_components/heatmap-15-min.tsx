@@ -365,13 +365,16 @@ const   HmapChart15Compo = ({
         } else {
             if (heatmapData.length > 20) {
                 height = heatmapData.length * 60
-            } else { 
-                height = heatmapData.length * 70
+            } else if (heatmapData.length<10) { 
+                height = heatmapData.length * 100
+            }
+            else { 
+                height = heatmapData.length * 100
             }
         }
         console.log("len",heatmapData.length)
     }
-        const width = operationList && operationList.length > 0 ? operationList.length * 50 : 600;
+        const width = operationList && operationList.length > 0 ? operationList.length *60 : 600;
 
 
 
