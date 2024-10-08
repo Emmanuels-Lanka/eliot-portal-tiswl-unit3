@@ -69,7 +69,7 @@ const ObbSheetId = async ({
           }
         },
         orderBy: {
-          createdAt: 'asc',
+          seqNo: 'asc',
         }
       },
       supervisorFront: true,
