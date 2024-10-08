@@ -131,6 +131,7 @@ const ObbOperationsForm = ({
             router.refresh();
             form.reset();
             setIsDialogOpen(false);
+            window.location.reload();
         } catch (error: any) {
             toast({
                 title: error.response?.data || "Something went wrong! Try again",
