@@ -355,7 +355,7 @@ let height ;
                 height = heatmapData.length * 100
             }
             else { 
-                height = heatmapData.length * 100
+                height = heatmapData.length * 50
             }
         }
         console.log("len",heatmapData.length)

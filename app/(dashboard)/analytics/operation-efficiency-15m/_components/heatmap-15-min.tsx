@@ -374,7 +374,7 @@ const HmapChart15Compo = ({
                 height = heatmapData.length * 100
             }
             else { 
-                height = heatmapData.length * 100
+                height = heatmapData.length * 60
             }
         }
         console.log("len",heatmapData.length)
