@@ -344,17 +344,23 @@ let heights = timeSlots < 15 ? 1300 : timeSlots * 50; // Adjust height based on 
 // let width = operatorCount > 15 ? operatorCount * 40 : "100%";
 
 
-let height;
-if (heatmapData) {
-    if (heatmapData.length > 30) {
-      height = heatmapData.length * 50
-    } else if (heatmapData.length > 20) {
-      height = heatmapData.length * 50
-    } else { 
-      height = heatmapData.length * 55
+let height ;
+    if (heatmapData) {
+        if (heatmapData.length > 30) {
+            height = heatmapData.length * 50
+        } else {
+            if (heatmapData.length > 20) {
+                height = heatmapData.length * 60
+            } else if (heatmapData.length<10) { 
+                height = heatmapData.length * 100
+            }
+            else { 
+                height = heatmapData.length * 50
+            }
+        }
+        console.log("len",heatmapData.length)
     }
-  }
-const width = operationList && operationList.length > 0 ? operationList.length * 50 : 600;
+        const width = operationList && operationList.length > 0 ? operationList.length *60 : 600;
 
 
 
