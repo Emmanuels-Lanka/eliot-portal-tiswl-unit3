@@ -1,6 +1,6 @@
 import { Operation, SewingMachine, Staff } from "@prisma/client";
 
-import { DataTable } from "@/app/(dashboard)/obb-sheets/[obbSheetId]/_components/data-table2";
+import { DataTable } from "@/app/(dashboard)/obb-sheets/[obbSheetId]/_components/data-table";
 import ObbOperationsForm from "./obb-operations-form";
 
 interface ObbOperationsListProps {
