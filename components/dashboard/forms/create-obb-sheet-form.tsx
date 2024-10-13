@@ -699,7 +699,7 @@ const CreateObbSheetForm = ({
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>
-                                            Efficiency Set Level 1 (Low)
+                                            Efficiency Set Level 1 (Low) - TLS 
                                         </FormLabel>
                                         <FormControl>
                                             <Input
@@ -724,7 +724,7 @@ const CreateObbSheetForm = ({
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>
-                                            Efficiency Set Level 3 (High)
+                                            Efficiency Set Level 3 (High) - TLS 
                                         </FormLabel>
                                         <FormControl>
                                             <Input
