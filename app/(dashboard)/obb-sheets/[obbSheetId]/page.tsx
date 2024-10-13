@@ -48,7 +48,8 @@ const ObbSheetId = async ({
           operation: {
             select: {
               id: true,
-              name: true
+              name: true,
+              code: true,
             }
           },
           sewingMachine: {
@@ -69,7 +70,7 @@ const ObbSheetId = async ({
           }
         },
         orderBy: {
-          createdAt: 'asc',
+          seqNo: 'asc',
         }
       },
       supervisorFront: true,

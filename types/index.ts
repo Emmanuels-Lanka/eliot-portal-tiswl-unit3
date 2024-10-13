@@ -23,6 +23,7 @@ type ObbOperationData = {
     operation: {
         id: string;
         name: string;
+        code: string | null;
     };
     sewingMachine?: {
         id: string;

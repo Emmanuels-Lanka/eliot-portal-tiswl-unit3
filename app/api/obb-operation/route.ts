@@ -17,7 +17,8 @@ export async function POST(
             length,
             totalStitches,
             obbSheetId,
-            part
+            part,
+            isCombined
         } = await req.json();
 
         let id = generateUniqueId();
@@ -58,17 +59,30 @@ export async function POST(
                 return new NextResponse("Invalid part specified", { status: 400 });
         }
 
-        // Check if a machine is already assigned to another operation for the same obbSheet
         if (sewingMachineId) {
+            // Check the machine is already assigned within the same obbSheet
             const existingOperation = await db.obbOperation.findFirst({
                 where: {
                     sewingMachineId,
                     obbSheetId,
+                    isCombined: false
                 }
             });
 
             if (existingOperation) {
                 return new NextResponse("This sewing machine is already assigned to another operation.", { status: 409 });
+            }
+            
+            // If the machine has combined operations
+            if (isCombined as boolean) {
+                await db.sewingMachine.update({
+                    where: {
+                        id: sewingMachineId
+                    },
+                    data: {
+                        isCombinedOperation: true,
+                    }
+                })
             }
         }
 
@@ -86,7 +100,8 @@ export async function POST(
                 totalStitches,
                 supervisorId: supervisorId,
                 sewingMachineId: sewingMachineId || null,
-                part
+                part,
+                isCombined: isCombined as boolean,
             }
         });
 

@@ -7,7 +7,7 @@ export async function POST(
     req: Request,
 ) {
     try {
-        const { unitId, machineType, brandName, serialNumber, machineId, eliotDeviceId, ownership } = await req.json();
+        const { unitId, machineType, brandName, serialNumber, modelNumber, machineId, eliotDeviceId, ownership } = await req.json();
 
 
         const existingMachineByMachineID = await db.sewingMachine.findUnique({
@@ -34,6 +34,7 @@ export async function POST(
                 machineId,
                 serialNumber,
                 ownership,
+                modelNumber,
                 eliotDeviceId: eliotDeviceId || null,
                 unitId
             }

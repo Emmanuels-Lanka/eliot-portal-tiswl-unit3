@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import * as z from "zod";
 import axios from "axios";
@@ -6,13 +6,22 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Check, ChevronsUpDown, Edit, Loader2, Plus, PlusCircle, Zap } from "lucide-react";
+import {
+    Check,
+    ChevronsUpDown,
+    Edit,
+    Loader2,
+    Plus,
+    PlusCircle,
+    Zap,
+} from "lucide-react";
 import { ObbOperation, Operation, SewingMachine } from "@prisma/client";
-import { useWatch } from 'react-hook-form';
+import { useWatch } from "react-hook-form";
 
 import {
     Form,
     FormControl,
+    FormDescription,
     FormField,
     FormItem,
     FormLabel,
@@ -49,6 +58,7 @@ import {
 } from "@/components/ui/command";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/components/ui/use-toast";
 import { cn } from "@/lib/utils";
 import { fetchCurrentOperationsCount } from "../../_actions/fetch-current-operations-count";
@@ -70,7 +80,8 @@ const formSchema = z.object({
     length: z.number(),
     totalStitches: z.number(),
     obbSheetId: z.string(),
-    part: z.string()
+    part: z.string(),
+    isCombined: z.boolean().default(false),
 });
 
 const ObbOperationsForm = ({
@@ -99,15 +110,25 @@ const ObbOperationsForm = ({
             length: defaultData?.length || 0,
             totalStitches: defaultData?.totalStitches || 0,
             obbSheetId: obbSheetId,
-            part: defaultData?.part || ''
+            part: defaultData?.part || "",
+            isCombined: defaultData?.isCombined || false,
         },
     });
 
-    const { register, handleSubmit, reset, formState: { isSubmitting, isValid } } = form;
+    const sewingMachineId = useWatch({ control: form.control, name: "sewingMachineId" });
+
+    const {
+        register,
+        handleSubmit,
+        reset,
+        formState: { isSubmitting, isValid },
+    } = form;
 
     useEffect(() => {
         const fetchObbOperations = async () => {
-            const operationsCount = await fetchCurrentOperationsCount(obbSheetId);
+            const operationsCount = await fetchCurrentOperationsCount(
+                obbSheetId
+            );
             form.setValue("seqNo", operationsCount + 1);
         };
         if (!defaultData) {
@@ -115,49 +136,58 @@ const ObbOperationsForm = ({
         }
     }, [obbSheetId, form, defaultData, isDialogOpen]);
 
-
     const onSubmit = async (data: z.infer<typeof formSchema>) => {
         console.log("Form Data on Submit:", data);
         try {
-            const endpoint = defaultData ? `/api/obb-operation/${defaultData.id}` : '/api/obb-operation';
+            const endpoint = defaultData
+                ? `/api/obb-operation/${defaultData.id}`
+                : "/api/obb-operation";
             const method = defaultData ? axios.put : axios.post;
 
             const response = await method(endpoint, data);
-            console.log("end point Data", endpoint)
+            console.log("end point Data", endpoint);
             toast({
-                title: `Successfully ${defaultData ? 'updated' : 'created'} OBB operation`,
+                title: `Successfully ${
+                    defaultData ? "updated" : "created"
+                } OBB operation`,
                 variant: "success",
             });
             router.refresh();
             form.reset();
             setIsDialogOpen(false);
+            window.location.reload();
         } catch (error: any) {
             toast({
-                title: error.response?.data || "Something went wrong! Try again",
-                variant: "error"
+                title:
+                    error.response?.data || "Something went wrong! Try again",
+                variant: "error",
             });
         }
-    }
+    };
 
     const handleUnassign = async () => {
         if (defaultData && defaultData.sewingMachineId) {
             try {
-                await axios.put(`/api/obb-operation/${defaultData.id}/unassign-machine?machineId=${defaultData.sewingMachineId}`);
+                await axios.put(
+                    `/api/obb-operation/${defaultData.id}/unassign-machine?machineId=${defaultData.sewingMachineId}`
+                );
                 toast({
                     title: "Successfully unassigned",
                     variant: "success",
                 });
             } catch (error: any) {
                 toast({
-                    title: error.response?.data || "Something went wrong! Try again",
-                    variant: "error"
+                    title:
+                        error.response?.data ||
+                        "Something went wrong! Try again",
+                    variant: "error",
                 });
             } finally {
-                router.refresh();
                 setIsDialogOpen(false);
+                window.location.reload();
             }
         }
-    }
+    };
 
     const handleCancel = () => {
         setIsDialogOpen(false);
@@ -171,24 +201,32 @@ const ObbOperationsForm = ({
             length: defaultData?.length || 0,
             totalStitches: defaultData?.totalStitches || 0,
             obbSheetId: obbSheetId,
-            part: defaultData?.part || ''
+            part: defaultData?.part || "",
         });
-    }
+    };
 
     return (
         <Dialog open={isDialogOpen}>
             <DialogTrigger asChild>
-                {defaultData ?
-                    <Button className="w-full flex justify-start gap-2 pr-5" variant="ghost" onClick={() => setIsDialogOpen(true)}>
+                {defaultData ? (
+                    <Button
+                        className="w-full flex justify-start gap-2 pr-5"
+                        variant="ghost"
+                        onClick={() => setIsDialogOpen(true)}
+                    >
                         <Edit className="w-4 h-4" />
                         Edit
                     </Button>
-                    :
-                    <Button onClick={() => setIsDialogOpen(true)} variant='ghost' className="text-base">
+                ) : (
+                    <Button
+                        onClick={() => setIsDialogOpen(true)}
+                        variant="ghost"
+                        className="text-base"
+                    >
                         <PlusCircle className="h-5 w-5 mr-2" />
                         Create new
                     </Button>
-                }
+                )}
             </DialogTrigger>
             <DialogContent className="max-md:py-8 md:p-8 w-full">
                 <DialogHeader className="mt-2">
@@ -210,10 +248,11 @@ const ObbOperationsForm = ({
                                 name="operationId"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>
-                                            Operation
-                                        </FormLabel>
-                                        <Popover open={open1} onOpenChange={setOpen1}>
+                                        <FormLabel>Operation</FormLabel>
+                                        <Popover
+                                            open={open1}
+                                            onOpenChange={setOpen1}
+                                        >
                                             <PopoverTrigger asChild>
                                                 <Button
                                                     variant="outline"
@@ -221,42 +260,69 @@ const ObbOperationsForm = ({
                                                     aria-expanded={open1}
                                                     className="w-full justify-between font-normal"
                                                 >
-                                                    {operations ?
+                                                    {operations ? (
                                                         <>
                                                             {field.value
-                                                                ? operations.find((operation) => operation.id === field.value)?.name
+                                                                ? operations.find(
+                                                                      (
+                                                                          operation
+                                                                      ) =>
+                                                                          operation.id ===
+                                                                          field.value
+                                                                  )?.name
                                                                 : "Select Operation..."}
                                                             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                                                         </>
-                                                        :
+                                                    ) : (
                                                         "No operation available!"
-                                                    }
+                                                    )}
                                                 </Button>
                                             </PopoverTrigger>
                                             <PopoverContent className="p-0">
                                                 <Command>
                                                     <CommandInput placeholder="Search operation..." />
                                                     <CommandList>
-                                                        <CommandEmpty>No operation found!</CommandEmpty>
+                                                        <CommandEmpty>
+                                                            No operation found!
+                                                        </CommandEmpty>
                                                         <CommandGroup>
-                                                            {operations && operations.map((operation) => (
-                                                                <CommandItem
-                                                                    key={operation.id}
-                                                                    value={operation.name}
-                                                                    onSelect={() => {
-                                                                        form.setValue("operationId", operation.id)
-                                                                        setOpen1(false)
-                                                                    }}
-                                                                >
-                                                                    <Check
-                                                                        className={cn(
-                                                                            "mr-2 h-4 w-4",
-                                                                            field.value === operation.id ? "opacity-100" : "opacity-0"
-                                                                        )}
-                                                                    />
-                                                                    {operation.name}
-                                                                </CommandItem>
-                                                            ))}
+                                                            {operations &&
+                                                                operations.map(
+                                                                    (
+                                                                        operation
+                                                                    ) => (
+                                                                        <CommandItem
+                                                                            key={
+                                                                                operation.id
+                                                                            }
+                                                                            value={
+                                                                                operation.name
+                                                                            }
+                                                                            onSelect={() => {
+                                                                                form.setValue(
+                                                                                    "operationId",
+                                                                                    operation.id
+                                                                                );
+                                                                                setOpen1(
+                                                                                    false
+                                                                                );
+                                                                            }}
+                                                                        >
+                                                                            <Check
+                                                                                className={cn(
+                                                                                    "mr-2 h-4 w-4",
+                                                                                    field.value ===
+                                                                                        operation.id
+                                                                                        ? "opacity-100"
+                                                                                        : "opacity-0"
+                                                                                )}
+                                                                            />
+                                                                            {
+                                                                                operation.name
+                                                                            }
+                                                                        </CommandItem>
+                                                                    )
+                                                                )}
                                                         </CommandGroup>
                                                     </CommandList>
                                                 </Command>
@@ -271,10 +337,11 @@ const ObbOperationsForm = ({
                                 name="sewingMachineId"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>
-                                            Machine
-                                        </FormLabel>
-                                        <Popover open={open2} onOpenChange={setOpen2}>
+                                        <FormLabel>Machine</FormLabel>
+                                        <Popover
+                                            open={open2}
+                                            onOpenChange={setOpen2}
+                                        >
                                             <PopoverTrigger asChild>
                                                 <Button
                                                     variant="outline"
@@ -282,43 +349,65 @@ const ObbOperationsForm = ({
                                                     aria-expanded={open2}
                                                     className="w-full justify-between font-normal"
                                                 >
-                                                    {machines ?
+                                                    {machines ? (
                                                         <>
                                                             {field.value
-                                                                ? machines.find((machine) => machine.id === field.value)?.machineId
+                                                                ? machines.find(
+                                                                      (
+                                                                          machine
+                                                                      ) =>
+                                                                          machine.id ===
+                                                                          field.value
+                                                                  )?.machineId
                                                                 : "Select machine ID..."}
                                                             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                                                         </>
-                                                        :
+                                                    ) : (
                                                         "No machine available!"
-                                                    }
+                                                    )}
                                                 </Button>
                                             </PopoverTrigger>
                                             <PopoverContent className="p-0">
                                                 <Command>
                                                     <CommandInput placeholder="Search machine..." />
                                                     <CommandList>
-                                                        <CommandEmpty>No machine found!</CommandEmpty>
+                                                        <CommandEmpty>
+                                                            No machine found!
+                                                        </CommandEmpty>
                                                         <CommandGroup>
                                                             {/* {machines?.filter(machine => !assignedMachinesToOperations?.includes(machine.id)).map((machine) => ( */}
-                                                            {machines?.map((machine) => (
-                                                                <CommandItem
-                                                                    key={machine.id}
-                                                                    value={machine.machineId}
-                                                                    onSelect={() => {
-                                                                        form.setValue("sewingMachineId", machine.id);
-                                                                        setOpen2(false);
-                                                                    }}
-                                                                >
-                                                                    <Check
-                                                                        className={cn(
-                                                                            "mr-2 h-4 w-4",
-                                                                            field.value === machine.id ? "opacity-100" : "opacity-0"
-                                                                        )}
-                                                                    />
-                                                                    {`${machine.brandName}-${machine.machineType}-${machine.machineId}`}
-                                                                </CommandItem>
-                                                            ))}
+                                                            {machines?.map(
+                                                                (machine) => (
+                                                                    <CommandItem
+                                                                        key={
+                                                                            machine.id
+                                                                        }
+                                                                        value={
+                                                                            machine.machineId
+                                                                        }
+                                                                        onSelect={() => {
+                                                                            form.setValue(
+                                                                                "sewingMachineId",
+                                                                                machine.id
+                                                                            );
+                                                                            setOpen2(
+                                                                                false
+                                                                            );
+                                                                        }}
+                                                                    >
+                                                                        <Check
+                                                                            className={cn(
+                                                                                "mr-2 h-4 w-4",
+                                                                                field.value ===
+                                                                                    machine.id
+                                                                                    ? "opacity-100"
+                                                                                    : "opacity-0"
+                                                                            )}
+                                                                        />
+                                                                        {`${machine.brandName}-${machine.machineType}-${machine.machineId}`}
+                                                                    </CommandItem>
+                                                                )
+                                                            )}
                                                         </CommandGroup>
                                                     </CommandList>
                                                 </Command>
@@ -328,12 +417,17 @@ const ObbOperationsForm = ({
                                     </FormItem>
                                 )}
                             />
-                            {defaultData && defaultData.sewingMachineId &&
-                                <Button type="button" variant="outline" onClick={handleUnassign}>
+                            {defaultData && defaultData.sewingMachineId && (
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    onClick={handleUnassign}
+                                >
                                     Unassign
                                 </Button>
-                            }
+                            )}
                         </div>
+
                         <div className="w-full flex gap-x-2">
                             <div className="w-28">
                                 <FormField
@@ -341,19 +435,29 @@ const ObbOperationsForm = ({
                                     name="seqNo"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>
-                                                Seq
-                                            </FormLabel>
+                                            <FormLabel>Seq</FormLabel>
                                             <FormControl>
                                                 <Input
                                                     value={field.value || ""}
                                                     onChange={(e) => {
-                                                        const value = e.target.value;
-                                                        form.setValue("seqNo", value === "" ? 0 : Number(value));
+                                                        const value =
+                                                            e.target.value;
+                                                        form.setValue(
+                                                            "seqNo",
+                                                            value === ""
+                                                                ? 0
+                                                                : Number(value)
+                                                        );
                                                     }}
                                                     onBlur={(e) => {
-                                                        const value = e.target.value;
-                                                        form.setValue("seqNo", value === "" ? 0 : Number(value));
+                                                        const value =
+                                                            e.target.value;
+                                                        form.setValue(
+                                                            "seqNo",
+                                                            value === ""
+                                                                ? 0
+                                                                : Number(value)
+                                                        );
                                                     }}
                                                     placeholder="seqNo"
                                                 />
@@ -369,20 +473,33 @@ const ObbOperationsForm = ({
                                     name="part"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>
-                                                Part
-                                            </FormLabel>
-                                            <Select onValueChange={field.onChange} defaultValue={defaultData ? defaultData.part as string : field.value}>
+                                            <FormLabel>Part</FormLabel>
+                                            <Select
+                                                onValueChange={field.onChange}
+                                                defaultValue={
+                                                    defaultData
+                                                        ? (defaultData.part as string)
+                                                        : field.value
+                                                }
+                                            >
                                                 <FormControl>
                                                     <SelectTrigger>
                                                         <SelectValue placeholder="Select part" />
                                                     </SelectTrigger>
                                                 </FormControl>
                                                 <SelectContent>
-                                                    <SelectItem value="front">FRONT</SelectItem>
-                                                    <SelectItem value="back">BACK</SelectItem>
-                                                    <SelectItem value="assembly">ASSEMBLY</SelectItem>
-                                                    <SelectItem value="line-end">LINE END</SelectItem>
+                                                    <SelectItem value="front">
+                                                        FRONT
+                                                    </SelectItem>
+                                                    <SelectItem value="back">
+                                                        BACK
+                                                    </SelectItem>
+                                                    <SelectItem value="assembly">
+                                                        ASSEMBLY
+                                                    </SelectItem>
+                                                    <SelectItem value="line-end">
+                                                        LINE END
+                                                    </SelectItem>
                                                 </SelectContent>
                                             </Select>
                                             <FormMessage />
@@ -395,9 +512,7 @@ const ObbOperationsForm = ({
                                 name="smv"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>
-                                            SMV
-                                        </FormLabel>
+                                        <FormLabel>SMV</FormLabel>
                                         <FormControl>
                                             <Input
                                                 disabled={isSubmitting}
@@ -414,9 +529,7 @@ const ObbOperationsForm = ({
                                 name="target"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>
-                                            Target
-                                        </FormLabel>
+                                        <FormLabel>Target</FormLabel>
                                         <FormControl>
                                             <Input
                                                 type="number"
@@ -424,8 +537,19 @@ const ObbOperationsForm = ({
                                                 disabled={isSubmitting}
                                                 {...field}
                                                 onChange={(e) => {
-                                                    const newValue: number = parseInt(e.target.value);
-                                                    form.setValue('target', newValue, { shouldValidate: true, shouldDirty: true });
+                                                    const newValue: number =
+                                                        parseInt(
+                                                            e.target.value
+                                                        );
+                                                    form.setValue(
+                                                        "target",
+                                                        newValue,
+                                                        {
+                                                            shouldValidate:
+                                                                true,
+                                                            shouldDirty: true,
+                                                        }
+                                                    );
                                                 }}
                                             />
                                         </FormControl>
@@ -514,11 +638,37 @@ const ObbOperationsForm = ({
                         </div>
                         {/* <Input {...register("operationId")} placeholder="Operation ID" /> */}
 
+                        <div>
+                            <FormField
+                                control={form.control}
+                                name="isCombined"
+                                render={({ field }) => (
+                                    <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                                        <div className="space-y-0.5">
+                                            <FormLabel className="text-base">
+                                                Is this combined operations?
+                                            </FormLabel>
+                                            <FormDescription>
+                                                If this machine will work for multiple operations.
+                                            </FormDescription>
+                                        </div>
+                                        <FormControl>
+                                            <Switch
+                                                checked={field.value}
+                                                onCheckedChange={field.onChange}
+                                                disabled={!sewingMachineId}
+                                            />
+                                        </FormControl>
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
+
                         <DialogFooter>
                             <div className="mt-4 flex justify-between gap-2">
                                 <Button
                                     type="button"
-                                    variant='outline'
+                                    variant="outline"
                                     className="flex gap-2 pr-5 text-red-600"
                                     onClick={handleCancel}
                                 >
@@ -529,8 +679,18 @@ const ObbOperationsForm = ({
                                     disabled={isSubmitting || !isValid}
                                     className="flex gap-2 pr-5 w-40"
                                 >
-                                    <Zap className={cn("w-5 h-5", isSubmitting && "hidden")} />
-                                    <Loader2 className={cn("animate-spin w-5 h-5 hidden", isSubmitting && "flex")} />
+                                    <Zap
+                                        className={cn(
+                                            "w-5 h-5",
+                                            isSubmitting && "hidden"
+                                        )}
+                                    />
+                                    <Loader2
+                                        className={cn(
+                                            "animate-spin w-5 h-5 hidden",
+                                            isSubmitting && "flex"
+                                        )}
+                                    />
                                     Save
                                 </Button>
                             </div>
@@ -539,7 +699,7 @@ const ObbOperationsForm = ({
                 </Form>
             </DialogContent>
         </Dialog>
-    )
-}
+    );
+};
 
-export default ObbOperationsForm
+export default ObbOperationsForm;
