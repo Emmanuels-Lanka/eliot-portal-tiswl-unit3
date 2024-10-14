@@ -3,7 +3,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { RoamingQC, Unit } from "@prisma/client";
-import { Loader2, Zap } from "lucide-react";
+import { ArrowLeft, Loader2, Zap } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 import { useToast } from "@/components/ui/use-toast";
@@ -144,6 +144,15 @@ const RoamingQcDashboard = ({
             {selectedData && isScanningQr && !fetchedData &&
                 <div className="mt-8 mx-auto max-w-xl w-full camera-box">
                     <QrCodeReader setQrCode={setQrCode} />
+
+                    <Button
+                        variant="outline"
+                        className="mt-8"
+                        onClick={() => window.location.reload()}
+                    >
+                        <ArrowLeft size={20} className="mr-2"/>
+                        Go back
+                    </Button>
                 </div>
             }
 
