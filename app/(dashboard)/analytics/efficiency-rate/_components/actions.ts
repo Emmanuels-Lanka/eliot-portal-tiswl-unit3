@@ -70,7 +70,7 @@ group by namee,oo."seqNo"
 order by oo."seqNo"
 `
     
-            console.log(data)
+            // console.log(data)
     
     
     return new Promise((resolve) => resolve(data as any[] ))

@@ -37,8 +37,8 @@ import * as XLSX from 'xlsx';
 import { count } from 'console';
 
 const chartConfig = {
-    target: {
-        label: "",
+    realratio: {
+        label: "Operation Efficiency",
         color: "hsl(var(--chart-1))",
     },
 
@@ -49,6 +49,7 @@ type BarChartData = {
     target: number;
     ratio: number;
     seqNo?:string
+    realratio?:number;
 }
 interface BarChartGraphProps {
 
@@ -191,7 +192,8 @@ const BarChartGraphEfficiencyRate = ({ date, obbSheetId }: BarChartGraphProps) =
                
                 count: item.count,
                 target: item.target * hours,
-                ratio: parseFloat(((earnmins / hours)).toFixed(2))
+                ratio: Math.min(parseFloat(((earnmins / hours)).toFixed(2)), 200),
+                realratio: parseFloat(((earnmins / hours)).toFixed(2))
                 // ratio: (item.count / (item.target * workingHrs)) * 100,
                 // ratio: parseFloat((item.count / (item.target * workingHrs)).toFixed(2))*100,
                 
@@ -300,7 +302,7 @@ const BarChartGraphEfficiencyRate = ({ date, obbSheetId }: BarChartGraphProps) =
                     // <div className='bg-slate-100 pt-5 -pl-8 rounded-lg border w-full mb-16 overflow-x-auto'>
 
                 <div className='bg-slate-50 pt-5 -pl-8 rounded-lg border w-full h-[450px] mb-16 overflow-scroll'>
-                 <Card className='bg-slate-50' style={{width:(chartWidth)+"%"}}>
+                 <Card className='bg-slate-50 pt-4' style={{width:(chartWidth)+"%"}}>
                
                     <CardContent>
                         {/* <ChartContainer config={chartConfig} className={`min-h-[300px] max-h-[600px] w-[${chartWidth.toString()}%]`}> */}
@@ -336,12 +338,18 @@ const BarChartGraphEfficiencyRate = ({ date, obbSheetId }: BarChartGraphProps) =
                                     textAnchor='start'
                                 />
                                 <ChartTooltip
+                                
                                     cursor={false}
-                                    content={<ChartTooltipContent indicator="line" />}
+                                    content={<ChartTooltipContent  indicator="line"
+                                      nameKey="realratio"
+                                      
+                                      />}
+                                    
                                 />
 
                                 <Bar dataKey="ratio" fill="orange" radius={5}>
                                     <LabelList
+                                    dataKey="realratio"
                                         position="top"
                                         offset={12}
                                         className="fill-foreground"

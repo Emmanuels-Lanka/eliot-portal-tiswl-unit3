@@ -25,7 +25,7 @@ import {
     ChartTooltipContent,
 } from "@/components/ui/chart";
 import { use, useEffect, useState } from "react";
-import { getOperatorEfficiency } from "./actions";
+import { getHours, getOperatorEfficiency } from "./actions";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -62,39 +62,146 @@ const BarChartGraphEfficiencyRate = ({ date, obbSheetId }: BarChartGraphProps) =
     const chartRef = useRef<HTMLDivElement>(null);
 
     const Fetchdata = async () => {
-        try {
-            //     const getShortName = (name: any) => {
-            //         const afterDot = name.split('.')[1]?.trim();
-            //         return afterDot ? afterDot.split(' ')[0] : null;
-
-            //   }
+        try {          
             const getShortName = (name: any) => {
                 return name.substring(1, 10) + "..."
 
             }
             setisSubmitting(true)
             const prod = await getOperatorEfficiency(obbSheetId, date)
+            const hrs = await getHours(obbSheetId,date)
+            console.log("prd",prod)
+            console.log("hrs",hrs)
+        
+            const mergedArray :any= [];
+
+           const aaa = prod.map((p)=> {
+            const hre = hrs.find((h)=> h.namee === p.name)
+            return {...p,login:hre?.login,logout:hre?.logout}
+           })
+            console.log("aaa",aaa)
+           
+
+            const updatedData = aaa.map(item => {
+              // Convert login, logout, and times to Date objects
+
+              const firstProd = new Date(item.first)
+              const lastProd = new Date(item.last)
+
+              let loginTime = item.login ? new Date(item.login) : null;
+              const logoutTime = item.logout ? new Date(item.logout) : null;
+            
+              // If login is null, set it to 8 AM on the same date as timesTime
+              if (!loginTime) {
+                loginTime = new Date(firstProd);
+                
+              }
+            
+              // Calculate time gap in milliseconds
+              const timeGap = logoutTime
+                ? logoutTime.getTime() - loginTime.getTime()  // If logout exists, use it
+                : lastProd.getTime() - loginTime.getTime();  // Otherwise, use times
+            
+              // console.log("first", timeGap, item.name, item.seqNo);
+
+              
+              
+              // Convert time gap from milliseconds to hours
+              const timeGapHours = timeGap / (1000 * 60 * 60); // Convert ms to hours
+            
+              // Return a new object with the calculated time gap
+              return {
+                ...item,
+                timeGapHours: timeGapHours.toFixed(2) // Round to 2 decimal places
+              };
+            });
+            console.log("aa",updatedData);
+
+
+
+
+
+            // const updatedHrs = hrs.map((hour) => {
+            //     const matchingProd = prod.find((p) => p.seqNo === hour.seqNo && p.name === hour.name);
+              
+            //     if (hour.logout === null && matchingProd) {
+            //       return {
+            //         ...hour,
+            //         logout: matchingProd.times, // Assign the `times` value from `prod` if `logout` is null
+            //       };
+            //     }
+              
+            //     return hour; // Return the original object if no changes are made
+            //   });
+              
+            //   // console.log(updatedHrs);
+
+
+
          
+           
+            // // console.log(asd)
+            
+            // const mergedData:any = updatedHrs.map((hour) => {
+            //     const matchingProd = prod.find((p) => p.seqNo === hour.seqNo && p.name === hour.name);
+              
+            //     if (matchingProd) {
+            //       return {
+            //         seqNo: hour.seqNo,
+            //         name: hour.name,
+            //         avg: matchingProd.avg, // from prod
+            //         count: matchingProd.count, // from prod
+            //         login: hour.login, // from updatedHrs
+            //         logout: hour.logout, // from updatedHrs (includes the updated logout time)
+            //       };
+            //     }
+              
+            //     // Handle case where there's no matching prod data (optional)
+            //     return {
+            //       seqNo: hour.seqNo,
+            //       name: hour.name,
+            //       avg: '', // Default value if no matching prod
+            //       count: '', // Default value if no matching prod
+            //       login: hour.login,
+            //       logout: hour.logout,
+            //     };
+            //   });
+              
+            //   console.log("mm",mergedData);
+           
+
             let workingHrs = (new Date().getHours() - 8) + new Date().getMinutes() / 60;
             workingHrs > 10 ? 10 : workingHrs
 
            
-            const chartData: BarChartData[] = prod.map((item,index) => ({
-                name:item.name,
+            const chartData: BarChartData[] = updatedData.map((item: any) => {
+
+                const earnmins = item.count *item.avg
+                const hours = item.timeGapHours 
+              
+                // Calculate the difference in milliseconds and convert it to hours
+                
+                // console.log("Working Hours:", workingHrs);
+                return(
+                  
+                
+                {
+                    name:item.seqNo+"-"+item.name,
                
-                count: item.count,
-                target: item.target * workingHrs,
-                ratio: (parseFloat((item.count / (item.target * workingHrs)*100).toFixed(2))),
+                    count: item.count,
+                    target: item.target * hours,
+                    ratio: Math.min(parseFloat(((earnmins / hours)).toFixed(2)), 200),
+                    realratio: parseFloat(((earnmins / hours)).toFixed(2))
                 // ratio: (item.count / (item.target * workingHrs)) * 100,
                 // ratio: parseFloat((item.count / (item.target * workingHrs)).toFixed(2))*100,
                 
 
-            })
+            })}
             
             );
            
             setChartData(chartData)
-
+            console.log("chart",chartData)
         }
 
         catch (error) {
@@ -103,6 +210,8 @@ const BarChartGraphEfficiencyRate = ({ date, obbSheetId }: BarChartGraphProps) =
         setisSubmitting(false)
 
     };
+
+
 
 
 
@@ -119,30 +228,6 @@ const BarChartGraphEfficiencyRate = ({ date, obbSheetId }: BarChartGraphProps) =
     }, [date, obbSheetId]);
 
 
-
-//     //create pdf
-//     const saveAsPDF = async () => {
-//         if (chartRef.current) {
-//             const canvas = await html2canvas(chartRef.current);
-//             const imgData = canvas.toDataURL('image/png');
-//             const pdf = new jsPDF({
-//                 orientation: 'landscape',
-//                 unit: 'px',
-//                 format: [canvas.width, canvas.height],
-//             });
-//             pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
-//             pdf.save('chart.pdf');
-//         }
-//     };
-
-    
-// //create Excel sheet
-//     const saveAsExcel = () => {
-//         const worksheet = XLSX.utils.json_to_sheet(chartData);
-//         const workbook = XLSX.utils.book_new();
-//         XLSX.utils.book_append_sheet(workbook, worksheet, "Chart Data");
-//         XLSX.writeFile(workbook, `chart-data.xlsx`);
-//     };
 
 
     return (
@@ -207,6 +292,7 @@ const BarChartGraphEfficiencyRate = ({ date, obbSheetId }: BarChartGraphProps) =
 
                                 <Bar dataKey="ratio" fill="orange" radius={5}>
                                     <LabelList
+                                    dataKey="realratio"
                                         position="top"
                                         offset={12}
                                         className="fill-foreground"
