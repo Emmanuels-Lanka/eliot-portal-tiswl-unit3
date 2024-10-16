@@ -42,7 +42,7 @@ FROM avg_smv a
 JOIN production_count p ON a."seqNo" = p."seqNo" AND a.name = p.name
 ORDER BY a."seqNo";`
     
-            console.log(data)
+            // console.log(data)
     
     
     return new Promise((resolve) => resolve(data as any[] ))

@@ -70,8 +70,8 @@ const BarChartGraphEfficiencyRate = ({ date, obbSheetId }: BarChartGraphProps) =
             setisSubmitting(true)
             const prod = await getOperatorEfficiency(obbSheetId, date)
             const hrs = await getHours(obbSheetId,date)
-            console.log("prd",prod)
-            console.log("hrs",hrs)
+            // console.log("prd",prod)
+            // console.log("hrs",hrs)
         
             const mergedArray :any= [];
 
@@ -79,7 +79,8 @@ const BarChartGraphEfficiencyRate = ({ date, obbSheetId }: BarChartGraphProps) =
             const hre = hrs.find((h)=> h.namee === p.name)
             return {...p,login:hre?.login,logout:hre?.logout}
            })
-            console.log("aaa",aaa)
+            // console.log("aaa",aaa)
+
            
 
             const updatedData = aaa.map(item => {
@@ -115,7 +116,7 @@ const BarChartGraphEfficiencyRate = ({ date, obbSheetId }: BarChartGraphProps) =
                 timeGapHours: timeGapHours.toFixed(2) // Round to 2 decimal places
               };
             });
-            console.log("aa",updatedData);
+            // console.log("aa",updatedData);
 
 
 
@@ -201,7 +202,7 @@ const BarChartGraphEfficiencyRate = ({ date, obbSheetId }: BarChartGraphProps) =
             );
            
             setChartData(chartData)
-            console.log("chart",chartData)
+            // console.log("chart",chartData)
         }
 
         catch (error) {
