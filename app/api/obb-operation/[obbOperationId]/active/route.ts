@@ -23,7 +23,9 @@ export async function PATCH(
         if (existingOperation.sewingMachine) {      // 1: A machine assigned to this Obb operation
             if (existingOperation.sewingMachine?.activeObbOperationId !== null) {       // 3: The machine is in active with a obb operation
                 if (existingOperation.sewingMachine?.activeObbOperationId !== params.obbOperationId) {      // 5: The machine is active with different obb operation
-                    return new NextResponse("Machine already in active, Cannot activate the same machine for this operation!", { status: 409 })
+                    if (existingOperation.sewingMachine?.activeObbOperationId !== "combined") {
+                        return new NextResponse("Machine already in active, Cannot activate the same machine for this operation!", { status: 409 })
+                    }
                 }
             } else {        // 4: The machine is not in active with any obb operations
                 // Put the activeObbOperationId is "combined", if the operation is combined
