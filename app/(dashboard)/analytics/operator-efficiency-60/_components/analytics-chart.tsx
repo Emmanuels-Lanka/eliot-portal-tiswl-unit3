@@ -57,7 +57,8 @@ const AnalyticsChart = ({
             operation: operations.map(op => {
                 const filteredData = op.data.filter(data => getHourGroup(data.timestamp) === hourGroup);
                 const totalProduction = filteredData.reduce((sum, curr) => sum + curr.productionCount, 0);
-                const efficiency = filteredData.length > 0 ? (totalProduction === 0 ? 0 : (totalProduction / op.operator.obbOperation.target) * 100) : null;
+                const earnMinutes = op.operator.obbOperation.smv * totalProduction
+                const efficiency = filteredData.length > 0 ? (totalProduction === 0 ? 0 : (earnMinutes / 60) * 100) : null;
                 return { name: `${op.operator.obbOperation.seqNo}-${op.operator.obbOperation.operation.name}`, efficiency: efficiency !== null ? parseFloat(efficiency.toFixed(1)) : null };
             })
         }));
