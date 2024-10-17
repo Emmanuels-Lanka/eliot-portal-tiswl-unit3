@@ -224,7 +224,7 @@ const HmapChart15Compo = ({
                         },
                         {
                             from: 80,
-                            to: 1000,
+                            to: 100000,
                             name: 'High(above 80%)',
                             color: '#16a34a'
                         },
@@ -257,7 +257,7 @@ const HmapChart15Compo = ({
                     fontSize: '12px',
                     fontFamily: 'Inter, sans-serif',
                 }, rotate: -90,
-                minHeight: 250,
+                minHeight: 350,
             },
             // categories: operationList.map(o => o.name), // x-axis categories
             categories: operationList.map(o => `${o.name} `)
@@ -298,13 +298,13 @@ const HmapChart15Compo = ({
             setIsSubmitting(true)
             const sqlDate = date + "%";
             const prod: any[] = await getData(obbSheetId, sqlDate)
-            const eliot = prod.map((m) => (m.eliotid))
+            // const eliot = prod.map((m) => (m.eliotid))
           
             const opList = await geOperationList(obbSheetId,sqlDate)
             setoperationList(opList)
             const heatmapDatas = getProcessData(prod as any[], operationList as any[]);
             //rem 0 ops
-            
+            console.log("first",heatmapDatas)
             
 
             setHeatmapData(heatmapDatas);
@@ -377,7 +377,7 @@ const HmapChart15Compo = ({
                 height = heatmapData.length * 100
             }
         }
-        console.log("len",heatmapData.length)
+        // console.log("len",heatmapData.length)
     }
         const width = operationList && operationList.length > 0 ? operationList.length *60 : 600;
 
@@ -462,6 +462,7 @@ const getProcessData = (data: any[], operationList: any[]): any[] => {
         {
             ...d, hour: new Date(d.timestamp).getHours(),
             qtrIndex: Math.floor(new Date(d.timestamp).getMinutes() / 15),
+            smv:d.smv
             // eliotid:d.eliotid
 
         }
@@ -475,6 +476,7 @@ const getProcessData = (data: any[], operationList: any[]): any[] => {
     //   const result = Object.groupBy(dataWithQuarter, (d) => d.hour.toString() + d.qtrIndex.toString());
     const result = Object.groupBy(dataWithQuarter, (d) => getTimeSlotLabel(d.hour, d.qtrIndex));
      
+
     // console.log("res",result)
     let rc = 0
     for (const [key, value] of Object.entries(result)) {
@@ -485,26 +487,33 @@ const getProcessData = (data: any[], operationList: any[]): any[] => {
 
         const dataPoints = []
         for (const [key, value] of Object.entries(dataGBOp)) {
+
             const target = value?.[0].target ?? 1;
             const v = value?.reduce((a, d) => {
 
                 return a + (d?.count ?? 0)
             }, 0)
 
-            //   console.log("vqw", v)
+            const earnMinutes = v*value?.[0].smv
+            const name = value?.[0].name
+            // console.log("aaa",earnMinutes,v,name,key)
+           
+
+              
 
             // dataPoints.push({ x: key, y: v ?? 0,eliotid: value?.[0].eliotid??0  })
             // dataPoints.push({ x: key, y: v ?? 0,eliotid: value?.[0].eliotid??0  })
             // rc += v
-            dataPoints.push({ x: key, y: ((v / (target / 4)) * 100).toFixed(0) ?? 0 })
+            dataPoints.push({ x: key, y: ( (earnMinutes/15) * 100).toFixed(0) ?? 0 })
             rc += v
+
 
         }
 
         //fill unavailble timeslots
 
 
-
+        // console.log(dataPoints)/
         fmtDataSeries.push({ name: key, data: dataPoints })
     }
 
