@@ -120,7 +120,7 @@ const HmapChart15Compo = ({
                         },
                         {
                             from: 80,
-                            to: 1000,
+                            to: 10000,
                             name: 'High(above 80%)',
                             color: '#16a34a'
                         },
@@ -313,7 +313,9 @@ const getProcessData = (data: any[], operationList: any[]) => {
     const dataWithQuarter = data.map((d) => (
         {
             ...d, hour: new Date(d.timestamp).getHours(),
-            qtrIndex: Math.floor(new Date(d.timestamp).getMinutes() / 15)
+            qtrIndex: Math.floor(new Date(d.timestamp).getMinutes() / 15),
+            smv:d.smv
+
         }
     )
     )
@@ -328,18 +330,19 @@ const getProcessData = (data: any[], operationList: any[]) => {
         const dataGBOp = Object.groupBy(value || [], (d) => d.name);
         // console.log("abc",dataGBOp)
         const dataPoints = []
-        for (const [key1, value1] of Object.entries(dataGBOp)) {
-            const target = value1?.[0].target ?? 1;
+        for (const [key, value] of Object.entries(dataGBOp)) {
+            const target = value?.[0].target ?? 1;
 
 
-            const v = value1?.reduce((a, d) => {
+            const v = value?.reduce((a, d) => {
 
                 return a + (d?.count ?? 0)
             }, 0)
 
+            const earnMinutes = v*value?.[0].smv
             //   console.log("vqw", v)
 
-            dataPoints.push({ x: key1, y: ((v / (target / 4)) * 100).toFixed(0) ?? 0 })
+            dataPoints.push({ x: key, y: ( (earnMinutes/15) * 100).toFixed(0) ?? 0 })
             rc += v
 
         }
@@ -352,7 +355,6 @@ const getProcessData = (data: any[], operationList: any[]) => {
 
 
     }
- 
 
 
 
