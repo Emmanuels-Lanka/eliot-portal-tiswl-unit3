@@ -136,7 +136,7 @@ const HmapChart15Compo = ({
                         },
                         {
                             from: 80,
-                            to: 1000,
+                            to: 1000000,
                             name: 'High(above 80%)',
                             color: '#16a34a'
                         },
@@ -323,6 +323,7 @@ const getProcessData = (data: any[], operationList: any[]): any[] => {
         {
             ...d, hour: new Date(d.timestamp).getHours(),
             qtrIndex: Math.floor(new Date(d.timestamp).getMinutes() / 15),
+            smv:d.smv
             // eliotid:d.eliotid
 
         }
@@ -349,12 +350,14 @@ const getProcessData = (data: any[], operationList: any[]): any[] => {
 
                 return a + (d?.count ?? 0)
             }, 0)
+            const earnMinutes = v*value?.[0].smv
 
             //   console.log("vqw", v)
 
             // dataPoints.push({ x: key, y: v ?? 0,eliotid: value?.[0].eliotid??0  })
             // rc += v
-            dataPoints.push({ x: key, y: ((v / (target / 4)) * 100).toFixed(0) ?? 0 })
+            dataPoints.push({ x: key, y: ( (earnMinutes/15) * 100).toFixed(0) ?? 0 })
+
             rc += v
 
         }

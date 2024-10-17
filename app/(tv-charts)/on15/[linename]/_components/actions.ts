@@ -6,7 +6,7 @@ export async function getData(obbsheetid:string,date:string)  : Promise<any[]>{
     const sql = neon(process.env.DATABASE_URL || "");
     //,pd."eliotSerialNumber" as eliotid
     const data = await sql`SELECT pd."productionCount" as count, concat(substring(concat(o.name ) from 0 for 20),' ','(',sm."machineId",') - ',oo."seqNo") as name  ,
-     pd.timestamp as timestamp, oo."seqNo",oo.target
+     pd.timestamp as timestamp, oo."seqNo",oo.target,oo.smv as smv
     FROM "ProductionData" pd
     right JOIN "ObbOperation" oo ON pd."obbOperationId" = oo.id
     INNER JOIN "ObbSheet" os ON oo."obbSheetId" = os.id
