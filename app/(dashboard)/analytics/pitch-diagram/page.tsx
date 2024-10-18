@@ -1,7 +1,6 @@
 import React from 'react'
 import { db } from '@/lib/db';
 import AnalyticsCompo from './_components/analytics';
-
 const page = async () => {
 
     const obbSheets = await db.obbSheet.findMany({
