@@ -17,6 +17,7 @@ where os."unitId"=${unit}
  order by os."createdAt" desc
 
 `
+console.log(unit)
     return new Promise((resolve) => resolve(data as { id: string; name: string }[]))
 }
 
@@ -48,6 +49,6 @@ export async function getTargetValues(obbSheetId:string) : Promise<any[]>  {
 where l."obbSheetId" = ${obbSheetId}
 
 `
-console.log(obbSheetId)
+// console.log(obbSheetId)
     return new Promise((resolve) => resolve(data as any []))
 }

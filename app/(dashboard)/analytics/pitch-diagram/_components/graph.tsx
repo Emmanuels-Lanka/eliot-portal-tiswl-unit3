@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react'
 import { AnalyticsChartProps } from './analytics'
 
-import { TrendingUp } from "lucide-react"
+import { Loader2, TrendingUp } from "lucide-react"
 import { CartesianGrid, LabelList, Line, LineChart, XAxis, YAxis } from "recharts"
 import {
   Card,
@@ -19,12 +19,14 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart"
 import { getOperationSmv, getTargetValues } from './action'
+import { cn } from '@/lib/utils'
 export const description = "A line chart with a label"
 
 const GraphCompo  = ({date,obbSheet}:any) => {
 
     const [chartData, setChartData] = useState<any[]>([])
     const [chartWidth, setChartWidth] = useState<number>(170);
+    const [isSubmitting,setisSubmitting]=useState<boolean>(false)
 
       const chartConfig = {
         desktop: {
@@ -44,6 +46,8 @@ const GraphCompo  = ({date,obbSheet}:any) => {
             
             
             // setisSubmitting(true)
+            setisSubmitting(true)
+
             const ops = await getOperationSmv(obbSheet, date)
             const vls = await getTargetValues(obbSheet)
         
@@ -90,6 +94,8 @@ const GraphCompo  = ({date,obbSheet}:any) => {
         catch (error) {
             console.error("Error fetching data:", error);
         }
+        setisSubmitting(false)
+
         // setisSubmitting(false)
 
     };
@@ -103,9 +109,12 @@ const GraphCompo  = ({date,obbSheet}:any) => {
 
   return (
    <div>
+        <Loader2 className={cn("animate-spin w-7 h-7 hidden", isSubmitting && "flex")} />
+
   
-  {chartData.length > 0 ?
+        {chartData.length > 0 ? (
     <div className='bg-slate-50 pt-5 -pl-8 rounded-lg border w-full h-[450px] mb-16 overflow-scroll'>
+
     <Card className='bg-slate-50 pt-4' style={{width:(chartWidth)+"%"}}>
       
       <CardContent>
@@ -177,9 +186,9 @@ const GraphCompo  = ({date,obbSheet}:any) => {
  
     </Card>
     </div>
-     : <div className="mt-12 w-full">
-     <p className="text-center text-slate-500">No Data Available.</p>
- </div>
+    ) : (<div className="mt-12 w-full">
+     <p className="text-center text-slate-500">No Data Available....</p>
+ </div>)
   }
     
    

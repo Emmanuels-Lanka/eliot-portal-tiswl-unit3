@@ -1,5 +1,5 @@
 "use client"
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import SelectObbSheetAndDate from './select-obb';
 import { toast } from '@/components/ui/use-toast';
 import GraphCompo from './graph';
@@ -22,6 +22,9 @@ const AnalyticsCompo = ({obbSheets,units}:AnalyticsChartProps) => {
 
     const [newDate,setNewDate] = useState<any>()
     const [obbSheetId,setObbSheetId] = useState<any>()
+    const [userMessage,setUserMessage]=useState<string>("Please select style and date")
+    const [filterApplied,setFilterApplied]=useState<boolean>(false)
+
 
     const handleFetchProductions = async (data: { obbSheetId: string; }) => {
         try {
@@ -33,6 +36,7 @@ const AnalyticsCompo = ({obbSheets,units}:AnalyticsChartProps) => {
             setNewDate(formattedDate);
             
             setObbSheetId(obb);
+            setFilterApplied(true)
 
             console.log(data)
         } catch (error: any) {
@@ -50,16 +54,34 @@ const AnalyticsCompo = ({obbSheets,units}:AnalyticsChartProps) => {
             });
         }
     }
+    useEffect(()=>{
+        if(filterApplied){
+            setUserMessage("No data available....")
+        }
+        
+      },[filterApplied])
 
   return (
-    <div>analytics
+    <div>
         <div>
        
         <SelectObbSheetAndDate handleSubmit={handleFetchProductions}
         obbSheets={obbSheets}
         units={units}
         ></SelectObbSheetAndDate>
-        <GraphCompo date={newDate} obbSheet={obbSheetId}></GraphCompo>
+        <div className="mx-auto max-w-[1680px]">
+                {obbSheetId && obbSheetId.length > 0 ?
+                    <div className="my-8">
+                        
+                        <GraphCompo date={newDate} obbSheet={obbSheetId}></GraphCompo>
+                    </div>
+                    :
+                    <div className="mt-12 w-full">
+                        <p className="text-center text-slate-500">{userMessage}</p>
+                    </div>
+                }
+            </div>
+        
         </div>
      </div>
   )

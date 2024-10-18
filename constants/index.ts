@@ -21,7 +21,8 @@ import {
     Table,
     UserRoundCog,
     TableProperties,
-    UserRoundPlus
+    UserRoundPlus,
+    LineChart
 } from "lucide-react";
 
 export const ROAMING_QC_DEFECTS = [
@@ -167,7 +168,12 @@ export const SIDEBAR_ROUTES = [
             {
                 label: "Overall Operation Efficiency",
                 href: "/analytics/efficiency-rate",
-                icon: BarChart3
+                icon: BarChartHorizontal
+            },
+            {
+                label: "Pitch Graph",
+                href: "/analytics/pitch-diagram",
+                icon: LineChart  
             },
 
 
@@ -594,6 +600,11 @@ export const HEADER_INFO = [
         label: "Line Efficiency Resources",
         href: "/line-efficiency-resources",
         icon: Cable
+    },
+    {
+        label: "Pitch Graph",
+        href: "/analytics/pitch-diagram",
+        icon: LineChart  
     },
 ]
 

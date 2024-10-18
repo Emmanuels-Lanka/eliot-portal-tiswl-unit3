@@ -40,7 +40,7 @@ interface SelectObbSheetAndDateProps {
         id: string;
         name: string;
     }[] | null;
-    handleSubmit: (data: { obbSheetId: string; date: Date }) => void;
+    handleSubmit: (data: { obbSheetId: string; }) => void;
     units:{
         id: string;
         name: string;
@@ -51,7 +51,7 @@ const formSchema = z.object({
     obbSheetId: z.string().min(1, {
         message: "OBB Sheet is required"
     }),
-    date: z.date(),
+    // date: z.date(),
     unit: z.string().min(1, {
         message: "Unit is required"
     }),
@@ -84,7 +84,8 @@ const [obbSheet, setObbSheet] = useState<{ id: string; name: string }[]>([]);
         resolver: zodResolver(formSchema),
         defaultValues: {
             obbSheetId: "",
-            date: undefined,
+            
+            unit:""
         },
     });
 
@@ -103,7 +104,7 @@ const [obbSheet, setObbSheet] = useState<{ id: string; name: string }[]>([]);
     
 
     return (
-        <div className='mt-10 mb-16 border px-12 pt-6 pb-10 rounded-lg bg-slate-100'>
+        <div className='mt-10 mb-16 border px-12 pt-6 pb-10 rounded-lg bg-slate-100 shadow-md'>
             
             <Form {...form}>
                 <form
@@ -111,7 +112,7 @@ const [obbSheet, setObbSheet] = useState<{ id: string; name: string }[]>([]);
                     className="w-full flex flex-col lg:flex-row items-end gap-x-8 gap-y-6 mt-4"
                 >
                     <div className="w-full flex flex-col md:flex-row gap-6">
-                        <div className="md:w-1/3">
+                        <div className="md:w-1/2">
                             <FormField
                                 control={form.control}
                                 name="unit"
@@ -178,7 +179,7 @@ const [obbSheet, setObbSheet] = useState<{ id: string; name: string }[]>([]);
                         </div>
 
 
-                        <div className="md:w-1/3">
+                        <div className="md:w-1/2">
                             <FormField
                                 control={form.control}
                                 name="obbSheetId"
@@ -243,53 +244,10 @@ const [obbSheet, setObbSheet] = useState<{ id: string; name: string }[]>([]);
                         </div>
 
 
-                        <div className="md:w-1/3">
-                            <FormField
-                                control={form.control}
-                                name="date"
-                                render={({ field }) => (
-                                    <FormItem className="flex flex-col">
-                                        <FormLabel className="text-base">
-                                            Date
-                                        </FormLabel>
-                                        <Popover>
-                                            <PopoverTrigger asChild>
-                                                <FormControl>
-                                                    <Button
-                                                        variant={"outline"}
-                                                        className="w-full justify-start text-left font-normal"
-                                                    >
-                                                        {field.value ? (
-                                                            format(field.value, "PPP")
-                                                        ) : (
-                                                            <span>Pick a date</span>
-                                                        )}
-                                                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                                                    </Button>
-                                                </FormControl>
-                                            </PopoverTrigger>
-                                            <PopoverContent className="w-full p-0" align="start">
-                                                <Calendar
-                                                    mode="single"
-                                                    selected={field.value}
-                                                    onSelect={field.onChange}
-                                                    disabled={(date) =>
-                                                        date > new Date() || date < new Date("2024-01-01")
-                                                    }
-                                                    initialFocus
-                                                    className="w-full"
-                                                />
-                                            </PopoverContent>
-                                        </Popover>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                        </div>
                     </div>
                     <Button
                         type="submit"
-                        disabled={!isValid || isSubmitting}
+                        // disabled={!isValid || isSubmitting}
                         className="flex max-md:w-full w-32 gap-2 pr-5"
                     >
                         <Filter className={cn("w-5 h-5", isSubmitting && "hidden")} />
