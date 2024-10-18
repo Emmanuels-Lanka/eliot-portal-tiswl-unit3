@@ -54,16 +54,19 @@ export async function getEliotMachineList(obbsheetid:string ,date:string) : Prom
     const sql = neon(process.env.DATABASE_URL || "");
  
     // const data = await sql`SELECT   concat(oo."seqNo",'-',o.name ) as name
-    const data = await sql`SELECT sm."machineId",ed."serialNumber"
+
+
+ 
+ 
+     const data = await sql`SELECT sm."machineId",ed."serialNumber"
     FROM "ObbOperation" oo  
     INNER JOIN "ObbSheet" os ON oo."obbSheetId" = os.id
     inner JOIN "SewingMachine" sm ON sm."id"= oo."sewingMachineId"
     inner JOIN "EliotDevice" ed ON ed.id = sm."eliotDeviceId"
-    WHERE os.id = ${obbsheetid}  
+    inner Join "ProductionData" pd ON pd."obbOperationId" = oo.id
+    WHERE os.id = ${obbsheetid}  and pd.timestamp like ${date}
+    group by sm."machineId",ed."serialNumber",oo."seqNo"
      order by  oo."seqNo" ;`;
-
- 
- 
 
 
  
