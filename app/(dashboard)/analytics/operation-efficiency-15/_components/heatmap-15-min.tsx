@@ -216,6 +216,11 @@ const   HmapChart15Compo = ({
             
             const opList = await geOperationList(obbSheetId,sqlDate)
             setoperationList(opList)
+
+            const s = await getEliotMachineList(obbSheetId,sqlDate)
+
+            seteliotIdList(s)
+
             const heatmapDatas = getProcessData(prod as any[], operationList as any[]);
             setHeatmapData(heatmapDatas);
             
@@ -254,16 +259,16 @@ const   HmapChart15Compo = ({
 
     }, [obbSheetId,date])
 
-    useEffect(() => {
+    // useEffect(() => {
      
-        const e= async ()=>{
-        const s =  await getEliotMachineList(obbSheetId,date)
+    //     const e= async ()=>{
+    //     const s =  await getEliotMachineList(obbSheetId,date)
 
-        seteliotIdList(s)
-        }
-        e()
+    //     seteliotIdList(s)
+    //     }
+    //     e()
 
-    }, [obbSheetId,date])
+    // }, [obbSheetId,date])
 
    
     //create Excel sheet

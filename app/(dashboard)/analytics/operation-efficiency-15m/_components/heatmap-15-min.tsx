@@ -300,8 +300,16 @@ const HmapChart15Compo = ({
             const prod: any[] = await getData(obbSheetId, sqlDate)
             // const eliot = prod.map((m) => (m.eliotid))
           
+
+
             const opList = await geOperationList(obbSheetId,sqlDate)
             setoperationList(opList)
+
+
+            const s = await getEliotMachineList(obbSheetId,sqlDate)
+
+            seteliotIdList(s)
+
             const heatmapDatas = getProcessData(prod as any[], operationList as any[]);
             //rem 0 ops
             console.log("first",heatmapDatas)
@@ -344,16 +352,16 @@ const HmapChart15Compo = ({
 
     }, [obbSheetId, date])
 
-    useEffect(() => {
+    // useEffect(() => {
 
-        const e = async () => {
-            const s = await getEliotMachineList(obbSheetId)
-            
-            seteliotIdList(s)
-        }
-        e()
+    //     const e = async () => {
+    //         const s = await getEliotMachineList(obbSheetId,date)
+    //         console.log(s)
+    //         seteliotIdList(s)
+    //     }
+    //     e()
 
-    }, [obbSheetId, date])
+    // }, [obbSheetId, date])
 
     // const totalCount = Object.keys(timeList).reduce((acc, curr) => acc + curr.length, 0);
     // const height: string = totalCount < 50 ? '430%' : totalCount < 60 ? '300%' : '500%';

@@ -37,7 +37,7 @@ export async function geOperationList(obbsheetid:string ,date:string) : Promise<
     return new Promise((resolve) => resolve(data ))
 }
 
-export async function getEliotMachineList(obbsheetid:string ) : Promise<any[]>  {
+export async function getEliotMachineList(obbsheetid:string,date:string ) : Promise<any[]>  {
     const sql = neon(process.env.DATABASE_URL || "");
  
     // const data = await sql`SELECT   concat(oo."seqNo",'-',o.name ) as name
@@ -47,9 +47,11 @@ export async function getEliotMachineList(obbsheetid:string ) : Promise<any[]>  
     inner JOIN "SewingMachine" sm ON sm."id"= oo."sewingMachineId"
     inner JOIN "EliotDevice" ed ON ed.id = sm."eliotDeviceId"
     inner Join "ProductionData" pd ON pd."obbOperationId" = oo.id
-    WHERE os.id = ${obbsheetid}  
+    WHERE os.id = ${obbsheetid}  and pd.timestamp like ${date}
+    group by sm."machineId",ed."serialNumber",oo."seqNo"
      order by  oo."seqNo" ;`;
 
+    //  console.log(obbsheetid,date)
   
  
     return new Promise((resolve) => resolve(data ))

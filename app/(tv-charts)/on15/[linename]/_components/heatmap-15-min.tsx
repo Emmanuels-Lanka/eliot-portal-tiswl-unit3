@@ -110,10 +110,10 @@ const HmapChart15Compo = ({
         },
         plotOptions: {
             heatmap: {
+                distributed: true,
                 enableShades: false,
-                radius: 100,
-                useFillColorAsStroke: false,
-                fontSize: '14px',
+                radius: 50,
+                useFillColorAsStroke: true,
                 colorScale: {
                     ranges: [
                         {
@@ -215,6 +215,9 @@ const HmapChart15Compo = ({
           
             const opList = await geOperationList(obbSheetId,sqlDate)
             setoperationList(opList)
+            const s = await getEliotMachineList(obbSheetId,sqlDate)
+
+            seteliotIdList(s)
             const heatmapDatas = getProcessData(prod as any[], operationList as any[]);
             //rem 0 ops
             
@@ -255,16 +258,16 @@ const HmapChart15Compo = ({
 
     }, [obbSheetId, date])
 
-    useEffect(() => {
+    // useEffect(() => {
 
-        const e = async () => {
-            const s = await getEliotMachineList(obbSheetId)
+    //     const e = async () => {
+    //         const s = await getEliotMachineList(obbSheetId)
             
-            seteliotIdList(s)
-        }
-        e()
+    //         seteliotIdList(s)
+    //     }
+    //     e()
 
-    }, [obbSheetId, date])
+    // }, [obbSheetId, date])
 
     const totalCount = Object.keys(timeList).reduce((acc, curr) => acc + curr.length, 0);
     const height: string = totalCount < 50 ? '600%' : totalCount < 60 ? '700%' : '600%';
