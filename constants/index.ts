@@ -120,11 +120,11 @@ export const SIDEBAR_ROUTES = [
             //     icon: BarChart3
             // },
         
-            {
-                label: "Production Heatmap (15min)",
-                href: "/analytics/operation-efficiency-15",
-                icon: BarChartHorizontal
-            },
+            // {
+            //     label: "Production Heatmap (15min)",
+            //     href: "/analytics/operation-efficiency-15",
+            //     icon: BarChartHorizontal
+            // },
 
 
         ]
@@ -160,11 +160,11 @@ export const SIDEBAR_ROUTES = [
                 icon: BarChartHorizontal
             },
 
-            {
-                label: "Operation Efficiency (15min)",
-                href: "/analytics/operation-efficiency-15m",
-                icon: BarChartHorizontal
-            },
+            // {
+            //     label: "Operation Efficiency (15min)",
+            //     href: "/analytics/operation-efficiency-15m",
+            //     icon: BarChartHorizontal
+            // },
             {
                 label: "Overall Operation Efficiency",
                 href: "/analytics/efficiency-rate",
@@ -192,11 +192,11 @@ export const SIDEBAR_ROUTES = [
             //     href: "/analytics/operator-effective-time",
             //     icon: Table
             // },
-            {
-                label: "Operator Efficiency (15min)",
-                href: "/analytics/operator-efficiency-15",
-                icon: BarChartHorizontal
-            },
+            // {
+            //     label: "Operator Efficiency (15min)",
+            //     href: "/analytics/operator-efficiency-15",
+            //     icon: BarChartHorizontal
+            // },
         ]
     },
     {
