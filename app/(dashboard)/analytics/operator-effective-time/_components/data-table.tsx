@@ -27,11 +27,12 @@ import { Input } from "@/components/ui/input"
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[]
     data: TData[]
+    generatePDF:any
 }
 
 export function DataTable<TData, TValue>({
     columns,
-    data,
+    data,generatePDF
 }: DataTableProps<TData, TValue>) {
     const [sorting, setSorting] = React.useState<SortingState>([])
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
@@ -76,8 +77,9 @@ export function DataTable<TData, TValue>({
     console.log("dataaaaaaa",data)
     return (
         <>
-            <div className="flex items-center py-4 space-x-2">
-                <Input
+            <div className='mb-4 border px-12 pt-6 pb-10 rounded-lg bg-slate-100'>
+               <div className="w-full flex flex-col lg:flex-row items-end gap-6 mt-4">
+                <Input 
                     type="date"
                     value={selectedDate}
                     onChange={(event) => setSelectedDate(event.target.value)}
@@ -86,6 +88,8 @@ export function DataTable<TData, TValue>({
                 <Button onClick={handleFilterByDate}>
                     Filter by Date
                 </Button>
+                <Button onClick={generatePDF}>Download as PDF</Button>
+               </div>
             </div>
 
             <div className="rounded-md border bg-white box-shadow">
