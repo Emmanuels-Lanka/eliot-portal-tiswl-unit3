@@ -27,12 +27,15 @@ export async function getOperationSmv(obbSheetId:string,date:string) : Promise<a
 
     
      const data = await sql`
-      select os."seqNo",os.smv,o.name from "ObbOperation" os
-inner join "Operation" o on o.id =os."operationId"
-
-where os."obbSheetId" = ${obbSheetId}
-
-order by os."seqNo"
+      WITH OperationData AS (
+    SELECT os."seqNo", os.smv, o.name
+    FROM "ObbOperation" os
+    INNER JOIN "Operation" o ON o.id = os."operationId"
+    WHERE os."obbSheetId" = ${obbSheetId}
+)
+SELECT *, (SELECT COUNT(*) FROM OperationData) AS operations
+FROM OperationData
+ORDER BY "seqNo";
 
 `
 // console.log(obbSheetId)
