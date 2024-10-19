@@ -152,19 +152,41 @@ export const columns: ColumnDef<OperatorEffectiveTime>[] = [
     },
     {
         accessorKey: "operator.employeeId",
-        header: "Emp. ID",
+        header:  "Emp ID",
     },
     {
         accessorKey: "loginTimestamp",
-        header: "Login Time",
+        header: ({ column }) => {
+            return (
+                <Button
+                    variant="ghost"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                    className="-ml-3"
+                >
+                    Login <br></br>Time
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+            )
+        },
     },
     {
         accessorKey: "logoutTimestamp",
-        header: "Logout Time",
+        header: () => {
+            return (
+                <>
+                 Logout <br></br>Time
+                </>
+                
+            )
+        },
     },
     {
         accessorKey: "totalTime",
-        header: "Total Available Time",
+        header:()=>(
+            <>
+            Total<br/>Available<br/>Time
+            </>
+        ) ,
     },
     {
         accessorKey: "mechanicDownTime",
