@@ -1,0 +1,140 @@
+"use client"
+
+import axios from "axios";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { ObbSheet } from "@prisma/client";
+import { parseISO, getHours } from 'date-fns';
+
+import HeatmapChart from "@/components/dashboard/charts/heatmap-chart";
+import SelectObbSheetAndDate from "@/components/dashboard/common/select-obbsheet-and-date";
+import { useToast } from "@/components/ui/use-toast";
+import EffiencyHeatmap from "@/components/dashboard/charts/efficiency-heatmap";
+
+interface AnalyticsChartProps {
+    obbSheets: {
+        id: string;
+        name: string;
+    }[] | null;
+    title: string;
+}
+
+const AnalyticsChart = ({
+    obbSheets,
+    title
+}: AnalyticsChartProps) => {
+    const { toast } = useToast();
+    const router = useRouter();
+
+    const [heatmapData, setHeatmapData] = useState<HourlyEfficiencyTypes[]>();
+    const [heatmapCategories, setHeatmapCategories] = useState<string[] | null>(null);
+    const [obbSheet, setObbSheet] = useState<ObbSheet | null>(null);
+
+    function processProductionData(productionData: ProductionDataForChartTypes[]): HourlyEfficiencyTypes[] {
+        // Step 1: Categorize by obbOperation
+        const operationMap = new Map<string, ProductionDataForChartTypes[]>();
+        productionData.forEach(data => {
+            const group = operationMap.get(data.obbOperationId) || [];
+            group.push(data);
+            operationMap.set(data.obbOperationId, group);
+        });
+
+        // Define the hourly groups
+        const hours = [...Array(12)].map((_, i) => `${7 + i}:00 AM - ${8 + i}:00 AM`.replace('12:00 AM', '12:00 PM').replace('13:00 AM', '1:00 PM'));
+
+        // Step 3: Categorize each operation's data by hour group
+        const result: HourlyEfficiencyTypes[] = hours.map(hour => ({
+            hourGroup: hour,
+            operation: []
+        }));
+
+        operationMap.forEach((data, operationId) => {
+            const target = data[0].obbOperation.target; // Step 2: Find target for each operation
+
+            // Group data by hour
+            const hourCounts = new Map<string, number>(); // Maps hour group to total production count
+            data.forEach(entry => {
+                const hourIndex = Math.floor((new Date(entry.timestamp).getHours() - 7) % 12);
+                const hourGroup = hours[hourIndex];
+                hourCounts.set(hourGroup, (hourCounts.get(hourGroup) || 0) + entry.productionCount);
+            });
+
+            // Step 4: Calculate efficiency for each hour group
+            hourCounts.forEach((count, hourGroup) => {
+                const efficiency = (count / target) * 100;
+                const hourData = result.find(h => h.hourGroup === hourGroup);
+                if (hourData) {
+                    hourData.operation.push({
+                        name: data[0].obbOperation.operation.name,
+                        efficiency: parseFloat(efficiency.toFixed(2))
+                    });
+                }
+            });
+        });
+
+        return result;
+    }
+
+    const handleFetchProductions = async (data: { obbSheetId: string; date: Date }) => {
+        try {
+            data.date.setDate(data.date.getDate() + 1);
+            const formattedDate = data.date.toISOString().split('T')[0];
+
+            const response = await axios.get(`/api/efficiency/production?obbSheetId=${data.obbSheetId}&date=${formattedDate}`);
+            const heatmapData = processProductionData(response.data.data);
+            
+            
+            // setHeatmapData(heatmapData.efficiencyData);
+            // setHeatmapCategories(heatmapData.xAxisCategories);
+            setObbSheet(response.data.obbSheet);
+
+            router.refresh();
+        } catch (error: any) {
+            console.error("Error fetching production data:", error);
+            toast({
+                title: "Something went wrong! Try again",
+                variant: "error",
+                description: (
+                    <div className='mt-2 bg-slate-200 py-2 px-3 md:w-[336px] rounded-md'>
+                        <code className="text-slate-800">
+                            ERROR: {error.message}
+                        </code>
+                    </div>
+                ),
+            });
+        }
+    }
+
+    return (
+        <>
+            <div className="mx-auto max-w-7xl">
+                <SelectObbSheetAndDate
+                    obbSheets={obbSheets}
+                    handleSubmit={handleFetchProductions}
+                />
+            </div>
+            <div className="mx-auto max-w-[1680px]">
+                {heatmapData !== null && heatmapCategories !== null ?
+                    <div className="mt-12">
+                        <h2 className="text-lg mb-2 font-medium text-slate-700">{title}</h2>
+                        {/* <EffiencyHeatmap
+                            xAxisLabel='Operations'
+                            height={580}
+                            type="60min"
+                            efficiencyLow={obbSheet?.efficiencyLevel1}
+                            efficiencyHigh={obbSheet?.efficiencyLevel3}
+                            heatmapData={heatmapData}
+                            heatmapCategories={heatmapCategories}
+                        /> */}
+                    </div>
+                    :
+                    <div className="mt-12 w-full">
+                        <p className="text-center text-slate-500">Please select the OBB sheet and date ☝️</p>
+                    </div>
+                }
+            </div>
+        </>
+    )
+}
+
+export default AnalyticsChart

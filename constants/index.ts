@@ -22,7 +22,8 @@ import {
     UserRoundCog,
     TableProperties,
     UserRoundPlus,
-    LineChart
+    LineChart,
+    LocateFixed
 } from "lucide-react";
 
 export const ROAMING_QC_DEFECTS = [
@@ -112,6 +113,12 @@ export const SIDEBAR_ROUTES = [
                 label:"Target vs Actual (Instance)",
                 href: "/analytics/daily-achivement-ins",
                 icon: BarChartHorizontal
+                
+            },
+            {
+                label:"Hourly Production",
+                href: "/analytics/production-hourly",
+                icon: LocateFixed 
                 
             },
             // {
@@ -570,6 +577,12 @@ export const HEADER_INFO = [
         href: "/analytics/daily-achivement-ins",
         icon: BarChartHorizontal
 
+    },
+    {
+        label:"Hourly Production",
+        href: "/analytics/production-hourly",
+        icon: LocateFixed 
+        
     },
     {
         label: "Overall Performance - Operations (Live Data)",
