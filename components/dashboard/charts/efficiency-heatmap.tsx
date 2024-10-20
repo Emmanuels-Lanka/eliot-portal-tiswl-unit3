@@ -45,27 +45,15 @@ const EffiencyHeatmap = ({
                     ranges: [
                         {
                             from: -10,
-                            to: -0.9,
+                            to: 0,
                             name: 'No Data',
-                            color: '#f1f5f9'
+                            color: '#FFFFFF'
                         },
                         {
                             from: 0,
-                            to: efficiencyLow,
-                            name: 'Low(Below 70%)',
-                            color: '#ef4444'
-                        },
-                        {
-                            from: efficiencyLow,
-                            to: efficiencyHigh,
-                            name: 'Medium(70% - 80%)',
-                            color: '#f97316'
-                        },
-                        {
-                            from: efficiencyHigh,
-                            to: 1000,
-                            name: 'High(above 80%)',
-                            color: '#16a34a'
+                            to: 50000,
+                            name: 'Nuber of Products',
+                            color: '#0171c1'
                         },
                     ],
                 },
