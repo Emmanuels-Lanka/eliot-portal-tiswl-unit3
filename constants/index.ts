@@ -116,9 +116,14 @@ export const SIDEBAR_ROUTES = [
                 
             },
             {
+                label: "Production Heatmap (15min)",
+                href: "/analytics/operation-efficiency-15",
+                icon: BarChartHorizontal
+            },
+            {
                 label:"Hourly Production",
                 href: "/analytics/production-hourly",
-                icon: LocateFixed 
+                icon: BarChartHorizontal
                 
             },
             // {
@@ -127,11 +132,7 @@ export const SIDEBAR_ROUTES = [
             //     icon: BarChart3
             // },
         
-            // {
-            //     label: "Production Heatmap (15min)",
-            //     href: "/analytics/operation-efficiency-15",
-            //     icon: BarChartHorizontal
-            // },
+            
 
 
         ]
