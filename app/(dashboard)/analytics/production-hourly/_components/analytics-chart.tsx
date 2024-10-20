@@ -9,7 +9,8 @@ import { parseISO, getHours } from 'date-fns';
 import HeatmapChart from "@/components/dashboard/charts/heatmap-chart";
 import SelectObbSheetAndDate from "@/components/dashboard/common/select-obbsheet-and-date";
 import { useToast } from "@/components/ui/use-toast";
-import EffiencyHeatmap from "@/components/dashboard/charts/efficiency-heatmap";
+import EffiencyHeatmap from "./heatmap";
+// import EffiencyHeatmap from "@/components/dashboard/charts/efficiency-heatmap";
 
 interface AnalyticsChartProps {
     obbSheets: {
