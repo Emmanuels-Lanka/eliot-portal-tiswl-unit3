@@ -42,32 +42,20 @@ const EffiencyHeatmap = ({
                 radius: 24,
                 useFillColorAsStroke: false,
                 colorScale: {
-                  ranges: [
-                    {
-                        from: -10,
-                        to: -0.9,
-                        name: 'No Data',
-                        color: '#f1f5f9'
-                    },
-                    {
-                        from: 0,
-                        to: efficiencyLow,
-                        name: 'Low(Below 70%)',
-                        color: '#ef4444'
-                    },
-                    {
-                        from: efficiencyLow,
-                        to: efficiencyHigh,
-                        name: 'Medium(70% - 80%)',
-                        color: '#f97316'
-                    },
-                    {
-                        from: efficiencyHigh,
-                        to: 1000,
-                        name: 'High(above 80%)',
-                        color: '#16a34a'
-                    },
-                ],
+                    ranges: [
+                        {
+                            from: -10,
+                            to: 0,
+                            name: 'No Data',
+                            color: '#FFFFFF'
+                        },
+                        {
+                            from: 1,
+                            to: 50000,
+                            name: 'Nuber of Products',
+                            color: '#0171c1'
+                        },
+                    ],
                 },
             },
         },
