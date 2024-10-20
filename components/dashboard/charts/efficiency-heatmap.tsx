@@ -50,7 +50,7 @@ const EffiencyHeatmap = ({
                             color: '#FFFFFF'
                         },
                         {
-                            from: 0,
+                            from: 1,
                             to: 50000,
                             name: 'Nuber of Products',
                             color: '#0171c1'
