@@ -32,18 +32,23 @@ interface DataTableProps<TData, TValue> {
 
 export function DataTable<TData, TValue>({
     columns,
-    data,generatePDF
+    data,
+    generatePDF
 }: DataTableProps<TData, TValue>) {
     const [sorting, setSorting] = React.useState<SortingState>([])
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
-    const [selectedDate, setSelectedDate] = React.useState<string>("")
-    const [filteredData, setFilteredData] = React.useState<TData[]>(data)
+    
+    // Initialize the selectedDate with today's date
+    const [selectedDate, setSelectedDate] = React.useState<string>(() => {
+        const today = new Date().toISOString().split("T")[0] // Format YYYY-MM-DD
+        return today
+    })
+    const [filteredData, setFilteredData] = React.useState<TData[]>([])
 
     const table = useReactTable({
         data: filteredData,  // Pass filtered data here
         columns,
         getCoreRowModel: getCoreRowModel(),
-        // getPaginationRowModel: getPaginationRowModel(),
         onSortingChange: setSorting,
         getSortedRowModel: getSortedRowModel(),
         onColumnFiltersChange: setColumnFilters,
@@ -54,16 +59,16 @@ export function DataTable<TData, TValue>({
         },
     })
 
-    const handleFilterByDate = () => {
-        if (!selectedDate) {
+    // Filter data by selected date
+    const filterDataByDate = (date: string) => {
+        if (!date) {
             setFilteredData(data)  // Reset to original data if no date is selected
             return
         }
 
         const filtered = data.filter((row: any) => {
-            const logintimestamp=new Date(row.loginTimestamp)
-            const rowDate = new Date(row.date)
-            const filterDate = new Date(selectedDate)
+            const logintimestamp = new Date(row.loginTimestamp)
+            const filterDate = new Date(date)
             return (
                 logintimestamp.getFullYear() === filterDate.getFullYear() &&
                 logintimestamp.getMonth() === filterDate.getMonth() &&
@@ -74,7 +79,11 @@ export function DataTable<TData, TValue>({
         setFilteredData(filtered)
     }
 
-    console.log("dataaaaaaa",data)
+    // Run this effect on initial render to filter by today's date
+    React.useEffect(() => {
+        filterDataByDate(selectedDate)
+    }, [data, selectedDate])
+
     return (
         <>
             <div className='mb-4 border px-12 pt-6 pb-10 rounded-lg bg-slate-100'>
@@ -83,9 +92,9 @@ export function DataTable<TData, TValue>({
                     type="date"
                     value={selectedDate}
                     onChange={(event) => setSelectedDate(event.target.value)}
-                    className="max-w-sm"
+                    className="max-w-sm "
                 />
-                <Button onClick={handleFilterByDate}>
+                <Button onClick={() => filterDataByDate(selectedDate)}>
                     Filter by Date
                 </Button>
                 <Button onClick={generatePDF}>Download as PDF</Button>
@@ -136,27 +145,6 @@ export function DataTable<TData, TValue>({
                     </TableBody>
                 </Table>
             </div>
-
-            {/* <div className="flex items-center justify-end space-x-2 py-4">
-                <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => table.previousPage()}
-                    disabled={!table.getCanPreviousPage()}
-                    className="bg-white"
-                >
-                    Previous
-                </Button>
-                <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => table.nextPage()}
-                    disabled={!table.getCanNextPage()}
-                    className="bg-white"
-                >
-                    Next
-                </Button>
-            </div> */}
         </>
     )
 }
