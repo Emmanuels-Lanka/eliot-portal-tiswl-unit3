@@ -58,9 +58,9 @@ export async function PUT(
 ) {
     try {
         const { 
-            unitId, productionLineId, indEngineer, supervisor1, supervisor2, mechanic, qualityIns, accInputMan, fabInputMan, 
-            buyer, style, item, operators, helpers, startingDate, endingDate, workingHours, 
-            efficiencyLevel1, efficiencyLevel2, efficiencyLevel3, itemReference, totalMP, totalSMV, bottleNeckTarget, target100, 
+            unitId, productionLineId, indEngineer, supervisor1, supervisor2, mechanic, qualityIns, accInputMan, fabInputMan, lineChief,
+            buyer, style, item, operators, helpers, startingDate, endingDate, workingHours, factoryStartTime, factoryStopTime, bundleTime, personalAllowance,
+            efficiencyLevel1, efficiencyLevel2, efficiencyLevel3, itemReference, totalMP, totalSMV, obbOperationsNo, bottleNeckTarget, target100, 
             ucl, lcl, balancingLoss, balancingRatio, colour, supResponseTime, mecResponseTime, qiResponseTime, 
         } = await req.json();
 
@@ -96,8 +96,9 @@ export async function PUT(
                 qualityInsId: qualityIns, 
                 accInputManId: accInputMan, 
                 fabInputManId: fabInputMan, 
-                buyer, style, item, operators, helpers, startingDate, endingDate, workingHours, efficiencyLevel1,
-                efficiencyLevel2, efficiencyLevel3, itemReference, totalMP, totalSMV, bottleNeckTarget,
+                lineChiefId: lineChief,
+                buyer, style, item, operators, helpers, startingDate, endingDate, factoryStartTime, factoryStopTime, workingHours: parseFloat(workingHours), bundleTime, personalAllowance,
+                efficiencyLevel1, efficiencyLevel2, efficiencyLevel3, itemReference, totalMP, totalSMV: parseFloat(totalSMV), obbOperationsNo, bottleNeckTarget,
                 target100, ucl, lcl, balancingLoss, balancingRatio, colour, supResponseTime, mecResponseTime, qiResponseTime,
             }
         });

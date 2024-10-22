@@ -8,9 +8,9 @@ export async function POST(
 ) {
     try {
         const { 
-            unitId, productionLineId, indEngineer, supervisor1, supervisor2, supervisor3, supervisor4, mechanic, qualityIns, accInputMan, fabInputMan, 
-            buyer, style, item, operators, helpers, startingDate, endingDate, workingHours, 
-            efficiencyLevel1, efficiencyLevel2, efficiencyLevel3, itemReference, totalMP, totalSMV, bottleNeckTarget, target100, 
+            version, unitId, productionLineId, indEngineer, supervisor1, supervisor2, supervisor3, supervisor4, mechanic, qualityIns, accInputMan, fabInputMan, lineChief, 
+            buyer, style, item, operators, helpers, startingDate, endingDate, workingHours, factoryStartTime, factoryStopTime, bundleTime, personalAllowance,
+            efficiencyLevel1, efficiencyLevel2, efficiencyLevel3, itemReference, totalMP, totalSMV, obbOperationsNo, bottleNeckTarget, target100, 
             ucl, lcl, balancingLoss, balancingRatio, colour, supResponseTime, mecResponseTime, qiResponseTime, 
         } = await req.json();
 
@@ -33,11 +33,11 @@ export async function POST(
             }
         });
 
-        const name = `${line?.name}-${style}`
+        const name = `${line?.name}-${style}-v${version}`
 
         const newSheet = await db.obbSheet.create({
             data: {
-                id, name, unitId, productionLineId, 
+                id, version, name, unitId, productionLineId, 
                 indEngineerId: indEngineer, 
                 supervisorFrontId: supervisor1, 
                 supervisorBackId: supervisor2,
@@ -47,8 +47,9 @@ export async function POST(
                 qualityInsId: qualityIns, 
                 accInputManId: accInputMan, 
                 fabInputManId: fabInputMan, 
-                buyer, style, item, operators, helpers, startingDate, endingDate, workingHours, efficiencyLevel1,
-                efficiencyLevel2, efficiencyLevel3, itemReference, totalMP, totalSMV, bottleNeckTarget,
+                lineChiefId: lineChief,
+                buyer, style, item, operators, helpers, startingDate, endingDate, factoryStartTime, factoryStopTime, workingHours: parseFloat(workingHours), bundleTime, personalAllowance,
+                efficiencyLevel1, efficiencyLevel2, efficiencyLevel3, itemReference, totalMP, totalSMV: parseFloat(totalSMV), obbOperationsNo, bottleNeckTarget,
                 target100, ucl, lcl, balancingLoss, balancingRatio, colour, supResponseTime, mecResponseTime, qiResponseTime,
             }
         });

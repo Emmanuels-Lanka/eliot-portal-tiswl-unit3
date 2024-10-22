@@ -9,7 +9,6 @@ const FactoryStaff = async () => {
       createdAt: "desc",
     },
   });
-  console.log("staff",staffs)
 
   return (
     <div className='mx-auto max-w-7xl mt-2'>

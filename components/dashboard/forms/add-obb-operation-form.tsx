@@ -138,12 +138,7 @@ const AddObbOperationForm = ({
     
         fetchObbOperations();
     }, [obbSheetId]);
-    
-    
-
-    
-
-
+ 
     const form = useForm<FormValues>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -224,15 +219,6 @@ const AddObbOperationForm = ({
         }
     };
 
-    const handleEdit = (data: any) => {
-        try {
-            setIsUpdating(true);
-            setUpdatingData(data);
-        } catch (error) {
-            console.error("Handle Edit OBB Operation Error", error);
-        }
-    }
-
     const handleCancel = () => {
         setIsUpdating(false);
         setIsEditing(false);
@@ -251,10 +237,6 @@ const AddObbOperationForm = ({
         });
     }
 
-
-
-
-    
     return (
         <div className="mx-auto max-w-7xl border px-6 pt-4 pb-6 rounded-lg bg-slate-100">
             <div className="font-medium flex items-center justify-between">

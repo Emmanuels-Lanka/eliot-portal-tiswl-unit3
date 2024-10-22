@@ -32,7 +32,7 @@ const ObbSheetId = async ({
     return acc;
   }, {});
 
-  const sheets: ObbSheet | null = await db.obbSheet.findUnique({
+  const sheets = await db.obbSheet.findUnique({
     where: {
       id: params.obbSheetId
     }
@@ -132,6 +132,7 @@ const ObbSheetId = async ({
           industrialEngineer={categorizedStaff?.["industrial-engineer"]}
           accessoriesInputMan={categorizedStaff?.["accessories-input-man"]}
           fabricInputMan={categorizedStaff?.["fabric-input-man"]} 
+          lineChief={categorizedStaff?.["line-chief"]}
           initialData={sheets}
           obbSheetId={params.obbSheetId}
         />

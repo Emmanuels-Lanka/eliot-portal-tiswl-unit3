@@ -177,6 +177,7 @@ const AddFactoryStaffForm = ({
                                         </FormControl>
                                         <SelectContent>
                                             <SelectItem value="supervisor">Supervisor</SelectItem>
+                                            <SelectItem value="line-chief">Line Chief</SelectItem>
                                             <SelectItem value="mechanics">Mechanics</SelectItem>
                                             <SelectItem value="quality-inspector">Quality Inspector</SelectItem>
                                             <SelectItem value="accessories-input-man">Accessories Input man</SelectItem>
