@@ -129,9 +129,6 @@ const RoamingQcDashboard = ({
 
     return (
         <div>
-            <h2 className="w-full my-4 md:mt-6 md:mb-8 text-center text-xl font-medium text-slate-600">
-                Roaming Quality Inspection System
-            </h2>
             
             {!selectedData &&
                 <SelectUnitLineObbSheet
