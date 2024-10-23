@@ -63,7 +63,7 @@ const GraphCompo  = ({date,obbSheet}:any) => {
            
             const chartData: any[] = newProd.map((item: any) => {
 
-                const man = item.operations
+                const man = item[0].operations
                 const tsmv = item[0].tsmv
 
                 const target= tsmv/man

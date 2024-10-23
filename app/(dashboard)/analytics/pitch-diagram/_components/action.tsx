@@ -44,14 +44,20 @@ ORDER BY "seqNo";
 
 
 export async function getTargetValues(obbSheetId:string) : Promise<any[]>  {
-    const sql = neon(process.env.RFID_DATABASE_URL || "");
+    const sql = neon(process.env.DATABASE_URL || "");
 
     
      const data = await sql`
-      select l."totalSMV" as tsmv,l."obbManPowers" from "LineEfficiencyResources" l
-where l."obbSheetId" = ${obbSheetId}
+      select "totalSMV" as tsmv,"obbOperationsNo" as operations from "ObbSheet" 
+where id=${obbSheetId}
 
 `
+    
+//      const data = await sql`
+//       select l."totalSMV" as tsmv,l."obbManPowers" from "LineEfficiencyResources" l
+// where l."obbSheetId" = ${obbSheetId}
+
+// `
 // console.log(obbSheetId)
     return new Promise((resolve) => resolve(data as any []))
 }
