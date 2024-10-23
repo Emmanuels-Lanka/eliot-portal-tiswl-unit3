@@ -4,6 +4,7 @@ import AddObbOperationForm from "@/components/dashboard/forms/add-obb-operation-
 import CreateObbSheetForm from "@/components/dashboard/forms/create-obb-sheet-form";
 import { db } from "@/lib/db";
 import ObbOperationsList from "./_components/obb-operations-list";
+import GenerateObbReport from "./_components/generate-obb-report";
 
 interface CategorizedStaff {
   [key: string]: Staff[];
@@ -120,9 +121,12 @@ const ObbSheetId = async ({
         obbSheetId={params.obbSheetId}
       />
       <div className="space-y-4">
-        <div>
-          <h2 className="text-slate-800 text-xl font-medium">Update OBB Sheet</h2>
-          <p className="text-slate-500 text-sm">You can update the OBB sheet which you created!</p>
+        <div className="flex justify-between items-end gap-4">
+          <div>
+            <h2 className="text-slate-800 text-xl font-medium">Update OBB Sheet</h2>
+            <p className="text-slate-500 text-sm">You can update the OBB sheet which you created!</p>
+          </div>
+          <GenerateObbReport obbSheetId={params.obbSheetId}/>
         </div>
         <CreateObbSheetForm 
           units={units} 

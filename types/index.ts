@@ -176,3 +176,41 @@ type RoamingQcChartFunctionOutputTypes = {
     }[];
     categories: string[];
 };
+
+type ReportObbDetailsTypes = {
+    id: string;
+    style: string;
+    version: string;
+    line: string;
+    unit: string;
+    indEngineer: string | null;
+    mechanic: string | null;
+    qualityIns: string | null;
+    accInputMan: string | null;
+    fabInputMan: string | null;
+    lineChief: string | null;
+    buyer: string;
+    item: string;
+    colour: string | null;
+    startingDate: string;
+    endingDate: string;
+    factoryStartTime: string | null;
+    factoryStopTime: string | null;
+    workingHours: number | null;
+    totalSMV: number | null;
+    obbOperationsNo: number | null;
+    bundleTime: string | null;
+    personalAllowance: string | null;
+    efficiencyLevel1: number;
+    efficiencyLevel3: number;
+    operations: {
+        id: string;
+        seqNo: number;
+        smv: number;
+        target: number;
+        part: string | null;
+        operationName: string;
+        operationCode: string | null;
+        machineId?: string;
+    }[];
+}
