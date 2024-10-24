@@ -117,7 +117,7 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
         const adjustedTarget = (targetPerMinute * elapsedMinutes);
     
         return {
-            name: item.name,
+            name: item.name+"- ("+item.machine+" )",
             target: Math.min(adjustedTarget,3000), // Use the calculated target
             count: Math.min(item.count, 3000),
 
