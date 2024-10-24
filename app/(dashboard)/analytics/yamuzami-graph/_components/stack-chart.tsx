@@ -34,6 +34,7 @@ import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import * as XLSX from 'xlsx';
 
+
 const chartData = [
   { month: "January", desktop: 186, mobile: 80 },
   { month: "February", desktop: 305, mobile: 200 },
@@ -96,7 +97,40 @@ export function  StackChart({ date, obbSheetId,timeValue }: BarChartGraphProps) 
     const[smvData,setSmvData] = useState<any[]>([])
     
 
-    
+    const calculateWorkingMinutes = (dateStr: string): number => {
+      const today = new Date();
+      const targetDate = new Date(dateStr);
+      
+      // Reset hours to compare just the dates
+      const todayDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+      const compareDate = new Date(targetDate.getFullYear(), targetDate.getMonth(), targetDate.getDate());
+      
+      const isToday = todayDate.getTime() === compareDate.getTime();
+      
+      if (isToday) {
+        const currentHour = today.getHours();
+        const currentMinute = today.getMinutes();
+        
+        // If current time is before 8 AM
+        if (currentHour < 8) {
+          return 0;
+        }
+        
+        // If current time is after 5 PM
+        if (currentHour >= 17) {
+          return 9 * 60; // 9 hours in minutes
+        }
+        
+        // Calculate minutes from 8 AM to current time
+        const minutesSince8AM = (currentHour - 8) * 60 + currentMinute;
+        return minutesSince8AM;
+      }
+      
+      // For past dates, return 9 hours in minutes
+      return 9 * 60;
+    };
+  
+  
 
 const Fetchdata = async () => {
   try {
@@ -120,11 +154,14 @@ const Fetchdata = async () => {
       console.log("j",joined)
       setSmvData(joined)
 
-      
-  
+
+      // const totalMinutes = calculateWorkingMinutes(date);
+      const totalMinutes = calculateWorkingMinutes(date);
+
    
      
 
+      
       const convertToMinutes = (timeString: string) => {
         const [hours, minutes, seconds] = timeString.split(' ').map(time => parseInt(time.replace(/\D/g, ''), 10) || 0);
         return hours * 60 + minutes + seconds / 60;
@@ -133,39 +170,28 @@ const Fetchdata = async () => {
       const chartData: smvData[] = joined.map((item) => 
         
         { 
-          const em = item.count*item.avg;
+          const em = item.total*item.avg;
           const nm = 60-em; 
 
          
-           console.log(item)         
+          //  console.log(item)         
 
 
-           const lb=convertToMinutes(item.lunchBreakTime);
-           const md=convertToMinutes(item.mechanicDownTime);
-           const ne=convertToMinutes(item.nonEffectiveTime);
-           const os=convertToMinutes(item.offStandTime);
-           const pd=convertToMinutes(item.productionDownTime);
-           const tt=convertToMinutes(item.totalTime);
+        
+           const nonEff = item.net ? convertToMinutes(item.net):0;
 
-           const nnva= os+lb;
-           const nva = (tt-nnva);
+        
+           const tt=totalMinutes;
 
-          //  console.log(nnva,nva,item.name) 
-           
-
-
-          // Process mechanic down time
+           const nnva= nonEff;
+           const nva = (tt-nnva-em);
 
           return {
           
-            // name:item.name,
-            // seqNo:item.seqNo,
-            // count:item.count,
-            // earnMinutes:em,
-            // smv:nm
-            name:item.name,
+          
+            name:item.name+"-"+item.oprtname,
             seqNo:item.seqNo,
-            count:item.count,
+            count:item.total,
             earnMinutes:em,
             nva:nva,
             nnva:nnva,
@@ -261,11 +287,11 @@ useEffect(() => {
 <Card style={{width:(chartWidth*2)+"%"}}>
   
   <CardContent >
-    <ChartContainer config={chartConfig} style={{width:(chartWidth*2)+"%", height:500}} ref={chartRef} >
+    <ChartContainer config={chartConfig} style={{width:(chartWidth*2)+"%", height:600}} ref={chartRef} >
       <BarChart accessibilityLayer data={chartDatas}
       margin={{
         
-        bottom: 200
+        bottom: 300
     }}
     barGap={50}>
         <CartesianGrid vertical={false} />

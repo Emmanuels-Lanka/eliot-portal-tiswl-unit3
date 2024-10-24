@@ -105,12 +105,12 @@ export const SIDEBAR_ROUTES = [
             //     icon: BarChart3
             // },
             {
-                label: "Target vs Actual",
+                label: "Daily Target vs Actual",
                 href: "/analytics/daily-achivement",
                 icon: BarChartHorizontal
             },
             {
-                label:"Target vs Actual (Instance)",
+                label:"Real Time Target vs Actual (Instance)",
                 href: "/analytics/daily-achivement-ins",
                 icon: BarChartHorizontal
                 
@@ -143,7 +143,7 @@ export const SIDEBAR_ROUTES = [
         categoryName: "SMV Analytics",
         routes: [
             {
-                label: "Hourly Cycle Time",
+                label: "Cycle Time Analysis",
                 href: "/analytics/operation-smv-hourly",
                 icon: BarChart3
             },
@@ -200,11 +200,11 @@ export const SIDEBAR_ROUTES = [
             //     href: "/analytics/operator-effective-time",
             //     icon: Table
             // },
-            // {
-            //     label: "Operator Efficiency (15min)",
-            //     href: "/analytics/operator-efficiency-15",
-            //     icon: BarChartHorizontal
-            // },
+            {
+                label: "Operator Efficiency (15min)",
+                href: "/analytics/operator-efficiency-15",
+                icon: BarChartHorizontal
+            },
         ]
     },
     {
@@ -240,11 +240,11 @@ export const SIDEBAR_ROUTES = [
     {
         categoryName: "DHU Status",
         routes: [
-            {
-                label: "Real-time DHU",
-                href: "/analytics/tls-productions",
-                icon: BarChartHorizontal
-            },
+            // {
+            //     label: "Real-time DHU",
+            //     href: "/analytics/tls-productions",
+            //     icon: BarChartHorizontal
+            // },
             {
                 label: "GMT DHU",
                 href: "/analytics/tls-operators",
@@ -512,7 +512,7 @@ export const HEADER_INFO = [
         icon: BarChart3
     },
     {
-        label: "Hourly Cycle Time vs Target SMV",
+        label: "Cycle Time Analysis vs Target SMV",
         href: "/analytics/operation-smv-hourly",
         icon: BarChart3
     },
@@ -569,12 +569,12 @@ export const HEADER_INFO = [
     },
     
     {
-        label: "Target vs Actual - Production",
+        label: "Daily Target vs Actual - Pieces",
         href: "/analytics/daily-achivement",
         icon: Sliders
     },
     {
-        label:"Target vs Actual (Instance)",
+        label:"Daily Target vs Actual (Instance)",
         href: "/analytics/daily-achivement-ins",
         icon: BarChartHorizontal
 
