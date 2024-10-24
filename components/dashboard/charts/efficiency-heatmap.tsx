@@ -36,6 +36,22 @@ const EffiencyHeatmap = ({
         chart: {
             type: 'heatmap' as const,
         },
+        tooltip: {
+          custom: function({ series, seriesIndex, dataPointIndex ,w }:{series:any, seriesIndex:any, dataPointIndex:any,w:any}) {
+
+              const value = series[seriesIndex][dataPointIndex];
+              const category = w.globals.categoryLabels[dataPointIndex];
+              const eliotDevice = value.eliotid;
+              return `<div style="padding: 10px; color: #000;">
+                       
+                      
+                        <strong>Machine Id: </strong> ${heatmapData.machines && heatmapData.machines[dataPointIndex]} <br/>
+                        <strong>Sewing Id: </strong> ${heatmapData.eliot && heatmapData.eliot[dataPointIndex]} <br/>
+                
+                         
+                      </div>`;
+            },
+        },
         plotOptions: {
             heatmap: {
                 enableShades: false,
@@ -63,7 +79,7 @@ const EffiencyHeatmap = ({
                     },
                     {
                         from: efficiencyHigh,
-                        to: 1000,
+                        to: 10000,
                         name: 'High(above 80%)',
                         color: '#16a34a'
                     },
@@ -96,7 +112,7 @@ const EffiencyHeatmap = ({
                     fontSize: '12px',
                     fontFamily: 'Inter, sans-serif',
                 }, rotate: -90,
-                minHeight: 250,
+                minHeight: 350,
             },
             categories: categories,
         

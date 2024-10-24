@@ -108,6 +108,7 @@ const   HmapChart15Compo = ({
                          
                           <strong>Eliot Device Id: </strong> ${eliotIdList[dataPointIndex].serialNumber} <br/>
                           <strong>Machine Id: </strong> ${eliotIdList[dataPointIndex].machineId} <br/>
+                          <strong>Operation: </strong> ${operationList[dataPointIndex].name} <br/>
                            
                         </div>`;
               },
@@ -366,20 +367,20 @@ const   HmapChart15Compo = ({
     let height ;
     if (heatmapData) {
         if (heatmapData.length > 30) {
-            height = heatmapData.length * 50
+            height = heatmapData.length * 40
         } else {
             if (heatmapData.length > 20) {
-                height = heatmapData.length * 60
+                height = heatmapData.length * 50
             } else if (heatmapData.length<10) { 
-                height = heatmapData.length * 100
+                height = heatmapData.length * 90
             }
             else { 
-                height = heatmapData.length * 100
+                height = heatmapData.length * 80
             }
         }
         console.log("len",heatmapData.length)
     }
-        const width = operationList && operationList.length > 0 ? operationList.length *60 : 600;
+        const width = operationList && operationList.length > 0 ? operationList.length *40 : 600;
 
 
 

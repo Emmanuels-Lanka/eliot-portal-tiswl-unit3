@@ -26,6 +26,7 @@ export type ProductionDataType = {
     name: string;
     count: number;
     target: number;
+    machine?:string;
 }
 
 

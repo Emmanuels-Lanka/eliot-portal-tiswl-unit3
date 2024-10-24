@@ -48,7 +48,8 @@ const AnalyticsChart = ({
             const hour = new Date(timestamp).getHours();
             return hourGroups[Math.max(0, Math.min(11, hour - 7))];
         };
-
+ 
+      
         const operationsMap: { [key: string]: ProductionDataForChartTypes[] } = {};
         productionData.forEach(data => {
             if (!operationsMap[data.obbOperationId]) {
@@ -57,14 +58,19 @@ const AnalyticsChart = ({
             operationsMap[data.obbOperationId].push(data);
         });
 
+        console.log("seco",operationsMap)
+
         const operations = Object.values(operationsMap).map(group => ({
             obbOperation: group[0].obbOperation,
             data: group
         })).sort((a, b) => a.obbOperation.seqNo - b.obbOperation.seqNo);
 
-        // const categories = operations.map(op => `${op.obbOperation.operation.name}-${op.obbOperation.seqNo}`);
-        const categories = operations.map(op => `${op.obbOperation.operation.name} - ${op.obbOperation.seqNo}`);
+        console.log("op",operations)
 
+        // const categories = operations.map(op => `${op.obbOperation.operation.name}-${op.obbOperation.seqNo}`);
+        const categories = operations.map(op => `${op.obbOperation.operation.name} - ( ${op.obbOperation.sewingMachine.machineId} ) - ${op.obbOperation.seqNo}`);
+        const machines = operations.map(op => ` ${op.obbOperation.sewingMachine.machineId}`);
+        const eliot = operations.map(op => ` ${op.data[0].eliotSerialNumber}`);
         const resultData = hourGroups.map(hourGroup => ({
             hourGroup,
             operation: operations.map(op => {
@@ -79,7 +85,9 @@ const AnalyticsChart = ({
 
         return {
             data: resultData,
-            categories
+            categories,
+            machines,
+            eliot
         };
     }
 

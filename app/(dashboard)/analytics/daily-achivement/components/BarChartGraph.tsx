@@ -178,7 +178,7 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
             // target: item.target*10, // Use the calculated target
             // count: item.count,
 
-            name: item.name,
+            name: item.name+"-"+"("+item.machine+")",
   target: Math.min(item.target*10, 4000),
   count: Math.min(item.count, 4000),   
   originalTarget: item.target*10,         
@@ -366,14 +366,14 @@ const saveAsExcel = () => {
             ref={chartRef}
               config={chartConfig}
               className="  max-h-screen min-h-[300px] w-full " 
-              style={{width:chartWidth+"%",height:600}} 
+              style={{width:chartWidth+"%",height:700}} 
             >
               <BarChart
                 accessibilityLayer
                 data={chartData}
                 margin={{
                 
-                  bottom: 200,
+                  bottom: 300,
                 }}
 
               >
