@@ -79,7 +79,7 @@ const EffiencyHeatmap = ({
                     },
                     {
                         from: efficiencyHigh,
-                        to: 1000,
+                        to: 10000,
                         name: 'High(above 80%)',
                         color: '#16a34a'
                     },
