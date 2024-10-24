@@ -64,6 +64,7 @@ type ProductionDataForChartTypes = {
         employeeId: string;
         rfid: string;
     };
+   
     obbOperation: {
         id: string;
         seqNo: number;
@@ -72,7 +73,17 @@ type ProductionDataForChartTypes = {
         operation: {
             name: string;
         };
+        sewingMachine: {
+            
+                machineId:string
+            
+        }
+        
     };
+    data: {
+
+    }
+   
 };
 
 type OperationEfficiencyOutputTypes = {
@@ -84,6 +95,9 @@ type OperationEfficiencyOutputTypes = {
         }[];
     }[];
     categories: string[];
+    machines: string[];
+    eliot:string[];
+    
 };
 
 type OperatorEfficiencyOutputTypes = {

@@ -48,6 +48,11 @@ export async function GET(
                                 name: true
                             }
                         },
+                        sewingMachine: {
+                            select:{
+                                machineId:true
+                            }
+                        }
                     }
                 }
             },
