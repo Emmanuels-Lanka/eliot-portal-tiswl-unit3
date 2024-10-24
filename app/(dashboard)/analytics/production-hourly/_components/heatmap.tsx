@@ -45,8 +45,8 @@ const EffiencyHeatmap = ({
               return `<div style="padding: 10px; color: #000;">
                        
                       
-                        <strong>Machine Id: </strong> ${heatmapData.machines[dataPointIndex]} <br/>
-                        <strong>Sewing Id: </strong> ${heatmapData.eliot[dataPointIndex]} <br/>
+                        <strong>Machine Id: </strong> ${heatmapData.machines && heatmapData.machines[dataPointIndex]} <br/>
+                        <strong>Sewing Id: </strong> ${heatmapData.eliot && heatmapData.eliot[dataPointIndex]} <br/>
                 
                          
                       </div>`;

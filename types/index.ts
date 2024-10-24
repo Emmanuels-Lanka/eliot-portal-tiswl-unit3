@@ -95,8 +95,8 @@ type OperationEfficiencyOutputTypes = {
         }[];
     }[];
     categories: string[];
-    machines: string[];
-    eliot:string[];
+    machines?: string[];
+    eliot?:string[];
     
 };
 
