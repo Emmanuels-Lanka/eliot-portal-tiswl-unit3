@@ -174,7 +174,7 @@ const GraphCompo  = ({date,obbSheet}:any) => {
             <Line
                                 dataKey="target"
                                 type="linear" // Use linear type for a straight line
-                                stroke="red" // Change the color as needed
+                                stroke="green" // Change the color as needed
                                 strokeWidth={2}
                                 dot={false} // No dots on the target line
                                 // strokeDasharray="5 5" // Optional: make it dashed

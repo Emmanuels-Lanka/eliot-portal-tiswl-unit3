@@ -179,8 +179,13 @@ export const SIDEBAR_ROUTES = [
                 icon: BarChartHorizontal
             },
             {
-                label: "Pitch Graph",
+                label: "Pitch Diagram",
                 href: "/analytics/pitch-diagram",
+                icon: LineChart  
+            },
+            {
+                label: "Capacity Diagram",
+                href: "/analytics/capacity-graph",
                 icon: LineChart  
             },
 
@@ -618,6 +623,11 @@ export const HEADER_INFO = [
     {
         label: "Pitch Graph",
         href: "/analytics/pitch-diagram",
+        icon: LineChart  
+    },
+    {
+        label: "Capacity Diagram",
+        href: "/analytics/capacity-graph",
         icon: LineChart  
     },
 ]

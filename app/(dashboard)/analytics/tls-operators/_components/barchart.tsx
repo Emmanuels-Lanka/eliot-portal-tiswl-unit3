@@ -4,6 +4,7 @@ import {
   Bar,
   BarChart,
   CartesianGrid,
+  Label,
   LabelList,
   XAxis,
   YAxis,
@@ -158,14 +159,17 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
                   tickMargin={10}
                   axisLine={true}
                 />
-                <XAxis
+                <XAxis 
+                
                   dataKey="name"
                   tickLine={true}
-                  tickMargin={55}
+                  tickMargin={40}
                   axisLine={true}
                   angle={90}
                   fontSize={10}
                   interval={0}
+                  textAnchor="start"
+                  label={<Label value="Operators" offset={-10} position="outside" />}
 
 
                 />
