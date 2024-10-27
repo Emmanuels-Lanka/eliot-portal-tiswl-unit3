@@ -13,7 +13,7 @@ export async function getObbSheetID(linename: string): Promise<string> {
   order by oo."createdAt" desc
 `;
 
-  console.log("data", data.length)
+  console.log("data", data)
 
   if (data.length > 0) {
     return new Promise((resolve) => resolve(data[0].id))

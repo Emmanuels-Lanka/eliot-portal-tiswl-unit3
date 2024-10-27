@@ -32,6 +32,7 @@ const Hmap15CompoOperation = ({ linename }: { linename: string }) => {
     const yyyyMMdd = today.getFullYear() + '-' + (today.getMonth() + 1).toString().padStart(2, '0') + '-' + today.getDate().toString().padStart(2, '0');
   
    const date =  yyyyMMdd.toString()+"%"
+   console.log(date)
     setdate(date)
 
   }, [])

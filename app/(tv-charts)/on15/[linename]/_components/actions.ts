@@ -12,7 +12,7 @@ export async function getData(obbsheetid:string,date:string)  : Promise<any[]>{
     INNER JOIN "ObbSheet" os ON oo."obbSheetId" = os.id
     inner JOIN "Operation" o ON o.id= oo."operationId"
      inner join "SewingMachine" sm on sm.id=oo."sewingMachineId"
-    WHERE os.id = ${obbsheetid} and pd.timestamp like '2024-10-17%'
+    WHERE os.id = ${obbsheetid} and pd.timestamp like  ${date}
      order by  pd.timestamp ;`;
  
  
@@ -30,7 +30,7 @@ export async function geOperationList(obbsheetid:string , date:string) : Promise
     inner join "SewingMachine" sm on sm.id=oo."sewingMachineId"
     INNER JOIN 
       "ProductionData" pd ON oo."id" = pd."obbOperationId"
-    WHERE os.id =${obbsheetid} AND pd.timestamp LIKE '2024-10-17%'
+    WHERE os.id =${obbsheetid} AND pd.timestamp LIKE  ${date}
     GROUP BY  concat (substring(concat(o.name ) from 0 for 20),' ','(',sm."machineId",') - ',oo."seqNo"),oo."seqNo"
 
      order by  oo."seqNo" ;
@@ -52,7 +52,7 @@ export async function getEliotMachineList(obbsheetid:string,date:string ) : Prom
     inner JOIN "SewingMachine" sm ON sm."id"= oo."sewingMachineId"
     inner JOIN "EliotDevice" ed ON ed.id = sm."eliotDeviceId"
     inner Join "ProductionData" pd ON pd."obbOperationId" = oo.id
-    WHERE os.id = ${obbsheetid}  and pd.timestamp like '2024-10-17%'
+    WHERE os.id = ${obbsheetid}  and pd.timestamp like ${date}
     group by sm."machineId",ed."serialNumber",oo."seqNo"
      order by  oo."seqNo" ;`;
 

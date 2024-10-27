@@ -44,8 +44,17 @@ const AnalyticsChart = ({
         const hourGroups = ["7:00 AM - 8:00 AM", "8:00 AM - 9:00 AM", "9:00 AM - 10:00 AM", "10:00 AM - 11:00 AM", "11:00 AM - 12:00 PM", "12:00 PM - 1:00 PM", "1:00 PM - 2:00 PM", "2:00 PM - 3:00 PM", "3:00 PM - 4:00 PM", "4:00 PM - 5:00 PM", "5:00 PM - 6:00 PM", "6:00 PM - 7:00 PM"];
 
         const getHourGroup = (timestamp: string): string => {
-            const hour = new Date(timestamp).getHours();
-            return hourGroups[Math.max(0, Math.min(11, hour - 7))];
+            const date = new Date(timestamp);
+    const hour = date.getHours();
+    const minutes = date.getMinutes();
+    if (minutes >= 5) {
+        return hourGroups[Math.max(0, Math.min(11, hour - 7))];
+    } else {
+        // If minutes are less than 5, group it to the previous hour group
+        return hourGroups[Math.max(0, Math.min(11, hour - 8))];
+    }
+            // const hour = new Date(timestamp).getHours();
+            // return hourGroups[Math.max(0, Math.min(11, hour - 7))];
         };
 
         const operationsMap: { [key: string]: ProductionDataForChartTypes[] } = {};
@@ -72,6 +81,7 @@ const AnalyticsChart = ({
                 const totalProduction = filteredData.reduce((sum, curr) => sum + curr.productionCount, 0);
                 const earnmins = op.obbOperation.smv * totalProduction
                 const efficiency = filteredData.length > 0 ? (totalProduction === 0 ? 0 : (earnmins / 60) * 100) : null;
+             
                 
                 return { name: `${op.obbOperation.seqNo}-${op.obbOperation.operation.name}`, efficiency: efficiency !== null ? parseFloat(efficiency.toFixed(1)) : null };
             })
