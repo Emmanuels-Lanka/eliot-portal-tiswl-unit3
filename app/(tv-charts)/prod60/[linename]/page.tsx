@@ -2,6 +2,8 @@ import AnalyticsChart from "./_components/analytics-chart";
 
 
 
+
+
 const Page = ({ params }: { params: { linename: string } }) => {
   const name = params.linename
   return (
