@@ -165,7 +165,7 @@ const AnalyticsChart = ({ linename }: { linename: string }) => {
     const intervalId = setInterval(() => {
       handleFetchProductions();
  
-    }, 10 * 60 * 1000);
+    }, 5 * 60 * 1000);
     return () => clearInterval(intervalId);
   }, [obbSheetId, date]);
 
