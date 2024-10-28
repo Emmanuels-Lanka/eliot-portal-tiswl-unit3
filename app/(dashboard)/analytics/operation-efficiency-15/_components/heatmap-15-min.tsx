@@ -441,70 +441,145 @@ const   HmapChart15Compo = ({
 export default HmapChart15Compo;
 
 
-const getTimeSlotLabel = (hr: number, qtrIndex: number) => {
-    let res: string = ""
+export const getTimeSlotLabel = (hr: number, qtrIndex: number): string => {
     hr = hr ?? 0
     let qtrStartLabel = (qtrIndex * 15).toString().padStart(2, "0")
     let hrStartLabel = hr.toString()
-    let qtrEndLabel = qtrIndex != 3 ? ((qtrIndex + 1) * 15).toString().padStart(2, "0") : "00"
-    let hrEndLabel = qtrIndex == 3 ? (hr + 1).toString() : hr.toString()
+    let qtrEndLabel = qtrIndex !== 3 ? ((qtrIndex + 1) * 15).toString().padStart(2, "0") : "00"
+    let hrEndLabel = qtrIndex === 3 ? (hr + 1).toString() : hr.toString()
 
-    res = `${hrStartLabel}:${qtrStartLabel}- ${hrEndLabel}:${qtrEndLabel}`
-
-    return res
-
-
+    return `${hrStartLabel}:${qtrStartLabel}-${hrEndLabel}:${qtrEndLabel}`
 }
 
+export const getAdjustedTimeSlot = (timestamp: string): { hour: number; qtrIndex: number } => {
+    const date = new Date(timestamp)
+    const minutes = date.getMinutes()
+    const hours = date.getHours()
+    
+    // Adjust minutes to account for the 5-minute offset
 
-const getProcessData = (data: any[], operationList: any[]) :any[]=> {
+    const adjustedMinutes = minutes - 5
+    
+    // Calculate quarter index based on adjusted minutes
+    let adjustedQtrIndex = Math.floor(adjustedMinutes / 15)
+    let adjustedHour = hours
+
+    // Handle edge cases
+    if (adjustedMinutes < 0) {
+        // If minutes go negative, move to previous hour's last quarter
+        adjustedHour = hours - 1
+        adjustedQtrIndex = 3
+    } else if (adjustedQtrIndex > 3) {
+        // If quarter index exceeds 3, move to next hour
+        adjustedHour = hours + 1
+        adjustedQtrIndex = 0
+    }
+
+    return {
+        hour: adjustedHour,
+        qtrIndex: adjustedQtrIndex
+    }
+}
+
+export const getProcessData = (data: any[], operationList: any[]): any[] => {
     const fmtDataSeries = []
     
-    const dataWithQuarter = data.map((d) => (
-        {
-            ...d, hour: new Date(d.timestamp).getHours(),
-            qtrIndex: Math.floor(new Date(d.timestamp).getMinutes() / 15),
-            // eliotid:d.eliotid
-          
+    const dataWithQuarter = data.map((d) => {
+        const { hour, qtrIndex } = getAdjustedTimeSlot(d.timestamp)
+        return {
+            ...d,
+            hour,
+            qtrIndex,
         }
-        
+    })
+    
+    const result = Object.groupBy(dataWithQuarter, (d) => 
+        getTimeSlotLabel(d.hour, d.qtrIndex)
     )
 
-    )
-    // console.log("adooo",dataWithQuarter)
-    
-    
-    //   const result = Object.groupBy(dataWithQuarter, (d) => d.hour.toString() + d.qtrIndex.toString());
-    const result = Object.groupBy(dataWithQuarter, (d) => getTimeSlotLabel(d.hour, d.qtrIndex));
-    
-
-    let rc = 0
     for (const [key, value] of Object.entries(result)) {
-
-
-
-        const dataGBOp = Object.groupBy(value || [], (d) => d.name);
+        const dataGBOp = Object.groupBy(value || [], (d) => d.name)
         const dataPoints = []
-        for (const [key, value] of Object.entries(dataGBOp)) {
-            
-            const v = value?.reduce((a, d) => {
-
-                return a + (d?.count ?? 0)
-            }, 0)
-
-            //   console.log("vqw", v)
-
-            dataPoints.push({ x: key, y: v ?? 0,eliotid: value?.[0].eliotid??0  })
-            rc += v
-
+        
+        for (const [opKey, opValue] of Object.entries(dataGBOp)) {
+            const v = opValue?.reduce((a, d) => a + (d?.count ?? 0), 0)
+            dataPoints.push({ 
+                x: opKey, 
+                y: v ?? 0,
+                eliotid: opValue?.[0].eliotid ?? 0 
+            })
         }
-
-        //fill unavailble timeslots
-
-
 
         fmtDataSeries.push({ name: key, data: dataPoints })
     }
+
+    return fmtDataSeries
+}
+
+// const getTimeSlotLabel = (hr: number, qtrIndex: number) => {
+//     let res: string = ""
+//     hr = hr ?? 0
+//     let qtrStartLabel = (qtrIndex * 15).toString().padStart(2, "0")
+//     let hrStartLabel = hr.toString()
+//     let qtrEndLabel = qtrIndex != 3 ? ((qtrIndex + 1) * 15).toString().padStart(2, "0") : "00"
+//     let hrEndLabel = qtrIndex == 3 ? (hr + 1).toString() : hr.toString()
+
+//     res = `${hrStartLabel}:${qtrStartLabel}- ${hrEndLabel}:${qtrEndLabel}`
+
+//     return res
+
+
+// }
+
+
+// const getProcessData = (data: any[], operationList: any[]) :any[]=> {
+//     const fmtDataSeries = []
+    
+//     const dataWithQuarter = data.map((d) => (
+//         {
+//             ...d, hour: new Date(d.timestamp).getHours(),
+//             qtrIndex: Math.floor(new Date(d.timestamp).getMinutes() / 15),
+//             // eliotid:d.eliotid
+          
+//         }
+        
+//     )
+
+//     )
+//     // console.log("adooo",dataWithQuarter)
+    
+    
+//     //   const result = Object.groupBy(dataWithQuarter, (d) => d.hour.toString() + d.qtrIndex.toString());
+//     const result = Object.groupBy(dataWithQuarter, (d) => getTimeSlotLabel(d.hour, d.qtrIndex));
+    
+
+//     let rc = 0
+//     for (const [key, value] of Object.entries(result)) {
+
+
+
+//         const dataGBOp = Object.groupBy(value || [], (d) => d.name);
+//         const dataPoints = []
+//         for (const [key, value] of Object.entries(dataGBOp)) {
+            
+//             const v = value?.reduce((a, d) => {
+
+//                 return a + (d?.count ?? 0)
+//             }, 0)
+
+//             //   console.log("vqw", v)
+
+//             dataPoints.push({ x: key, y: v ?? 0,eliotid: value?.[0].eliotid??0  })
+//             rc += v
+
+//         }
+
+//         //fill unavailble timeslots
+
+
+
+//         fmtDataSeries.push({ name: key, data: dataPoints })
+//     }
 
  
 
@@ -513,10 +588,10 @@ const getProcessData = (data: any[], operationList: any[]) :any[]=> {
 
 
 
-    return fmtDataSeries
+//     return fmtDataSeries
 
 
-}
+// }
 
 
 
