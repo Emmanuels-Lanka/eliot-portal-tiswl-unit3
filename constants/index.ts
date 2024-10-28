@@ -392,12 +392,12 @@ export const SIDEBAR_ROUTES = [
         categoryName: "Operation BreakDown & Balancing Sheet",
         routes: [
             {
-                label: "Create OBB Sheet",
+                label: "Create Operation Bulletin",
                 href: "/obb-sheets/create-new",
                 icon: FileSpreadsheet
             },
             {
-                label: "Manage OBB Sheet",
+                label: "Manage Operation Bulletin",
                 href: "/obb-sheets",
                 icon: FileCog
             },
@@ -502,12 +502,12 @@ export const HEADER_INFO = [
         icon: Mail
     },
     {
-        label: "Create OBB Sheet",
+        label: "Create Bulletin",
         href: "/obb-sheets/create-new",
         icon: FileSpreadsheet
     },
     {
-        label: "Manage OBB Sheet",
+        label: "Manage Bulletin",
         href: "/obb-sheets",
         icon: FileCog
     },
