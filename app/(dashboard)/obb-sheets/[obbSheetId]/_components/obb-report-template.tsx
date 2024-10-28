@@ -159,7 +159,7 @@ const ObbReportTemplate: React.FC<ObbReportTemplateProps> = ({ data }) => (
             <View style={styles.header}>
                 {/* <Image src={hameemLogoInBase64} style={styles.logo} fixed/> */}
                 {/* <Text style={styles.country} fixed>~ Bangladesh ~</Text> */}
-                <Text style={styles.title}>OBB Sheet Report</Text>
+                <Text style={styles.title}>Operation Bulletin</Text>
             </View>
 
             <Svg height="2" width="100%" style={styles.separator}>
