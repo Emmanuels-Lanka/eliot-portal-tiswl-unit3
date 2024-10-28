@@ -65,7 +65,8 @@ const AnalyticsChart = ({
             data: group
         })).sort((a, b) => a.operator.obbOperation.seqNo - b.operator.obbOperation.seqNo);
 
-        const categories = operations.map(op => `${op.operator.obbOperation.operation.name} - ( ${op.operator.obbOperation.sewingMachine.machineId} ) - ${op.operator.obbOperation.seqNo}`);
+
+        const categories = operations.map(op => `${op.operator.operator.name} - ( ${op.operator.obbOperation.sewingMachine.machineId} ) - ${op.operator.obbOperation.seqNo}`);
         const machines = operations.map(op => ` ${op.operator.obbOperation.sewingMachine.machineId}`);
         const eliot = operations.map(op => ` ${op.data[0].eliotSerialNumber}`);
         const resultData = hourGroups.map(hourGroup => ({
