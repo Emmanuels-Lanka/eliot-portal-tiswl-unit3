@@ -153,11 +153,20 @@ if (minutes >= 5) {
     getObbSheetID1()
   }, [linename])
 
-  useEffect(() => {
+//   useEffect(() => {
      
-    handleFetchProductions()
-  }, [obbSheetId])
+//     handleFetchProductions()
+//   }, [obbSheetId])
 
+  useEffect(() => {
+    handleFetchProductions(); 
+  
+    const intervalId = setInterval(() => {
+      handleFetchProductions();
+ 
+    }, 10 * 60 * 1000);
+    return () => clearInterval(intervalId);
+  }, [obbSheetId, date]);
 
     return (
         <>

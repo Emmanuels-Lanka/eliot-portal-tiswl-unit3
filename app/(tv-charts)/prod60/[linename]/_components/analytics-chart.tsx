@@ -52,69 +52,69 @@ const AnalyticsChart = ({ linename }: { linename: string }) => {
   }
     
     
-  function processProductionData(productionData: ProductionDataForChartTypes[]): OperationEfficiencyOutputTypes {
-    const hourGroups = ["7:00 AM - 8:00 AM", "8:00 AM - 9:00 AM", "9:00 AM - 10:00 AM", "10:00 AM - 11:00 AM", "11:00 AM - 12:00 PM", "12:00 PM - 1:00 PM", "1:00 PM - 2:00 PM", "2:00 PM - 3:00 PM", "3:00 PM - 4:00 PM", "4:00 PM - 5:00 PM", "5:00 PM - 6:00 PM", "6:00 PM - 7:00 PM","7:00 PM - 8:00 PM"];
+   function processProductionData(productionData: ProductionDataForChartTypes[]): OperationEfficiencyOutputTypes {
+        const hourGroups = ["7:00 AM - 8:00 AM", "8:00 AM - 9:00 AM", "9:00 AM - 10:00 AM", "10:00 AM - 11:00 AM", "11:00 AM - 12:00 PM", "12:00 PM - 1:00 PM", "1:00 PM - 2:00 PM", "2:00 PM - 3:00 PM", "3:00 PM - 4:00 PM", "4:00 PM - 5:00 PM", "5:00 PM - 6:00 PM", "6:00 PM - 7:00 PM","7:00 PM - 8:00 PM"];
 
-    // const getHourGroup = (timestamp: string): string => {
-    //     const hour = new Date(timestamp).getHours();
-    //     return hourGroups[Math.max(0, Math.min(11, hour - 7))];
-    // };
-    
-    const getHourGroup = (timestamp: string): string => {
-        const date = new Date(timestamp);
-const hour = date.getHours();
-const minutes = date.getMinutes();
-if (minutes >= 5) {
-    return hourGroups[Math.max(0, Math.min(11, hour - 7))];
-} else {
-    // If minutes are less than 5, group it to the previous hour group
-    return hourGroups[Math.max(0, Math.min(11, hour - 8))];
-}
-        // const hour = new Date(timestamp).getHours();
-        // return hourGroups[Math.max(0, Math.min(11, hour - 7))];
-    };
+        // const getHourGroup = (timestamp: string): string => {
+        //     const hour = new Date(timestamp).getHours();
+        //     return hourGroups[Math.max(0, Math.min(11, hour - 7))];
+        // };
+        
+        const getHourGroup = (timestamp: string): string => {
+            const date = new Date(timestamp);
+    const hour = date.getHours();
+    const minutes = date.getMinutes();
+    if (minutes >= 5) {
+        return hourGroups[Math.max(0, Math.min(11, hour - 7))];
+    } else {
+        // If minutes are less than 5, group it to the previous hour group
+        return hourGroups[Math.max(0, Math.min(11, hour - 8))];
+    }
+            // const hour = new Date(timestamp).getHours();
+            // return hourGroups[Math.max(0, Math.min(11, hour - 7))];
+        };
 
-  
-    const operationsMap: { [key: string]: ProductionDataForChartTypes[] } = {};
-    productionData.forEach(data => {
-        if (!operationsMap[data.obbOperationId]) {
-            operationsMap[data.obbOperationId] = [];
-        }
-        operationsMap[data.obbOperationId].push(data);
-    });
+      
+        const operationsMap: { [key: string]: ProductionDataForChartTypes[] } = {};
+        productionData.forEach(data => {
+            if (!operationsMap[data.obbOperationId]) {
+                operationsMap[data.obbOperationId] = [];
+            }
+            operationsMap[data.obbOperationId].push(data);
+        });
 
-    console.log("seco",operationsMap)
+        console.log("seco",operationsMap)
 
-    const operations = Object.values(operationsMap).map(group => ({
-        obbOperation: group[0].obbOperation,
-        data: group
-    })).sort((a, b) => a.obbOperation.seqNo - b.obbOperation.seqNo);
+        const operations = Object.values(operationsMap).map(group => ({
+            obbOperation: group[0].obbOperation,
+            data: group
+        })).sort((a, b) => a.obbOperation.seqNo - b.obbOperation.seqNo);
 
-    console.log("op",operations)
+        console.log("op",operations)
 
-    // const categories = operations.map(op => `${op.obbOperation.operation.name}-${op.obbOperation.seqNo}`);
-    const categories = operations.map(op => `${op.obbOperation.operation.name} - ( ${op.obbOperation.sewingMachine.machineId} ) - ${op.obbOperation.seqNo}`);
-    const machines = operations.map(op => ` ${op.obbOperation.sewingMachine.machineId}`);
-    const eliot = operations.map(op => ` ${op.data[0].eliotSerialNumber}`);
-    const resultData = hourGroups.map(hourGroup => ({
-        hourGroup,
-        operation: operations.map(op => {
-            const filteredData = op.data.filter(data => getHourGroup(data.timestamp) === hourGroup);
-            const totalProduction = filteredData.reduce((sum, curr) => sum + curr.productionCount, 0);
-            const earnmins = op.obbOperation.smv * totalProduction
-            const efficiency = filteredData.length > 0 ? (totalProduction === 0 ? 0 : (earnmins / 60) * 100) : null;
-            
-            return { name: `${op.obbOperation.seqNo}-${op.obbOperation.operation.name}`, efficiency: totalProduction !== null ? parseFloat(totalProduction.toFixed(1)) : null };
-        })
-    }));
+        // const categories = operations.map(op => `${op.obbOperation.operation.name}-${op.obbOperation.seqNo}`);
+        const categories = operations.map(op => `${op.obbOperation.operation.name} - ( ${op.obbOperation.sewingMachine.machineId} ) - ${op.obbOperation.seqNo}`);
+        const machines = operations.map(op => ` ${op.obbOperation.sewingMachine.machineId}`);
+        const eliot = operations.map(op => ` ${op.data[0].eliotSerialNumber}`);
+        const resultData = hourGroups.map(hourGroup => ({
+            hourGroup,
+            operation: operations.map(op => {
+                const filteredData = op.data.filter(data => getHourGroup(data.timestamp) === hourGroup);
+                const totalProduction = filteredData.reduce((sum, curr) => sum + curr.productionCount, 0);
+                const earnmins = op.obbOperation.smv * totalProduction
+                const efficiency = filteredData.length > 0 ? (totalProduction === 0 ? 0 : (earnmins / 60) * 100) : null;
+                
+                return { name: `${op.obbOperation.seqNo}-${op.obbOperation.operation.name}`, efficiency: totalProduction !== null ? parseFloat(totalProduction.toFixed(1)) : null };
+            })
+        }));
 
-    return {
-        data: resultData,
-        categories,
-        machines,
-        eliot
-    };
-}
+        return {
+            data: resultData,
+            categories,
+            machines,
+            eliot
+        };
+    }
 
     const handleFetchProductions = async () => {
         try {
@@ -157,11 +157,17 @@ if (minutes >= 5) {
     getObbSheetID1()
   }, [linename])
 
-  useEffect(() => {
-     
-    handleFetchProductions()
-  }, [obbSheetId])
+  
 
+  useEffect(() => {
+    handleFetchProductions(); 
+  
+    const intervalId = setInterval(() => {
+      handleFetchProductions();
+ 
+    }, 10 * 60 * 1000);
+    return () => clearInterval(intervalId);
+  }, [obbSheetId, date]);
 
     return (
         <>
