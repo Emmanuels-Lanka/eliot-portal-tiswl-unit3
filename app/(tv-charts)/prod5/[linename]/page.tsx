@@ -3,6 +3,7 @@ import AnalyticsChartHmap15 from "./_components/analytics";
 
 
 
+
 const Page = ({ params }: { params: { linename: string } }) => {
   const name = params.linename
   return (
