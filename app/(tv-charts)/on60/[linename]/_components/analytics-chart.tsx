@@ -43,14 +43,31 @@ const AnalyticsChart = ({ linename }: { linename: string }) => {
 
     
   const [obbSheetId, setobbSheetId] = useState<string>("")
-  const [date, setdate] = useState<string>("");
+  
+  const [date, setDate] = useState<string>("");
 
-  const getObbSheetID1 = async () => {
-    const obbSheetId1 = await getObbSheetID(linename);
-    setobbSheetId(obbSheetId1)
-   
-  }
+  const fetchObbSheetId = async () => {
+    try {
+      const id = await getObbSheetID(linename);
+      if (id) {
+        setobbSheetId(id);
+        setDate(getFormattedDate());
+      }
+    } catch (error) {
+      console.error("Error fetching OBB Sheet ID:", error);
+      toast({
+        title: "Error fetching OBB Sheet ID",
+        variant: "destructive"
+      });
+    }
+  };
     
+  const getFormattedDate = () => {
+    const today = new Date();
+    return today.getFullYear() + '-' + 
+           String(today.getMonth() + 1).padStart(2, '0') + '-' + 
+           String(today.getDate()).padStart(2, '0');
+  };
     function processProductionData(productionData: ProductionDataForChartTypes[]): OperationEfficiencyOutputTypes {
         const hourGroups = ["7:00 AM - 8:00 AM", "8:00 AM - 9:00 AM", "9:00 AM - 10:00 AM", "10:00 AM - 11:00 AM", "11:00 AM - 12:00 PM", "12:00 PM - 1:00 PM", "1:00 PM - 2:00 PM", "2:00 PM - 3:00 PM", "3:00 PM - 4:00 PM", "4:00 PM - 5:00 PM", "5:00 PM - 6:00 PM", "6:00 PM - 7:00 PM"];
 
@@ -94,7 +111,7 @@ const AnalyticsChart = ({ linename }: { linename: string }) => {
                 const efficiency = filteredData.length > 0 ? (totalProduction === 0 ? 0 : (earnmins / 60) * 100) : null;
              
                 
-                return { name: `${op.obbOperation.seqNo}-${op.obbOperation.operation.name}`, efficiency: efficiency !== null ? parseFloat(efficiency.toFixed(1)) : null };
+                return { name: `${op.obbOperation.seqNo}-${op.obbOperation.operation.name}`, efficiency: efficiency !== null ? Math.round(efficiency) : null };
             })
         }));
 
@@ -109,8 +126,11 @@ const AnalyticsChart = ({ linename }: { linename: string }) => {
     }
 
     const handleFetchProductions = async () => {
+        if (!obbSheetId || !date) return;
         try {
             
+        
+
             const y = new Date().getFullYear().toString()
             const m = (new Date().getMonth() + 1).toString().padStart(2, "0")
             //const d = new Date().getDate().toString().padStart(2, "0")
@@ -118,7 +138,7 @@ const AnalyticsChart = ({ linename }: { linename: string }) => {
             const yyyyMMdd = today.getFullYear() + '-' + (today.getMonth() + 1).toString().padStart(2, '0') + '-' + today.getDate().toString().padStart(2, '0');
           
            const date =  yyyyMMdd.toString()
-            setdate(date)
+       
 
             const response = await axios.get(`/api/efficiency/production?obbSheetId=${obbSheetId}&date=${date}`);
             const heatmapData = processProductionData(response.data.data);
@@ -144,15 +164,19 @@ const AnalyticsChart = ({ linename }: { linename: string }) => {
     }
 
     
-  useEffect(() => {
-     
-    getObbSheetID1()
-  }, [linename])
+    useEffect(() => {
+        fetchObbSheetId();
+      }, [linename]);
+    
+      useEffect(() => {
+        if (obbSheetId && date) {
+          handleFetchProductions();
+          const intervalId = setInterval(handleFetchProductions, 5 * 60 * 1000);
+          return () => clearInterval(intervalId);
+        }
+      }, [obbSheetId, date]);
+    
 
-  useEffect(() => {
-     
-    handleFetchProductions()
-  }, [obbSheetId])
 
 
     return (
@@ -163,13 +187,13 @@ const AnalyticsChart = ({ linename }: { linename: string }) => {
       <div className='flex justify-center items-center gap-3 w-screen'>
         {/* <Cog className='w-7 h-7 text-voilet' /> */}
         <LogoImporter/>
-        <h1 className='text-[#0071c1] my-4 text-3xl '>Dashboard - Operator Efficiency Hourly - {linename} </h1>
+        <h1 className='text-[#0071c1] my-4 text-3xl '>Dashboard - Hourly Efficiency  - {linename} </h1>
       </div>
 
       {heatmapData ?
        <EffiencyHeatmap
        xAxisLabel='Operations'
-       height={700}
+    
        efficiencyLow={obbSheet?.efficiencyLevel1}
        efficiencyHigh={obbSheet?.efficiencyLevel3}
        heatmapData={heatmapData}
