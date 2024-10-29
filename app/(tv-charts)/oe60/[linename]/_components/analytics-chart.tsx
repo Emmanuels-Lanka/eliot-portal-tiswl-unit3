@@ -175,7 +175,7 @@ const AnalyticsChart = ({ linename }: { linename: string }) => {
           <div className="w-full">
             <EffiencyHeatmap
               xAxisLabel="Operations"
-              height={900}
+              
               efficiencyLow={obbSheet?.efficiencyLevel1}
               efficiencyHigh={obbSheet?.efficiencyLevel3}
               heatmapData={heatmapData}
