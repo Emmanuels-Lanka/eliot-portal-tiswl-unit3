@@ -211,8 +211,8 @@ const renderCustomLabel = ({ x, y, width, value, index }: any) => {
                     <CardDescription>Number of items came across each scanning points today</CardDescription>
                 </CardHeader>
             </div> */}
-            <CardContent className="w-auto h-auto" style={{width:chartWidth+"%"}}  >
-                <ChartContainer ref={chartRef} config={chartConfig} className="min-h-[300px] w-auto"  style={{width:chartWidth+"%", height:1500}} >
+            <CardContent className="w-full h-full"  >
+                <ChartContainer ref={chartRef} config={chartConfig} className="min-h-[300px] w-full p-4"  >
                     <BarChart 
                         accessibilityLayer 
                         data={chartData}
