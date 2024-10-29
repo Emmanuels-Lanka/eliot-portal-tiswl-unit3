@@ -104,6 +104,7 @@ const formSchema = z.object({
     totalMP: z.number().nullable(),
     totalSMV: z.string().optional(),
     obbOperationsNo: z.number().optional(),
+    availableMinPerHour: z.number().optional(),
     bottleNeckTarget: z.number().nullable(),
     target100: z.number().nullable(),
     ucl: z.number().nullable(),
@@ -170,6 +171,7 @@ const CreateObbSheetForm = ({
             totalMP: initialData?.totalMP || 0,
             totalSMV: initialData?.totalSMV?.toString() || "0.1",
             obbOperationsNo: initialData?.obbOperationsNo || undefined,
+            availableMinPerHour: initialData?.availableMinPerHour || undefined,
             bottleNeckTarget: initialData?.bottleNeckTarget || 0,
             target100: initialData?.target100 || 0,
             ucl: initialData?.ucl || 0,
@@ -818,6 +820,35 @@ const CreateObbSheetForm = ({
                             />
                             <FormField
                                 control={form.control}
+                                name="availableMinPerHour"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>
+                                            Available Min Per Hour
+                                        </FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                type="number"
+                                                className="hide-steps-number-input"
+                                                disabled={isSubmitting}
+                                                placeholder="Enter the number"
+                                                {...field}
+                                                onChange={(e) => {
+                                                    const value = e.target.value;
+                                                    if (value === "" || (Number(value) >= 0 && Number(value) <= 60)) {
+                                                        field.onChange(e);
+                                                        const newValue: number = parseInt(value);
+                                                        form.setValue('availableMinPerHour', newValue || undefined, { shouldValidate: true, shouldDirty: true });
+                                                    }
+                                                }}
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
                                 name="obbOperationsNo"
                                 render={({ field }) => (
                                     <FormItem>
@@ -832,8 +863,12 @@ const CreateObbSheetForm = ({
                                                 placeholder="Enter the number"
                                                 {...field}
                                                 onChange={(e) => {
-                                                    const newValue: number = parseInt(e.target.value);
-                                                    form.setValue('obbOperationsNo', newValue || undefined, { shouldValidate: true, shouldDirty: true });
+                                                    const value = e.target.value;
+                                                    if (value === "" || Number(value) >= 0) {
+                                                        field.onChange(e);
+                                                        const newValue: number = parseInt(value);
+                                                        form.setValue('obbOperationsNo', newValue || undefined, { shouldValidate: true, shouldDirty: true });
+                                                    }
                                                 }}
                                             />
                                         </FormControl>
@@ -866,7 +901,7 @@ const CreateObbSheetForm = ({
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>
-                                            Personal Allowance (%)
+                                            Allowance (%)
                                         </FormLabel>
                                         <FormControl>
                                             <Input

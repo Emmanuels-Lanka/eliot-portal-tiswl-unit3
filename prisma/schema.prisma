@@ -37,8 +37,8 @@ model Staff {
   accInputMan        ObbSheet[]     @relation("AccInputMan")
   fabInputMan        ObbSheet[]     @relation("FabricInputMan")
   indEngineer        ObbSheet[]     @relation("IndEngineer")
-  mechanic           ObbSheet[]     @relation("Mechanic")
   lineChief          ObbSheet[]     @relation("LineChief")
+  mechanic           ObbSheet[]     @relation("Mechanic")
   qualityIns         ObbSheet[]     @relation("QI")
   supervisorAssembly ObbSheet[]     @relation("assembly")
   supervisorBack     ObbSheet[]     @relation("back")
@@ -63,8 +63,8 @@ model Operator {
   operatorSessions         OperatorSession[]
   productionData           ProductionData[]
   productionSMV            ProductionSMV[]
-  tslRecords               TrafficLightSystem[]
   roamingQC                RoamingQC[]
+  tslRecords               TrafficLightSystem[]
 }
 
 model Unit {
@@ -72,10 +72,10 @@ model Unit {
   name                    String
   createdAt               DateTime                  @default(now())
   updatedAt               DateTime                  @updatedAt
+  lineEfficiencyResources LineEfficiencyResources[]
   obbSheets               ObbSheet[]
   productionLines         ProductionLine[]
   sewingMachines          SewingMachine[]
-  lineEfficiencyResources LineEfficiencyResources[]
 }
 
 model ProductionLine {
@@ -121,11 +121,11 @@ model SewingMachine {
   isCombinedOperation  Boolean              @default(false)
   alertLogs            AlertLog[]
   obbOperations        ObbOperation[]
+  roamingQC            RoamingQC[]
   eliotDevice          EliotDevice?         @relation(fields: [eliotDeviceId], references: [id], onDelete: Cascade)
   unit                 Unit                 @relation(fields: [unitId], references: [id], onDelete: Cascade)
   tslRecords           TrafficLightSystem[]
   productionLines      ProductionLine[]     @relation("ProductionLineToSewingMachine")
-  roamingQC            RoamingQC[]
 
   @@index([eliotDeviceId, unitId])
 }
@@ -133,7 +133,6 @@ model SewingMachine {
 model ObbSheet {
   id                      String                    @id @default(uuid())
   name                    String
-  version                 String                    @default("1.0")
   productionLineId        String
   unitId                  String
   indEngineerId           String?
@@ -152,14 +151,8 @@ model ObbSheet {
   efficiencyLevel1        Int
   efficiencyLevel2        Int
   efficiencyLevel3        Int
-  bundleTime              String?
-  personalAllowance       String?
   itemReference           String?
-  factoryStartTime        String?
-  factoryStopTime         String?
   totalMP                 Int?
-  totalSMV                Float?
-  obbOperationsNo         Int?
   bottleNeckTarget        Int?
   target100               Int?
   ucl                     Int?
@@ -178,13 +171,21 @@ model ObbSheet {
   supervisorFrontId       String?
   supervisorLineEndId     String?
   lineChiefId             String?
-  obbOperations           ObbOperation[]
+  bundleTime              String?
+  personalAllowance       String?
+  factoryStartTime        String?
+  obbOperationsNo         Int?
+  availableMinPerHour     Int?
+  factoryStopTime         String?
+  totalSMV                Float?
+  version                 String                    @default("1.0")
   lineEfficiencyResources LineEfficiencyResources[]
+  obbOperations           ObbOperation[]
   accInputMan             Staff?                    @relation("AccInputMan", fields: [accInputManId], references: [id])
   fabInputMan             Staff?                    @relation("FabricInputMan", fields: [fabInputManId], references: [id])
   indEngineer             Staff?                    @relation("IndEngineer", fields: [indEngineerId], references: [id])
-  mechanic                Staff?                    @relation("Mechanic", fields: [mechanicId], references: [id])
   lineChief               Staff?                    @relation("LineChief", fields: [lineChiefId], references: [id])
+  mechanic                Staff?                    @relation("Mechanic", fields: [mechanicId], references: [id])
   productionLine          ProductionLine            @relation(fields: [productionLineId], references: [id], onDelete: Cascade)
   qualityIns              Staff?                    @relation("QI", fields: [qualityInsId], references: [id])
   supervisorAssembly      Staff?                    @relation("assembly", fields: [supervisorAssemblyId], references: [id])
@@ -229,9 +230,9 @@ model ObbOperation {
   operatorSessions OperatorSession[]
   productionData   ProductionData[]
   productionSMV    ProductionSMV[]
+  roamingQC        RoamingQC[]
   staffSessions    StaffSession[]
   tslRecords       TrafficLightSystem[]
-  roamingQC        RoamingQC[]
 
   @@index([operationId, obbSheetId])
 }
@@ -372,9 +373,9 @@ model RoamingQC {
   inspectedQty   String
   createdAt      DateTime      @default(now())
   defects        String[]      @default([])
+  sewingMachine  SewingMachine @relation(fields: [machineId], references: [machineId], onDelete: Cascade)
   obbOperation   ObbOperation  @relation(fields: [obbOperationId], references: [id], onDelete: Cascade)
   operator       Operator      @relation(fields: [operatorRfid], references: [rfid], onDelete: Cascade)
-  sewingMachine  SewingMachine @relation(fields: [machineId], references: [machineId], onDelete: Cascade)
 
   @@index([obbOperationId, operatorRfid, machineId])
 }
@@ -394,8 +395,8 @@ model LineEfficiencyResources {
   date             String
   unitId           String
   obbSheetId       String
-  unit             Unit     @relation(fields: [unitId], references: [id], onDelete: Cascade)
   obbSheet         ObbSheet @relation(fields: [obbSheetId], references: [id], onDelete: Cascade)
+  unit             Unit     @relation(fields: [unitId], references: [id], onDelete: Cascade)
 
   @@index([unitId, obbSheetId])
 }
