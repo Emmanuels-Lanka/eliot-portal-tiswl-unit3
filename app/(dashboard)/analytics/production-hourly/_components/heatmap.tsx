@@ -32,6 +32,30 @@ const EffiencyHeatmap = ({
     const chartRef = useRef<HTMLDivElement>(null);
     const [chartData, setChartData] = useState<any>([]);
 
+    const exportToCSV = () => {
+      // Create an object where each key is a category (row) and contains an object with hour groups as columns
+      const transposedData = categories.reduce((acc, category, categoryIndex) => {
+          acc[category] = {
+              Category: category,
+              ...series.reduce((hourAcc, serie) => {
+                  hourAcc[serie.name] = serie.data[categoryIndex];
+                  return hourAcc;
+              }, {} as Record<string, number | null>)
+          };
+          return acc;
+      }, {} as Record<string, any>);
+
+      // Convert the object to an array for XLSX
+      const csvData = Object.values(transposedData);
+
+      // Create worksheet
+      const ws = XLSX.utils.json_to_sheet(csvData);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "HeatmapData");
+      
+      // Save file
+      XLSX.writeFile(wb, "heatmap-data.csv");
+  };
     const options = {
         chart: {
             type: 'heatmap' as const,
@@ -239,7 +263,7 @@ const EffiencyHeatmap = ({
           <Button type="button" className="mr-3" onClick={saveAsPDF}>
             Save as PDF
           </Button>
-          <Button type="button" onClick={saveAsExcel}>
+          <Button type="button" onClick={exportToCSV}>
             Save as Excel
           </Button>
         </div>
