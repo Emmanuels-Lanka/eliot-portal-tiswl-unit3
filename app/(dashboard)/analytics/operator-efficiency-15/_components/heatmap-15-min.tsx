@@ -19,6 +19,7 @@ import  { useRef } from "react";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import * as XLSX from 'xlsx';
+import { getEliotMachineList } from "../../operation-efficiency-15/_components/actions";
 // import { Button } from "@/components/ui/button";
 
 
@@ -87,6 +88,8 @@ const HmapChart15Compo = ({
     const [heatmapData, setHeatmapData] = useState<any | null>(null);
     const [heatmapFullData, setHeatmapFullData] = useState<any | null>(null);
     const [operationList, setoperationList] = useState<any[]>([]);
+    const [ eliotIdList, seteliotIdList ] = useState<any[]>([])
+
     const [chartWidth, setChartWidth] = useState<number>(4000)
     const [timeList, settimeList] = useState<string>("")
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
@@ -95,11 +98,56 @@ const HmapChart15Compo = ({
     const [chartData, setChartData] = useState<any>([]);
 
 
+     const categories =  operationList.map(o => o.name)
+     const machine = eliotIdList
+
+     const exportToCSV = () => {
+        // Create an object where each key is a category (row) and contains an object with hour groups as columns
+        const transposedData = categories.reduce((acc, category, categoryIndex) => {
+            acc[category] = {
+                Category: category,
+                'Machine ID': eliotIdList[categoryIndex]?.machineId || '',
+                'Eliot ID': eliotIdList[categoryIndex]?.serialNumber || '',
+                ...heatmapFullData.reduce((hourAcc: any, serie: any) => {
+                    const value = serie.data[categoryIndex]?.y || 0;
+                    hourAcc[serie.name] = value;
+                    return hourAcc;
+                }, {} as Record<string, number>)
+            };
+            return acc;
+        }, {} as Record<string, any>);
+  
+        // Convert the object to an array for XLSX
+        const csvData = Object.values(transposedData);
+  
+        // Create worksheet
+        const ws = XLSX.utils.json_to_sheet(csvData);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "HeatmapData");
+        
+        // Save file
+        XLSX.writeFile(wb, "heatmap-data.csv");
+    };
 
     const options = {
         chart: {
             type: 'heatmap' as const,
         },
+        tooltip: {
+            custom: function({ series, seriesIndex, dataPointIndex ,w }:{series:any, seriesIndex:any, dataPointIndex:any,w:any}) {
+ 
+                const value = series[seriesIndex][dataPointIndex];
+                const category = w.globals.categoryLabels[dataPointIndex];
+                const eliotDevice = value.eliotid;
+                return `<div style="padding: 10px; color: #000;">
+                         
+                          <strong>Eliot Device Id: </strong> ${eliotIdList[dataPointIndex].serialNumber} <br/>
+                          <strong>Machine Id: </strong> ${eliotIdList[dataPointIndex].machineId} <br/>
+                          <strong>Operator: </strong> ${operationList[dataPointIndex].name} <br/>
+                           
+                        </div>`;
+              },
+          },
         plotOptions: {
             heatmap: {
                 distributed: true,
@@ -209,6 +257,9 @@ const HmapChart15Compo = ({
 
             const opList = await geOperatorList(obbSheetId,sqlDate)
             setoperationList(opList)
+
+            const s = await getEliotMachineList(obbSheetId,sqlDate)
+            seteliotIdList(s)
 
             const heatmapData = getProcessData(prod as any[], operationList as any[]);
             const t = heatmapData.time
@@ -410,7 +461,7 @@ let height ;
                     <Button type="button" className="mr-3" onClick={saveAsPDF}>
                       Save as PDF
                     </Button>
-                    <Button type="button" onClick={saveAsExcel}>
+                    <Button type="button" onClick={exportToCSV}>
                       Save as Excel
                     </Button>
                   </div>
