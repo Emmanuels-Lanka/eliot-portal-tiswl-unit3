@@ -23,6 +23,8 @@ const EffiencyHeatmap = ({
     heatmapData
 }: EffiencyHeatmapProps) => {
     const categories = heatmapData.categories || [];
+    const machines= heatmapData.machines|| [];
+    const eliot = heatmapData.eliot || [];
 
     let series: { name: string; data: (number | null)[] }[] = heatmapData.data.map(hourGroup => ({
         name: hourGroup.hourGroup,
@@ -35,15 +37,17 @@ const EffiencyHeatmap = ({
     const exportToCSV = () => {
       // Create an object where each key is a category (row) and contains an object with hour groups as columns
       const transposedData = categories.reduce((acc, category, categoryIndex) => {
-          acc[category] = {
-              Category: category,
-              ...series.reduce((hourAcc, serie) => {
-                  hourAcc[serie.name] = serie.data[categoryIndex];
-                  return hourAcc;
-              }, {} as Record<string, number | null>)
-          };
-          return acc;
-      }, {} as Record<string, any>);
+        acc[category] = {
+            Category: category,
+            'Machine ID': machines[categoryIndex] || '',  // Add Machine ID column
+            'Eliot ID': eliot[categoryIndex] || '',  // Add Machine ID column
+            ...series.reduce((hourAcc, serie) => {
+                hourAcc[serie.name] = serie.data[categoryIndex];
+                return hourAcc;
+            }, {} as Record<string, number | null>)
+        };
+        return acc;
+    }, {} as Record<string, any>); 
 
       // Convert the object to an array for XLSX
       const csvData = Object.values(transposedData);
