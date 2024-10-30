@@ -111,7 +111,7 @@ const AnalyticsChart = ({ linename }: { linename: string }) => {
                 const efficiency = filteredData.length > 0 ? (totalProduction === 0 ? 0 : (earnmins / 60) * 100) : null;
              
                 
-                return { name: `${op.obbOperation.seqNo}-${op.obbOperation.operation.name}`, efficiency: efficiency !== null ? Math.round(efficiency) : null };
+                return { name: `${op.obbOperation.seqNo}-${op.obbOperation.operation.name}`, efficiency: efficiency !== null ? Math.round(efficiency +0.0001) : null };
             })
         }));
 

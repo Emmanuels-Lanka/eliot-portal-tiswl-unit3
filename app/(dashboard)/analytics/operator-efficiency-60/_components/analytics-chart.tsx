@@ -76,7 +76,7 @@ const AnalyticsChart = ({
                 const totalProduction = filteredData.reduce((sum, curr) => sum + curr.productionCount, 0);
                 const earnMinutes = op.operator.obbOperation.smv * totalProduction
                 const efficiency = filteredData.length > 0 ? (totalProduction === 0 ? 0 : (earnMinutes / 60) * 100) : null;
-                return { name: `${op.operator.obbOperation.seqNo}-${op.operator.operator.name}`, efficiency: efficiency !== null ? Math.round(efficiency) : null };
+                return { name: `${op.operator.obbOperation.seqNo}-${op.operator.operator.name}`, efficiency: efficiency !== null ? Math.round(efficiency+0.0001) : null };
             })
         }));
 

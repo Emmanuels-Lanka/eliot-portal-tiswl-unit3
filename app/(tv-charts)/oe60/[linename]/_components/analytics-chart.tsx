@@ -99,7 +99,7 @@ const AnalyticsChart = ({ linename }: { linename: string }) => {
           : null;
         return {
           name: `${op.operator.obbOperation.seqNo}-${op.operator.obbOperation.operation.name}`,
-          efficiency: efficiency !== null ? Math.round(efficiency) : null
+          efficiency: efficiency !== null ? Math.round(efficiency+0.0001) : null
         };
       })
     }));
