@@ -93,6 +93,34 @@ const   HmapChart15Compo = ({
     
   const [chartData, setChartData] = useState<any>([]);
 
+  const categories =  operationList.map(o => o.name)
+  const exportToCSV = () => {
+    // Create an object where each key is a category (row) and contains an object with hour groups as columns
+    const transposedData = categories.reduce((acc, category, categoryIndex) => {
+        acc[category] = {
+            Category: category,
+            'Machine ID': eliotIdList[categoryIndex]?.machineId || '',
+            'Eliot ID': eliotIdList[categoryIndex]?.serialNumber || '',
+            ...heatmapFullData.reduce((hourAcc: any, serie: any) => {
+                const value = serie.data[categoryIndex]?.y || 0;
+                hourAcc[serie.name] = value;
+                return hourAcc;
+            }, {} as Record<string, number>)
+        };
+        return acc;
+    }, {} as Record<string, any>);
+
+    // Convert the object to an array for XLSX
+    const csvData = Object.values(transposedData);
+
+    // Create worksheet
+    const ws = XLSX.utils.json_to_sheet(csvData);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "HeatmapData");
+    
+    // Save file
+    XLSX.writeFile(wb, "heatmap-data.csv");
+};
 
     const options = {
         chart: {
@@ -428,7 +456,7 @@ const   HmapChart15Compo = ({
           <Button type="button" className="mr-3" onClick={saveAsPDF}>
             Save as PDF
           </Button>
-          <Button type="button" onClick={saveAsExcel}>
+          <Button type="button" onClick={exportToCSV}>
             Save as Excel
           </Button>
         </div>
