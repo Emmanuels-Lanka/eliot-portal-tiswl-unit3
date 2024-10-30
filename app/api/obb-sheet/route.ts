@@ -10,7 +10,7 @@ export async function POST(
         const { 
             version, unitId, productionLineId, indEngineer, supervisor1, supervisor2, supervisor3, supervisor4, mechanic, qualityIns, accInputMan, fabInputMan, lineChief, 
             buyer, style, item, operators, helpers, startingDate, endingDate, workingHours, factoryStartTime, factoryStopTime, bundleTime, personalAllowance,
-            efficiencyLevel1, efficiencyLevel2, efficiencyLevel3, itemReference, totalMP, totalSMV, obbOperationsNo, bottleNeckTarget, target100, 
+            efficiencyLevel1, efficiencyLevel2, efficiencyLevel3, itemReference, totalMP, totalSMV, availableMinPerHour, obbOperationsNo, bottleNeckTarget, target100, 
             ucl, lcl, balancingLoss, balancingRatio, colour, supResponseTime, mecResponseTime, qiResponseTime, 
         } = await req.json();
 
@@ -49,7 +49,7 @@ export async function POST(
                 fabInputManId: fabInputMan, 
                 lineChiefId: lineChief,
                 buyer, style, item, operators, helpers, startingDate, endingDate, factoryStartTime, factoryStopTime, workingHours: parseFloat(workingHours), bundleTime, personalAllowance,
-                efficiencyLevel1, efficiencyLevel2, efficiencyLevel3, itemReference, totalMP, totalSMV: parseFloat(totalSMV), obbOperationsNo, bottleNeckTarget,
+                efficiencyLevel1, efficiencyLevel2, efficiencyLevel3, itemReference, totalMP, totalSMV: parseFloat(totalSMV), availableMinPerHour, obbOperationsNo, bottleNeckTarget,
                 target100, ucl, lcl, balancingLoss, balancingRatio, colour, supResponseTime, mecResponseTime, qiResponseTime,
             }
         });
