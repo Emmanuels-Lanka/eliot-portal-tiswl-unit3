@@ -72,7 +72,7 @@ const BarChartGraphOpSmv = ({ date, obbSheetId }: BarChartGraphProps) => {
     const [chartData, setChartData] = useState<BarChartData[]>([])
     const [productionData, setProductionData] = useState<BarChartData[]>([]);
 
-    const[chartWidth,setChartWidth] = useState<number>(100)
+    const[chartWidth,setChartWidth] = useState<number>(1950)
     const[isSubmitting,setisSubmitting]=useState<boolean>(false)
 
     const chartRef = useRef<HTMLDivElement>(null);
@@ -109,12 +109,21 @@ const BarChartGraphOpSmv = ({ date, obbSheetId }: BarChartGraphProps) => {
     };
 
     useEffect(() => {
-
-        
-        if(obbSheetId){
-        Fetchdata()
-        }
-    }, [obbSheetId,date])
+        const fetchData = () => {
+            if (obbSheetId) {
+                Fetchdata();
+            }
+        };
+    
+        // Run initially
+        fetchData();
+    
+        // Set up interval to run every 5 minutes (300000 milliseconds)
+        const intervalId = setInterval(fetchData, 300000);
+    
+        // Cleanup function to clear the interval when the component unmounts
+        return () => clearInterval(intervalId);
+    }, [obbSheetId, date]);
 
     // useEffect(()=>{
     //     console.log("1firstq")
@@ -203,7 +212,7 @@ const renderCustomLabel = ({ x, y, width, value, index }: any) => {
 
 
 
-        <div className=' pt-28 -pl-8   '>
+        <div className=' pt-2    '>
         <Card className='pr-2 pt-6 pb-4 border rounded-xl  w-fit' >
             {/* <div className="px-8">
                 <CardHeader>
@@ -211,8 +220,8 @@ const renderCustomLabel = ({ x, y, width, value, index }: any) => {
                     <CardDescription>Number of items came across each scanning points today</CardDescription>
                 </CardHeader>
             </div> */}
-            <CardContent className="w-auto h-auto" style={{width:chartWidth+"%"}}  >
-                <ChartContainer ref={chartRef} config={chartConfig} className="min-h-[300px] w-auto"  style={{width:chartWidth+"%", height:1500}} >
+            <CardContent className="w-auto h-auto" style={{width:chartWidth}}  >
+                <ChartContainer ref={chartRef} config={chartConfig} className="min-h-[300px] w-auto"   >
                     <BarChart 
                         accessibilityLayer 
                         data={chartData}
@@ -225,7 +234,7 @@ const renderCustomLabel = ({ x, y, width, value, index }: any) => {
                     >
                         <CartesianGrid vertical={false} />
                         <YAxis
-                            dataKey="smv"
+                            dataKey="avg"
                             type="number"
                             tickLine={true}
                             tickMargin={10}
@@ -234,7 +243,7 @@ const renderCustomLabel = ({ x, y, width, value, index }: any) => {
                         <XAxis
                             dataKey="name"
                             tickLine={false}
-                            tickMargin={70}
+                            
                             axisLine={false}
                             angle={90}
                             fontSize={11}
@@ -251,7 +260,7 @@ const renderCustomLabel = ({ x, y, width, value, index }: any) => {
                         <ChartLegend 
                             content={<ChartLegendContent />} 
                             className="-mb-10 text-xs text-blue-500 font-bold" 
-                            margin={{top:10}}
+                            verticalAlign="top"
                                 
                         />
                         <Bar dataKey="smv" fill="var(--color-avg)" radius={5} barSize={40} >
