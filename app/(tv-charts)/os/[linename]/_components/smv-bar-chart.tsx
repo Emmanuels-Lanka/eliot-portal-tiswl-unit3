@@ -109,12 +109,21 @@ const BarChartGraphOpSmv = ({ date, obbSheetId }: BarChartGraphProps) => {
     };
 
     useEffect(() => {
-
-        
-        if(obbSheetId){
-        Fetchdata()
-        }
-    }, [obbSheetId,date])
+        const fetchData = () => {
+            if (obbSheetId) {
+                Fetchdata();
+            }
+        };
+    
+        // Run initially
+        fetchData();
+    
+        // Set up interval to run every 5 minutes (300000 milliseconds)
+        const intervalId = setInterval(fetchData, 300000);
+    
+        // Cleanup function to clear the interval when the component unmounts
+        return () => clearInterval(intervalId);
+    }, [obbSheetId, date]);
 
     // useEffect(()=>{
     //     console.log("1firstq")
