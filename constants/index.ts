@@ -211,7 +211,7 @@ export const SIDEBAR_ROUTES = [
                 icon: BarChartHorizontal
             },
             {
-                label: "Top Operators",
+                label: "Top Performence Operators",
                 href: "/analytics/top-operator",
                 icon: BarChartHorizontal
             },
@@ -636,7 +636,7 @@ export const HEADER_INFO = [
         icon: LineChart  
     },
     {
-        label: "Top Operators",
+        label: "Top Performence Operators",
         href: "/analytics/top-operator",
         icon: BarChartHorizontal
     },
