@@ -210,6 +210,11 @@ export const SIDEBAR_ROUTES = [
                 href: "/analytics/operator-efficiency-15",
                 icon: BarChartHorizontal
             },
+            {
+                label: "Top Operators",
+                href: "/analytics/top-operator",
+                icon: BarChartHorizontal
+            },
         ]
     },
     {
@@ -629,6 +634,11 @@ export const HEADER_INFO = [
         label: "Capacity Diagram",
         href: "/analytics/capacity-graph",
         icon: LineChart  
+    },
+    {
+        label: "Top Operators",
+        href: "/analytics/top-operator",
+        icon: BarChartHorizontal
     },
 ]
 
