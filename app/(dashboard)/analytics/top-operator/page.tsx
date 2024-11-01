@@ -1,5 +1,6 @@
 import { db } from '@/lib/db';
 import AnalyticsChart from './analytics';
+
 const OperatorEfficiency60 = async () => {
     const obbSheets = await db.obbSheet.findMany({
         where: {
