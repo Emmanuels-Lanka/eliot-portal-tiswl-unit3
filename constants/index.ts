@@ -265,6 +265,11 @@ export const SIDEBAR_ROUTES = [
                 href: "/analytics/operator-dhu",
                 icon: BarChartHorizontal
             },
+            {
+                label: "Operator Wise DHU ",
+                href: "/analytics/dhu-operator",
+                icon: BarChartHorizontal
+            },
             // {
             //     label: "Sectional DHU",
             //     href: "/analytics/defect-chart",
@@ -440,6 +445,11 @@ export const HEADER_INFO = [
         label: "Manage ELIoT Devices",
         href: "/eliot-devices",
         icon: Settings
+    },
+    {
+        label: "Operator Wise DHU ",
+        href: "/analytics/dhu-operator",
+        icon: BarChartHorizontal
     },
     {
         label: "Add Sewing Machines",
