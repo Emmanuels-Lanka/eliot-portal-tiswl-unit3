@@ -69,14 +69,15 @@ const EfficiencyBarChart = ({date,obbSheet }: BarChartGraphProps) => {
 
     const processProductionData = async ()=> {
 
+        setisSubmitting(true)
         const checked = await getChecked(date,obbSheet)
         const defects = await getDefects(date,obbSheet)
 
         console.log(defects)
-        console.log("che",checked)
+        // console.log("che",checked)
 
         let data = defects.sort((b,a)=> b.count-a.count)
-        console.log("sorted",data)
+        // console.log("sorted",data)
 
        const newData= data.map(d=> {
         const dhu =Number((( d.count/ checked.total)*100).toFixed(3))
@@ -88,11 +89,11 @@ const EfficiencyBarChart = ({date,obbSheet }: BarChartGraphProps) => {
         }
        })
 
-       console.log("newww",newData)
+    //    console.log("newww",newData)
 
        setChartData(newData)
         
-       
+       setisSubmitting(false)
 
     }
 
@@ -100,7 +101,7 @@ const EfficiencyBarChart = ({date,obbSheet }: BarChartGraphProps) => {
 
     useEffect(()=>{
         processProductionData()
-    },[date])
+    },[date,obbSheet])
 
     
 
