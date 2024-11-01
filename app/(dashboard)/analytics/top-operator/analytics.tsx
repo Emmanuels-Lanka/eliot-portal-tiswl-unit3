@@ -72,7 +72,7 @@ const AnalyticsChart = ({
             operation: operations.map(op => {
                 const totalProduction = op.data.reduce((sum, curr) => sum + curr.productionCount, 0);
                 const earnMinutes = op.operator.obbOperation.smv * totalProduction
-                return { name: `${op.operator.obbOperation.seqNo}-${op.operator.operator.name}`, count: totalProduction,earnMinute:earnMinutes };
+                return { name: `${op.operator.obbOperation.seqNo}-${op.operator.obbOperation.sewingMachine.machineId}-${op.operator.operator.name}`, count: totalProduction,earnMinute:earnMinutes };
             })
         }];
     
