@@ -213,21 +213,24 @@ const renderCustomLabel = ({ x, y, width, value, index }: any) => {
 
 
         <div className=' pt-2    '>
-        <Card className='pr-2 pt-6 pb-4 border rounded-xl  w-fit' >
+        <Card className='pr-2 pt-6 pb-4 border rounded-xl  w-screen' >
             {/* <div className="px-8">
                 <CardHeader>
                     <CardTitle>SMV vs Cycle Time</CardTitle>
                     <CardDescription>Number of items came across each scanning points today</CardDescription>
                 </CardHeader>
             </div> */}
-            <CardContent className="w-auto h-auto" style={{width:chartWidth}}  >
-                <ChartContainer ref={chartRef} config={chartConfig} className="min-h-[300px] w-auto"   >
+            <CardContent className="w-screen h-auto"   >
+                <ChartContainer ref={chartRef} config={chartConfig} className="min-h-[300px] w-screen"   >
                     <BarChart 
                         accessibilityLayer 
                         data={chartData}
                         margin={{
                             top: 10,
-                            bottom: 400
+                            bottom: 400,
+                            left:20,
+                            right:20
+                            
                         }}
                         startAngle={10}
                         // barCategoryGap={50}
