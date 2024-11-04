@@ -85,6 +85,10 @@ const AnalyticsChart = ({ linename }: { linename: string }) => {
             // return hourGroups[Math.max(0, Math.min(11, hour - 7))];
         };
 
+        const latestTimestamp = productionData.reduce((latest, current) => {
+            return latest > current.timestamp ? latest : current.timestamp;
+          }, "");
+          const mostRecentHourGroup = getHourGroup(latestTimestamp);
         const operationsMap: { [key: string]: ProductionDataForChartTypes[] } = {};
         productionData.forEach(data => {
             if (!operationsMap[data.obbOperationId]) {
@@ -102,7 +106,9 @@ const AnalyticsChart = ({ linename }: { linename: string }) => {
         const categories = operations.map(op => `${op.obbOperation.operation.name} - ( ${op.obbOperation.sewingMachine.machineId} ) - ${op.obbOperation.seqNo}`);
         const machines = operations.map(op => ` ${op.obbOperation.sewingMachine.machineId}`);
         const eliot = operations.map(op => ` ${op.data[0].eliotSerialNumber}`);
-        const resultData = hourGroups.map(hourGroup => ({
+ const resultData = hourGroups
+      .filter(hourGroup => hourGroup !== mostRecentHourGroup) // Exclude the most recent hour group
+      .map(hourGroup => ({
             hourGroup,
             operation: operations.map(op => {
                 const filteredData = op.data.filter(data => getHourGroup(data.timestamp) === hourGroup);

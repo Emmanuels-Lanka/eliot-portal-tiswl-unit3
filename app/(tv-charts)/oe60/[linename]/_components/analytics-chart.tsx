@@ -67,6 +67,14 @@ const AnalyticsChart = ({ linename }: { linename: string }) => {
       return hourGroups[Math.max(0, Math.min(11, hour - 8))];
     };
 
+    // Find the most recent timestamp from the data
+    const latestTimestamp = productionData.reduce((latest, current) => {
+      return latest > current.timestamp ? latest : current.timestamp;
+    }, "");
+
+    // Get the hour group of the most recent data
+    const mostRecentHourGroup = getHourGroup(latestTimestamp);
+
     const operatorsMap: { [key: string]: ProductionDataForChartTypes[] } = {};
     productionData.forEach(data => {
       if (!operatorsMap[data.operatorRfid]) {
@@ -88,21 +96,23 @@ const AnalyticsChart = ({ linename }: { linename: string }) => {
     const machines = operations.map(op => op.operator.obbOperation.sewingMachine.machineId);
     const eliot = operations.map(op => op.data[0].eliotSerialNumber);
 
-    const resultData = hourGroups.map(hourGroup => ({
-      hourGroup,
-      operation: operations.map(op => {
-        const filteredData = op.data.filter(data => getHourGroup(data.timestamp) === hourGroup);
-        const totalProduction = filteredData.reduce((sum, curr) => sum + curr.productionCount, 0);
-        const earnMinutes = op.operator.obbOperation.smv * totalProduction;
-        const efficiency = filteredData.length > 0 
-          ? (totalProduction === 0 ? 0 : (earnMinutes / 60) * 100) 
-          : null;
-        return {
-          name: `${op.operator.obbOperation.seqNo}-${op.operator.obbOperation.operation.name}`,
-          efficiency: efficiency !== null ? Math.round(efficiency+0.0001) : null
-        };
-      })
-    }));
+    const resultData = hourGroups
+      .filter(hourGroup => hourGroup !== mostRecentHourGroup) // Exclude the most recent hour group
+      .map(hourGroup => ({
+        hourGroup,
+        operation: operations.map(op => {
+          const filteredData = op.data.filter(data => getHourGroup(data.timestamp) === hourGroup);
+          const totalProduction = filteredData.reduce((sum, curr) => sum + curr.productionCount, 0);
+          const earnMinutes = op.operator.obbOperation.smv * totalProduction;
+          const efficiency = filteredData.length > 0 
+            ? (totalProduction === 0 ? 0 : (earnMinutes / 60) * 100) 
+            : null;
+          return {
+            name: `${op.operator.obbOperation.seqNo}-${op.operator.obbOperation.operation.name}`,
+            efficiency: efficiency !== null ? Math.round(efficiency+0.0001) : null
+          };
+        })
+      }));
 
     return { data: resultData, categories, machines, eliot };
   }
@@ -175,7 +185,6 @@ const AnalyticsChart = ({ linename }: { linename: string }) => {
           <div className="w-full">
             <EffiencyHeatmap
               xAxisLabel="Operations"
-              
               efficiencyLow={obbSheet?.efficiencyLevel1}
               efficiencyHigh={obbSheet?.efficiencyLevel3}
               heatmapData={heatmapData}
