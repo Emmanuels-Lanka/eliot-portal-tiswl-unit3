@@ -63,7 +63,7 @@ const GraphCompo  = ({date,obbSheet}:any) => {
                 const smv = Number(item.avg);
                 const bundle =Number(item.bundleTime);
                 const pers = Number(item.personalAllowance);
-                const cap =Number(( 60/ (smv+bundle+(pers*smv))).toFixed(2))
+                const cap = Number((60 / (smv + bundle + ((pers / 100) * smv))).toFixed(2));
                 
 
       
@@ -156,7 +156,7 @@ const GraphCompo  = ({date,obbSheet}:any) => {
                     textAnchor="end"
                   />
                   <YAxis
-                    dataKey="target"
+                    dataKey="capacity"
                     tickLine={true}
                     axisLine={true}
                     tickMargin={8}
@@ -186,7 +186,7 @@ const GraphCompo  = ({date,obbSheet}:any) => {
                   >
                     <LabelList
                       position="top"
-                      offset={12}
+                      offset={10}
                       className="fill-foreground"
                       fontSize={12}
                     />
@@ -207,7 +207,7 @@ const GraphCompo  = ({date,obbSheet}:any) => {
                   >
                     <LabelList
                       position="top"
-                      offset={12}
+                      offset={10}
                       className="fill-foreground"
                       fontSize={12}
                     />
