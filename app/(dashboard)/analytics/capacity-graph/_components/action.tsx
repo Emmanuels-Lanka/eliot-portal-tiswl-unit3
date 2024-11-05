@@ -73,11 +73,26 @@ inner join "ObbOperation" oo on oo.id = ps."obbOperationId"
 inner join "ObbSheet" os on os.id = oo."obbSheetId"
 inner join "Operation" o on o.id = oo."operationId"
 inner join "SewingMachine" sm on sm.id = oo."sewingMachineId"
-where timestamp like ${date} and os.id = ${obbSheetId}
-group by ps."operatorRfid",o.name,oo."seqNo",sm."machineId",os."bundleTime",os."personalAllowance",oo.target
-HAVING AVG(CAST(ps.smv AS NUMERIC)) > 0
+where timestamp like ${date} and os.id =${obbSheetId}  and (CAST(ps.smv AS NUMERIC)) > 0
+group by ps."operatorRfid",os."bundleTime",os."personalAllowance",o.name,oo."seqNo",oo.target,sm."machineId"
+
 order by oo."seqNo"
 `
+console.log(data)
+
+
+
+///old one
+// select  AVG(CAST(ps.smv AS NUMERIC)) AS avg,ps."operatorRfid"
+// ,os."bundleTime",os."personalAllowance",o.name,oo."seqNo",oo.target,sm."machineId" from "ProductionSMV" ps 
+// inner join "ObbOperation" oo on oo.id = ps."obbOperationId"
+// inner join "ObbSheet" os on os.id = oo."obbSheetId"
+// inner join "Operation" o on o.id = oo."operationId"
+// inner join "SewingMachine" sm on sm.id = oo."sewingMachineId"
+// where timestamp like ${date} and os.id = ${obbSheetId}
+// group by ps."operatorRfid",o.name,oo."seqNo",sm."machineId",os."bundleTime",os."personalAllowance",oo.target
+// HAVING AVG(CAST(ps.smv AS NUMERIC)) > 0
+// order by oo."seqNo"
     
 //      const data = await sql`
 //       select l."totalSMV" as tsmv,l."obbManPowers" from "LineEfficiencyResources" l
