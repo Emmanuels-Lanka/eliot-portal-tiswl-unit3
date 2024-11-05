@@ -63,7 +63,7 @@ const GraphCompo  = ({date,obbSheet}:any) => {
                 const smv = Number(item.avg);
                 const bundle =Number(item.bundleTime);
                 const pers = Number(item.personalAllowance);
-                const cap = Number((60 / (smv + bundle + ((pers / 100) * smv))).toFixed(2));
+                const cap = Number(Math.round((60 / (smv + bundle + ((pers / 100) * smv)))));
                 
 
       
@@ -186,9 +186,10 @@ const GraphCompo  = ({date,obbSheet}:any) => {
                   >
                     <LabelList
                       position="top"
-                      offset={10}
+                      offset={20}
                       className="fill-foreground"
                       fontSize={12}
+                      color='orange'
                     />
                   </Line>
                   <Line
@@ -206,8 +207,8 @@ const GraphCompo  = ({date,obbSheet}:any) => {
                     // strokeDasharray="5 5" // Optional: make it dashed
                   >
                     <LabelList
-                      position="top"
-                      offset={10}
+                      position="bottom"
+                      offset={20}
                       className="fill-foreground"
                       fontSize={12}
                     />
