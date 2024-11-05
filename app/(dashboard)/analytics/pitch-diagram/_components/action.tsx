@@ -33,7 +33,7 @@ export async function getOperationSmv(obbSheetId:string,date:string) : Promise<a
     INNER JOIN "Operation" o ON o.id = os."operationId"
     WHERE os."obbSheetId" = ${obbSheetId}
 )
-SELECT *, (SELECT COUNT(*) FROM OperationData) AS operations
+SELECT *, (SELECT COUNT(DISTINCT name) FROM OperationData) AS operations
 FROM OperationData
 ORDER BY "seqNo";
 

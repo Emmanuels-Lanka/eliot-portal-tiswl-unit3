@@ -78,7 +78,7 @@ group by ps."operatorRfid",os."bundleTime",os."personalAllowance",o.name,oo."seq
 
 order by oo."seqNo"
 `
-console.log(data)
+// console.log(data)
 
 
 

@@ -15,6 +15,7 @@ import {
 import {
   ChartConfig,
   ChartContainer,
+  ChartLegend,
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
@@ -52,6 +53,7 @@ const GraphCompo  = ({date,obbSheet}:any) => {
             const vls = await getTargetValues(obbSheet)
         
            console.log(ops)
+           console.log(vls)
 
             const newProd = ops.map((o) => ({
                 ...o, // Spread the current operation
@@ -63,7 +65,7 @@ const GraphCompo  = ({date,obbSheet}:any) => {
            
             const chartData: any[] = newProd.map((item: any) => {
 
-                const man = item[0].operations
+                const man = Number(item.operations)
                 const tsmv = item[0].tsmv
 
                 const target= tsmv/man
@@ -113,7 +115,7 @@ const GraphCompo  = ({date,obbSheet}:any) => {
 
   
         {chartData.length > 0 ? (
-    <div className='bg-slate-50 pt-5 -pl-8 rounded-lg border w-full h-[450px] mb-16 overflow-scroll'>
+    <div className='bg-slate-50 w-full mb-16 overflow-scroll'>
 
     <Card className='bg-slate-50 pt-4' style={{width:(chartWidth)+"%"}}>
       
@@ -151,6 +153,7 @@ const GraphCompo  = ({date,obbSheet}:any) => {
               cursor={false}
               content={<ChartTooltipContent indicator="line" />}
             />
+            <ChartLegend verticalAlign='top'></ChartLegend>
             <Line
               dataKey="smv"
               type="natural"
@@ -166,7 +169,7 @@ const GraphCompo  = ({date,obbSheet}:any) => {
                 
               <LabelList
                 position="top"
-                offset={12}
+                offset={17}
                 className="fill-foreground"
                 fontSize={12}
               />
