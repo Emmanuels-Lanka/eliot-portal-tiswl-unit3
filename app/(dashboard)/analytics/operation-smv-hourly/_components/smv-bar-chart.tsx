@@ -149,9 +149,9 @@ const saveAsExcel = () => {
                 accessibilityLayer
                 data={chartData}
                 margin={{
-                  top: 30,
+                  
                   left: 30,
-                  bottom:30
+                  bottom:100
                 }}
               >
                 <CartesianGrid vertical={false} />
@@ -161,12 +161,16 @@ const saveAsExcel = () => {
                   tickLine={true}
                   tickMargin={10}
                   axisLine={true}
+                  interval={0}
                 />
                 <XAxis
                   dataKey="name"
                   tickLine={false}
                   tickMargin={10}
                   axisLine={true}
+                  angle={90}
+                  interval={0}
+                   textAnchor='start'
                 />
                 <ChartTooltip
                   cursor={false}
@@ -175,6 +179,7 @@ const saveAsExcel = () => {
                 <ChartLegend
                   content={<ChartLegendContent />}
                   className="mt-2 text-sm"
+                  verticalAlign="top"
                 />
                 <ReferenceLine
                   alwaysShow
