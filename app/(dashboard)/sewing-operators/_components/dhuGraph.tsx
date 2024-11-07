@@ -193,7 +193,7 @@ const EfficiencyBarChart = ({ date, obbSheet,operatorId }: BarChartGraphProps) =
         </Card>
       ) : (
         <div className="mt-12 w-full">
-          <p className="text-center text-slate-500">No Data Available...</p>
+          <p className="text-center text-slate-500">No Data Available for DHU...</p>
         </div>
       )
       }
