@@ -10,6 +10,7 @@ import SelectObbSheetAndDate from "@/components/dashboard/common/select-obbsheet
 import { useToast } from "@/components/ui/use-toast";
 import EffiencyHeatmap from "./heatmap";
 import ProdHeatMap from "./prodHeatmap";
+import EfficiencyBarChart from "./dhuGraph";
 
 interface AnalyticsChartProps {
     obbSheets: {
@@ -56,6 +57,8 @@ const AnalyticsChart = ({
     const [heatmapData, setHeatmapData] = useState<OperationEfficiencyOutputTypesNew>();
     const [heatmapCategories, setHeatmapCategories] = useState<string[] | null>(null);
     const [obbSheet, setObbSheet] = useState<ObbSheet | null>(null);
+    const [obbSheetId, setObbSheetId] = useState<any>();
+    const [date, setDate] = useState<string>("");
 
     function processProductionData(productionData: ProductionDataForChartTypes[]): OperationEfficiencyOutputTypesNew {
         const hourGroups = ["7:00 AM - 8:00 AM", "8:00 AM - 9:00 AM", "9:00 AM - 10:00 AM", "10:00 AM - 11:00 AM", "11:00 AM - 12:00 PM", "12:00 PM - 1:00 PM", "1:00 PM - 2:00 PM", "2:00 PM - 3:00 PM", "3:00 PM - 4:00 PM", "4:00 PM - 5:00 PM", "5:00 PM - 6:00 PM", "6:00 PM - 7:00 PM"];
@@ -125,6 +128,8 @@ const AnalyticsChart = ({
             const heatmapData = processProductionData(response.data.data);
             setHeatmapData(heatmapData);
             setObbSheet(response.data.obbSheet);
+            setDate(formattedDate)
+            setObbSheetId(data.obbSheetId)
             
             router.refresh();
         } catch (error: any) {
@@ -151,9 +156,11 @@ const AnalyticsChart = ({
             />
             {heatmapData  ? 
                <div className="flex flex-col">
-               <h2 className="text-lg mb-2 font-medium text-slate-700">{title}</h2>
-               <div className="flex flex-row space-x-4 mt-12">
-                 <div className="flex flex-col">
+               {/* <h2 className="text-lg mb-2 font-medium text-slate-700">{title}</h2> */}
+               <div className="grid grid-cols-3 space-x-4 mt-12">
+                
+                 <div className="">
+                    
                    <EffiencyHeatmap
                      xAxisLabel="Operations"
                      height={800}
@@ -162,7 +169,7 @@ const AnalyticsChart = ({
                      heatmapData={heatmapData}
                    />
                  </div>
-                 <div className="flex flex-col">
+                 <div className="">
                    <ProdHeatMap
                      xAxisLabel="Operations"
                      height={800}
@@ -171,8 +178,23 @@ const AnalyticsChart = ({
                      heatmapData={heatmapData}
                    />
                  </div>
+                 <div className="">
+                 <EfficiencyBarChart
+                     date={date}
+                     obbSheet={obbSheetId}
+                     operatorId={operatorId}
+                   />
+                 </div>
+                 {/* <div className="flex flex-col flex-1">
+                   <EfficiencyBarChart
+                     date={date}
+                     obbSheet={obbSheetId}
+                     operatorId={operatorId}
+                   />
+                 </div> */}
                </div>
              </div>
+             
              
             :
                 <div className="mt-12 w-full">

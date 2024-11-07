@@ -5,6 +5,7 @@ import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import * as XLSX from 'xlsx';
 import { Button } from "@/components/ui/button";
+import { CardHeader, CardTitle } from '@/components/ui/card';
 
 const ReactApexChart = dynamic(() => import('react-apexcharts'), { ssr: false });
 type OperationEfficiencyOutputTypesNew = {
@@ -256,37 +257,22 @@ const ProdHeatMap = ({
 
     const width = 100+"%"
     return (
-        // <div className='bg-slate-100 pt-5 pl-8 rounded-lg border w-full mb-16 overflow-x-auto'>
-                    <div>
-                    <div className='bg-slate-100 pt-5 -pl-8 rounded-lg border w-full mb-16 overflow-x-auto'>
-            <div id="chart">
-                <ReactApexChart options={options} series={series} type="heatmap" height={(height)} width={width} />
-            </div>
-            <div id="html-dist"></div>
-        </div>
-        {/* Button Section */}
- {true && (
-      <div className="flex flex-col items-center mt-5">
-        {/* <div className="flex gap-2">
-          <Button onClick={() => setChartWidth((p) => p + 20)} className="rounded-full bg-gray-300">
-            +
-          </Button>
-          <Button onClick={() => setChartWidth((p) => p - 20)} className="rounded-full bg-gray-300">
-            -
-          </Button>
-        </div> */}
-
-        <div className="flex gap-3 mt-3">
-          <Button type="button" className="mr-3" onClick={saveAsPDF}>
-            Save as PDF
-          </Button>
-          <Button type="button" onClick={exportToCSV}>
-            Save as Excel
-          </Button>
-        </div>
+        <div className='bg-slate-100 pt-5 -pl-8 rounded-lg border w-full mb-16 overflow-x-auto shadow-lg'>
+        <div id="chart">
+        <div className="px-8">
+        <CardHeader>
+          <CardTitle className="text-center">
+            {" "}
+            {" "}
+            Hourly Production
+          </CardTitle>
+          {/* <CardDescription>Number of items came across each scanning points today</CardDescription> */}
+        </CardHeader>
       </div>
-    )}
-                    </div>
+            <ReactApexChart options={options} series={series} type="heatmap" height={(height)} width={width} />
+        </div>
+        <div id="html-dist"></div>
+    </div>
         
         
     )

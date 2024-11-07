@@ -1,5 +1,6 @@
 import React from 'react';
 import dynamic from 'next/dynamic';
+import { CardHeader, CardTitle } from '@/components/ui/card';
 
 const ReactApexChart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
@@ -14,7 +15,7 @@ interface EffiencyHeatmapProps {
 
 const EffiencyHeatmap = ({
     xAxisLabel,
-    height,
+ 
     efficiencyLow = 44,
     efficiencyHigh = 74,
     heatmapData
@@ -105,11 +106,22 @@ const EffiencyHeatmap = ({
         },
     };
 
-   const width = 100+"%"
+    let height = 800
 
+    const width = 100+"%"
     return (
-        <div className='bg-slate-100 pt-5 -pl-8 rounded-lg border w-full mb-16 overflow-x-auto'>
+        <div className='bg-slate-100 pt-5 -pl-8 rounded-lg border w-full mb-16 overflow-x-auto shadow-lg'>
             <div id="chart">
+            <div className="px-8">
+            <CardHeader>
+              <CardTitle className="text-center">
+                {" "}
+                {" "}
+                Hourly Efficiency
+              </CardTitle>
+              {/* <CardDescription>Number of items came across each scanning points today</CardDescription> */}
+            </CardHeader>
+          </div>
                 <ReactApexChart options={options} series={series} type="heatmap" height={(height)} width={width} />
             </div>
             <div id="html-dist"></div>
