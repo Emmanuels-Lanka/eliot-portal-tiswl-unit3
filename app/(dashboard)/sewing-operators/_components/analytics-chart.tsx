@@ -59,6 +59,7 @@ const AnalyticsChart = ({
     const [heatmapCategories, setHeatmapCategories] = useState<string[] | null>(null);
     const [obbSheet, setObbSheet] = useState<ObbSheet | null>(null);
     const [obbSheetId, setObbSheetId] = useState<any>();
+    const [operatorID, setOperatorID] = useState<any>();
     const [date, setDate] = useState<string>("");
 
     function processProductionData(productionData: ProductionDataForChartTypes[]): OperationEfficiencyOutputTypesNew {
@@ -125,12 +126,13 @@ const AnalyticsChart = ({
             data.date.setDate(data.date.getDate() + 1);
             const formattedDate =  data.date.toISOString().split('T')[0];
             const response = await axios.get(`/api/efficiency/production-by-operator?obbSheetId=${data.obbSheetId}&date=${formattedDate}&operatorId=${operatorId}`);
-            
+            console.log("ooooooo",operatorId)
             const heatmapData = processProductionData(response.data.data);
             setHeatmapData(heatmapData);
             setObbSheet(response.data.obbSheet);
             setDate(formattedDate)
             setObbSheetId(data.obbSheetId)
+            setOperatorID(operatorId)
             
             router.refresh();
         } catch (error: any) {
@@ -196,7 +198,7 @@ const AnalyticsChart = ({
                </div>
                <div className="w-full bg-slate-500">
                 
-               <GraphCompo date={date} obbSheet={obbSheetId}></GraphCompo>
+               <GraphCompo date={date} obbSheet={obbSheetId} operatorId={operatorID}></GraphCompo>
                </div>
              </div>
              

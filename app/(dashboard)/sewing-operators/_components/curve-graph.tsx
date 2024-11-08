@@ -21,9 +21,33 @@ import {
 } from "@/components/ui/chart"
 // import { getOperationSmv, getTargetValues } from './action'
 import { cn } from '@/lib/utils'
+import { getEfficiency } from './actions'
 export const description = "A line chart with a label"
 
-const GraphCompo  = ({date,obbSheet}:any) => {
+
+export type learnCurveData = {
+  seqNo:string,
+  count:number,
+  name:string,
+  operation:string,
+  smv:number,
+  first:any,
+  last:any
+};
+
+export type learnCurveDatanew = {
+  seqNo:string,
+  count:number,
+  name:string,
+  operation:string,
+  smv:number,
+  first:any,
+  last:any
+  diffInMinutes:any
+};
+
+
+const GraphCompo  = ({date,obbSheet,operatorId}:any) => {
 
     const [chartData, setChartData] = useState<any[]>([])
     const [chartWidth, setChartWidth] = useState<number>(170);
@@ -42,12 +66,48 @@ const GraphCompo  = ({date,obbSheet}:any) => {
       
 
 
+      const processData = (data:learnCurveDatanew[])=>
+      {
+
+        return data.map((d)=>{
+
+          const earnmins = d.smv*d.count
+          const efficiency  = Number(Math.round((earnmins/d.diffInMinutes)*100)) ?? 0;
+          return{
+            ...d,efficiency
+          }
+
+        })
+
+      }
+
+      function getMinutesDifference(data: learnCurveData[]): learnCurveDatanew[] {
+        return data.map(d => {
+          const start = new Date(d.first);
+          const end = new Date(d.last);
+          const diffInMs = end.getTime() - start.getTime();
+          const diffInMinutes = Math.floor((diffInMs / (1000 * 60))-60);
+    
+          return {
+            ...d,
+            diffInMinutes,
+          };
+        });
+      }
       const Fetchdata = async () => {
         try {          
             
             
             // setisSubmitting(true)
             setisSubmitting(true)
+
+            const eff= await getEfficiency(obbSheet, date+"%",operatorId)
+            console.log("afdf",eff)
+            const timegap= getMinutesDifference(eff)
+            console.log(timegap)
+            const realData = processData(timegap)
+            console.log("aaa",realData)
+
 
             const ops = await getOperationSmv(obbSheet, date)
             const vls = await getTargetValues(obbSheet)
