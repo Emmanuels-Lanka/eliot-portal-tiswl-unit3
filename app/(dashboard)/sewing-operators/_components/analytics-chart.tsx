@@ -196,7 +196,7 @@ const AnalyticsChart = ({
                    />
                  </div> */}
                </div>
-               <div className="w-full bg-slate-500">
+               <div className="w-auto">
                 
                <GraphCompo date={date} obbSheet={obbSheetId} operatorId={operatorID}></GraphCompo>
                </div>

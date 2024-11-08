@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 // import { AnalyticsChartProps } from './analytics'
 
 import { Loader2, TrendingUp } from "lucide-react"
-import { CartesianGrid, LabelList, Line, LineChart, XAxis, YAxis } from "recharts"
+import { CartesianGrid, Label, LabelList, Line, LineChart, XAxis, YAxis } from "recharts"
 import {
   Card,
   CardContent,
@@ -22,10 +22,12 @@ import {
 // import { getOperationSmv, getTargetValues } from './action'
 import { cn } from '@/lib/utils'
 import { getEfficiency } from './actions'
+import { getFormattedTime } from '@/lib/utils-time'
 export const description = "A line chart with a label"
 
 
 export type learnCurveData = {
+  day:any
   seqNo:string,
   count:number,
   name:string,
@@ -42,12 +44,14 @@ export type learnCurveDatanew = {
   operation:string,
   smv:number,
   first:any,
-  last:any
-  diffInMinutes:any
+  last:any,
+  diffInMinutes:any,
+  datePoint:any
 };
 
 
 const GraphCompo  = ({date,obbSheet,operatorId}:any) => {
+
 
     const [chartData, setChartData] = useState<any[]>([])
     const [chartWidth, setChartWidth] = useState<number>(170);
@@ -65,38 +69,48 @@ const GraphCompo  = ({date,obbSheet,operatorId}:any) => {
       } satisfies ChartConfig
       
 
-
-      const processData = (data:learnCurveDatanew[])=>
-      {
-
-        return data.map((d)=>{
-
-          const earnmins = d.smv*d.count
-          const efficiency  = Number(Math.round((earnmins/d.diffInMinutes)*100)) ?? 0;
-          return{
-            ...d,efficiency
-          }
-
-        })
-
-      }
+      const processData = (data: learnCurveDatanew[]) => {
+        return data.map((d) => {
+          const earnmins = d.smv * d.count;
+      
+          // Check if diffInMinutes is zero to prevent division by zero
+          const efficiency = d.diffInMinutes > 0 ? Number(Math.round((earnmins / d.diffInMinutes) * 100)) : 0;
+      
+          return {
+            ...d,
+            efficiency,
+          };
+        });
+      };
 
       function getMinutesDifference(data: learnCurveData[]): learnCurveDatanew[] {
         return data.map(d => {
-          const start = new Date(d.first);
-          const end = new Date(d.last);
-          const diffInMs = end.getTime() - start.getTime();
-          const diffInMinutes = Math.floor((diffInMs / (1000 * 60))-60);
+            const start = new Date(d.first);
+            const end = new Date(d.last);
     
-          return {
-            ...d,
-            diffInMinutes,
-          };
+            // Ensure start is before end
+            const [earlier, later] = start < end ? [start, end] : [end, start];
+    
+            const diffInMs = later.getTime() - earlier.getTime();
+            let diffInMinutes = Math.floor(diffInMs / (1000 * 60));
+    
+            // Subtract 60 minutes for the break if applicable, ensuring no negative values
+            diffInMinutes = Math.max(diffInMinutes - 60, 0);
+    
+            const datePoint = getFormattedTime(d.day);
+    
+            return {
+                ...d,
+                diffInMinutes,
+                datePoint
+            };
         });
-      }
+    }
+    
       const Fetchdata = async () => {
         try {          
             
+          console.log("qweqeew",operatorId)
             
             // setisSubmitting(true)
             setisSubmitting(true)
@@ -108,49 +122,10 @@ const GraphCompo  = ({date,obbSheet,operatorId}:any) => {
             const realData = processData(timegap)
             console.log("aaa",realData)
 
-
-          //   const ops = await getOperationSmv(obbSheet, date)
-          //   const vls = await getTargetValues(obbSheet)
-        
-          //  console.log(ops)
-          // //  console.log(vls)
-
-          //   const newProd = ops.map((o) => ({
-          //       ...o, // Spread the current operation
-          //       ...vls // Spread the values from vls
-          //   }));
-            
-           
-            // console.log("nnn",newProd)
-           
-            // const chartData: any[] = newProd.map((item: any) => {
-
-            //     const man = Number(item.operations)
-            //     const tsmv = item[0].tsmv
-
-            //     const target= tsmv/man
-            //     console.log("na",target)
-
-              
-            //     return(
-                  
-                
-            //     {
-            //     name:item.seqNo+"-"+item.name,
-               
-            //     smv:item.smv,
-            //     target:target
-                
-        
-
           
-
-            // })}
-            
-            // );
            
-            setChartData(chartData)
-            console.log("chart",chartData)
+            setChartData(realData)
+            // console.log("chart",chartData)
         }
 
         catch (error) {
@@ -175,9 +150,9 @@ const GraphCompo  = ({date,obbSheet,operatorId}:any) => {
 
   
         {chartData.length > 0 ? (
-    <div className='bg-slate-50 w-full mb-16 overflow-scroll'>
+    <div className='bg-slate-50 w-screen mb-16 overflow-scroll'>
 
-    <Card className='bg-slate-50 pt-4' style={{width:(chartWidth)+"%"}}>
+    <Card className='bg-slate-50 pt-4  max-w-[600px]'>
       
       <CardContent>
         <ChartContainer 
@@ -193,29 +168,32 @@ const GraphCompo  = ({date,obbSheet,operatorId}:any) => {
             }}
           >
             <CartesianGrid vertical={false} />
-            <XAxis
-              dataKey="name"
+            <XAxis 
+              dataKey="datePoint"
               tickLine={true}
                                     tickMargin={15}
                                     axisLine={true}
                                     angle={90}
                                     interval={0}
                                     textAnchor='start'
-            />
+            >
+              <Label value="Date" offset={150} position="bottom" /> {/* X-Axis Label */}
+            </XAxis>
             <YAxis
-              dataKey="smv"
+              dataKey="efficiency"
               tickLine={false}
               axisLine={false}
               tickMargin={8}
             //   tickFormatter={(value) => value.slice(0, 3)}
-            />
+            > 
+            <Label value="Efficiency" offset={-150} position="bottom" angle={90} /> {/* X-Axis Label */}</YAxis>
             <ChartTooltip
               cursor={false}
               content={<ChartTooltipContent indicator="line" />}
             />
             <ChartLegend verticalAlign='top'></ChartLegend>
             <Line
-              dataKey="smv"
+              dataKey="efficiency"
               type="natural"
               stroke="var(--color-desktop)"
               strokeWidth={2}
@@ -226,6 +204,7 @@ const GraphCompo  = ({date,obbSheet,operatorId}:any) => {
                 r: 6,
               }}
             >
+              
                 
               <LabelList
                 position="top"
@@ -234,15 +213,7 @@ const GraphCompo  = ({date,obbSheet,operatorId}:any) => {
                 fontSize={12}
               />
             </Line>
-            <Line
-                                dataKey="target"
-                                type="linear" // Use linear type for a straight line
-                                stroke="green" // Change the color as needed
-                                strokeWidth={2}
-                                dot={false} // No dots on the target line
-                                // strokeDasharray="5 5" // Optional: make it dashed
-                            />
-
+            
           </LineChart>
         </ChartContainer>
       </CardContent>

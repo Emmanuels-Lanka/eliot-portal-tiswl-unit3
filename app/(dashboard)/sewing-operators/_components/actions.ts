@@ -21,6 +21,7 @@ export async function getEfficiency(date:string,obbSheet:string,operatorId:strin
     // obbsheetid:string,date:string
     
      const data = await sql`SELECT 
+    DATE(pd."timestamp") AS day,  -- Group by each day for the learning curve
     oo."seqNo", 
     SUM(pd."productionCount") AS count, 
     o.name AS name, 
@@ -39,17 +40,20 @@ INNER JOIN
 LEFT JOIN (
     SELECT 
         "operatorRfid",
+        DATE("LoginTimestamp") AS login_date,  -- Extract date part for daily grouping
         MIN("LoginTimestamp") AS first_login
     FROM "OperatorSession"
-    WHERE "LoginTimestamp" LIKE '2024-11-07%'
-    GROUP BY "operatorRfid"
-) AS os ON os."operatorRfid" = o.rfid
+    WHERE DATE("LoginTimestamp") < CURRENT_DATE  -- Ensure type consistency with date
+    GROUP BY "operatorRfid", DATE("LoginTimestamp")  -- Group by operator and date
+) AS os ON os."operatorRfid" = o.rfid AND DATE(pd."timestamp") = os.login_date  -- Join on date
 WHERE 
-    pd."timestamp" LIKE '2024-11-07%' and o.id='ly79j9ha-Ulv0UwYD-xxx'
+    DATE(pd."timestamp") < CURRENT_DATE  -- Ensure type consistency with date
+    AND o.id = ${operatorId}
 GROUP BY 
-    oo."seqNo", o.name, opn.name, oo.smv,os.first_login
+    day, oo."seqNo", o.name, opn.name, oo.smv, os.first_login
 ORDER BY 
-    oo."seqNo";
+    day, oo."seqNo";
+
 
 
 
