@@ -1,6 +1,6 @@
 "use client"
 import React, { useEffect, useState } from 'react'
-import { AnalyticsChartProps } from './analytics'
+// import { AnalyticsChartProps } from './analytics'
 
 import { Loader2, TrendingUp } from "lucide-react"
 import { CartesianGrid, LabelList, Line, LineChart, XAxis, YAxis } from "recharts"
@@ -109,45 +109,45 @@ const GraphCompo  = ({date,obbSheet,operatorId}:any) => {
             console.log("aaa",realData)
 
 
-            const ops = await getOperationSmv(obbSheet, date)
-            const vls = await getTargetValues(obbSheet)
+          //   const ops = await getOperationSmv(obbSheet, date)
+          //   const vls = await getTargetValues(obbSheet)
         
-           console.log(ops)
-           console.log(vls)
+          //  console.log(ops)
+          // //  console.log(vls)
 
-            const newProd = ops.map((o) => ({
-                ...o, // Spread the current operation
-                ...vls // Spread the values from vls
-            }));
+          //   const newProd = ops.map((o) => ({
+          //       ...o, // Spread the current operation
+          //       ...vls // Spread the values from vls
+          //   }));
             
            
-            console.log("nnn",newProd)
+            // console.log("nnn",newProd)
            
-            const chartData: any[] = newProd.map((item: any) => {
+            // const chartData: any[] = newProd.map((item: any) => {
 
-                const man = Number(item.operations)
-                const tsmv = item[0].tsmv
+            //     const man = Number(item.operations)
+            //     const tsmv = item[0].tsmv
 
-                const target= tsmv/man
-                console.log("na",target)
+            //     const target= tsmv/man
+            //     console.log("na",target)
 
               
-                return(
+            //     return(
                   
                 
-                {
-                name:item.seqNo+"-"+item.name,
+            //     {
+            //     name:item.seqNo+"-"+item.name,
                
-                smv:item.smv,
-                target:target
+            //     smv:item.smv,
+            //     target:target
                 
         
 
           
 
-            })}
+            // })}
             
-            );
+            // );
            
             setChartData(chartData)
             console.log("chart",chartData)
