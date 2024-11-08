@@ -11,29 +11,59 @@ export async function getDailyData(obbsheetid:string,date:string)  : Promise<Rep
     const sql = neon(process.env.DATABASE_URL || "");
 
     const data = await sql`
-    select opr.id, opr.name as operatorname,
-           op.name as operationname,
-           sum(pd."productionCount") as count,
-           obbop.smv as smv,
-           obbop.target,
-           unt.name as unitname,
-           obbs.style as style,
-           sm."machineId" as machineid,
-           pl.name as linename,
-           obbs.buyer,
-           opr."employeeId"
-    from "ProductionData" pd
-    inner join "Operator" opr on pd."operatorRfid" = opr.rfid 
-    inner join "ObbOperation" obbop on pd."obbOperationId" = obbop.id
-    inner join "ObbSheet" obbs on obbop."obbSheetId" = obbs.id
-    inner join "Operation" op on obbop."operationId" = op.id
-    inner join "Unit" unt on obbs."unitId" = unt.id
-    inner join "SewingMachine" sm on obbop."sewingMachineId"=sm.id
-     inner join "ProductionLine" pl on pl.id=obbs."productionLineId"
-    where pd."timestamp" LIKE ${date} AND obbs.id = ${obbsheetid}
-    group by opr.id, opr.name, op.name, obbop.smv, obbop.target, unt.name, obbs.style,sm.id,pl.name,obbs.buyer, opr."employeeId"`;
-  
-   console.log(data)
+    SELECT 
+    opr.id,
+    obbop."seqNo",
+    opr.name AS operatorname,
+    op.name AS operationname,
+    SUM(pd."productionCount") AS count,
+    obbop.smv AS smv,
+    obbop.target,
+    unt.name AS unitname,
+    obbs.style AS style,
+    sm."machineId" AS machineid,
+    pl.name AS linename,
+    obbs.buyer,
+    opr."employeeId",
+    os.first_login AS first,  -- Earliest timestamp from subquery
+    MAX(pd."timestamp") AS last  -- Latest timestamp in the group
+FROM "ProductionData" pd
+INNER JOIN "Operator" opr ON pd."operatorRfid" = opr.rfid 
+INNER JOIN "ObbOperation" obbop ON pd."obbOperationId" = obbop.id
+INNER JOIN "ObbSheet" obbs ON obbop."obbSheetId" = obbs.id
+INNER JOIN "Operation" op ON obbop."operationId" = op.id
+INNER JOIN "Unit" unt ON obbs."unitId" = unt.id
+INNER JOIN "SewingMachine" sm ON obbop."sewingMachineId" = sm.id
+INNER JOIN "ProductionLine" pl ON pl.id = obbs."productionLineId"
+-- Subquery to get the earliest LoginTimestamp for each operator on the selected date
+LEFT JOIN (
+    SELECT 
+        "operatorRfid",
+        MIN("LoginTimestamp") AS first_login
+    FROM "OperatorSession"
+    WHERE "LoginTimestamp" LIKE ${date}
+    GROUP BY "operatorRfid"
+) AS os ON os."operatorRfid" = opr.rfid
+WHERE pd."timestamp" LIKE ${date} 
+    AND obbs.id = ${obbsheetid}
+GROUP BY 
+    opr.id, 
+    opr.name, 
+    op.name, 
+    obbop."seqNo", 
+    obbop.smv, 
+    obbop.target, 
+    unt.name, 
+    obbs.style, 
+    sm.id, 
+    pl.name, 
+    obbs.buyer, 
+    opr."employeeId", 
+    os.first_login
+ORDER BY obbop."seqNo";
+`;
+    
+   console.log(obbsheetid,date)
 
  
     return new Promise((resolve) => resolve(data as ReportData[]  ))

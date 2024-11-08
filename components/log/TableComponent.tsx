@@ -34,12 +34,12 @@ const TableComponent = ({data}:{data:any}) => {
         <TableHead className="">
         Live Total Production
         </TableHead>
-        <TableHead className="">
+        {/* <TableHead className="">
         Login Time
         </TableHead>
         <TableHead className="">
         Logout Time
-        </TableHead>
+        </TableHead> */}
         <TableHead className="">
         Target
         </TableHead>
@@ -69,8 +69,8 @@ const TableComponent = ({data}:{data:any}) => {
         <TableCell className="text-right">{d.code}</TableCell>
         <TableCell className="text-right">{d.operationname}</TableCell>
         <TableCell className="text-center">{d.totprod}</TableCell>
-        <TableCell className="text-right">{d.LoginTimestamp}</TableCell>
-        <TableCell className="text-right">{d.LogoutTimestamp}</TableCell>
+        {/* <TableCell className="text-right">{d.LoginTimestamp}</TableCell>
+        <TableCell className="text-right">{d.LogoutTimestamp}</TableCell> */}
         <TableCell className="text-left">{d.target}</TableCell>
         
       </TableRow>

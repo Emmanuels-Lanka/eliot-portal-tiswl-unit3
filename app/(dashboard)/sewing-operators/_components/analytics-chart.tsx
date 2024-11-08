@@ -11,6 +11,7 @@ import { useToast } from "@/components/ui/use-toast";
 import EffiencyHeatmap from "./heatmap";
 import ProdHeatMap from "./prodHeatmap";
 import EfficiencyBarChart from "./dhuGraph";
+import GraphCompo from "./curve-graph";
 
 interface AnalyticsChartProps {
     obbSheets: {
@@ -192,6 +193,10 @@ const AnalyticsChart = ({
                      operatorId={operatorId}
                    />
                  </div> */}
+               </div>
+               <div className="w-full bg-slate-500">
+                
+               <GraphCompo date={date} obbSheet={obbSheetId}></GraphCompo>
                </div>
              </div>
              
