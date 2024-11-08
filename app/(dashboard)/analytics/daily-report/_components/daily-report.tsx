@@ -106,46 +106,46 @@ const ReportTable = ({ obbSheets }: AnalyticsChartProps) => {
     }
   }, [obbSheetId, date]);
 
-  const downloadPDF = async () => {
-    if (!reportRef.current) return;
+  // const downloadPDF = async () => {
+  //   if (!reportRef.current) return;
   
 
     
-    // Capture the reportRef element with a higher scale for better quality
-    const canvas = await html2canvas(reportRef.current, {
-      scale: 2,  // Increase scale for higher resolution
-      useCORS: true, // Enable cross-origin resource sharing if needed
-      scrollY: -window.scrollY, // Prevents the viewport from affecting the snapshot
-    });
+  //   // Capture the reportRef element with a higher scale for better quality
+  //   const canvas = await html2canvas(reportRef.current, {
+  //     scale: 2,  // Increase scale for higher resolution
+  //     useCORS: true, // Enable cross-origin resource sharing if needed
+  //     scrollY: -window.scrollY, // Prevents the viewport from affecting the snapshot
+  //   });
   
-    const imgData = canvas.toDataURL("image/png");
-    const pdf = new jsPDF("p", "mm", "a4");
-    const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+  //   const imgData = canvas.toDataURL("image/png");
+  //   const pdf = new jsPDF("p", "mm", "a4");
+  //   const pdfWidth = pdf.internal.pageSize.getWidth();
+  //   const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
   
-    let imgHeightLeft = pdfHeight;
-    let position = 0;
+  //   let imgHeightLeft = pdfHeight;
+  //   let position = 0;
   
-    // Add the image to each page of the PDF if the content exceeds one page
-    while (imgHeightLeft > 0) {
-      pdf.addImage(imgData, "PNG", 0, position, pdfWidth, pdfHeight);
-      imgHeightLeft -= pdf.internal.pageSize.getHeight();
-      position -= pdf.internal.pageSize.getHeight();
-      if (imgHeightLeft > 0) pdf.addPage();
-    }
+  //   // Add the image to each page of the PDF if the content exceeds one page
+  //   while (imgHeightLeft > 0) {
+  //     pdf.addImage(imgData, "PNG", 0, position, pdfWidth, pdfHeight);
+  //     imgHeightLeft -= pdf.internal.pageSize.getHeight();
+  //     position -= pdf.internal.pageSize.getHeight();
+  //     if (imgHeightLeft > 0) pdf.addPage();
+  //   }
   
-    pdf.save("Operator_Daily_Efficiency_Report.pdf");
-  };
+  //   pdf.save("Operator_Daily_Efficiency_Report.pdf");
+  // };
   
 
   return (
     <div>
       <SelectObbSheetAndDate obbSheets={obbSheets} handleSubmit={handleFetchProductions} />
-      {data.length > 0 && (
+      {/* {data.length > 0 && (
         <Button className="mt-5" onClick={downloadPDF}>
           Download as PDF
         </Button>
-      )}
+      )} */}
       <div ref={reportRef} className=" mt-5 mb-10">
         <Table>
           <TableHeader>
