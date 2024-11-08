@@ -205,11 +205,11 @@ export const SIDEBAR_ROUTES = [
             //     href: "/analytics/operator-effective-time",
             //     icon: Table
             // },
-            {
-                label: "Operator Efficiency (15min)",
-                href: "/analytics/operator-efficiency-15",
-                icon: BarChartHorizontal
-            },
+            // {
+            //     label: "Operator Efficiency (15min)",
+            //     href: "/analytics/operator-efficiency-15",
+            //     icon: BarChartHorizontal
+            // },
             {
                 label: "Top Performence Operators",
                 href: "/analytics/top-operator",
@@ -255,18 +255,18 @@ export const SIDEBAR_ROUTES = [
             //     href: "/analytics/tls-productions",
             //     icon: BarChartHorizontal
             // },
-            {
-                label: "GMT DHU",
-                href: "/analytics/tls-operators",
-                icon: BarChartHorizontal
-            },
+            // {
+            //     label: "GMT DHU",
+            //     href: "/analytics/tls-operators",
+            //     icon: BarChartHorizontal
+            // },
             {
                 label: "Operator DHU Report",
                 href: "/analytics/operator-dhu",
                 icon: BarChartHorizontal
             },
             {
-                label: "Operator Wise DHU ",
+                label: "Operator  DHU ",
                 href: "/analytics/dhu-operator",
                 icon: BarChartHorizontal
             },
