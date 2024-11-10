@@ -54,7 +54,7 @@ const ReportTable = ({ obbSheets }: AnalyticsChartProps) => {
 
   const handleFetchProductions = async (data: { obbSheetId: string; date: Date }) => {
     data.date.setDate(data.date.getDate() + 1);
-    const formattedDate = data.date.toISOString().split("T")[0] + "%";
+    const formattedDate = data.date.toISOString().split("T")[0] ;
     setDate(formattedDate);
     setObbSheetId(data.obbSheetId);
   };
@@ -106,46 +106,119 @@ const ReportTable = ({ obbSheets }: AnalyticsChartProps) => {
     }
   }, [obbSheetId, date]);
 
-  // const downloadPDF = async () => {
-  //   if (!reportRef.current) return;
+  const handlePrint = () => {
+    const baseUrl = window.location.origin;
+    const printContent = reportRef.current?.innerHTML;
+    let selectedDate = new Date(date);
   
-
+    // Subtract one day from the selected date
+    selectedDate.setDate(selectedDate.getDate() - 1);
+  
+    // Format the adjusted date back to a string
+    const formattedDate = selectedDate.toISOString().split('T')[0];
     
-  //   // Capture the reportRef element with a higher scale for better quality
-  //   const canvas = await html2canvas(reportRef.current, {
-  //     scale: 2,  // Increase scale for higher resolution
-  //     useCORS: true, // Enable cross-origin resource sharing if needed
-  //     scrollY: -window.scrollY, // Prevents the viewport from affecting the snapshot
-  //   });
   
-  //   const imgData = canvas.toDataURL("image/png");
-  //   const pdf = new jsPDF("p", "mm", "a4");
-  //   const pdfWidth = pdf.internal.pageSize.getWidth();
-  //   const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+    const htmlContent = `
+      <html>
+        <head>
+          <title>Operator Daily Efficiency Report</title>
+          <style>
+            body {
+              font-family: Arial, sans-serif;
+              margin: 0;
+              padding: 20px;
+            }
+            .container {
+              width: 100%;
+              margin: 0 auto;
+              padding: 20px;
+              box-sizing: border-box;
+            }
+            table {
+              width: 100%;
+              border-collapse: collapse;
+              margin-top: 20px;
+            }
+            th, td {
+              border: 1px solid #ddd;
+              padding: 8px;
+            }
+            th {
+              text-align: center;
+              background-color: gray;
+            }
+            td {
+              text-align: left;
+            }
+            .logo-div {
+              text-align: center;
+            }
+            .logo-div img {
+              width: 170px;
+              height: auto;
+            }
+            .text-center {
+              text-align: center;
+            }
+            .footer-logo img {
+              width: 120px;
+              height: auto;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="logo-div">
+            <img src="${baseUrl}/ha-meem.png" alt="Ha-Meem Logo" style="margin-top:10px;"/>
+            <h5 style="margin-top:10px;">~ Bangladesh ~</h5>
+          </div>
+          <h1 class="text-center">Operator Daily Efficiency Report</h1>
+          <hr />
+          <div>
+            <h5>Factory Name: Apparel Gallery LTD</h5>
+            <h5>Title: Operator Daily Efficiency Report</h5>
+            <h5>Date: ${formattedDate}</h5>
+            <h5>Unit: ${data[0]?.unitname}</h5>
+            <h5>Buyer: ${data[0]?.buyer}</h5>
+            <h5>Style Name: ${data[0]?.style}</h5>
+            <h5>Line Name: ${data[0]?.linename}</h5>
+          </div>
+          ${printContent}
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 50px;">
+            <div>
+              <p><a href="https://rfid-tracker.eliot.global/">https://rfid-tracker.eliot.global/</a></p>
+            </div>
+            <div class="footer-logo">
+              <img src="${baseUrl}/logo.png" alt="Company Footer Logo" />
+            </div>
+          </div>
+        </body>
+      </html>
+    `;
   
-  //   let imgHeightLeft = pdfHeight;
-  //   let position = 0;
-  
-  //   // Add the image to each page of the PDF if the content exceeds one page
-  //   while (imgHeightLeft > 0) {
-  //     pdf.addImage(imgData, "PNG", 0, position, pdfWidth, pdfHeight);
-  //     imgHeightLeft -= pdf.internal.pageSize.getHeight();
-  //     position -= pdf.internal.pageSize.getHeight();
-  //     if (imgHeightLeft > 0) pdf.addPage();
-  //   }
-  
-  //   pdf.save("Operator_Daily_Efficiency_Report.pdf");
-  // };
-  
+    const blob = new Blob([htmlContent], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    
+    const printWindow = window.open(url, '', 'width=800,height=600');
+    
+    if (printWindow) {
+      printWindow.onload = () => {
+        printWindow.print();
+        URL.revokeObjectURL(url);
+      };
+    } else {
+      console.error("Failed to open print window");
+    }
+  };
+   
 
   return (
     <div>
       <SelectObbSheetAndDate obbSheets={obbSheets} handleSubmit={handleFetchProductions} />
-      {/* {data.length > 0 && (
-        <Button className="mt-5" onClick={downloadPDF}>
+      {data.length > 0 && (
+        <Button className="mt-5" onClick={handlePrint}>
           Download as PDF
         </Button>
-      )} */}
+      )}
       <div ref={reportRef} className=" mt-5 mb-10">
         <Table>
           <TableHeader>
