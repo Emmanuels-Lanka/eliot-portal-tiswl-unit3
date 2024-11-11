@@ -112,7 +112,7 @@ const ReportTable = ({ obbSheets }: AnalyticsChartProps) => {
     let selectedDate = new Date(date);
   
     // Subtract one day from the selected date
-    selectedDate.setDate(selectedDate.getDate() - 1);
+    selectedDate.setDate(selectedDate.getDate());
   
     // Format the adjusted date back to a string
     const formattedDate = selectedDate.toISOString().split('T')[0];
