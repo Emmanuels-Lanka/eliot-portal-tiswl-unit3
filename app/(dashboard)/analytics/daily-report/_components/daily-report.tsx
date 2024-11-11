@@ -229,9 +229,9 @@ const ReportTable = ({ obbSheets }: AnalyticsChartProps) => {
               <TableHead>Operation Name</TableHead>
               <TableHead>Operated Machine</TableHead>
               <TableHead>100% SMV Target/Hr</TableHead>
-              <TableHead>Units Produced</TableHead>
+              {/* <TableHead>Units Produced</TableHead> */}
               <TableHead>Efficiency(%)</TableHead>
-              <TableHead>Achievement</TableHead>
+              {/* <TableHead>Achievement</TableHead> */}
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -243,9 +243,9 @@ const ReportTable = ({ obbSheets }: AnalyticsChartProps) => {
                 <TableCell>{d.operationname}</TableCell>
                 <TableCell>{d.machineid}</TableCell>
                 <TableCell>{(60 / d.smv).toFixed(2)}</TableCell>
-                <TableCell>{d.count}</TableCell>
+                {/* <TableCell>{d.count}</TableCell> */}
                 <TableCell>{d.efficiency}%</TableCell>
-                <TableCell>{d.achievements}</TableCell>
+                {/* <TableCell>{d.achievements}</TableCell> */}
               </TableRow>
             ))}
           </TableBody>
