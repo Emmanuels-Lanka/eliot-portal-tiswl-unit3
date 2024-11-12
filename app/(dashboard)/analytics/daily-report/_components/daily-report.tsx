@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import {
   Table,
@@ -48,21 +48,33 @@ export type ReportDataOut = ReportData & {
 
 const ReportTable = ({ obbSheets }: AnalyticsChartProps) => {
   const [date, setDate] = useState<string>("");
-  const [data, setData] = useState<ReportDataOut[]>([]);
+  const [data, setData] = useState<any[]>([]);
   const [obbSheetId, setObbSheetId] = useState<string>("");
   const reportRef = useRef<HTMLDivElement | null>(null);
 
   const handleFetchProductions = async (data: { obbSheetId: string; date: Date }) => {
     data.date.setDate(data.date.getDate() + 1);
-    const formattedDate = data.date.toISOString().split("T")[0] ;
+    const formattedDate = data.date.toISOString().split("T")[0];
     setDate(formattedDate);
     setObbSheetId(data.obbSheetId);
   };
 
-  const calculateEfficiency = (reportData: ReportDataOut[]) => {
-    return reportData.map(d => {
-      const earnmins = d.smv * d.count;
-      const efficiency = Math.round((earnmins / d.diffInMinutes) * 100) || 0;
+  const calculateAverageEfficiency = (groupedData: { [key: string]: ReportDataOut[] }) => {
+    return Object.values(groupedData).map((operatorData) => {
+      // Calculate total earned minutes across all operations
+      const totalEarnedMinutes = operatorData.reduce((acc, operation) => {
+        return acc + (Number(operation.count) * operation.smv);
+      }, 0);
+
+      // Calculate total available minutes across all operations
+      const totalAvailableMinutes = operatorData.reduce((acc, operation) => {
+        return acc + operation.diffInMinutes;
+      }, 0);
+
+      // Calculate the overall efficiency
+      const efficiency = Math.round((totalEarnedMinutes / totalAvailableMinutes) * 100) || 0;
+
+      // Achievement based on overall efficiency
       const achievement =
         efficiency >= 80
           ? "Exceeded Target"
@@ -71,19 +83,31 @@ const ReportTable = ({ obbSheets }: AnalyticsChartProps) => {
           : "Below Target";
 
       return {
-        ...d,
+        operatorname: operatorData[0].operatorname,
+        employeeId: operatorData[0].employeeId,
         efficiency,
         achievements: achievement,
       };
     });
   };
 
+  const groupByOperator = (details: ReportDataOut[]) => {
+    const operatorsMap: { [key: string]: ReportDataOut[] } = {};
+    details.forEach((data) => {
+      if (!operatorsMap[data.employeeId]) {
+        operatorsMap[data.employeeId] = [];
+      }
+      operatorsMap[data.employeeId].push(data);
+    });
+    return operatorsMap;
+  };
+
   function getMinutesDifference(data: ReportData[]): ReportDataOut[] {
-    return data.map(d => {
+    return data.map((d) => {
       const start = new Date(d.first);
       const end = new Date(d.last);
       const diffInMs = end.getTime() - start.getTime();
-      const diffInMinutes = Math.round((diffInMs / (1000 * 60))-60);
+      const diffInMinutes = Math.round(diffInMs / (1000 * 60)) - 60;
 
       return {
         ...d,
@@ -95,8 +119,8 @@ const ReportTable = ({ obbSheets }: AnalyticsChartProps) => {
   const getDetails = async () => {
     const details = await getDailyData(obbSheetId, date);
     const timeData = getMinutesDifference(details);
-    const result = calculateEfficiency(timeData);
-    console.log("res",result)
+    const groupedData = groupByOperator(timeData);
+    const result = calculateAverageEfficiency(groupedData);
     setData(result);
   };
 
@@ -112,7 +136,7 @@ const ReportTable = ({ obbSheets }: AnalyticsChartProps) => {
     let selectedDate = new Date(date);
   
     // Subtract one day from the selected date
-    selectedDate.setDate(selectedDate.getDate() - 1);
+    selectedDate.setDate(selectedDate.getDate());
   
     // Format the adjusted date back to a string
     const formattedDate = selectedDate.toISOString().split('T')[0];
@@ -210,7 +234,6 @@ const ReportTable = ({ obbSheets }: AnalyticsChartProps) => {
     }
   };
    
-
   return (
     <div>
       <SelectObbSheetAndDate obbSheets={obbSheets} handleSubmit={handleFetchProductions} />
@@ -219,33 +242,25 @@ const ReportTable = ({ obbSheets }: AnalyticsChartProps) => {
           Download as PDF
         </Button>
       )}
-      <div ref={reportRef} className=" mt-5 mb-10">
+      <div ref={reportRef} className="mt-5 mb-10">
         <Table>
           <TableHeader>
             <TableRow>
               <TableHead>Seq No</TableHead>
               <TableHead>Emp ID</TableHead>
               <TableHead>Operator Name</TableHead>
-              <TableHead>Operation Name</TableHead>
-              <TableHead>Operated Machine</TableHead>
-              <TableHead>100% SMV Target/Hr</TableHead>
-              <TableHead>Units Produced</TableHead>
               <TableHead>Efficiency(%)</TableHead>
-              <TableHead>Achievement</TableHead>
+              {/* <TableHead>Achievement</TableHead> */}
             </TableRow>
           </TableHeader>
           <TableBody>
             {data.map((d, rid) => (
               <TableRow key={rid}>
-                <TableCell>{d.seqNo}</TableCell>
+                <TableCell>{rid + 1}</TableCell>
                 <TableCell>{d.employeeId}</TableCell>
                 <TableCell>{d.operatorname}</TableCell>
-                <TableCell>{d.operationname}</TableCell>
-                <TableCell>{d.machineid}</TableCell>
-                <TableCell>{(60 / d.smv).toFixed(2)}</TableCell>
-                <TableCell>{d.count}</TableCell>
                 <TableCell>{d.efficiency}%</TableCell>
-                <TableCell>{d.achievements}</TableCell>
+                {/* <TableCell>{d.achievements}</TableCell> */}
               </TableRow>
             ))}
           </TableBody>
