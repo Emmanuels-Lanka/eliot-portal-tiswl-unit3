@@ -291,7 +291,8 @@ const ReportTable = ({ obbSheets }: AnalyticsChartProps) => {
                 <TableCell>{d.seqNo}</TableCell>
                 <TableCell>{d.employeeId}</TableCell>
                 <TableCell>{d.operatorname}</TableCell>
-                <TableCell>{(60 / d.smv).toFixed(2)}</TableCell>
+                <TableCell>{d.smv ? (60 / d.smv).toFixed(2) : 0}</TableCell>
+
                 <TableCell>{d.efficiency}%</TableCell>
               </TableRow>
             ))}
