@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import {
   Table,
@@ -12,8 +12,6 @@ import { useEffect, useRef, useState } from "react";
 import { getDailyData } from "./actions";
 import SelectObbSheetAndDate from "@/components/dashboard/common/select-style-and-date";
 import { Button } from "@/components/ui/button";
-import jsPDF from "jspdf";
-import html2canvas from "html2canvas";
 
 interface AnalyticsChartProps {
   obbSheets: {
@@ -48,21 +46,62 @@ export type ReportDataOut = ReportData & {
 
 const ReportTable = ({ obbSheets }: AnalyticsChartProps) => {
   const [date, setDate] = useState<string>("");
-  const [data, setData] = useState<ReportDataOut[]>([]);
+  const [data, setData] = useState<any[]>([]);
   const [obbSheetId, setObbSheetId] = useState<string>("");
   const reportRef = useRef<HTMLDivElement | null>(null);
 
   const handleFetchProductions = async (data: { obbSheetId: string; date: Date }) => {
     data.date.setDate(data.date.getDate() + 1);
-    const formattedDate = data.date.toISOString().split("T")[0] ;
+    const formattedDate = data.date.toISOString().split("T")[0];
     setDate(formattedDate);
     setObbSheetId(data.obbSheetId);
   };
 
-  const calculateEfficiency = (reportData: ReportDataOut[]) => {
-    return reportData.map(d => {
-      const earnmins = d.smv * d.count;
-      const efficiency = Math.round((earnmins / d.diffInMinutes) * 100) || 0;
+  const calculateAverageEfficiency = (groupedData: { [key: string]: ReportDataOut[] }) => {
+    return Object.values(groupedData).map((operatorData) => {
+      // Get all valid timestamps for the operator
+      const allTimestamps = operatorData.flatMap(op => [
+        new Date(op.first).getTime(),
+        new Date(op.last).getTime()
+      ]).filter(time => !isNaN(time));
+
+      if (allTimestamps.length === 0) {
+        return {
+          operatorname: operatorData[0].operatorname,
+          employeeId: operatorData[0].employeeId,
+          unitname: operatorData[0].unitname,
+          buyer: operatorData[0].buyer,
+          style: operatorData[0].style,
+          linename: operatorData[0].linename,
+          efficiency: 0,
+          achievements: "Below Target",
+          smv:operatorData[0].smv,
+          seqNo:operatorData[0].seqNo
+        };
+      }
+
+      // Find the actual working period
+      const earliestStart = new Date(Math.min(...allTimestamps));
+      const latestEnd = new Date(Math.max(...allTimestamps));
+
+      // Calculate total working minutes
+      const totalMinutes = Math.max(0, Math.round((latestEnd.getTime() - earliestStart.getTime()) / (1000 * 60)));
+      
+      // Subtract break time (60 minutes) only if working time is more than 60 minutes
+      const breakTime = totalMinutes > 60 ? 60 : 0;
+      const actualWorkingMinutes = Math.max(1, totalMinutes - breakTime); // Ensure minimum 1 minute to avoid division by zero
+
+      // Calculate total earned minutes across all operations
+      const totalEarnedMinutes = operatorData.reduce((acc, operation) => {
+        const count = Number(operation.count) || 0;
+        const smv = operation.smv || 0;
+        return acc + (count * smv);
+      }, 0);
+
+      // Calculate efficiency (ensure non-negative value)
+      const efficiency = Math.max(0, Math.min(100, Math.round((totalEarnedMinutes / actualWorkingMinutes) * 100)));
+
+      // Achievement based on efficiency
       const achievement =
         efficiency >= 80
           ? "Exceeded Target"
@@ -71,19 +110,37 @@ const ReportTable = ({ obbSheets }: AnalyticsChartProps) => {
           : "Below Target";
 
       return {
-        ...d,
+        operatorname: operatorData[0].operatorname,
+        employeeId: operatorData[0].employeeId,
+        unitname: operatorData[0].unitname,
+        buyer: operatorData[0].buyer,
+        style: operatorData[0].style,
+        linename: operatorData[0].linename,
         efficiency,
         achievements: achievement,
+        smv:operatorData[0].smv,
+        seqNo:operatorData[0].seqNo
       };
     });
   };
 
+  const groupByOperator = (details: ReportDataOut[]) => {
+    const operatorsMap: { [key: string]: ReportDataOut[] } = {};
+    details.forEach((data) => {
+      if (!operatorsMap[data.employeeId]) {
+        operatorsMap[data.employeeId] = [];
+      }
+      operatorsMap[data.employeeId].push(data);
+    });
+    return operatorsMap;
+  };
+
   function getMinutesDifference(data: ReportData[]): ReportDataOut[] {
-    return data.map(d => {
+    return data.map((d) => {
       const start = new Date(d.first);
       const end = new Date(d.last);
-      const diffInMs = end.getTime() - start.getTime();
-      const diffInMinutes = Math.round((diffInMs / (1000 * 60))-60);
+      const diffInMs = Math.max(0, end.getTime() - start.getTime());
+      const diffInMinutes = Math.round(diffInMs / (1000 * 60));
 
       return {
         ...d,
@@ -95,8 +152,8 @@ const ReportTable = ({ obbSheets }: AnalyticsChartProps) => {
   const getDetails = async () => {
     const details = await getDailyData(obbSheetId, date);
     const timeData = getMinutesDifference(details);
-    const result = calculateEfficiency(timeData);
-    console.log("res",result)
+    const groupedData = groupByOperator(timeData);
+    const result = calculateAverageEfficiency(groupedData);
     setData(result);
   };
 
@@ -117,7 +174,6 @@ const ReportTable = ({ obbSheets }: AnalyticsChartProps) => {
     // Format the adjusted date back to a string
     const formattedDate = selectedDate.toISOString().split('T')[0];
     
-  
     const htmlContent = `
       <html>
         <head>
@@ -210,7 +266,6 @@ const ReportTable = ({ obbSheets }: AnalyticsChartProps) => {
     }
   };
    
-
   return (
     <div>
       <SelectObbSheetAndDate obbSheets={obbSheets} handleSubmit={handleFetchProductions} />
@@ -219,19 +274,15 @@ const ReportTable = ({ obbSheets }: AnalyticsChartProps) => {
           Download as PDF
         </Button>
       )}
-      <div ref={reportRef} className=" mt-5 mb-10">
+      <div ref={reportRef} className="mt-5 mb-10">
         <Table>
           <TableHeader>
             <TableRow>
               <TableHead>Seq No</TableHead>
               <TableHead>Emp ID</TableHead>
               <TableHead>Operator Name</TableHead>
-              <TableHead>Operation Name</TableHead>
-              <TableHead>Operated Machine</TableHead>
               <TableHead>100% SMV Target/Hr</TableHead>
-              {/* <TableHead>Units Produced</TableHead> */}
               <TableHead>Efficiency(%)</TableHead>
-              {/* <TableHead>Achievement</TableHead> */}
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -240,12 +291,9 @@ const ReportTable = ({ obbSheets }: AnalyticsChartProps) => {
                 <TableCell>{d.seqNo}</TableCell>
                 <TableCell>{d.employeeId}</TableCell>
                 <TableCell>{d.operatorname}</TableCell>
-                <TableCell>{d.operationname}</TableCell>
-                <TableCell>{d.machineid}</TableCell>
-                <TableCell>{(60 / d.smv).toFixed(2)}</TableCell>
-                {/* <TableCell>{d.count}</TableCell> */}
+                <TableCell>{d.smv ? (60 / d.smv).toFixed(2) : 0}</TableCell>
+
                 <TableCell>{d.efficiency}%</TableCell>
-                {/* <TableCell>{d.achievements}</TableCell> */}
               </TableRow>
             ))}
           </TableBody>
