@@ -5,13 +5,15 @@ import { ReportData1 } from "./dhu-report";
 export async function getDHUData(obbsheetid: string, date: string): Promise<any[]> {
     const sql = neon(process.env.RFID_DATABASE_URL || "");
 
+    console.log("dateeee",date)
+
     const dataGmts = await sql`
         SELECT count(*) as count, "qcStatus" qc, "operatorName" as name, "operatorId" as operatorid 
         FROM "GmtDefect"
         WHERE "qcStatus" <> 'pass' AND "obbSheetId" = ${obbsheetid} AND timestamp LIKE ${date}
         GROUP BY "operatorName", "qcStatus", "operatorId";
     `;
-    console.log("data fetched1", dataGmts);
+    // console.log("data fetched1", dataGmts);
 
     const dataProducts = await sql`
         SELECT count(*) as count, "qcStatus" qc, "operatorName" as name 
@@ -19,7 +21,7 @@ export async function getDHUData(obbsheetid: string, date: string): Promise<any[
         WHERE "qcStatus" <> 'pass' AND "obbSheetId" = ${obbsheetid} AND timestamp LIKE ${date}
         GROUP BY "operatorName", "qcStatus";
     `;
-    console.log("data fetched2", dataProducts);
+    // console.log("data fetched2", dataProducts);
 
     const tc = await sql`
         SELECT count(*) as count FROM "GmtDefect"
@@ -149,7 +151,7 @@ export async function inspaetfetch(obbsheetid: string, date: string): Promise<an
 
     `;
 
-    console.log("inspect count000000000000000000000000000000000",data)
+    // console.log("inspect count000000000000000000000000000000000",data)
 
     return data as any[];
 }
