@@ -1,5 +1,6 @@
 "use server";
 import { neon } from "@neondatabase/serverless";
+import { EfficiencyData } from "./barchart";
 
 type defects= {
     count:number;
@@ -68,4 +69,33 @@ group by operator,part
     
     
     return new Promise((resolve) => resolve(data as any[]  ))
+}
+
+
+export async function getUnit() : Promise<{ id: string; name: string }[]>  {
+    const sql = neon(process.env.DATABASE_URL || "");
+
+    
+     const data = await sql`
+     select id as id , name as name from "Unit" u 
+
+
+ order by "createdAt" desc
+
+`
+    return new Promise((resolve) => resolve(data as { id: string; name: string }[]))
+}
+
+export async function getEfficiencyData(date:string) : Promise<EfficiencyData[]>  {
+    const sql = neon(process.env.DATABASE_URL || "");
+
+    
+     const data = await sql`
+   select "operatorRfid",o.name,MIN("loginTimestamp"),max("logoutTimestamp"),"offStandTime" from "OperatorEffectiveTime" oet
+inner join "Operator" o on o."rfid" = oet."operatorRfid"
+where "loginTimestamp" like ${date} and "logoutTimestamp" IS NOT NULL
+group by "operatorRfid","offStandTime",o.name
+order by "operatorRfid"
+`
+    return new Promise((resolve) => resolve(data as EfficiencyData[]))
 }

@@ -1,6 +1,7 @@
 import SelectObbSheetDateHour from "@/components/dashboard/common/select-obbsheet-date-hour"
 import { db } from "@/lib/db";
 import AnalyticsChart from "./_components/analytics";
+import { getUnit } from "./_components/actions";
 
 
 const HourlyProduction = async () => {
@@ -17,10 +18,13 @@ const HourlyProduction = async () => {
         }
     });
 
+    const unit = await getUnit() ;
+
     return (
         <div>
             <AnalyticsChart
                 obbSheets={obbSheets}
+                units={unit}
             />
         </div>
     )
