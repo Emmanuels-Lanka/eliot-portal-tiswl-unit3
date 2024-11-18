@@ -9,7 +9,7 @@ import { ReportData } from "./daily-report";
 export async function getDailyData(obbsheetid:string,date:string)  : Promise<ReportData[]>   {
     
     const sql = neon(process.env.DATABASE_URL || "");
-
+    date=date+"%"
     const data = await sql`
     SELECT 
     opr.id,
