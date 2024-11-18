@@ -1,6 +1,6 @@
 "use server";
 import { neon } from "@neondatabase/serverless";
-import { EfficiencyData } from "./barchart";
+import { DataRecord, EfficiencyData } from "./barchart";
 
 type defects= {
     count:number;
@@ -98,4 +98,19 @@ group by "operatorRfid","offStandTime",o.name
 order by "operatorRfid"
 `
     return new Promise((resolve) => resolve(data as EfficiencyData[]))
+}
+export async function getProducts(date:string) : Promise<DataRecord[]>  {
+    const sql = neon(process.env.DATABASE_URL || "");
+
+    
+     const data = await sql`
+ select oo."seqNo",pd."operatorRfid",o.name,opn."name",oo.smv,sum(pd."productionCount") from "ProductionData" pd 
+inner join "Operator" o on o.rfid = pd."operatorRfid"
+inner join "ObbOperation" oo on oo.id = pd."obbOperationId"
+inner join "Operation" opn on opn.id = oo."operationId"
+where pd.timestamp like ${date}
+group by pd."operatorRfid",o.name,oo.smv,oo."seqNo",opn."name"
+order by oo."seqNo"
+`
+    return new Promise((resolve) => resolve(data as DataRecord[]))
 }

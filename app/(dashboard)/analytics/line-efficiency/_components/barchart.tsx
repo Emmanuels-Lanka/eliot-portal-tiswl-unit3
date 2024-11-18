@@ -25,7 +25,7 @@ import {
     ChartTooltipContent,
 } from "@/components/ui/chart";
 import { use, useEffect, useState } from "react";
-import { getChecked, getDefects, getEfficiencyData } from "./actions";
+import { getChecked, getDefects, getEfficiencyData, getProducts } from "./actions";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -66,11 +66,50 @@ export type defectData = {
     count: number
 }
 export type EfficiencyData = {
-    operatorRfid: number,
-name: String,
+    operatorRfid: string,
+name: string,
 min: string,
 max: string,
-offStandTime: String
+offStandTime: string
+}
+
+
+export interface DataRecord {
+
+    seqNo: number;
+
+    operatorRfid: string;
+
+    name: string;
+
+    smv: number;
+
+    sum: number;
+
+    type: string;
+
+}
+
+export interface tableType {
+
+    earnMinute: number;
+
+    max: string;
+
+    min: string;
+
+    name: string;
+
+    offStandTime: string;
+
+    operatorRfid: string;
+
+    seqNo: number;
+
+    smv: number;
+
+    sum: string;
+
 }
 
 function timeDifferenceInMinutes(minTime: string, maxTime: string): number {
@@ -83,6 +122,45 @@ function timeDifferenceInMinutes(minTime: string, maxTime: string): number {
     // Convert milliseconds to minutes
     const differenceInMinutes = timeDifferenceInMillis / (1000 * 60);
     return differenceInMinutes;
+
+}
+
+function timeStringToMinutes(timeString: string): number {
+
+    // Split the input string by spaces
+
+    const timeParts = timeString.split(' ');
+
+
+    // Initialize total minutes
+
+    let totalMinutes = 0;
+
+
+    // Iterate through each part and calculate total minutes
+
+    for (const part of timeParts) {
+
+        const value = parseInt(part); // Get the numeric value
+
+        if (part.includes('h')) {
+
+            totalMinutes += value * 60; // Convert hours to minutes
+
+        } else if (part.includes('m')) {
+
+            totalMinutes += value; // Add minutes
+
+        } else if (part.includes('s')) {
+
+            totalMinutes += Math.floor(value / 60); // Convert seconds to minutes
+
+        }
+
+    }
+
+
+    return totalMinutes;
 
 }
 
@@ -100,7 +178,28 @@ const BarChartGraphEfficiencyRate = ({ date,unit }: BarChartGraphProps) => {
             
 
             const time = await getEfficiencyData(date+"%")
+            const prod = await getProducts(date+"%")
+
+            
+
+
+            const newMap = prod.map((t)=> {
+                const found = time.find((p)=> p.operatorRfid == t.operatorRfid)
+                const earnMinute =( t.smv*t.sum)
+                return {
+                    ...t,...found,earnMinute
+                }
+            })
+
+
+            const finalMap = newMap.map((n)=>{
+
+            })
            console.log("first",time,date)
+           console.log("prd",prod)
+           console.log("new",newMap)
+
+
         
 
             const abc = [
@@ -112,6 +211,15 @@ const BarChartGraphEfficiencyRate = ({ date,unit }: BarChartGraphProps) => {
               ]
             console.log("abc",abc)
 
+            const newArr = time.map((t)=> {
+                const diff = timeDifferenceInMinutes(t.min,t.max)
+                const offStand = timeStringToMinutes(t.offStandTime)
+                return {
+                    ...t,diff,offStand
+                }
+            })
+
+            console.log("asdasdasd",newArr)
            
 
 

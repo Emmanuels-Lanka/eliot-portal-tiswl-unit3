@@ -30,7 +30,7 @@ const AnalyticsCompo = ({obbSheets,units}:AnalyticsChartProps) => {
         try {
             
             data.date.setDate(data.date.getDate() + 1);
-            const formattedDate = data.date.toISOString().split('T')[0].toString() + "%";
+            const formattedDate = data.date.toISOString().split('T')[0].toString();
             const obb = data.obbSheetId
 
 

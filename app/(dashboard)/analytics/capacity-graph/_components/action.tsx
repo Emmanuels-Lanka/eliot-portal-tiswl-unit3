@@ -67,18 +67,59 @@ export async function getCapacity(obbSheetId:string,date:string) : Promise<any[]
 
     
      const data = await sql`
-   select  AVG(CAST(ps.smv AS NUMERIC)) AS avg,ps."operatorRfid"
-,os."bundleTime",os."personalAllowance",o.name,oo."seqNo",oo.target,sm."machineId" from "ProductionSMV" ps 
-inner join "ObbOperation" oo on oo.id = ps."obbOperationId"
-inner join "ObbSheet" os on os.id = oo."obbSheetId"
-inner join "Operation" o on o.id = oo."operationId"
-inner join "SewingMachine" sm on sm.id = oo."sewingMachineId"
-where timestamp like ${date} and os.id =${obbSheetId}  and (CAST(ps.smv AS NUMERIC)) > 0
-group by ps."operatorRfid",os."bundleTime",os."personalAllowance",o.name,oo."seqNo",oo.target,sm."machineId"
-
-order by oo."seqNo"
+ SELECT 
+    AVG(CAST(ps.smv AS NUMERIC)) AS avg,
+    ps."operatorRfid",
+    os."bundleTime",
+    os."personalAllowance",
+    o.name,
+    oo."seqNo",
+    oo.target,
+    sm."machineId" 
+FROM 
+    "ProductionSMV" ps 
+INNER JOIN 
+    "ObbOperation" oo ON oo.id = ps."obbOperationId"
+INNER JOIN 
+    "ObbSheet" os ON os.id = oo."obbSheetId"
+INNER JOIN 
+    "Operation" o ON o.id = oo."operationId"
+INNER JOIN 
+    "SewingMachine" sm ON sm.id = oo."sewingMachineId"
+WHERE 
+    timestamp >= ${date} || ' 08:00:00' 
+    AND timestamp < ${date} || ' 09:05:00'
+    AND os.id = ${obbSheetId}  
+    and (CAST(ps.smv AS NUMERIC)) > 0
+   
+GROUP BY 
+    ps."operatorRfid",
+    os."bundleTime",
+    os."personalAllowance",
+    o.name,
+    oo."seqNo",
+    oo.target,
+    sm."machineId"
+ORDER BY 
+    oo."seqNo";
 `
-// console.log(data)
+console.log(date,obbSheetId)
+
+
+//  recent one
+// const data = await sql`
+//    select  AVG(CAST(ps.smv AS NUMERIC)) AS avg,ps."operatorRfid"
+// ,os."bundleTime",os."personalAllowance",o.name,oo."seqNo",oo.target,sm."machineId" from "ProductionSMV" ps 
+// inner join "ObbOperation" oo on oo.id = ps."obbOperationId"
+// inner join "ObbSheet" os on os.id = oo."obbSheetId"
+// inner join "Operation" o on o.id = oo."operationId"
+// inner join "SewingMachine" sm on sm.id = oo."sewingMachineId"
+// where timestamp like ${date} and os.id =${obbSheetId}  and (CAST(ps.smv AS NUMERIC)) > 0
+// group by ps."operatorRfid",os."bundleTime",os."personalAllowance",o.name,oo."seqNo",oo.target   ,sm."machineId"
+
+// order by oo."seqNo"
+// `
+
 
 
 
