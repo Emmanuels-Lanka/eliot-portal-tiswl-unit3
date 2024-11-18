@@ -94,27 +94,25 @@ const formSchema = z.object({
     factoryStopTime: z.string().optional(),
     bundleTime: z.string().optional(),
     personalAllowance: z.string().optional(),
-    workingHours: z.number({
-        required_error: "Working Hours is required",
-    }),
-    efficiencyLevel1: z.number(),
-    efficiencyLevel2: z.number(),
-    efficiencyLevel3: z.number(),
-    itemReference: z.string().nullable(),
-    totalMP: z.number().nullable(),
+    workingHours: z.number().optional(),
+    efficiencyLevel1: z.number().optional(),
+    efficiencyLevel2: z.number().optional(),
+    efficiencyLevel3: z.number().optional(),
+    itemReference: z.string().optional().nullable(),
+    totalMP: z.number().optional().nullable(),
     totalSMV: z.string().optional(),
     obbOperationsNo: z.number().optional(),
     availableMinPerHour: z.number().optional(),
-    bottleNeckTarget: z.number().nullable(),
-    target100: z.number().nullable(),
-    ucl: z.number().nullable(),
-    lcl: z.number().nullable(),
-    balancingLoss: z.number().nullable(),
-    balancingRatio: z.number().nullable(),
+    bottleNeckTarget: z.number().optional().nullable(),
+    target100: z.number().optional().nullable(),
+    ucl: z.number().optional().nullable(),
+    lcl: z.number().optional().nullable(),
+    balancingLoss: z.number().optional().nullable(),
+    balancingRatio: z.number().optional().nullable(),
     colour: z.string(),
-    supResponseTime: z.number().nullable(),
-    mecResponseTime: z.number().nullable(),
-    qiResponseTime: z.number().nullable(),
+    supResponseTime: z.number().optional().nullable(),
+    mecResponseTime: z.number().optional().nullable(),
+    qiResponseTime: z.number().optional().nullable(),
 });
 
 const CreateObbSheetForm = ({
@@ -163,7 +161,7 @@ const CreateObbSheetForm = ({
             factoryStopTime: initialData?.factoryStopTime || "",
             bundleTime: initialData?.bundleTime || "",
             personalAllowance: initialData?.personalAllowance || "",
-            workingHours: initialData?.workingHours || undefined,
+            workingHours: initialData?.workingHours || 10,
             efficiencyLevel1: initialData?.efficiencyLevel1 || 0,
             efficiencyLevel2: initialData?.efficiencyLevel2 || 0,
             efficiencyLevel3: initialData?.efficiencyLevel3 || 0,
@@ -1111,7 +1109,7 @@ const CreateObbSheetForm = ({
                     </div>
                     {mode && mode === 'create' ?
                         <div className="mt-4 flex justify-between gap-2">
-                            <Button variant='outline' className="flex gap-2 pr-5" onClick={() => form.reset()}>
+                            <Button type="button" variant='outline' className="flex gap-2 pr-5" onClick={() => form.reset()}>
                                 Reset
                             </Button>
                             <Button
@@ -1127,7 +1125,7 @@ const CreateObbSheetForm = ({
                         :
                         <div className="mt-4 flex justify-between gap-2">
                             <Link href='/obb-sheets'>
-                                <Button variant='outline' className="flex gap-2 pr-5 hover:border-slate-300 text-slate-600" onClick={() => form.reset()}>
+                                <Button type="button" variant='outline' className="flex gap-2 pr-5 hover:border-slate-300 text-slate-600" onClick={() => form.reset()}>
                                     <ArrowLeft className="w-4 h-4" />
                                     View all sheets
                                 </Button>
