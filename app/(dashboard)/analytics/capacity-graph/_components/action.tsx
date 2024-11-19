@@ -87,10 +87,9 @@ INNER JOIN
 INNER JOIN 
     "SewingMachine" sm ON sm.id = oo."sewingMachineId"
 WHERE 
-    timestamp >= ${date} || ' 08:00:00' 
-    AND timestamp < ${date} || ' 09:05:00'
-    AND os.id = ${obbSheetId}  
-    and (CAST(ps.smv AS NUMERIC)) > 0
+    timestamp like ${date+"%"}
+    AND os.id = ${obbSheetId}
+    and ps.smv <> '0.00'
    
 GROUP BY 
     ps."operatorRfid",

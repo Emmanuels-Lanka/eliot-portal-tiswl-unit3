@@ -1,5 +1,5 @@
 "use client"
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { AnalyticsChartProps } from './analytics'
 
 import { Loader2, TrendingUp } from "lucide-react"
@@ -22,13 +22,20 @@ import {
 } from "@/components/ui/chart"
 import { getCapacity, getOperationSmv, getTargetValues } from './action'
 import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
 export const description = "A line chart with a label"
+import jsPDF from "jspdf";
+import * as XLSX from 'xlsx';
+import html2canvas from "html2canvas";
+
+
 
 const GraphCompo  = ({date,obbSheet}:any) => {
 
     const [chartData, setChartData] = useState<any[]>([])
     const [chartWidth, setChartWidth] = useState<number>(170);
     const [isSubmitting,setisSubmitting]=useState<boolean>(false)
+    const chartRef = useRef<HTMLDivElement>(null);
 
       const chartConfig = {
         target: {
@@ -115,6 +122,54 @@ const GraphCompo  = ({date,obbSheet}:any) => {
         
     }, [date, obbSheet])
 
+    const saveAsExcel = () => {
+      const worksheet = XLSX.utils.json_to_sheet(chartData);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Chart Data");
+      XLSX.writeFile(workbook, `chart-data.xlsx`);
+  };
+    
+  
+
+    const saveAsPDF = async () => {
+      if (chartRef.current) {
+        const canvas = await html2canvas(chartRef.current);
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new jsPDF({
+          orientation: 'landscape',
+          unit: 'px',
+          format: [canvas.width, canvas.height + 150],
+        });
+    
+        const baseUrl = window.location.origin;
+        const logoUrl = `${baseUrl}/logo.png`;
+    
+        const logo = new Image();
+        logo.src = logoUrl;
+        logo.onload = () => {
+          const logoWidth = 110;
+          const logoHeight = 50;
+          const logoX = (canvas.width / 2) - (logoWidth + 150); // Adjust to place the logo before the text
+          const logoY = 50;
+    
+          // Add the logo to the PDF
+          pdf.addImage(logo, 'PNG', logoX, logoY, logoWidth, logoHeight);
+    
+          // Set text color to blue
+          pdf.setTextColor(0,113,193); // RGB for blue
+    
+          // Set larger font size and align text with the logo
+          pdf.setFontSize(24);
+          pdf.text('Dashboard -Target vs Actual - Production', logoX + logoWidth + 20, 83, { align: 'left' });
+    
+          // Add the chart image to the PDF
+          pdf.addImage(imgData, 'PNG', 0, 150, canvas.width, canvas.height);
+    
+          // Save the PDF
+          pdf.save('chart.pdf');
+        };
+      }
+    };
 
 
   return (
@@ -124,6 +179,7 @@ const GraphCompo  = ({date,obbSheet}:any) => {
       />
 
       {chartData.length > 0 ? (
+        <div>
         <div className="bg-slate-50 pt-5 -pl-8 rounded-lg border w-full h-max-[600px] mb-16 overflow-scroll">
           <Card
             className="bg-slate-50 pt-4"
@@ -131,6 +187,7 @@ const GraphCompo  = ({date,obbSheet}:any) => {
           >
             <CardContent>
               <ChartContainer
+               ref={chartRef}
                 config={chartConfig}
                 className={`min-h-[200px] max-h-[600px] `}
                 style={{ width: chartWidth + "%" }}
@@ -219,7 +276,23 @@ const GraphCompo  = ({date,obbSheet}:any) => {
               </ChartContainer>
             </CardContent>
           </Card>
+       
         </div>
+        <div className="flex gap-3 mt-3 justify-center" >
+          <Button type="button" className="mr-3" onClick={saveAsPDF}>
+            Save as PDF
+          </Button>
+          <Button type="button" onClick={saveAsExcel}>
+            Save as Excel
+          </Button>
+          {/* <Button type="button" onClick={saveAsCsv}>
+            Export  to CSV
+
+          </Button> */}
+        </div>
+        </div>
+        
+        
       ) : (
         <div className="mt-12 w-full">
           <p className="text-center text-slate-500">No Data Available....</p>
