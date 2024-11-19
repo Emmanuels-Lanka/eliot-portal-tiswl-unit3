@@ -45,6 +45,7 @@ inner JOIN "SewingMachine" sm ON sm."id"= o."sewingMachineId"
 WHERE 
     o."obbSheetId" = ${obbSheetId}
     AND p.timestamp like ${datef}
+    and p.smv <> '0.00'
 group by  o.smv,
     op.name,
     o."seqNo",

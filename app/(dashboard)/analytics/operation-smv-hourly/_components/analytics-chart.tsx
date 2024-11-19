@@ -49,34 +49,62 @@ const AnalyticsChart = ({
     const [tsmv, settsmv] = useState< number>(0);
     const [operationName, setOperationName] = useState< string>("");
 
+    
     const groupSMVByHour = (data: ProductionSMVDataTypes[]): { hourGroup: string; smv: number | null; operationName: string }[] => {
         const hourGroups = [
             "7 AM - 8 AM", "8 AM - 9 AM", "9 AM - 10 AM",
             "10 AM - 11 AM", "11 AM - 12 PM", "12 PM - 1 PM",
             "1 PM - 2 PM", "2 PM - 3 PM", "3 PM - 4 PM",
-            "4 PM - 5 PM", "5 PM - 6 PM", "6 PM - 7 PM"
+            "4 PM - 5 PM", "5 PM - 6 PM", "6 PM - 7 PM", "8 PM - 9 PM"
         ];
     
         const getHourGroup = (timestamp: string): string => {
             const hour = new Date(timestamp).getHours();
-            return hourGroups[Math.max(0, Math.min(11, hour - 7)) - 1];
+            return hourGroups[Math.max(0, Math.min(12, hour - 7)) - 1];
         };
     
-        const smvByHour: { [key: string]: { smv: number, operationName: string } } = {};
+        const smvByHour: { [key: string]: { smvs: number[]; operationName: string } } = {};
     
+        // Group SMV values by hour groups
         data.forEach(entry => {
             const hourGroup = getHourGroup(entry.timestamp);
             const smvValue = parseFloat(entry.smv);
-            const operationName = entry.obbOperation.operation.name; // Capture operation name
-            smvByHour[hourGroup] = { smv: smvValue, operationName }; // Store SMV and operation name by hour group
+            const operationName = entry.obbOperation.operation.name;
+    
+            if (!smvByHour[hourGroup]) {
+                smvByHour[hourGroup] = { smvs: [], operationName };
+            }
+    
+            smvByHour[hourGroup].smvs.push(smvValue);
         });
     
+        // Distribute excess SMVs to the next hour group
+        for (let i = 0; i < hourGroups.length - 1; i++) {
+            const currentGroup = hourGroups[i];
+            const nextGroup = hourGroups[i + 1];
+    
+            if (smvByHour[currentGroup]?.smvs.length > 1) {
+                const excessSMVs = smvByHour[currentGroup].smvs.slice(1); // Remove all except the first SMV
+                smvByHour[currentGroup].smvs = smvByHour[currentGroup].smvs.slice(0, 1); // Retain only the first SMV
+    
+                if (!smvByHour[nextGroup]) {
+                    smvByHour[nextGroup] = { smvs: [], operationName: smvByHour[currentGroup].operationName };
+                }
+    
+                smvByHour[nextGroup].smvs.push(...excessSMVs); // Push excess SMVs to the next group
+            }
+        }
+    
+        // Prepare the final output
         return hourGroups.map(hourGroup => ({
             hourGroup,
-            smv: smvByHour[hourGroup]?.smv || null,
-            operationName: smvByHour[hourGroup]?.operationName || "N/A" // Default to "N/A" if no operationName
+            smv: smvByHour[hourGroup]?.smvs.length ? smvByHour[hourGroup].smvs[0] : null, // Get the first SMV in the group or null
+            operationName: smvByHour[hourGroup]?.operationName || "N/A"
         }));
     };
+    
+    
+
     
 
     const handleFetchSmv = async (data: { obbSheetId: string; obbOperationId: string; date: Date; operationName:string}) => {
@@ -88,9 +116,10 @@ const AnalyticsChart = ({
             const formattedDate = getFormattedTime(data.date.toString())
              
             const response = await axios.get(`/api/smv/fetch-by-operation?obbOperationId=${data.obbOperationId}&date=${formattedDate}`);
-           
+            console.log("",response)
             const result = groupSMVByHour(response.data.data);
            
+            console.log("results",result)
 
             response.data.data.forEach((entry: any) => {
                 console.log("Operation Name:", entry.obbOperation.operation.name);
