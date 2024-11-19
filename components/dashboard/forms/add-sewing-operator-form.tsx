@@ -89,8 +89,9 @@ const AddSewingOperatorForm = ({
                         </div>
                     ),
                 });
-                router.refresh();
+                // router.refresh();
                 form.reset();
+                window.location.reload();
             } catch (error: any) {
                 console.error("ERROR", error);
                 toast({
