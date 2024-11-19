@@ -23,6 +23,9 @@ export async function GET(
                 timestamp: {
                     gte: startDate,
                     lte: endDate
+                },
+                smv: {
+                    not: "0.00" // Exclude entries where smv is 0
                 }
             },
             include: {

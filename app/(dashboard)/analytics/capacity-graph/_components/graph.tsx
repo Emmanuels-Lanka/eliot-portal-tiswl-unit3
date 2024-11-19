@@ -185,11 +185,12 @@ const GraphCompo  = ({date,obbSheet}:any) => {
                     }}
                   >
                     <LabelList
-                      position="top"
-                      offset={20}
+                      position="bottom"
+                      offset={5}
                       className="fill-foreground"
                       fontSize={12}
                       color='orange'
+                      style={{ fill: "orange", fontSize: 12 }}
                     />
                   </Line>
                   <Line
@@ -207,10 +208,11 @@ const GraphCompo  = ({date,obbSheet}:any) => {
                     // strokeDasharray="5 5" // Optional: make it dashed
                   >
                     <LabelList
-                      position="bottom"
-                      offset={20}
+                      position="top"
+                      offset={15}
                       className="fill-foreground"
                       fontSize={12}
+                      style={{ fill: "green", fontSize: 12 }}
                     />
                     </Line>
                 </LineChart>

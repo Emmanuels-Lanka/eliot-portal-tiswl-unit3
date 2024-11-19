@@ -54,26 +54,33 @@ const AnalyticsChart = ({
             "7 AM - 8 AM", "8 AM - 9 AM", "9 AM - 10 AM",
             "10 AM - 11 AM", "11 AM - 12 PM", "12 PM - 1 PM",
             "1 PM - 2 PM", "2 PM - 3 PM", "3 PM - 4 PM",
-            "4 PM - 5 PM", "5 PM - 6 PM", "6 PM - 7 PM"
+            "4 PM - 5 PM", "5 PM - 6 PM", "6 PM - 7 PM","8 PM - 9 PM"
         ];
     
         const getHourGroup = (timestamp: string): string => {
             const hour = new Date(timestamp).getHours();
-            return hourGroups[Math.max(0, Math.min(11, hour - 7)) - 1];
+            return hourGroups[Math.max(0, Math.min(12, hour - 7))-1];
         };
     
-        const smvByHour: { [key: string]: { smv: number, operationName: string } } = {};
+        const smvByHour: { [key: string]: { totalSMV: number; count: number; operationName: string } } = {};
     
         data.forEach(entry => {
             const hourGroup = getHourGroup(entry.timestamp);
             const smvValue = parseFloat(entry.smv);
-            const operationName = entry.obbOperation.operation.name; // Capture operation name
-            smvByHour[hourGroup] = { smv: smvValue, operationName }; // Store SMV and operation name by hour group
+            const operationName = entry.obbOperation.operation.name;
+    
+            if (!smvByHour[hourGroup]) {
+                smvByHour[hourGroup] = { totalSMV: 0, count: 0, operationName };
+            }
+    
+            smvByHour[hourGroup].totalSMV += smvValue;
+            smvByHour[hourGroup].count += 1;
+            smvByHour[hourGroup].operationName = operationName; // Ensure the operation name is captured
         });
     
         return hourGroups.map(hourGroup => ({
             hourGroup,
-            smv: smvByHour[hourGroup]?.smv || null,
+            smv: smvByHour[hourGroup] ? Number((smvByHour[hourGroup].totalSMV / smvByHour[hourGroup].count).toFixed(2)) : null, // Calculate average
             operationName: smvByHour[hourGroup]?.operationName || "N/A" // Default to "N/A" if no operationName
         }));
     };
@@ -88,9 +95,10 @@ const AnalyticsChart = ({
             const formattedDate = getFormattedTime(data.date.toString())
              
             const response = await axios.get(`/api/smv/fetch-by-operation?obbOperationId=${data.obbOperationId}&date=${formattedDate}`);
-           
+            console.log("",response)
             const result = groupSMVByHour(response.data.data);
            
+            console.log("results",result)
 
             response.data.data.forEach((entry: any) => {
                 console.log("Operation Name:", entry.obbOperation.operation.name);
