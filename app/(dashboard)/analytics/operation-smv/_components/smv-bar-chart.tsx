@@ -84,6 +84,7 @@ const BarChartGraphOpSmv = ({ date, obbSheetId }: BarChartGraphProps) => {
 
             setisSubmitting(true)
         const prod = await getSMV(obbSheetId, date)
+        console.log("first",prod)
         // setProductionData(prod)
         
               
@@ -92,7 +93,7 @@ const BarChartGraphOpSmv = ({ date, obbSheetId }: BarChartGraphProps) => {
                name:item.name+"-"+"( "+item.machineId+" )",
                smv:item.smv,
             //    avg:Number(item.avg.toFixed(2))
-             avg:Number(parseFloat(item.avg.toString()).toFixed(2)),
+             avg:Number(parseFloat(item.avg.toString()).toFixed(3)),
              realavg:Math.floor(((((Number(parseFloat(item.avg.toString()).toFixed(2)))/item.smv)))*100)+"%",
 
             }));

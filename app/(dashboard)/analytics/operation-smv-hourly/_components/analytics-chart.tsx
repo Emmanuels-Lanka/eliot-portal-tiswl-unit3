@@ -49,6 +49,7 @@ const AnalyticsChart = ({
     const [tsmv, settsmv] = useState< number>(0);
     const [operationName, setOperationName] = useState< string>("");
 
+    
     const groupSMVByHour = (data: ProductionSMVDataTypes[]): { hourGroup: string; smv: number | null; operationName: string }[] => {
         const hourGroups = [
             "7 AM - 8 AM", "8 AM - 9 AM", "9 AM - 10 AM",
@@ -101,7 +102,6 @@ const AnalyticsChart = ({
             operationName: smvByHour[hourGroup]?.operationName || "N/A"
         }));
     };
-    
     
     
 
