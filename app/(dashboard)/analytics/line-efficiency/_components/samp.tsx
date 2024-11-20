@@ -35,7 +35,6 @@ import React, { useRef } from "react";
 // import html2canvas from "html2canvas";
 import * as XLSX from 'xlsx';
 import { count } from "console";
-import { TableDemo } from "./table-compo";
 
 const chartConfig = {
     target: {
@@ -69,8 +68,8 @@ export type defectData = {
 export type EfficiencyData = {
     operatorRfid: string,
 name: string,
-login: string;
-logout: string;
+min: string,
+max: string,
 offStandTime: string
 }
 
@@ -81,34 +80,23 @@ export interface DataRecord {
 
     operatorRfid: string;
 
-    operation: string;
     name: string;
 
     smv: number;
 
-    count: number;
+    sum: number;
 
     type: string;
 
 }
 
-
-export interface TablePropType {
-    availableHours: number;
-    offStand: number;
-    onStndEff: number;
-    operator: string;
-    ovlEff: number;
-    stdHours: number;
-    seqNo:number;
-}
 export interface tableType {
 
     earnMinute: number;
 
-    logout: string;
+    max: string;
 
-    login: string;
+    min: string;
 
     name: string;
 
@@ -120,7 +108,7 @@ export interface tableType {
 
     smv: number;
 
-    count: string;
+    sum: string;
 
 }
 
@@ -132,7 +120,7 @@ function timeDifferenceInMinutes(minTime: string, maxTime: string): number {
     // Calculate the difference in milliseconds
     const timeDifferenceInMillis = maxDate.getTime() - minDate.getTime();
     // Convert milliseconds to minutes
-    const differenceInMinutes = (Number((timeDifferenceInMillis / (1000 * 60*60)).toFixed(1)));
+    const differenceInMinutes = timeDifferenceInMillis / (1000 * 60);
     return differenceInMinutes;
 
 }
@@ -167,17 +155,17 @@ function timeStringToMinutes(timeString: string): number {
     }
 
 
-    return Number((totalMinutes/60).toFixed(2));
+    return totalMinutes;
 
 }
 
 const BarChartGraphEfficiencyRate = ({ date,unit }: BarChartGraphProps) => {
-    const [chartData, setChartData] = useState<TablePropType[]>([])
+    const [chartData, setChartData] = useState<any[]>([])
     const [chartWidth, setChartWidth] = useState<number>(50);
     const [isSubmitting,setisSubmitting]=useState<boolean>(false)
     const chartRef = useRef<HTMLDivElement>(null);
 
-  
+    console.log("asdaidshbadbadbjahdba")
     const Fetchdata = async () => {
         try {
             
@@ -187,69 +175,56 @@ const BarChartGraphEfficiencyRate = ({ date,unit }: BarChartGraphProps) => {
             const time = await getEfficiencyData(date+"%")
             const prod = await getProducts(date+"%")
 
-           
-
+            console.log("timeee",time)
+            console.log("prood",prod)
 
             
-            const timeProd = prod.map((t)=>
-            {
-                const found  = time.find((p)=>p.operatorRfid == t.operatorRfid)
-                const earnMinute =( Number(((t.smv*t.count)/60).toFixed(2)))
-                
-                return{
+
+
+            const newMap = prod.map((t)=> {
+                const found = time.find((p)=> p.operatorRfid == t.operatorRfid)
+                const earnMinute =( t.smv*t.count)
+                return {
                     ...t,...found,earnMinute
                 }
             })
-            
-            
 
-            // console.log("first",timeProd)
+            console.log("newMao",newMap)
 
-
-            const filtered = timeProd.map((t)=>{
-                const timeDifference = timeDifferenceInMinutes(t.login? t.login: "" ,t.logout?t.logout:"")
-                const offStand = timeStringToMinutes(t.offStandTime?t.offStandTime:"")
-                return{
-                    ...t,timeDifference:timeDifference,offStand:offStand
-                }
-            })
-
-            console.log("asdasdasd",timeProd)
+          
+           console.log("first",time,date)
+           console.log("prd",prod)
+           console.log("new",newMap)
 
 
-            const newEff = filtered.map((f)=>{
-                
-                const ovlEff = Number(((f.earnMinute/f.timeDifference)*100).toFixed(2))
-                const onStndEff = Number(((f.earnMinute/(f.timeDifference-f.offStand))*100).toFixed(2))
-                return{
-                    ...f,ovlEff:ovlEff,onStndEff:onStndEff
-                }
-            })
-
-
-
-            const finalMap :TablePropType []= newEff.map((n)=>
-            {
-                return{
-                    operator: n.name,availableHours:n.timeDifference,stdHours:n.earnMinute,offStand:n.offStand
-                    ,ovlEff:n.ovlEff,onStndEff:n.onStndEff,seqNo:n.seqNo
-                }
-            })
-
-            // console.log("filtered",filtered)
-            // console.log("newEFF",newEff)
-            console.log("finaaaal",finalMap)
-
-
-            setChartData(finalMap)
         
 
+            const abc = [
+                {
+                    "defectcount": "2",
+                    "obbid": "ly8o5vu8-c9cFZB9SRxjo"
+                  },
+                  
+              ]
+            console.log("abc",abc)
+
+            const newArr = time.map((t)=> {
+                // const diff = timeDifferenceInMinutes(t.min,t.max)
+                const offStand = timeStringToMinutes(t.offStandTime)
+                return {
+                    // ...t,diff,offStand
+                }
+            })
+
+            console.log("asdasdasd",newArr)
+           
 
 
 
           
 
            
+            setChartData(abc)
 
         }
 
@@ -294,8 +269,64 @@ const BarChartGraphEfficiencyRate = ({ date,unit }: BarChartGraphProps) => {
             {chartData.length > 0 ?
                     // <div className='bg-slate-100 pt-5 -pl-8 rounded-lg border w-full mb-16 overflow-x-auto'>
 
-                <div className=' mb-16'>
-                  <TableDemo tableProp={chartData}></TableDemo>
+                <div className='bg-slate-50 pt-5 -pl-8 rounded-lg border w-full h-[600px] mb-16'>
+                 <Card className='bg-slate-50' >
+               
+                    <CardContent>
+                        {/* <ChartContainer config={chartConfig} className={`min-h-[300px] max-h-[600px] w-[${chartWidth.toString()}%]`}> */}
+                        <ChartContainer 
+                        ref={chartRef}
+                        config={chartConfig} className={`min-h-[300px] max-h-[550px]  `} >
+
+                            <BarChart
+                                accessibilityLayer
+                                data={chartData}
+                                
+                                margin={{
+                                    top: 50,
+                                    bottom: 50
+                                }}
+                                barGap={10}
+                                className="h-[300px] "
+                            >
+                                <CartesianGrid vertical={false} />
+                                <YAxis
+                                    dataKey="count"
+                                    type="number"
+                                    tickLine={true}
+                                    tickMargin={10}
+                                    axisLine={true}
+                                />
+                                <XAxis
+                                    dataKey="line"
+                                    tickLine={true}
+                                    tickMargin={10}
+                                    axisLine={true}
+                                  
+                                    interval={0}
+                                    // textAnchor='start'
+                                />
+                                <ChartTooltip
+                                    cursor={false}
+                                    content={<ChartTooltipContent indicator="line" />}
+                                />
+
+<ChartLegend content={<ChartLegendContent />} className="mt-2 text-sm" verticalAlign='bottom' />
+
+                                
+                                <Bar dataKey="count" fill="orange" radius={5} barSize={40}>
+                                    <LabelList
+                                        position="top"
+                                        offset={12}
+                                        className="fill-foreground"
+                                        fontSize={12}
+                                    />
+                                </Bar>
+                               
+                            </BarChart>
+                        </ChartContainer>
+                    </CardContent>
+                </Card>
                 </div>
                 : <div className="mt-12 w-full">
                     <p className="text-center text-slate-500">No Data Available.</p>
