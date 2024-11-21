@@ -293,11 +293,9 @@ const BarChartGraphEfficiencyRate = ({ date,unit }: BarChartGraphProps) => {
     }, [date, unit])
 
     useEffect(() => {
-        const interval = setInterval(() => {
+       
             Fetchdata();
-        }, 60000);
-
-        return () => clearInterval(interval);
+       
     }, [date, unit]);
 
 
@@ -318,7 +316,7 @@ const BarChartGraphEfficiencyRate = ({ date,unit }: BarChartGraphProps) => {
                     // <div className='bg-slate-100 pt-5 -pl-8 rounded-lg border w-full mb-16 overflow-x-auto'>
 
                 <div className=' mb-16'>
-                  <TableDemo tableProp={chartData}></TableDemo>
+                  <TableDemo date={date} tableProp={chartData}></TableDemo>
                 </div>
                 : <div className="mt-12 w-full">
                     <p className="text-center text-slate-500">No Data Available.</p>

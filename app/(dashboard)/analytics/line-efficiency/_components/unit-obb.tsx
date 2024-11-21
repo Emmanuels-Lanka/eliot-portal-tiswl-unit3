@@ -101,7 +101,7 @@ const [obbSheet, setObbSheet] = useState<{ id: string; name: string }[]>([]);
     
 
     return (
-        <div className='mt-10 mb-16 border px-12 pt-6 pb-10 rounded-lg bg-slate-100'>
+        <div className='mt-10 mb-16 border px-12 pt-6 pb-10 rounded-lg bg-slate-100 shadow-md'>
             
             <Form {...form}>
                 <form

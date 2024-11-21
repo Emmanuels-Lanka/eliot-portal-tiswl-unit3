@@ -93,7 +93,7 @@ export async function getEfficiencyData(date:string) : Promise<EfficiencyData[]>
      const data = await sql`
    select "operatorRfid",o.name name,MIN("loginTimestamp") login,max("logoutTimestamp") logout,"offStandTime" from "OperatorEffectiveTime" oet
 inner join "Operator" o on o."rfid" = oet."operatorRfid"
-where "loginTimestamp" like '2024-11-18%' and "logoutTimestamp" IS NOT NULL
+where "loginTimestamp" like ${date+"%"} and "logoutTimestamp" IS NOT NULL
 group by "operatorRfid","offStandTime",o.name
 order by "operatorRfid"
 `
@@ -108,7 +108,7 @@ export async function getProducts(date:string) : Promise<DataRecord[]>  {
 inner join "Operator" o on o.rfid = pd."operatorRfid"
 inner join "ObbOperation" oo on oo.id = pd."obbOperationId"
 inner join "Operation" opn on opn.id = oo."operationId"
-where pd.timestamp like '2024-11-18%'
+where pd.timestamp like ${date+"%"}
 group by pd."operatorRfid",o.name,oo.smv,oo."seqNo",opn."name"
 order by oo."seqNo"
 `

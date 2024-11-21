@@ -243,6 +243,11 @@ export const SIDEBAR_ROUTES = [
                 href: "/analytics/daily-report",
                 icon: Table
             },
+            {
+                label: "Line Efficiency Report",
+                href: "/analytics/line-efficiency",
+                icon: Table
+            },
 
 
         ]
@@ -510,6 +515,11 @@ export const HEADER_INFO = [
         label: "Manage Production Lines",
         href: "/production-lines",
         icon: ServerCog
+    },
+    {
+        label: "Line Efficiency Report",
+        href: "/analytics/line-efficiency",
+        icon: Table
     },
     {
         label: "SMS & Email Alert Logs",
