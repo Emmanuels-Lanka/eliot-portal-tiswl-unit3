@@ -38,22 +38,30 @@ export function TableDemo({ tableProp }: TableProps) {
         <TableBody>
           {tableProp.map((invoice,index) => (
             <TableRow key={index}>
+              
               <TableCell className="font-medium">{invoice.operator}</TableCell>
-              <TableCell>{invoice.seqNo}</TableCell>
-              <TableCell>{invoice.availableHours}</TableCell>
-              <TableCell>{invoice.stdHours}</TableCell>
-              <TableCell>{invoice.offStand}</TableCell>
-              <TableCell>{invoice.ovlEff}</TableCell>
-              <TableCell>{invoice.onStndEff}</TableCell>
+              <TableCell className="text-right">{invoice.seqNo}</TableCell>
+
+              <TableCell className="text-right">{invoice.availableHours}</TableCell>
+              <TableCell className="text-right">{invoice.stdHours}</TableCell>
+              <TableCell className="text-right">{invoice.offStand}</TableCell>
+              <TableCell className="text-right">{invoice.ovlEff}</TableCell>
+              <TableCell className="text-right">{invoice.onStndEff}</TableCell>
               {/* <TableCell className="text-right">{invoice.totalAmount}</TableCell> */}
             </TableRow>
           ))}
         </TableBody>
         <TableFooter>
-          <TableRow>
-            <TableCell colSpan={3}>Total</TableCell>
-            <TableCell className="text-right">$2,500.00</TableCell>
+        
+          <TableRow >
+            <TableCell colSpan={2} >Line Efficiency</TableCell>
+            <TableCell className="text-right">{tableProp.reduce((a,b)=>a+b.availableHours,0).toFixed(1)}</TableCell>
+            <TableCell className="text-right">{tableProp.reduce((a,b)=>a+b.stdHours,0).toFixed(1)}</TableCell>
+            <TableCell className="text-right">{tableProp.reduce((a,b)=>a+b.offStand,0).toFixed(1)}</TableCell>
+            <TableCell className="text-right">{tableProp.reduce((a,b)=>a+b.ovlEff,0).toFixed(1)}</TableCell>
+            <TableCell className="text-right">{tableProp.reduce((a,b)=>a+b.onStndEff,0).toFixed(1)}</TableCell>
           </TableRow>
+ 
         </TableFooter>
       </Table>
     )

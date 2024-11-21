@@ -75,6 +75,7 @@ offStandTime: string
 }
 
 
+
 export interface DataRecord {
 
     seqNo: number;
@@ -187,10 +188,32 @@ const BarChartGraphEfficiencyRate = ({ date,unit }: BarChartGraphProps) => {
             const time = await getEfficiencyData(date+"%")
             const prod = await getProducts(date+"%")
 
+            console.log("time",time)
+            console.log("prod",prod)
            
 
 
-            
+
+            const prodTime = time.map((t)=>{
+                const found= prod.find((f)=>f.operatorRfid === t.operatorRfid)
+
+                return {
+                    ...t,  seqNo: found?.seqNo ?? 0, // Default to 0 if undefined
+                    operation: found?.operation ?? "Unknown", // Default to "Unknown" if undefined
+                    smv: found?.smv ?? 0, // Default to 0 if undefined
+                    count: found?.count ?? 0, // Default to 0 if undefined
+                    type: found?.type ?? "Unknown", // Default to "Unknown" if undefined
+                }
+            })
+
+            const prodTimeEarn = prodTime.map((p)=>{
+                const earnMinute = Number((( p.smv*p.count)/60).toFixed(2))
+                return {
+                    ...p, earnMinute
+                }
+            })
+
+
             const timeProd = prod.map((t)=>
             {
                 const found  = time.find((p)=>p.operatorRfid == t.operatorRfid)
@@ -203,10 +226,10 @@ const BarChartGraphEfficiencyRate = ({ date,unit }: BarChartGraphProps) => {
             
             
 
-            // console.log("first",timeProd)
+            console.log("first",timeProd)
 
 
-            const filtered = timeProd.map((t)=>{
+            const filtered = prodTimeEarn.map((t)=>{
                 const timeDifference = timeDifferenceInMinutes(t.login? t.login: "" ,t.logout?t.logout:"")
                 const offStand = timeStringToMinutes(t.offStandTime?t.offStandTime:"")
                 return{
@@ -219,8 +242,8 @@ const BarChartGraphEfficiencyRate = ({ date,unit }: BarChartGraphProps) => {
 
             const newEff = filtered.map((f)=>{
                 
-                const ovlEff = Number(((f.earnMinute/f.timeDifference)*100).toFixed(2))
-                const onStndEff = Number(((f.earnMinute/(f.timeDifference-f.offStand))*100).toFixed(2))
+                const ovlEff = Math.max(0,Number(((f.earnMinute/f.timeDifference)*100).toFixed(2)))
+                const onStndEff = Math.max(0, Number(((f.earnMinute / (f.timeDifference - f.offStand)) * 100).toFixed(2)));
                 return{
                     ...f,ovlEff:ovlEff,onStndEff:onStndEff
                 }
@@ -234,7 +257,7 @@ const BarChartGraphEfficiencyRate = ({ date,unit }: BarChartGraphProps) => {
                     operator: n.name,availableHours:n.timeDifference,stdHours:n.earnMinute,offStand:n.offStand
                     ,ovlEff:n.ovlEff,onStndEff:n.onStndEff,seqNo:n.seqNo
                 }
-            })
+            }).sort((a,b)=> (a.seqNo-b.seqNo)).filter((f)=> f.seqNo>0).filter((f)=>f.availableHours > 0)
 
             // console.log("filtered",filtered)
             // console.log("newEFF",newEff)
