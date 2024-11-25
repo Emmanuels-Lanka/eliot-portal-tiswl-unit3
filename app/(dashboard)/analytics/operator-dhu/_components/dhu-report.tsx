@@ -70,6 +70,7 @@ type ReportData3={
 const DhuReport=({ obbSheets }: AnalyticsChartProps)=>{
 
   const [date, setDate] = useState<string>("");
+  const [dates, setDates] = useState<string>("");
   const [data, setData] = useState<ReportData[]>([]);
   const [data1,setData1]=useState<ReportData1[]>([]);
   const [data2,setData2]=useState<ReportData2[]>([]);
@@ -80,42 +81,15 @@ const DhuReport=({ obbSheets }: AnalyticsChartProps)=>{
 
 
   const handleFetchProductions = async (data: { obbSheetId: string; date: Date }) => {
+    console.log("date",data.date)
     data.date.setDate(data.date.getDate() + 1);
     const formattedDate = data.date.toISOString().split('T')[0].toString() + "%";
+    const fDate = data.date.toISOString().split('T')[0].toString() ;
     setDate(formattedDate);
+    setDates(fDate);
     setObbSheetId(data.obbSheetId);
   };
 
-
-  // const getDetails = async () => {
-  //   const details = await getDHUData(obbSheetId, date);
-  //   const details1=await getDailyData(obbSheetId,date);
-  //   const details2=await getDefects(obbSheetId,date);
-
-  //   setData(details);
-  //   setData1(details1);
-  //   setData2(details2)
-  //   console.log("details",details)
-  //   console.log("details1",details1)
-  //   console.log("details1",details2)
-
-  //   const combinedDetails = [];
-
-  //   console.log("Iterating through details");
-  //   for (const detail of details) {
-  //     for (const detail1 of details1) {
-  //       for (const detail2 of details2) {
-  //         if (detail.operatorid === detail1.operatorid && detail.operatorid === detail2.operatorid) {
-  //           console.log("Match found:", { ...detail, ...detail1, ...detail2 });
-  //           combinedDetails.push({ ...detail, ...detail1, ...detail2});
-  //           setcombined(combinedDetails)
-  //         }
-  //       }
-  //     }
-  //   }
-  //   console.log("combined Details000000",combinedDetails)
-    
-  // };
 
 
   const getDetails = async () => {
@@ -242,20 +216,21 @@ const DhuReport=({ obbSheets }: AnalyticsChartProps)=>{
   const handlePrint = () => {
     const baseUrl = window.location.origin;
     const printContent = reportRef.current?.innerHTML;
-    let selectedDate = new Date(date);
+    let selectedDate = new Date(dates);
   
     // Subtract one day from the selected date
     selectedDate.setDate(selectedDate.getDate());
-  
-    // Format the adjusted date back to a string
     const formattedDate = selectedDate.toISOString().split('T')[0];
-    
   
     const htmlContent = `
       <html>
         <head>
-          <title>Operator DHU Report </title>
+          <title>Operator DHU Report</title>
           <style>
+            @media print {
+              body { margin: 0; padding: 0; }
+            }
+            
             body {
               font-family: Arial, sans-serif;
               margin: 0;
@@ -297,27 +272,27 @@ const DhuReport=({ obbSheets }: AnalyticsChartProps)=>{
               width: 120px;
               height: auto;
             }
+        
+            /* Existing styles here */
           </style>
         </head>
         <body>
-          <div class="logo-div">
+           <div class="logo-div">
             <img src="${baseUrl}/ha-meem.png" alt="Ha-Meem Logo" style="margin-top:10px;"/>
             <h5 style="margin-top:10px;">~ Bangladesh ~</h5>
           </div>
-          <h1 class="text-center">Operator DHU Report </h1>
+          <h1 class="text-center">Operator DHU Report</h1>
           <hr />
           <div>
             <h5>Factory Name: Apparel Gallery LTD</h5>
             <h5>Title: Operator DHU Report</h5>
             <h5>Date: ${formattedDate}</h5>
- 
-          <h5>Unit: ${data1[0].unitname}</h5>
-         <h5>Style Name: ${data1[0].style}</h5>
-           <h5>Line Name: ${data1[0].linename}</h5>
-                
+            <h5>Unit: ${data1[0]?.unitname || ''}</h5>
+            <h5>Style Name: ${data1[0]?.style || ''}</h5>
+            <h5>Line Name: ${data1[0]?.linename || ''}</h5>
           </div>
           ${printContent}
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 50px;">
+             <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 50px;">
             <div>
               <p><a href="https://rfid-tracker.eliot.global/">https://rfid-tracker.eliot.global/</a></p>
             </div>
@@ -331,19 +306,21 @@ const DhuReport=({ obbSheets }: AnalyticsChartProps)=>{
   
     const blob = new Blob([htmlContent], { type: 'text/html' });
     const url = URL.createObjectURL(blob);
-    
     const printWindow = window.open(url, '', 'width=800,height=600');
-    
+  
     if (printWindow) {
       printWindow.onload = () => {
         printWindow.print();
-        URL.revokeObjectURL(url);
+        setTimeout(() => {
+          URL.revokeObjectURL(url);
+          printWindow.close();
+        }, 100);
       };
     } else {
       console.error("Failed to open print window");
     }
   };
-   
+  
     
     
 
