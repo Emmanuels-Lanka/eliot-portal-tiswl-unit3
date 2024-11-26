@@ -21,7 +21,6 @@ const TLSOperators = async () => {
         <div>
             <DhuReport
                 obbSheets={obbSheets}
-              
             />
         </div>
     )

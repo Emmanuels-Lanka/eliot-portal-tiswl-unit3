@@ -14,16 +14,16 @@ interface AnalyticsChartProps {
   }[] | null;
 }
 
-type ReportData={
-  name:string;
-  count:number;
-  target:number;
-  operatorid:string;
+type ReportData = {
+  name: string;
+  count: number;
+  target: number;
+  operatorid: string;
 }
 
 export type ReportData1 = {
   id: string;
-  operatorid:string;
+  operatorid: string;
   operatorname: string;
   operationname: string;
   smv: number;
@@ -35,56 +35,56 @@ export type ReportData1 = {
   machineid: string;
   linename: string;
   buyer: string;
-  seqNo:number;
-  inspect:number;
-  employeeId:string;
+  seqNo: number;
+  inspect: number;
+  employeeId: string;
 };
-type combinedData={
- count:number;
- id:string;
- linename:string;
- machineid:string;
- name:string;
-  operationname:string;
-  operatorid:string;
-  operatorname:string;
-  qc:string;
-  style:string;
-  target:number;
-  unitname:string;
-  defectcount:number;
-  seqNo:number;
-  inspectcount:number;
-  employeeId:string;
-  
+type combinedData = {
+  count: number;
+  id: string;
+  linename: string;
+  machineid: string;
+  name: string;
+  operationname: string;
+  operatorid: string;
+  operatorname: string;
+  qc: string;
+  style: string;
+  target: number;
+  unitname: string;
+  defectcount: number;
+  seqNo: number;
+  inspectcount: number;
+  employeeId: string;
+
 
 }
-type ReportData2={
-  defectcount:number;
-  operatorid:string;
+type ReportData2 = {
+  defectcount: number;
+  operatorid: string;
 }
-type ReportData3={
-  inspectcount:number;
-  operatorid:string;
+type ReportData3 = {
+  inspectcount: number;
+  operatorid: string;
 }
-const DhuReport=({ obbSheets }: AnalyticsChartProps)=>{
+const DhuReport = ({ obbSheets }: AnalyticsChartProps) => {
 
   const [date, setDate] = useState<string>("");
   const [dates, setDates] = useState<string>("");
   const [data, setData] = useState<ReportData[]>([]);
-  const [data1,setData1]=useState<ReportData1[]>([]);
-  const [data2,setData2]=useState<ReportData2[]>([]);
-  const [data3,setData3]=useState<ReportData3[]>([]);
-  const[combined,setcombined]=useState<combinedData[]>([]);
+  const [data1, setData1] = useState<ReportData1[]>([]);
+  const [data2, setData2] = useState<ReportData2[]>([]);
+  const [data3, setData3] = useState<ReportData3[]>([]);
+  const [combined, setcombined] = useState<combinedData[]>([]);
   const [obbSheetId, setObbSheetId] = useState<string>("");
   const reportRef = useRef<any>(null);
 
 
   const handleFetchProductions = async (data: { obbSheetId: string; date: Date }) => {
-    console.log("date",data.date)
+    console.log("date", data.date)
     data.date.setDate(data.date.getDate() + 1);
     const formattedDate = data.date.toISOString().split('T')[0].toString() + "%";
-    const fDate = data.date.toISOString().split('T')[0].toString() ;
+    const fDate = data.date.toISOString().split('T')[0].toString();
     setDate(formattedDate);
     setDates(fDate);
     setObbSheetId(data.obbSheetId);
@@ -97,77 +97,77 @@ const DhuReport=({ obbSheets }: AnalyticsChartProps)=>{
     const details1 = await getDailyData(obbSheetId, date);
     const details2 = await getDefects(obbSheetId, date);
     const details3 = await inspaetfetch(obbSheetId, date);
-   
-    
+
+
     setData(details);
     setData1(details1);
     setData2(details2);
     setData3(details3);
-    console.log("details 3333333333333333",details3)
+    console.log("details 3333333333333333", details3)
     const combinedMap = new Map<string, combinedData>();
-  
+
     for (const detail of details) {
       for (const detail1 of details1) {
         for (const detail2 of details2) {
-         for(const detail3 of details3){
-          if (detail.operatorid === detail1.operatorid && detail.operatorid === detail2.operatorid && detail3.inspectcount>0) {
-            const key = detail.operatorid;
-            const existing = combinedMap.get(key);
-  
-            if (existing) {
-              // If a record for this operator already exists, sum the defectcount as numbers
-              existing.defectcount += Number(detail2.defectcount);
-              // Add an instance number if needed
-              
-            } else {
-              // Add new record to the map
-              combinedMap.set(key, {
-                ...detail,
-                ...detail1,
-                ...detail2,
-                ...detail3,
-                defectcount: Number(detail2.defectcount),  // Ensure defectcount is treated as a number
-                name: `${detail.name}`,    // Include seqNo in the name
-              });
+          for (const detail3 of details3) {
+            if (detail.operatorid === detail1.operatorid && detail.operatorid === detail2.operatorid && detail3.inspectcount > 0) {
+              const key = detail.operatorid;
+              const existing = combinedMap.get(key);
+
+              if (existing) {
+                // If a record for this operator already exists, sum the defectcount as numbers
+                existing.defectcount += Number(detail2.defectcount);
+                // Add an instance number if needed
+
+              } else {
+                // Add new record to the map
+                combinedMap.set(key, {
+                  ...detail,
+                  ...detail1,
+                  ...detail2,
+                  ...detail3,
+                  defectcount: Number(detail2.defectcount),  // Ensure defectcount is treated as a number
+                  name: `${detail.name}`,    // Include seqNo in the name
+                });
+              }
             }
           }
-         }
         }
       }
     }
-  
+
     // Convert Map back to array for rendering
     setcombined(Array.from(combinedMap.values()));
   };
-  
+
 
   // const getDetails = async () => {
   //   const details = await getDHUData(obbSheetId, date);
   //   const details1 = await getDailyData(obbSheetId, date);
   //   const details2 = await getDefects(obbSheetId, date);
-  
+
   //   setData(details);
   //   setData1(details1);
   //   setData2(details2);
-  
+
   //   const combinedMap = new Map<string, combinedData>();
   //   const nameCountMap = new Map<string, number>();  // Track how many times a name appears
-  
+
   //   for (const detail of details) {
   //     for (const detail1 of details1) {
   //       for (const detail2 of details2) {
   //         if (detail.operatorid === detail1.operatorid && detail.operatorid === detail2.operatorid) {
   //           const key = detail.operatorid;
   //           const existing = combinedMap.get(key);
-  
+
   //           if (existing) {
   //             // Combine defect counts
   //             existing.defectcount += Number(detail2.defectcount);
-  
+
   //             // Get the current count for this operator name and increment it
   //             let nameCount = nameCountMap.get(detail.name) || 1;
   //             nameCountMap.set(detail.name, nameCount + 1);
-  
+
   //             // Append instance number if not already appended
   //             if (nameCount === 2) {
   //               existing.name = `${existing.name} 1&2`;
@@ -183,7 +183,7 @@ const DhuReport=({ obbSheets }: AnalyticsChartProps)=>{
   //               defectcount: Number(detail2.defectcount),
   //               name: detail.name,  // Just use the name, no seqNo
   //             });
-  
+
   //             // Initialize count for this name
   //             nameCountMap.set(detail.name, 1);
   //           }
@@ -191,22 +191,22 @@ const DhuReport=({ obbSheets }: AnalyticsChartProps)=>{
   //       }
   //     }
   //   }
-  
+
   //   // Convert Map back to array for rendering
   //   setcombined(Array.from(combinedMap.values()));
   // };
-  
 
 
-  
-  
-  
-  
+
+
+
+
+
 
   useEffect(() => {
     console.log("Combined Data:", combined); // Log combined data
   }, [combined]);
- 
+
 
   useEffect(() => {
     getDetails();
@@ -217,11 +217,11 @@ const DhuReport=({ obbSheets }: AnalyticsChartProps)=>{
     const baseUrl = window.location.origin;
     const printContent = reportRef.current?.innerHTML;
     let selectedDate = new Date(dates);
-  
+
     // Subtract one day from the selected date
     selectedDate.setDate(selectedDate.getDate());
     const formattedDate = selectedDate.toISOString().split('T')[0];
-  
+
     const htmlContent = `
       <html>
         <head>
@@ -303,11 +303,11 @@ const DhuReport=({ obbSheets }: AnalyticsChartProps)=>{
         </body>
       </html>
     `;
-  
+
     const blob = new Blob([htmlContent], { type: 'text/html' });
     const url = URL.createObjectURL(blob);
     const printWindow = window.open(url, '', 'width=800,height=600');
-  
+
     if (printWindow) {
       printWindow.onload = () => {
         printWindow.print();
@@ -320,24 +320,20 @@ const DhuReport=({ obbSheets }: AnalyticsChartProps)=>{
       console.error("Failed to open print window");
     }
   };
-  
-    
-    
 
-
-    return(
-   <>
-   <SelectObbSheetAndDate
+  return (
+    <>
+      <SelectObbSheetAndDate
         obbSheets={obbSheets}
         handleSubmit={handleFetchProductions}
       />
-       {data.length>0?(
- <Button className="mt-5" onClick={handlePrint}>Print</Button>
-      ):(
+      {data.length > 0 ? (
+        <Button className="mt-5" onClick={handlePrint}>Print</Button>
+      ) : (
         <></>
       )
-    }
-        <div ref={reportRef} className="container mt-5 mb-10">
+      }
+      <div ref={reportRef} className="container mt-5 mb-10">
         <Table>
           <TableHeader>
             <TableRow>
@@ -359,16 +355,14 @@ const DhuReport=({ obbSheets }: AnalyticsChartProps)=>{
                 <TableCell>{d.machineid}</TableCell>
                 <TableCell>{d.inspectcount}</TableCell>
                 <TableCell>{d.defectcount}</TableCell>
-                <TableCell>{d.count.toFixed(2)}</TableCell>
-                              
+                <TableCell>{((d.defectcount/d.inspectcount)*100).toFixed(2)}</TableCell>
               </TableRow>
             ))}
-           
           </TableBody>
         </Table>
       </div>
-   </>
-    )
+    </>
+  )
 }
 
 export default DhuReport
