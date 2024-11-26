@@ -30,10 +30,10 @@ export const TableDemo = ({ tableProp, date, chartRef ,flag,setFlag}: TableProps
 
   const handlePrint = () => {
     
+    console.log("ad",tableProp)
     const baseUrl = window.location.origin;
     const printContent = reportRef.current?.innerHTML;
     const footer = chartRef.current?.innerHTML;
-    console.log("asdasd",tableProp)
     // let selectedDate = new Date(date);
   
     // Subtract one day from the selected date
@@ -46,7 +46,7 @@ export const TableDemo = ({ tableProp, date, chartRef ,flag,setFlag}: TableProps
     const htmlContent = `
       <html>
         <head>
-          <title>Capacity Diagram</title>
+          <title>Pitch Diagram</title>
           <style>
             body {
               font-family: Arial, sans-serif;
@@ -96,11 +96,11 @@ export const TableDemo = ({ tableProp, date, chartRef ,flag,setFlag}: TableProps
             <img src="${baseUrl}/ha-meem.png" alt="Ha-Meem Logo" style="margin-top:10px;"/>
             <h5 style="margin-top:10px;">~ Bangladesh ~</h5>
           </div>
-          <h1 class="text-center">Capacity Diagram</h1>
+          <h1 class="text-center">Pitch Diagram</h1>
           <hr />
           <div>
             <h5>Factory Name: Apparel Gallery LTD</h5>
-            <h5>Title: Capacity Diagram</h5>
+            <h5>Title: Pitch Diagram</h5>
             <h5>Style: ${tableProp[0].obb}</h5>
           
           </div>
@@ -142,8 +142,10 @@ export const TableDemo = ({ tableProp, date, chartRef ,flag,setFlag}: TableProps
 
     useEffect(() => {
      if(flag)
-      {handlePrint()}
-     setFlag(false)
+      setTimeout(() => {
+        handlePrint();
+        setFlag(false); // Reset the flag if needed
+      }, 100);
      
 
     }, [flag])
@@ -171,11 +173,11 @@ export const TableDemo = ({ tableProp, date, chartRef ,flag,setFlag}: TableProps
           <TableRow>
             <TableHead className="text-right">SeqNo</TableHead>
             <TableHead className="text-center" >Operation</TableHead>
-            <TableHead className="text-right">Cycle Time </TableHead>
-            <TableHead className="text-right">Bundle Time </TableHead>
-            <TableHead className="text-right">Personal Allowance </TableHead>
+            <TableHead className="text-right">Target </TableHead>
+            <TableHead className="text-right">Standard Minute Value </TableHead>
+            {/* <TableHead className="text-right">Personal Allowance </TableHead>
             <TableHead className="text-right">Capacity Target</TableHead>
-            <TableHead className="text-right">Actual Capacity </TableHead>
+            <TableHead className="text-right">Actual Capacity </TableHead> */}
             {/* <TableHead>On Stand Efficiency </TableHead> */}
             {/* <TableHead className="text-right">Amount</TableHead> */}
           </TableRow>
@@ -185,13 +187,13 @@ export const TableDemo = ({ tableProp, date, chartRef ,flag,setFlag}: TableProps
             <TableRow key={index}>
               
               <TableCell className="text-right">{invoice.seqNo}</TableCell>
-              <TableCell className="font-medium">{invoice.justName}</TableCell>
+              <TableCell className="font-medium">{invoice.nameOnly}</TableCell>
 
-              <TableCell className="text-right">{invoice.smv}</TableCell>
-              <TableCell className="text-right">{invoice.bundle}</TableCell>
-              <TableCell className="text-right">{invoice.personalAllowance}</TableCell>
               <TableCell className="text-right">{invoice.target}</TableCell>
-              <TableCell className="text-right">{invoice.capacity}</TableCell>
+              <TableCell className="text-right">{invoice.smv}</TableCell>
+              {/* <TableCell className="text-right">{invoice.personalAllowance}</TableCell>
+              <TableCell className="text-right">{invoice.target}</TableCell>
+              <TableCell className="text-right">{invoice.capacity}</TableCell> */}
               {/* <TableCell className="text-right">{invoice.onStndEff}</TableCell> */}
               {/* <TableCell className="text-right">{invoice.totalAmount}</TableCell> */}
             </TableRow>

@@ -83,6 +83,7 @@ const GraphCompo  = ({date,obbSheet}:any) => {
               
                 return(
                   
+
                 
                 {
                   smv:Number(smv.toFixed(2)),
@@ -92,7 +93,8 @@ const GraphCompo  = ({date,obbSheet}:any) => {
                   name:item.name+" ("+item.machineId+" ) - "+item.seqNo  ,
                   target:item.target,
                   seqNo:item.seqNo,
-                  justName:item.name
+                  justName:item.name,
+                  obb:item.obb
 
                   // capacity:capacity
                 // name:item.seqNo+"-"+item.name,
@@ -178,7 +180,7 @@ const GraphCompo  = ({date,obbSheet}:any) => {
 
 
     const settingFlag = () => {
-       setFlag(prevFlag => !prevFlag);
+       setFlag(true);
     }
 
 
@@ -189,7 +191,7 @@ const GraphCompo  = ({date,obbSheet}:any) => {
       />
       <div>
       <Button className="" onClick={settingFlag}>
-          Download as PDF
+          Download Report
         </Button>
       <div className='hidden'>
       <TableDemo tableProp={chartData} date={date} chartRef={chartRef} flag={flag} setFlag={setFlag} ></TableDemo>
@@ -250,10 +252,10 @@ const GraphCompo  = ({date,obbSheet}:any) => {
                   <Line
                     dataKey="capacity"
                     type="natural"
-                    stroke="var(--color-target)"
+                    stroke="darkOrange"
                     strokeWidth={2}
                     dot={{
-                      fill: "var(--color-target)",
+                      fill: "darkOrange",
                     }}
                     activeDot={{
                       r: 6,
@@ -261,7 +263,7 @@ const GraphCompo  = ({date,obbSheet}:any) => {
                   >
                     <LabelList
                       position="bottom"
-                      offset={5}
+                      offset={8}
                       className="fill-foreground"
                       fontSize={12}
                       color='orange'

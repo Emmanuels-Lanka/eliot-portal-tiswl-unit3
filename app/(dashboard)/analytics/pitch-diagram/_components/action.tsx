@@ -48,7 +48,7 @@ export async function getTargetValues(obbSheetId:string) : Promise<any[]>  {
 
     
      const data = await sql`
-      select "totalSMV" as tsmv,"obbOperationsNo" as operations from "ObbSheet" 
+      select "totalSMV" as tsmv,"obbOperationsNo"as operations , name as obb from "ObbSheet" 
 where id=${obbSheetId}
 
 `

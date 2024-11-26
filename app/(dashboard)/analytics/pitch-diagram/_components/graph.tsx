@@ -1,5 +1,5 @@
 "use client"
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { AnalyticsChartProps } from './analytics'
 
 import { Loader2, TrendingUp } from "lucide-react"
@@ -21,6 +21,8 @@ import {
 } from "@/components/ui/chart"
 import { getOperationSmv, getTargetValues } from './action'
 import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
+import { TableDemo } from './table-compo'
 export const description = "A line chart with a label"
 
 const GraphCompo  = ({date,obbSheet}:any) => {
@@ -28,7 +30,10 @@ const GraphCompo  = ({date,obbSheet}:any) => {
     const [chartData, setChartData] = useState<any[]>([])
     const [chartWidth, setChartWidth] = useState<number>(170);
     const [isSubmitting,setisSubmitting]=useState<boolean>(false)
+    const [flag,setFlag]=useState<boolean>(false)
+    const chartRef = useRef<HTMLDivElement>(null);
 
+    
       const chartConfig = {
         desktop: {
           label: "Desktop",
@@ -53,13 +58,14 @@ const GraphCompo  = ({date,obbSheet}:any) => {
             const vls = await getTargetValues(obbSheet)
         
            console.log(ops)
-           console.log(vls)
+           console.log("QQ",vls)
 
             const newProd = ops.map((o) => ({
                 ...o, // Spread the current operation
                 ...vls // Spread the values from vls
             }));
             
+
            
             console.log("nnn",newProd)
            
@@ -68,7 +74,8 @@ const GraphCompo  = ({date,obbSheet}:any) => {
                 const man = Number(item.operations)
                 const tsmv = item[0].tsmv
 
-                const target= tsmv/man
+                const obb = item[0].obb
+                const target= Number((tsmv/man).toFixed(3))
                 console.log("na",target)
 
               
@@ -79,8 +86,10 @@ const GraphCompo  = ({date,obbSheet}:any) => {
                 name:item.seqNo+"-"+item.name,
                
                 smv:item.smv,
-                target:target
-                
+                target:target,
+                seqNo:item.seqNo,
+                nameOnly:item.name,
+                obb:obb
         
 
           
@@ -107,12 +116,21 @@ const GraphCompo  = ({date,obbSheet}:any) => {
         
     }, [date, obbSheet])
 
-
+    const settingFlag = () => {
+      setFlag(true);
+   }
 
   return (
    <div>
         <Loader2 className={cn("animate-spin w-7 h-7 hidden", isSubmitting && "flex")} />
-
+        <div>
+      <Button className="" onClick={settingFlag}>
+          Download Report
+        </Button>
+      <div className='hidden'>
+      <TableDemo tableProp={chartData} date={date} chartRef={chartRef} flag={flag} setFlag={setFlag} ></TableDemo>
+      </div>
+      </div>
   
         {chartData.length > 0 ? (
     <div className='bg-slate-50 w-full mb-16 overflow-scroll'>
@@ -121,7 +139,8 @@ const GraphCompo  = ({date,obbSheet}:any) => {
       
       <CardContent>
         <ChartContainer 
-        config={chartConfig} className={`min-h-[300px] max-h-[600px] `} style={{ width: chartWidth + "%", height: 600 + "%" }}>
+        config={chartConfig} className={`min-h-[300px] max-h-[600px] `} style={{ width: chartWidth + "%", height: 600 + "%" }}
+        ref={chartRef}>
           <LineChart
             accessibilityLayer
             data={chartData}
@@ -157,15 +176,14 @@ const GraphCompo  = ({date,obbSheet}:any) => {
             <Line
               dataKey="smv"
               type="natural"
-              stroke="var(--color-desktop)"
+              stroke="darkOrange"
               strokeWidth={2}
               dot={{
-                fill: "var(--color-desktop)",
+                fill: "darkOrange",
               }}
-              activeDot={{
-                r: 6,
-              }}
+              
             >
+              
                 
               <LabelList
                 position="top"

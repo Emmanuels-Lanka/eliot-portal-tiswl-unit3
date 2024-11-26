@@ -75,7 +75,8 @@ export async function getCapacity(obbSheetId:string,date:string) : Promise<any[]
     o.name,
     oo."seqNo",
     oo.target,
-    sm."machineId" 
+    sm."machineId" ,
+    os.name as obb
 FROM 
     "ProductionSMV" ps 
 INNER JOIN 
@@ -98,7 +99,8 @@ GROUP BY
     o.name,
     oo."seqNo",
     oo.target,
-    sm."machineId"
+    sm."machineId",
+    os.name
 ORDER BY 
     oo."seqNo";
 `
