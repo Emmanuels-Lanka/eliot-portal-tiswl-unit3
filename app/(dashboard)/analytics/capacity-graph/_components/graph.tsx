@@ -27,6 +27,7 @@ export const description = "A line chart with a label"
 import jsPDF from "jspdf";
 import * as XLSX from 'xlsx';
 import html2canvas from "html2canvas";
+import { TableDemo } from './table-compo'
 
 
 
@@ -35,6 +36,7 @@ const GraphCompo  = ({date,obbSheet}:any) => {
     const [chartData, setChartData] = useState<any[]>([])
     const [chartWidth, setChartWidth] = useState<number>(170);
     const [isSubmitting,setisSubmitting]=useState<boolean>(false)
+    const [flag,setFlag]=useState<boolean>(false)
     const chartRef = useRef<HTMLDivElement>(null);
 
       const chartConfig = {
@@ -67,7 +69,7 @@ const GraphCompo  = ({date,obbSheet}:any) => {
            
             const chartData: any[] = cap.map((item: any) => {
 
-                const smv = Number(item.avg);
+                const smv = Number((item.avg));
                 const bundle =Number(item.bundleTime);
                 const pers = Number(item.personalAllowance);
                 const cap = Number(Math.round((60 / (smv + bundle + ((pers / 100) * smv)))));
@@ -83,12 +85,14 @@ const GraphCompo  = ({date,obbSheet}:any) => {
                   
                 
                 {
-                  smv:smv,
+                  smv:Number(smv.toFixed(2)),
                   bundle:bundle,
-                  personalAllowance:pers,
+                  personalAllowance:(pers / 100),
                   capacity:cap,
                   name:item.name+" ("+item.machineId+" ) - "+item.seqNo  ,
-                  target:item.target
+                  target:item.target,
+                  seqNo:item.seqNo,
+                  justName:item.name
 
                   // capacity:capacity
                 // name:item.seqNo+"-"+item.name,
@@ -129,6 +133,7 @@ const GraphCompo  = ({date,obbSheet}:any) => {
       XLSX.writeFile(workbook, `chart-data.xlsx`);
   };
     
+  
   
 
     const saveAsPDF = async () => {
@@ -172,14 +177,27 @@ const GraphCompo  = ({date,obbSheet}:any) => {
     };
 
 
+    const settingFlag = () => {
+       setFlag(prevFlag => !prevFlag);
+    }
+
+
   return (
     <div>
       <Loader2
         className={cn("animate-spin w-7 h-7 hidden", isSubmitting && "flex")}
       />
+      <div>
+      <Button className="" onClick={settingFlag}>
+          Download as PDF
+        </Button>
+      <div className='hidden'>
+      <TableDemo tableProp={chartData} date={date} chartRef={chartRef} flag={flag} setFlag={setFlag} ></TableDemo>
+      </div>
+      </div>
 
       {chartData.length > 0 ? (
-        <div>
+        <div> 
         <div className="bg-slate-50 pt-5 -pl-8 rounded-lg border w-full h-max-[600px] mb-16 overflow-scroll">
           <Card
             className="bg-slate-50 pt-4"
