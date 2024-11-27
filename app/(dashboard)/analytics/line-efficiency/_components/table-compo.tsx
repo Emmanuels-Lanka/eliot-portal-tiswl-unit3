@@ -42,48 +42,53 @@ export function TableDemo({ tableProp,date }: TableProps) {
         <head>
           <title>Line Efficiency Report</title>
           <style>
-            body {
-              font-family: Arial, sans-serif;
-              margin: 0;
-              padding: 20px;
-            }
-            .container {
-              width: 100%;
-              margin: 0 auto;
-              padding: 20px;
-              box-sizing: border-box;
-            }
-            table {
-              width: 100%;
-              border-collapse: collapse;
-              margin-top: 20px;
-            }
-            th, td {
-              border: 1px solid #ddd;
-              padding: 8px;
-            }
-            th {
-              text-align: center;
-              background-color: gray;
-            }
-            td {
-              text-align: left;
-            }
-            .logo-div {
-              text-align: center;
-            }
-            .logo-div img {
-              width: 170px;
-              height: auto;
-            }
-            .text-center {
-              text-align: center;
-            }
-            .footer-logo img {
-              width: 120px;
-              height: auto;
-            }
-          </style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    font-size: 12px; /* Reduce font size */
+  }
+  .container {
+    width: 100%;
+    margin: 0 auto;
+    padding: 10px; /* Reduce padding */
+    box-sizing: border-box;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px; /* Reduce margin */
+    font-size: 10px; /* Smaller font size for table */
+  }
+  th, td {
+    border: 1px solid #ddd;
+    padding: 4px; /* Reduce cell padding */
+  }
+  th {
+    text-align: center;
+    background-color: gray;
+    color: white; /* Add contrast for better readability */
+  }
+  td {
+    text-align: right;
+  }
+  .logo-div {
+    text-align: center;
+    margin-bottom: 10px; /* Reduce spacing */
+  }
+  .logo-div img {
+    width: 150px; /* Adjust logo size */
+    height: auto;
+  }
+  .text-center {
+    text-align: center;
+  }
+  .footer-logo img {
+    width: 100px; /* Adjust footer logo size */
+    height: auto;
+  }
+</style>
+
         </head>
         <body>
           <div class="logo-div">
@@ -130,7 +135,7 @@ export function TableDemo({ tableProp,date }: TableProps) {
 
 
 
-    console.log("td",tableProp)
+    // console.log("td",tableProp)
 
 
 
@@ -176,13 +181,16 @@ export function TableDemo({ tableProp,date }: TableProps) {
         {/* <TableCaption>LINE EFFICIENCY.</TableCaption> */}
         <TableHeader>
           <TableRow>
-            <TableHead>SeqNo</TableHead>
+            <TableHead className="text-center">SeqNo</TableHead>
             <TableHead className="w-[100px]">Name</TableHead>
-            <TableHead>Available Hours</TableHead>
-            <TableHead>Prodution Standard Hours </TableHead>
-            <TableHead>Off Stand Hours </TableHead>
-            <TableHead>Overall Efficiency </TableHead>
-            <TableHead>On Stand Efficiency </TableHead>
+            <TableHead className="w-[100px]">Operation</TableHead>
+            <TableHead className="text-center">Count</TableHead>
+            <TableHead className="text-center">SMV</TableHead>
+            <TableHead className="text-center">Available Hours</TableHead>
+            <TableHead className="text-center">Prodution Standard Hours </TableHead>
+            <TableHead className="text-center">Off Stand Hours </TableHead>
+            <TableHead className="text-center">Overall Efficiency </TableHead>
+            <TableHead className="text-center">On Stand Efficiency </TableHead>
             {/* <TableHead className="text-right">Amount</TableHead> */}
           </TableRow>
         </TableHeader>
@@ -192,6 +200,9 @@ export function TableDemo({ tableProp,date }: TableProps) {
               
               <TableCell className="text-right">{invoice.seqNo}</TableCell>
               <TableCell className="font-medium">{invoice.operator}</TableCell>
+              <TableCell className="font-medium">{invoice.operation}</TableCell>
+              <TableCell className="font-medium">{invoice.count}</TableCell>
+              <TableCell className="font-medium">{invoice.smv}</TableCell>
 
               <TableCell className="text-right">{invoice.availableHours}</TableCell>
               <TableCell className="text-right">{invoice.stdHours}</TableCell>
