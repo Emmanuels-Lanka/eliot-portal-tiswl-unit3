@@ -95,6 +95,9 @@ export interface DataRecord {
 
 
 export interface TablePropType {
+    operation: string;
+    smv: number;
+    count: number;
     availableHours: number;
     offStand: number;
     onStndEff: number;
@@ -255,7 +258,7 @@ const BarChartGraphEfficiencyRate = ({ date,unit }: BarChartGraphProps) => {
             {
                 return{
                     operator: n.name,availableHours:n.timeDifference,stdHours:n.earnMinute,offStand:n.offStand
-                    ,ovlEff:n.ovlEff,onStndEff:n.onStndEff,seqNo:n.seqNo
+                    ,ovlEff:n.ovlEff,onStndEff:n.onStndEff,seqNo:n.seqNo,count:n.count,smv:n.smv,operation:n.operation
                 }
             }).sort((a,b)=> (a.seqNo-b.seqNo)).filter((f)=> f.seqNo>0).filter((f)=>f.availableHours > 0)
 
