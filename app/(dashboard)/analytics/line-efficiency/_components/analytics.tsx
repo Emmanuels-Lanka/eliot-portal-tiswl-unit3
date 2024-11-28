@@ -50,39 +50,53 @@ const AnalyticsChart = ({
     const [date, setDate] = useState<string>("");
     const [filterApplied,setFilterApplied]=useState<boolean>(false)
     const[unit,setUnit]=useState<string>("")
+    const [newDate,setNewDate] = useState<any>()
+    const [obbSheetId,setObbSheetId] = useState<any>()
 
 
   
-    const Fetchdata = async (data: { date: Date ;unit:string}) => {
+    const handleFetchProductions = async (data: { obbSheetId: string; date: Date  }) => {
         try {
-            const y=data.date.getFullYear().toString()
-            const m=(data.date.getMonth() + 1).toString().padStart(2,"0")
-            const d=data.date.getDate().toString().padStart(2,"0")
-            setUnit(data.unit)
-        
-            setDate(`${y}-${m}-${d}`)
-            console.log(data.unit)
-       
+            
+            data.date.setDate(data.date.getDate() + 1);
+            const formattedDate = data.date.toISOString().split('T')[0].toString();
+            const obb = data.obbSheetId
+
+
+            setNewDate(formattedDate);
+            
+            setObbSheetId(obb);
             setFilterApplied(true)
-            console.log("data",data.date,data.unit)
-          
-        } catch (error) {
-          console.error("Error fetching data:", error);
+            console.log("first")
+            console.log(data)
+        } catch (error: any) {
+            console.error("Error fetching production data:", error);
+            toast({
+                title: "Something went wrong! Try again",
+                variant: "error",
+                description: (
+                    <div className='mt-2 bg-slate-200 py-2 px-3 md:w-[336px] rounded-md'>
+                        <code className="text-slate-800">
+                            ERROR: {error.message}
+                        </code>
+                    </div>
+                ),
+            });
         }
-      };
+    }
 
     return (
         <>
             <div className="mx-auto max-w-7xl">
                 <SelectObbSheetAndDate
                 obbSheets={obbSheets}
-                handleSubmit={Fetchdata}
+                handleSubmit={handleFetchProductions}
                 units={units}
 
                 ></SelectObbSheetAndDate>
             </div>
             <div className="mx-auto max-w-[1680px]">
-                {(date && unit) ?
+                {(newDate  && obbSheetId) ?
                     <div className="mt-12">
                         {/* <h2 className="text-lg mb-2 font-medium text-slate-700">{title}</h2> */}
                         {/* <EffiencyHeatmap
@@ -92,7 +106,7 @@ const AnalyticsChart = ({
                             efficiencyHigh={obbSheet?.efficiencyLevel3}
                             heatmapData={heatmapData}
                         /> */}
-                        <EfficiencyBarChart  date={date} unit = {unit}></EfficiencyBarChart>
+                        <EfficiencyBarChart date={newDate} obbSheet={obbSheetId}></EfficiencyBarChart>
                     </div>
                     :
                     <div className="mt-12 w-full">

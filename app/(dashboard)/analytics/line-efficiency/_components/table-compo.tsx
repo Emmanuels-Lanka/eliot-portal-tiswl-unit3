@@ -182,9 +182,9 @@ export function TableDemo({ tableProp,date }: TableProps) {
         <TableHeader>
           <TableRow>
             <TableHead className="text-center">SeqNo</TableHead>
-            <TableHead className="w-[100px]">Name</TableHead>
-            <TableHead className="w-[100px]">Operation</TableHead>
-            <TableHead className="text-center">Count</TableHead>
+            <TableHead className="">MO Name</TableHead>
+            <TableHead className="w-[200px]">Operation</TableHead>
+            <TableHead className="text-center">Production pieces</TableHead>
             <TableHead className="text-center">SMV</TableHead>
             <TableHead className="text-center">Available Hours</TableHead>
             <TableHead className="text-center">Prodution Standard Hours </TableHead>
@@ -198,11 +198,11 @@ export function TableDemo({ tableProp,date }: TableProps) {
           {tableProp.map((invoice,index) => (
             <TableRow key={index}>
               
-              <TableCell className="text-right">{invoice.seqNo}</TableCell>
+              <TableCell className="text-center">{invoice.seqNo}</TableCell>
               <TableCell className="font-medium">{invoice.operator}</TableCell>
               <TableCell className="font-medium">{invoice.operation}</TableCell>
-              <TableCell className="font-medium">{invoice.count}</TableCell>
-              <TableCell className="font-medium">{invoice.smv}</TableCell>
+              <TableCell className="font-medium text-right">{invoice.count}</TableCell>
+              <TableCell className="font-medium text-right">{invoice.smv}</TableCell>
 
               <TableCell className="text-right">{invoice.availableHours}</TableCell>
               <TableCell className="text-right">{invoice.stdHours}</TableCell>
@@ -219,10 +219,17 @@ export function TableDemo({ tableProp,date }: TableProps) {
       <div ref={reportRef2} className="mt-5 mb-10">
       <Table>
       <TableFooter>
-        
+      <TableRow >
+          <TableCell colSpan={5} ></TableCell>
+          <TableCell className="text-right">Total Available Hours</TableCell>
+          <TableCell className="text-center">Total Prodution Standard Hours</TableCell>
+          <TableCell className="text-center">Total Off Stand Hours</TableCell>
+          <TableCell className="text-center">Overall Efficiency</TableCell>
+          <TableCell className="text-center">On Stand Efficiency</TableCell>
+        </TableRow>
         <TableRow >
-          <TableCell colSpan={2} >Line Efficiency</TableCell>
-          <TableCell className="text-center">{tableProp.reduce((a,b)=>a+b.availableHours,0).toFixed(1)}</TableCell>
+          <TableCell colSpan={5} >Total Line Efficiency</TableCell>
+          <TableCell className="text-right">{tableProp.reduce((a,b)=>a+b.availableHours,0).toFixed(1)}</TableCell>
           <TableCell className="text-center">{tableProp.reduce((a,b)=>a+b.stdHours,0).toFixed(1)}</TableCell>
           <TableCell className="text-center">{tableProp.reduce((a,b)=>a+b.offStand,0).toFixed(1)}</TableCell>
           <TableCell className="text-center">{calculateEfficiencyRatio(tableProp)}</TableCell>
