@@ -58,7 +58,7 @@ type BarChartData = {
 interface BarChartGraphProps {
 
     date: string
-    obbSheetId?: string
+    obbSheet?: any
     unit?:string
 }
 
@@ -71,7 +71,9 @@ export type EfficiencyData = {
 name: string,
 login: string;
 logout: string;
-offStandTime: string
+offStandTime: string;
+downTime:string ;
+mechanic:string;
 }
 
 
@@ -175,7 +177,7 @@ function timeStringToMinutes(timeString: string): number {
 
 }
 
-const BarChartGraphEfficiencyRate = ({ date,unit }: BarChartGraphProps) => {
+const BarChartGraphEfficiencyRate = ({ date,obbSheet }: BarChartGraphProps) => {
     const [chartData, setChartData] = useState<TablePropType[]>([])
     const [chartWidth, setChartWidth] = useState<number>(50);
     const [isSubmitting,setisSubmitting]=useState<boolean>(false)
@@ -189,7 +191,7 @@ const BarChartGraphEfficiencyRate = ({ date,unit }: BarChartGraphProps) => {
             
 
             const time = await getEfficiencyData(date+"%")
-            const prod = await getProducts(date+"%")
+            const prod = await getProducts(date+"%",obbSheet)
 
             console.log("time",time)
             console.log("prod",prod)
@@ -234,7 +236,9 @@ const BarChartGraphEfficiencyRate = ({ date,unit }: BarChartGraphProps) => {
 
             const filtered = prodTimeEarn.map((t)=>{
                 const timeDifference = timeDifferenceInMinutes(t.login? t.login: "" ,t.logout?t.logout:"")
-                const offStand = timeStringToMinutes(t.offStandTime?t.offStandTime:"")
+                const mech = timeStringToMinutes(t.mechanic ? t.mechanic: "")
+                const downTime = timeStringToMinutes(t.downTime ? t.downTime: "")
+                const offStand = (timeStringToMinutes(t.offStandTime?t.offStandTime:"")+mech+downTime)
                 return{
                     ...t,timeDifference:timeDifference,offStand:offStand
                 }
@@ -293,13 +297,13 @@ const BarChartGraphEfficiencyRate = ({ date,unit }: BarChartGraphProps) => {
         const chartWidths = Math.min(250, 110 + (chartData.length * 2));
 
     setChartWidth(chartWidths)
-    }, [date, unit])
+    }, [date, obbSheet])
 
     useEffect(() => {
        
             Fetchdata();
        
-    }, [date, unit]);
+    }, [date, obbSheet]);
 
 
 
