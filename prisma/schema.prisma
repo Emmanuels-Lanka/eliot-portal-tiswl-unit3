@@ -175,10 +175,10 @@ model ObbSheet {
   personalAllowance       String?
   factoryStartTime        String?
   obbOperationsNo         Int?
-  availableMinPerHour     Int?
   factoryStopTime         String?
   totalSMV                Float?
   version                 String                    @default("1.0")
+  availableMinPerHour     Int?
   lineEfficiencyResources LineEfficiencyResources[]
   obbOperations           ObbOperation[]
   accInputMan             Staff?                    @relation("AccInputMan", fields: [accInputManId], references: [id])
@@ -220,9 +220,9 @@ model ObbOperation {
   updatedAt        DateTime             @updatedAt
   supervisorId     String?
   isActive         Boolean              @default(false)
-  isCombined       Boolean              @default(false)
   sewingMachineId  String?
   part             String?
+  isCombined       Boolean              @default(false)
   obbSheet         ObbSheet             @relation(fields: [obbSheetId], references: [id], onDelete: Cascade)
   operation        Operation            @relation(fields: [operationId], references: [id], onDelete: Cascade)
   sewingMachine    SewingMachine?       @relation(fields: [sewingMachineId], references: [id])
@@ -363,16 +363,16 @@ model ProductionSMV {
 
 model RoamingQC {
   id             String        @id @default(uuid())
-  machineId      String
   unit           String?
   lineId         String
   obbOperationId String
   operatorRfid   String
   timestamp      String
-  colorStatus    String
-  inspectedQty   String
   createdAt      DateTime      @default(now())
   defects        String[]      @default([])
+  inspectedQty   String
+  machineId      String
+  colorStatus    String
   sewingMachine  SewingMachine @relation(fields: [machineId], references: [machineId], onDelete: Cascade)
   obbOperation   ObbOperation  @relation(fields: [obbOperationId], references: [id], onDelete: Cascade)
   operator       Operator      @relation(fields: [operatorRfid], references: [rfid], onDelete: Cascade)
@@ -382,6 +382,9 @@ model RoamingQC {
 
 model LineEfficiencyResources {
   id               String   @id @default(uuid())
+  unitId           String
+  obbSheetId       String
+  date             String
   sewingOperators  Int
   ironOperators    Int
   helpers          Int
@@ -392,9 +395,6 @@ model LineEfficiencyResources {
   workingHours     Int
   totalSMV         Float
   targetEfficiency Float
-  date             String
-  unitId           String
-  obbSheetId       String
   obbSheet         ObbSheet @relation(fields: [obbSheetId], references: [id], onDelete: Cascade)
   unit             Unit     @relation(fields: [unitId], references: [id], onDelete: Cascade)
 
