@@ -16,6 +16,7 @@ import {
   ChartConfig,
   ChartContainer,
   ChartLegend,
+  ChartLegendContent,
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
@@ -35,12 +36,12 @@ const GraphCompo  = ({date,obbSheet}:any) => {
 
     
       const chartConfig = {
-        desktop: {
-          label: "Desktop",
+        smv: {
+          label: "SMV",
           color: "hsl(var(--chart-1))",
         },
-        mobile: {
-          label: "Mobile",
+        target: {
+          label: "Pitch Time",
           color: "hsl(var(--chart-2))",
         },
       } satisfies ChartConfig
@@ -172,7 +173,7 @@ const GraphCompo  = ({date,obbSheet}:any) => {
               cursor={false}
               content={<ChartTooltipContent indicator="line" />}
             />
-            <ChartLegend verticalAlign='top'></ChartLegend>
+            <ChartLegend verticalAlign='top'  content={<ChartLegendContent />}></ChartLegend>
             <Line
               dataKey="smv"
               type="natural"
