@@ -11,20 +11,26 @@ import {
 import { TablePropType } from "./barchart"
 import { useRef } from "react";
 import { Button } from "@/components/ui/button";
+import { getObbData } from "./actions";
+import { ObbSheet } from "@prisma/client";
+
 
 
   export interface TableProps {
     tableProp: TablePropType[];
-    date:string
+    date:string;
+    obbData: any []
 }
-export function TableDemo({ tableProp,date }: TableProps) {
+export function TableDemo({ tableProp,date,obbData }: TableProps) {
 
   const reportRef = useRef<HTMLDivElement | null>(null);
   const reportRef2 = useRef<HTMLDivElement | null>(null);
 
 
 
-  const handlePrint = () => {
+  const handlePrint = async () => {
+
+    
     const baseUrl = window.location.origin;
     const printContent = reportRef.current?.innerHTML;
     const footer = reportRef2.current?.innerHTML;
@@ -36,6 +42,7 @@ export function TableDemo({ tableProp,date }: TableProps) {
     // Format the adjusted date back to a string
     // const formattedDate = selectedDate.toISOString().split('T')[0];
     const formattedDate = date
+    
     
     const htmlContent = `
       <html>
@@ -101,6 +108,13 @@ export function TableDemo({ tableProp,date }: TableProps) {
             <h5>Factory Name: Apparel Gallery LTD</h5>
             <h5>Title: Line Efficiency Report</h5>
             <h5>Date: ${formattedDate}</h5>
+            <h5>Style: ${obbData[0].style}</h5>
+            <h5>Buyer: ${obbData[0].buyer}</h5>
+            <h5>Color: ${obbData[0].colour}</h5>
+            <h5>Line: ${obbData[0].line}</h5>
+            <h5>Unit: ${obbData[0].unit}</h5>
+            
+            
           
           </div>
           ${printContent}

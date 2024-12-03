@@ -1,6 +1,7 @@
 "use server";
 import { neon } from "@neondatabase/serverless";
 import { DataRecord, EfficiencyData } from "./barchart";
+import { ObbSheet } from "@prisma/client";
 
 type defects= {
     count:number;
@@ -9,6 +10,12 @@ type defects= {
 }
 type defcount= {
     total:number;
+
+}
+
+type obb = ObbSheet &{
+    unit:string;
+    line:string
 
 }
 
@@ -71,7 +78,19 @@ group by operator,part
     return new Promise((resolve) => resolve(data as any[]  ))
 }
 
+export async function getObbData(obbSheet:string) : Promise< obb[]>  {
+    const sql = neon(process.env.DATABASE_URL || "");
 
+    
+     const data = await sql`
+    select u.name unit, pl."name" line,os.* from "Unit" u
+inner join "ProductionLine" pl on pl."unitId" = u.id
+inner join "ObbSheet" os on os."productionLineId" = pl.id
+where os.id = ${obbSheet}
+
+`
+    return new Promise((resolve) => resolve(data as obb[]))
+}
 export async function getUnit() : Promise<{ id: string; name: string }[]>  {
     const sql = neon(process.env.DATABASE_URL || "");
 
