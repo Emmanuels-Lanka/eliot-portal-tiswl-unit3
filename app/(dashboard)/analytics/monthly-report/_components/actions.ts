@@ -3,7 +3,7 @@
 "use server";
 import { neon } from "@neondatabase/serverless";
 
-import { ReportData } from "./daily-report";
+
 
 
 export type ProductionData = {
@@ -26,7 +26,7 @@ export type ProductionData = {
     name: string;
     LoginDate:string;
     smv : number
-    
+
 
 }; 
 export type getDateTypes = {
@@ -194,6 +194,7 @@ return new Promise((resolve) => resolve(data as getDateTypes[]  ))
 
 
 import { db } from "@/lib/db";
+import { ReportData } from "../../daily-report/_components/daily-report";
 
 
 export const getPrisma = async ()=>{
