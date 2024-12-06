@@ -1,10 +1,8 @@
-"use client"
-
 import * as z from "zod";
 import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { FieldValues, useForm } from "react-hook-form";
-import { CalendarIcon, Check, ChevronsUpDown, Filter, Loader2 } from "lucide-react";
+import { CalendarIcon, Filter, Loader2, Search } from "lucide-react";
+import { format } from "date-fns";
 
 import {
     Form,
@@ -29,43 +27,74 @@ import {
 } from "@/components/ui/command";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 import { Calendar } from "@/components/ui/calendar";
-import { format } from "date-fns";
+import { cn } from "@/lib/utils";
+import { useForm } from "react-hook-form";
+import { EmployeeRecord } from "./actions";
 
-interface SelectObbSheetAndDateProps {
-    obbSheets: {
-        id: string;
-        name: string;
-    }[] | null;
-    handleSubmit: (data: { obbSheetId: string; date: Date;endDate:Date }) => void;
-};
+interface Operator {
+    id: string;
+    name: string;
+    employeeId: string;
+    rfid: string;
+   
+}
+
+interface OperatorSearchProps {
+    operators: EmployeeRecord[] | null;
+    handleSubmit: (data: { operatorId: string; date: Date; endDate: Date }) => void;
+}
 
 const formSchema = z.object({
-    obbSheetId: z.string().min(1, {
-        message: "OBB Sheet is required"
+    operatorId: z.string().min(1, {
+        message: "Operator selection is required"
     }),
-    date: z.date(),
-    endDate:z.date()
+    date: z.date({
+        required_error: "Start date is required",
+    }),
+    endDate: z.date({
+        required_error: "End date is required",
+    })
 });
 
-const SelectObbSheetAndDate = ({
-    obbSheets,
+const OperatorSearch = ({
+    operators,
     handleSubmit
-}: SelectObbSheetAndDateProps) => {
-    const [open, setOpen] = useState(false)
-
+}: OperatorSearchProps) => {
+    const [searchTerm, setSearchTerm] = useState("");
+    const [filteredOperators, setFilteredOperators] = useState<EmployeeRecord[]>(operators || []);
+    const [showResults, setShowResults] = useState(false);
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            obbSheetId: "",
+            operatorId: "",
             date: undefined,
-            endDate:undefined
+            endDate: undefined
         },
     });
 
     const { isSubmitting, isValid } = form.formState;
+
+    // console.log("aaaa",operators)
+    const handleSearch = (value: string) => {
+        setSearchTerm(value);
+        if (!operators) return;
+
+        const filtered = operators.filter(operator => 
+            operator.name.toLowerCase().includes(value.toLowerCase()) ||
+            operator.employeeId.toLowerCase().includes(value.toLowerCase()) ||
+            operator.rfid.toLowerCase().includes(value.toLowerCase())
+        );
+        setFilteredOperators(filtered);
+        setShowResults(true);
+    };
+
+    const handleOperatorSelect = (operator: Operator) => {
+        form.setValue("operatorId", operator.id);
+        setSearchTerm(`${operator.name} (${operator.employeeId})`);
+        setShowResults(false);
+    };
 
     return (
         <div className='mt-16 border px-12 pt-6 pb-10 rounded-lg bg-slate-100'>
@@ -75,71 +104,57 @@ const SelectObbSheetAndDate = ({
                     className="w-full flex flex-col lg:flex-row items-end gap-x-8 gap-y-6 mt-4"
                 >
                     <div className="w-full flex flex-col md:flex-row gap-6">
-                        <div className="md:w-2/3">
+                        <div className="md:w-2/5">
                             <FormField
                                 control={form.control}
-                                name="obbSheetId"
+                                name="operatorId"
                                 render={({ field }) => (
                                     <FormItem className="flex flex-col">
                                         <FormLabel className="text-base">
-                                            OBB Sheet
+                                            Search Operator
                                         </FormLabel>
-                                        <Popover open={open} onOpenChange={setOpen}>
-                                            <PopoverTrigger asChild>
-                                                <Button
-                                                    variant="outline"
-                                                    role="combobox"
-                                                    aria-expanded={open}
-                                                    className="w-full justify-between font-normal"
-                                                >
-                                                    {obbSheets ?
-                                                        <>
-                                                            {field.value
-                                                                ? obbSheets.find((sheet) => sheet.id === field.value)?.name
-                                                                : "Select OBB Sheets..."}
-                                                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                                                        </>
-                                                        :
-                                                        "No OBB sheets available!"
-                                                    }
-                                                </Button>
-                                            </PopoverTrigger>
-                                            <PopoverContent className="p-0">
-                                                <Command>
-                                                    <CommandInput placeholder="Search OBB sheet..." />
-                                                    <CommandList>
-                                                        <CommandEmpty>No OBB sheet found!</CommandEmpty>
-                                                        <CommandGroup>
-                                                            {obbSheets && obbSheets.map((sheet) => (
-                                                                <CommandItem
-                                                                    key={sheet.id}
-                                                                    value={sheet.name}
-                                                                    onSelect={() => {
-                                                                        form.setValue("obbSheetId", sheet.id)
-                                                                        setOpen(false)
-                                                                    }}
-                                                                >
-                                                                    <Check
-                                                                        className={cn(
-                                                                            "mr-2 h-4 w-4",
-                                                                            field.value === sheet.id ? "opacity-100" : "opacity-0"
-                                                                        )}
-                                                                    />
-                                                                    {sheet.name}
-                                                                </CommandItem>
-                                                            ))}
-                                                        </CommandGroup>
-                                                    </CommandList>
-                                                </Command>
-                                            </PopoverContent>
-                                        </Popover>
+                                        <div className="relative">
+                                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                <Search className="h-4 w-4 text-gray-400" />
+                                            </div>
+                                            <Input
+                                                value={searchTerm}
+                                                onChange={(e) => handleSearch(e.target.value)}
+                                                className="pl-10"
+                                                placeholder="Search by name, ID, or RFID..."
+                                            />
+                                            {showResults && searchTerm && (
+                                                <div className="absolute z-10 w-full mt-1 bg-white rounded-md shadow-lg">
+                                                    <Command>
+                                                        <CommandList>
+                                                            <CommandEmpty>No operators found</CommandEmpty>
+                                                            <CommandGroup>
+                                                                {filteredOperators.map((operator) => (
+                                                                    <CommandItem
+                                                                        key={operator.id}
+                                                                        onSelect={() => handleOperatorSelect(operator)}
+                                                                        className="cursor-pointer"
+                                                                    >
+                                                                        <div className="flex flex-col">
+                                                                            <span className="font-medium">{operator.name}</span>
+                                                                            <span className="text-sm text-gray-500">
+                                                                                ID: {operator.employeeId} | RFID: {operator.rfid}
+                                                                            </span>
+                                                                        </div>
+                                                                    </CommandItem>
+                                                                ))}
+                                                            </CommandGroup>
+                                                        </CommandList>
+                                                    </Command>
+                                                </div>
+                                            )}
+                                        </div>
                                         <FormMessage />
                                     </FormItem>
                                 )}
                             />
                         </div>
-                        <div className="md:w-1/3">
-                           
+                        <div className="md:w-2/5">
                             <FormField
                                 control={form.control}
                                 name="date"
@@ -173,7 +188,6 @@ const SelectObbSheetAndDate = ({
                                                         date > new Date() || date < new Date("2024-01-01")
                                                     }
                                                     initialFocus
-                                                    className="w-full"
                                                 />
                                             </PopoverContent>
                                         </Popover>
@@ -182,8 +196,7 @@ const SelectObbSheetAndDate = ({
                                 )}
                             />
                         </div>
-                        <div className="md:w-1/3">
-                           
+                        <div className="md:w-2/5">
                             <FormField
                                 control={form.control}
                                 name="endDate"
@@ -217,7 +230,6 @@ const SelectObbSheetAndDate = ({
                                                         date > new Date() || date < new Date("2024-01-01")
                                                     }
                                                     initialFocus
-                                                    className="w-full"
                                                 />
                                             </PopoverContent>
                                         </Popover>
@@ -234,12 +246,12 @@ const SelectObbSheetAndDate = ({
                     >
                         <Filter className={cn("w-5 h-5", isSubmitting && "hidden")} />
                         <Loader2 className={cn("animate-spin w-5 h-5 hidden", isSubmitting && "flex")} />
-                        Genarate
+                        Generate
                     </Button>
                 </form>
             </Form>
         </div>
-    )
-}
+    );
+};
 
-export default SelectObbSheetAndDate
+export default OperatorSearch;
