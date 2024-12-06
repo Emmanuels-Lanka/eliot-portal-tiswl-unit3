@@ -105,9 +105,8 @@ const ReportTable = ({ obbSheets }: AnalyticsChartProps) => {
     
   
     const effMap = data.map((d)=>{
-      const login = new Date (d.logintimestamp)
-      const logout = new Date (d.logouttimestamp)
-      
+      const login = new Date (d.LoginTimestamp)
+      const logout = new Date (d.LogoutTimestamp)
       const diff = (logout.getTime() - login.getTime()) / 60000;
       const earnMins = Number(Number(d.daily_production) * d.smv);
       const eff = Number(((earnMins / diff) * 100).toFixed(2));
@@ -116,7 +115,8 @@ const ReportTable = ({ obbSheets }: AnalyticsChartProps) => {
       return {
 
         ...d,
-        diff,eff,earnMins
+        diff,eff
+
 
       }
       

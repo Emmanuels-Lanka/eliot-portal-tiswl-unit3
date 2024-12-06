@@ -33,8 +33,8 @@ export type ProductionData = {
 
 export interface newData {
     obbOperationId: string;
-    logintimestamp: Date;
-    logouttimestamp: Date;
+    LoginTimestamp: Date;
+    LogoutTimestamp: Date;
     operation: string;
     smv: number;
     production_date: Date;
@@ -46,9 +46,9 @@ export type getDateTypes = {
 
     operatorRfid: string;
 
-    LoginTimestamp: string;
+    LoginTimestamp: Date;
 
-    LogoutTimestamp: string;
+    LogoutTimestamp: Date;
 
     date: string;
     LoginDate:string;
@@ -215,8 +215,8 @@ export async function getNewData()  : Promise<newData[]>   {
     o.name,
     o.rfid,
     os."obbOperationId",
-    os."LoginTimestamp"  AS LoginTimestamp,
-    os."LogoutTimestamp"  AS LogoutTimestamp,
+    os."LoginTimestamp" ::timestamp AS LoginTimestamp,
+    os."LogoutTimestamp" ::timestamp AS LogoutTimestamp,
     opn.name as operation,
     oo.smv,
     DATE(pd."timestamp") AS production_date,
