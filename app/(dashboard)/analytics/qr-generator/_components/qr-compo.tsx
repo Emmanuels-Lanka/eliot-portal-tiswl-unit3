@@ -15,12 +15,14 @@ export function QRGenerator() {
   const [password, setPassword] = useState("");
   const [qrData, setQrData] = useState("");
   const qrRef = useRef<HTMLDivElement>(null);
+  const [email, setEmail] = useState("");
 
   const generateQRCode = () => {
     if (username && password) {
-    //   const data = JSON.stringify({ username, password });
-    const data = `${username} ${password}`
+      const data = JSON.stringify({ username, password });
+    // const data = `${username} ${password}`
       setQrData(data);
+      setEmail(username)
     }
   };
 
@@ -91,6 +93,8 @@ export function QRGenerator() {
                 // includeMargin={true}
                 className="mx-auto"
               />
+              <h1 className='  text-center mt-3'>{email}</h1>
+
             </div>
             <div className="flex flex-col items-center gap-2">
               <Button
