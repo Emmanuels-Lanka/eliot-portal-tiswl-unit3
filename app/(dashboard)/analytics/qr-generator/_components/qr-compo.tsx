@@ -11,18 +11,18 @@ import html2canvas from "html2canvas";
 
 
 export function QRGenerator() {
-  const [username, setUsername] = useState("");
+  const [email, setemail] = useState("");
   const [password, setPassword] = useState("");
   const [qrData, setQrData] = useState("");
   const qrRef = useRef<HTMLDivElement>(null);
-  const [email, setEmail] = useState("");
+  const [emails, setEmails] = useState("");
 
   const generateQRCode = () => {
-    if (username && password) {
-      const data = JSON.stringify({ username, password });
-    // const data = `${username} ${password}`
+    if (email && password) {
+      const data = JSON.stringify({ email, password });
+    // const data = `${email} ${password}`
       setQrData(data);
-      setEmail(username)
+      setEmails(email)
     }
   };
 
@@ -32,7 +32,7 @@ export function QRGenerator() {
       html2canvas(qrRef.current).then((canvas) => {
         const link = document.createElement("a");
         link.href = canvas.toDataURL("image/png");
-        link.download = `qr-code-${username}.png`;
+        link.download = `qr-code-${email}.png`;
         link.click();
       });
     }
@@ -51,13 +51,13 @@ export function QRGenerator() {
 
         <div className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="username">Username</Label>
+            <Label htmlFor="email">email</Label>
             <Input
-              id="username"
+              id="email"
               type="text"
-              placeholder="Enter username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              placeholder="Enter email"
+              value={email}
+              onChange={(e) => setemail(e.target.value)}
               className="w-full"
             />
           </div>
@@ -77,7 +77,7 @@ export function QRGenerator() {
           <Button
             onClick={generateQRCode}
             className="w-full"
-            disabled={!username || !password}
+            disabled={!email || !password}
           >
             Generate QR Code
           </Button>
@@ -93,7 +93,7 @@ export function QRGenerator() {
                 // includeMargin={true}
                 className="mx-auto"
               />
-              <h1 className='  text-center mt-3'>{email}</h1>
+              <h1 className='  text-center mt-3'>{emails}</h1>
 
             </div>
             <div className="flex flex-col items-center gap-2">

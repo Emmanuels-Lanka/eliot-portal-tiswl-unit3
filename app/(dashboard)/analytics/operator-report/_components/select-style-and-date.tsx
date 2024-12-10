@@ -97,7 +97,7 @@ const OperatorSearch = ({
     };
 
     return (
-        <div className='mt-16 border px-12 pt-6 pb-10 rounded-lg bg-slate-100'>
+        <div className='mt-16 border px-12 pt-6 pb-10 rounded-lg bg-slate-100 shadow-md'>
             <Form {...form}>
                 <form
                     onSubmit={form.handleSubmit(handleSubmit)}

@@ -42,7 +42,7 @@ const QRGenerator = () => {
       const dataa = JSON.stringify({ machineId });
       setMId(machineId)
       
-      setMachine(dataa)
+      setMachine(machineId)
     }
 
     const { isSubmitting, isValid } = form.formState;
@@ -83,7 +83,7 @@ const QRGenerator = () => {
                   <FormItem>
                     <FormLabel>Sewing Machine Id</FormLabel>
                     <FormControl>
-                      <Input {...field} placeholder='SNL 3032'></Input>
+                      <Input {...field} placeholder='SNL290'></Input>
                     </FormControl>
                   </FormItem>
                  )}
