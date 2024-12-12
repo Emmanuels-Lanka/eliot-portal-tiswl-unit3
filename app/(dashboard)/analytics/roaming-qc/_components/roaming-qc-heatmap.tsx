@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
 import dynamic from 'next/dynamic';
+import { custom } from 'zod';
 
 const ReactApexChart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
@@ -13,44 +14,44 @@ const RoamingQcHeatmap = ({
     const chartRef = useRef<HTMLDivElement>(null);
 
     const colorMapping = {
-        'black': 1, // For black
-        'green': 2, // For green
-        'yellow': 3, // For yellow
-        'red': 4,    // For red
-        'null': 0
+        'null': -1,
+        'green': 0, // For green
+        'yellow': 1, // For yellow
+        'red': 2,    // For red
+        'black': 3, // For black
     };
 
     const colorScaleRanges = [
         {
-            from: -0.9,
+            from: -1.9,
+            to: -0.5,
+            name: 'Not inspected',
+            color: '#e2e8f0'
+        },
+        {
+            from: -0.5,
             to: 0.5,
-            name: 'No color',
-            color: 'transparent'
-        },
-        {
-            from: 0.5,
-            to: 1.5,
-            name: '3 Defects',  // black
-            color: '#000000'
-        },
-        {
-            from: 1.5,
-            to: 2.5,
             name: 'No Defects',      // green
             color: '#008000'
         },
         {
-            from: 2.5,
-            to: 3.5,
+            from: 0.5,
+            to: 1.5,
             name: '1 Defect',     // yellow
             color: '#ffbf00'
         },
         {
-            from: 3.5,
-            to: 4.5,
+            from: 1.5,
+            to: 2.5,
             name: '2 Defects',        // red
             color: '#FF0000'
-        }
+        },
+        {
+            from: 2.5,
+            to: 3.5,
+            name: '3 Defects',      // black
+            color: '#000000'
+        },
     ];
 
 
@@ -61,10 +62,10 @@ const RoamingQcHeatmap = ({
             name: hourData.hourGroup,
             data: categories.map(category => {
                 const operation = hourData.operation.find(op => op.name === category);
-                const colorValue = operation && colorMapping.hasOwnProperty(operation.color) ? colorMapping[operation.color as keyof typeof colorMapping] : 0;
+                const colorValue = operation && colorMapping.hasOwnProperty(operation.color) ? colorMapping[operation.color as keyof typeof colorMapping] : -1;
                 return {
                     x: category,
-                    y: colorValue ?? 0 // Fallback to 0 if `colorValue` is undefined
+                    y: colorValue ?? -1 // Fallback to 0 if `colorValue` is undefined
                 };
             })
         }));
@@ -80,6 +81,11 @@ const RoamingQcHeatmap = ({
                 tools: {
                     download: true
                 }
+            }
+        },
+        tooltip: {
+            custom: function(){
+                return null;
             }
         },
         plotOptions: {

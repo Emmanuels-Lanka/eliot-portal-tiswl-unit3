@@ -25,7 +25,7 @@ const AnalyticsChart = ({
     const { toast } = useToast();
     const router = useRouter();
 
-    const [heatmapData, setHeatmapData] = useState<RoamingQcChartFunctionOutputTypes>();
+    const [heatmapData, setHeatmapData] = useState<RoamingQcChartFunctionOutputTypes | null>(null);
 
     function processRoamingQcData(productionData: RoamingQcDataTypes[]): RoamingQcChartFunctionOutputTypes {
         const hourGroups = [
@@ -73,12 +73,13 @@ const AnalyticsChart = ({
     }
 
     const handleFetchProductions = async (data: { obbSheetId: string; date: Date }) => {
+        setHeatmapData(null);
+
         try {
             data.date.setDate(data.date.getDate() + 1);
             const formattedDate = data.date.toISOString().split('T')[0];
 
             const response = await axios.get(`/api/roaming-qc?obbSheetId=${data.obbSheetId}&date=${formattedDate}`);
-            console.log("response", response.data.data);
             const processedData = processRoamingQcData(response.data.data);
             
             setHeatmapData(processedData);
