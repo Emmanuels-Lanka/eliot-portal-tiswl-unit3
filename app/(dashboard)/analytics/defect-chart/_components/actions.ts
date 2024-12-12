@@ -8,7 +8,8 @@ export async function getOperatorEfficiency(obbsheetid:string,date:string) : Pro
     const sql = neon(process.env.RFID_DATABASE_URL || "");
 
     
-     const data = await sql`SELECT
+     const data = await sql
+     `SELECT
     pd."part",
     COUNT(DISTINCT pd."gmtId") AS garment_count
 FROM 

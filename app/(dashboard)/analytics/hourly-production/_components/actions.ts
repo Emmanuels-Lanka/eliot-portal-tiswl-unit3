@@ -6,7 +6,8 @@ import { ProductionDataType } from "../../daily-achivement/components/analytics-
 export async function getData(obbsheetid:string,date:string) : Promise<ProductionDataType[]>   {
     const sql = neon(process.env.DATABASE_URL || "");
 
-    const data = await sql`
+    const data = await sql
+    `
         SELECT 
             pd."id",
             pd."productionCount" as count,

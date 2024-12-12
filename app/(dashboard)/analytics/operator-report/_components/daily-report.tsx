@@ -108,7 +108,7 @@ const ReportTable = ({ obbSheets, operators }: AnalyticsChartProps) => {
     if (!reportRef.current || !data.length) return;
 
     try {
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      await new Promise(resolve => setTimeout(resolve, 1000));
       const canvas = await html2canvas(reportRef.current, {
         scale: 2,
         logging: false,

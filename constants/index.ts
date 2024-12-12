@@ -23,7 +23,8 @@ import {
     TableProperties,
     UserRoundPlus,
     LineChart,
-    LocateFixed
+    LocateFixed,
+    QrCode
 } from "lucide-react";
 
 export const ROAMING_QC_DEFECTS = [
@@ -248,6 +249,11 @@ export const SIDEBAR_ROUTES = [
                 href: "/analytics/line-efficiency",
                 icon: Table
             },
+            {
+                label: "Monthly Efficiency Report",
+                href: "/analytics/operator-report",
+                icon: Table
+            },
 
 
         ]
@@ -370,6 +376,21 @@ export const SIDEBAR_ROUTES = [
                 label: "Manage",
                 href: "/factory-staffs",
                 icon: UserRoundCog
+            },
+        ]
+    },
+    {
+        categoryName: "QR Generators",
+        routes: [
+            {
+                label: "User Credentials",
+                href: "/analytics/qr-generator",
+                icon: QrCode
+            },
+            {
+                label: "Sewing Machine",
+                href: "/analytics/sm-qr-generator",
+                icon: QrCode
             },
         ]
     },
@@ -518,7 +539,7 @@ export const HEADER_INFO = [
     },
     {
         label: "Line Efficiency Report",
-        href: "/analytics/line-efficiency",
+        href: "/analytics/line-efficiency-report",
         icon: Table
     },
     {

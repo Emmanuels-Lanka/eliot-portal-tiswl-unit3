@@ -8,7 +8,8 @@ export async function getObb(unit:any) : Promise<{ id: string; name: string }[]>
     const sql = neon(process.env.DATABASE_URL || "");
 
     
-     const data = await sql`
+     const data = await sql
+     `
     select os.name as name ,os.id as id from "ObbSheet" os 
 
 inner join "Unit" u on u.id= os."unitId"
@@ -26,7 +27,8 @@ export async function getOperationSmv(obbSheetId:string,date:string) : Promise<a
     const sql = neon(process.env.DATABASE_URL || "");
 
     
-     const data = await sql`
+     const data = await sql
+     `
       WITH OperationData AS (
     SELECT os."seqNo", os.smv, o.name
     FROM "ObbOperation" os
@@ -47,7 +49,8 @@ export async function getTargetValues(obbSheetId:string) : Promise<any[]>  {
     const sql = neon(process.env.DATABASE_URL || "");
 
     
-     const data = await sql`
+     const data = await sql
+     `
       select "totalSMV" as tsmv,"obbOperationsNo"as operations , name as obb from "ObbSheet" 
 where id=${obbSheetId}
 
