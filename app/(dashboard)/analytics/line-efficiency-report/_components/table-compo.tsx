@@ -101,12 +101,15 @@ export function TableDemo({ tableProp,date,obbData }: TableProps) {
           <div class="logo-div">
             <img src="${baseUrl}/ha-meem.png" alt="Ha-Meem Logo" style="margin-top:10px;"/>
             <h5 style="margin-top:10px;">~ Bangladesh ~</h5>
+          <h3 class="text-center">Individual Line Efficiency Report</h3>
+
           </div>
+
          <div style="display: flex; justify-content: space-around; gap: 20px;">
   <!-- Left Block -->
   <div>
     <h5>Factory Name: Apparel Gallery LTD</h5>
-    <h5>Title: Line Efficiency Report</h5>
+    <h5>Title: Individual Line Efficiency Report</h5>
     <h5>Date: ${formattedDate}</h5>
     <h5>Style: ${obbData[0].style}</h5>
   </div>
@@ -123,10 +126,10 @@ export function TableDemo({ tableProp,date,obbData }: TableProps) {
 
           <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 50px;">
             <div>
-              <p><a href="https://rfid-tracker.eliot.global/">https://rfid-tracker.eliot.global/</a></p>
+              <p><a href="https://www.portal.eliot.global/">https://www.portal.eliot.global/</a></p>
             </div>
             <div class="footer-logo">
-              <img src="${baseUrl}/logo.png" alt="Company Footer Logo" />
+              <img src="${baseUrl}/eliot-logo.png" alt="Company Footer Logo" />
             </div>
           </div>
         </body>

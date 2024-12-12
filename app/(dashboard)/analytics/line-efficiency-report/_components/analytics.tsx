@@ -68,7 +68,7 @@ const AnalyticsChart = ({
             
             setObbSheetId(obb);
             setFilterApplied(true)
-            console.log("first")
+            console.log("first",data.date,formattedDate)
             console.log(data)
         } catch (error: any) {
             console.error("Error fetching production data:", error);
