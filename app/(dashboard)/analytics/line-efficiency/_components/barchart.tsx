@@ -25,7 +25,7 @@ import {
     ChartTooltipContent,
 } from "@/components/ui/chart";
 import { use, useEffect, useState } from "react";
-import { getChecked, getDefects, getEfficiencyData, getProducts } from "./actions";
+import { getChecked, getDefects, getEfficiencyData, getObbData, getProducts } from "./actions";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -36,6 +36,7 @@ import React, { useRef } from "react";
 import * as XLSX from 'xlsx';
 import { count } from "console";
 import { TableDemo } from "./table-compo";
+import { ObbSheet } from "@prisma/client";
 
 const chartConfig = {
     target: {
@@ -182,6 +183,7 @@ const BarChartGraphEfficiencyRate = ({ date,obbSheet }: BarChartGraphProps) => {
     const [chartWidth, setChartWidth] = useState<number>(50);
     const [isSubmitting,setisSubmitting]=useState<boolean>(false)
     const chartRef = useRef<HTMLDivElement>(null);
+    const [obbData,setObbData]= useState<ObbSheet[]>([])
 
   
     const Fetchdata = async () => {
@@ -195,6 +197,10 @@ const BarChartGraphEfficiencyRate = ({ date,obbSheet }: BarChartGraphProps) => {
 
             console.log("time",time)
             console.log("prod",prod)
+            const obbData = await getObbData(obbSheet)
+            setObbData(obbData)
+
+    // console.log("obbData",obbData)
            
 
 
@@ -323,7 +329,7 @@ const BarChartGraphEfficiencyRate = ({ date,obbSheet }: BarChartGraphProps) => {
                     // <div className='bg-slate-100 pt-5 -pl-8 rounded-lg border w-full mb-16 overflow-x-auto'>
 
                 <div className=' mb-16'>
-                  <TableDemo date={date} tableProp={chartData}></TableDemo>
+                  <TableDemo date={date} obbData={obbData} tableProp={chartData}></TableDemo>
                 </div>
                 : <div className="mt-12 w-full">
                     <p className="text-center text-slate-500">No Data Available.</p>
