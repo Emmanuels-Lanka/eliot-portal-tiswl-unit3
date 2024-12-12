@@ -23,7 +23,8 @@ export async function getChecked(date:string,obbSheet:string) : Promise<defcount
     const sql = neon(process.env.RFID_DATABASE_URL || "");
     // obbsheetid:string,date:string
     
-     const data = await sql`WITH counts AS (
+     const data = await sql
+     `WITH counts AS (
     SELECT COUNT(*) AS gmt_count FROM "GmtDefect" gd WHERE gd.timestamp LIKE ${date} 
     and "obbSheetId" = ${obbSheet}
     UNION ALL
@@ -41,7 +42,8 @@ export async function getDefects(date:string,obbSheet:string) : Promise<defects 
     const sql = neon(process.env.RFID_DATABASE_URL || "");
     // obbsheetid:string,date:string
     
-     const data = await sql`select count(*),"operatorName" as operator,part from "GmtDefect" 
+     const data = await sql
+     `select count(*),"operatorName" as operator,part from "GmtDefect" 
 where timestamp like ${date} and "obbSheetId" = ${obbSheet}
 and "qcStatus" <> 'pass'
 group by operator,part
@@ -61,7 +63,8 @@ export async function getData(date:string,obbSheet:string) : Promise<any []>   {
     const sql = neon(process.env.RFID_DATABASE_URL || "");
     // obbsheetid:string,date:string
     
-     const data = await sql`select count(*),"operatorName" as operator,part from "GmtDefect" 
+     const data = await sql
+     `select count(*),"operatorName" as operator,part from "GmtDefect" 
 where timestamp like ${date} and "obbSheetId" = ${obbSheet}
 and "qcStatus" <> 'pass'
 group by operator,part
@@ -82,7 +85,8 @@ export async function getObbData(obbSheet:string) : Promise< obb[]>  {
     const sql = neon(process.env.DATABASE_URL || "");
 
     
-     const data = await sql`
+     const data = await sql
+     `
     select u.name unit, pl."name" line,os.* from "Unit" u
 inner join "ProductionLine" pl on pl."unitId" = u.id
 inner join "ObbSheet" os on os."productionLineId" = pl.id
@@ -109,7 +113,8 @@ export async function getEfficiencyData(date:string) : Promise<EfficiencyData[]>
     const sql = neon(process.env.DATABASE_URL || "");
 
     
-     const data = await sql`
+     const data = await sql
+     `
     select "operatorRfid",o.name name,MIN("loginTimestamp") login,max("logoutTimestamp") logout,"offStandTime" from "OperatorEffectiveTime" oet
     inner join "Operator" o on o."rfid" = oet."operatorRfid"
     where "loginTimestamp" like ${date+"%"} and "logoutTimestamp" IS NOT NULL
@@ -122,7 +127,8 @@ export async function getProducts(date:string,obbSheet:string) : Promise<DataRec
     const sql = neon(process.env.DATABASE_URL || "");
 
     
-     const data = await sql`
+     const data = await sql
+     `
  select oo."seqNo",pd."operatorRfid",o.name name,opn."name" operation,oo.smv,sum(pd."productionCount") count,oo."obbSheetId" from "ProductionData" pd 
 inner join "Operator" o on o.rfid = pd."operatorRfid"
 inner join "ObbOperation" oo on oo.id = pd."obbOperationId"

@@ -7,7 +7,8 @@ export async function getDHUData(obbsheetid: string, date: string): Promise<any[
 
     console.log("dateeee",date)
 
-    const dataGmts = await sql`
+    const dataGmts = await sql
+    `
         SELECT count(*) as count, "qcStatus" qc, "operatorName" as name, "operatorId" as operatorid 
         FROM "GmtDefect"
         WHERE "qcStatus" <> 'pass' AND "obbSheetId" = ${obbsheetid} AND timestamp LIKE ${date}
@@ -15,7 +16,8 @@ export async function getDHUData(obbsheetid: string, date: string): Promise<any[
     `;
     // console.log("data fetched1", dataGmts);
 
-    const dataProducts = await sql`
+    const dataProducts = await sql
+    `
         SELECT count(*) as count, "qcStatus" qc, "operatorName" as name 
         FROM "ProductDefect"
         WHERE "qcStatus" <> 'pass' AND "obbSheetId" = ${obbsheetid} AND timestamp LIKE ${date}
@@ -23,12 +25,14 @@ export async function getDHUData(obbsheetid: string, date: string): Promise<any[
     `;
     // console.log("data fetched2", dataProducts);
 
-    const tc = await sql`
+    const tc = await sql
+    `
         SELECT count(*) as count FROM "GmtDefect"
         WHERE "obbSheetId" = ${obbsheetid} AND timestamp LIKE ${date}
     `;
 
-    const tcProducts = await sql`
+    const tcProducts = await sql
+    `
         SELECT count(*) as count FROM "ProductDefect"
         WHERE "obbSheetId" = ${obbsheetid} AND timestamp LIKE ${date}
     `;
@@ -64,7 +68,8 @@ export async function getDHUData(obbsheetid: string, date: string): Promise<any[
 export async function getDailyData(obbsheetid: string, date: string): Promise<ReportData1[]> {
     const sql = neon(process.env.DATABASE_URL || "");
 
-    const data = await sql`
+    const data = await sql
+    `
         SELECT opr.id, opr.name as operatorname,
                opr.id as operatorid,
                op.name as operationname,
@@ -98,7 +103,8 @@ export async function getDefects(obbsheetid: string, date: string): Promise<any[
     const newdate = `${date}%`;
     console.log("obbsheet id and date", obbsheetid, newdate);
 
-    const data = await sql`
+    const data = await sql
+    `
         SELECT 
             COUNT(pd.id) as defectcount,
             pd."operatorId" as operatorid
@@ -134,7 +140,8 @@ export async function inspaetfetch(obbsheetid: string, date: string): Promise<an
     const newdate = `${date}%`;
     console.log("obbsheet id and date", obbsheetid, newdate);
 
-    const data = await sql`
+    const data = await sql
+    `
         SELECT 
           count(*) as inspectcount
           from

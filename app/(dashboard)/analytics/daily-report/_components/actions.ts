@@ -10,7 +10,8 @@ export async function getDailyData(obbsheetid:string,date:string)  : Promise<Rep
     
     const sql = neon(process.env.DATABASE_URL || "");
     date=date+"%"
-    const data = await sql`
+    const data = await sql
+    `
     SELECT 
     opr.id,
     obbop."seqNo",

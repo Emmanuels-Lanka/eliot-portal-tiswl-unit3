@@ -7,7 +7,8 @@ export async function getDailyData(obbsheetid:string,date:string) : Promise<Repo
     
   const sql = neon(process.env.DATABASE_URL || "");
 
-  const data = await sql`
+  const data = await sql
+  `
   SELECT 
       op."employeeId", op.name,op."designation",
       SUM(pd."productionCount") AS "productionCount",
