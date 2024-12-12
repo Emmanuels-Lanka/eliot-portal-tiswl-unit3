@@ -124,7 +124,7 @@ export function TableDemo({ tableProp,date,obbData }: TableProps) {
           ${printContent}
           ${footer}
 
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 50px;">
+          <div style="display:  flex; justify-content: space-between; align-items: center; margin-top: 50px;">
             <div>
               <p><a href="https://www.portal.eliot.global/">https://www.portal.eliot.global/</a></p>
             </div>
