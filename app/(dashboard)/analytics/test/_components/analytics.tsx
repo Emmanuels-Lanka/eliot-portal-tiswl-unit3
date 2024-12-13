@@ -5,12 +5,13 @@ import { useEffect } from 'react';
 import moment from 'moment-timezone';
 
 import { cn } from '@/lib/utils';
-import { getData } from './actions';
+import { getData, getDataRfid } from './actions';
 
 
 const EfficiencyCard = () => {
     const timezone: string = 'Asia/Dhaka';
     
+    // const manpower = 110
     const processData = (data: any[]) => {
         const dataMap = data.map((d) => {
             const currentTime = moment().tz(timezone).format("YYYY-MM-DD HH:mm:ss");
@@ -22,35 +23,56 @@ const EfficiencyCard = () => {
             const startDate = new Date()
             startDate.setHours(hours, minutes, 0, 0);
 
-            const availableMins = (end.getTime() - startDate.getTime()) / (1000 * 60);
+            const manPower = d.obbManPowers
+
+            const availableMinsManpower = ((end.getTime() - startDate.getTime()) / (1000 * 60))*manPower;
+            const availableMins = ((end.getTime() - startDate.getTime()) / (1000 * 60));
             
 
-
-            const earnMins = Number(d.count) * Number(d.totalSMV)
-
-            const Efficiency = Number(((earnMins/availableMins)*100).toFixed(2))
-            const count = Number(d.count)
             const smv = d.totalSMV
+
+            const earnMins = Number(d.count) * Number(smv)
+
+            const Efficiency = Number(((earnMins/availableMinsManpower)*100).toFixed(2))
+            const count = Number(d.count)
 
             console.log("asdasd",startDate)
             console.log("asdasds",start)
             console.log("asdasds",currentTime)
             
             return {
-                Efficiency,earnMins,availableMins,count,smv
+                Efficiency,earnMins,availableMins,count,smv,manPower,availableMinsManpower
             }
         })
         return dataMap
     }
 
+    const merge = (data:any [],rfid:any[])=> {
+
+        const returnMap = data.map((d)=>{
+            const found = rfid.find((r)=>r.obbSheetId === d.obbSheetId)
+            return {
+                ...d,...found
+            }
+        })
+
+        console.log("rer",returnMap)
+
+        return returnMap
+    }
 
     const fetchData = async () => {
         const data = await getData()
-        console.log("DATAA:", data)
-        // const today = moment().tz(timezone).format('YYYY-MM-DD HH:mm:ss');
-        // const currentTime = moment().tz(timezone).format('YYYY-MM-DD HH:mm');
-        // console.log(currentTime)
-        const datas = processData(data)
+        console.log("data:", data)
+        
+        const rfidData = await getDataRfid()
+        console.log("rfid:", rfidData)
+
+        const merged = merge(data,rfidData)
+
+
+
+        const datas = processData(merged)
         console.log("final",datas)
        
        

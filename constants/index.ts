@@ -246,7 +246,7 @@ export const SIDEBAR_ROUTES = [
             },
             {
                 label: "Line Efficiency Report",
-                href: "/analytics/line-efficiency",
+                href: "/analytics/line-efficiency-report",
                 icon: Table
             },
             {
