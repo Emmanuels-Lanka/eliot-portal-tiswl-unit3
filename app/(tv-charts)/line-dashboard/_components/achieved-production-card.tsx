@@ -26,7 +26,7 @@ const AchievedProductionCard = ({
             <img src='/icons/tv/door.gif' alt="efficiency" className={cn("size-[12vh] p-5 pointer-events-none")} />
             <div className='w-full'>
                 <p className='text-lg font-medium text-slate-500 tracking-[0.01em]'>Achieved Production</p>
-                <p className={cn("mt-1 font-semibold text-3xl text-orange-600")}>{count}</p>
+                <p className={cn("mt-1 font-semibold text-4xl text-orange-600")}>{count}</p>
             </div>
         </div>
     )

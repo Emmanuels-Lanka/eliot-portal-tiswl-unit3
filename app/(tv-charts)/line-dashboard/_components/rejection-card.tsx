@@ -27,7 +27,7 @@ const RejectionCard = ({
             <img src='/icons/tv/reject.gif' alt="efficiency" className={cn("size-[12vh] p-2 pointer-events-none")} />
             <div className='w-full'>
                 <p className='text-lg font-medium text-slate-500 tracking-[0.01em]'>Rejections</p>
-                <p className={cn("mt-1 font-semibold text-3xl text-pink-600")}>{count}</p>
+                <p className={cn("mt-1 font-semibold text-4xl text-red-600")}>{count}</p>
             </div>
         </div>
     )

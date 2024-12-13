@@ -22,7 +22,7 @@ export async function fetchPassProductionData(obbSheetId: string): Promise<Produ
         const sql = neon(process.env.RFID_DATABASE_URL || "");
 
         const today = moment().tz('Asia/Dhaka').format("YYYY-MM-DD");
-        const dateKey = `${today}%`;
+        const dateKey = `${"2024-12-12"}%`;
 
         const productDefects = await sql`
             SELECT *

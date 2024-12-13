@@ -82,8 +82,8 @@ const EfficiencyCard = ({
         <div className='h-full w-full bg-white pl-2 pr-4 flex items-center gap-x-2 rounded-xl drop-shadow-sm border'>
             <img src='/icons/tv/efficiency.gif' alt="efficiency" className={cn("size-[11vh] p-2 pointer-events-none")} />
             <div className='w-full'>
-                <p className='text-lg font-medium text-slate-500 tracking-[0.01em]'>Efficency</p>
-                <p className={cn("mt-1 font-semibold text-3xl text-pink-600")}>{value ? `${value}%`: "NAN"}</p>
+                <p className='text-lg font-medium text-slate-500 tracking-[0.01em]'>Efficiency</p>
+                <p className={cn("mt-1 font-semibold text-4xl text-green-600")}>{value ? `${value}%`: "NAN"}</p>
             </div>
         </div>
     )

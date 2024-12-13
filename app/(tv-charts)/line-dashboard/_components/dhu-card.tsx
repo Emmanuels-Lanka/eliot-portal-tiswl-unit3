@@ -49,8 +49,8 @@ const DhuCard = ({
             <img src='/icons/tv/dhu.gif' alt="efficiency" className={cn("size-[11vh] p-3 pointer-events-none")} />
             <div className='w-full flex flex-col items-start'>
                 <div className='w-full flex justify-between items-end'>
-                    <p className='text-lg font-medium text-slate-500 tracking-[0.01em]'>DHU</p>
-                    <p className={cn("mt-1 font-semibold text-3xl text-pink-600")}>{count}%</p>
+                    <p className='text-xl font-medium text-slate-500 tracking-[0.01em]'>DHU</p>
+                    <p className={cn("mt-1 font-semibold text-3xl text-orange-600")}>{count}%</p>
                 </div>
                 <div className='w-full'>
                     <ProgressBar percentage={count} startColor="#ff800d" endColor="#dc2626" />

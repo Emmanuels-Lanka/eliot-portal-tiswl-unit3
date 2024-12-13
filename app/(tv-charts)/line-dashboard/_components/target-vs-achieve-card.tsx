@@ -34,7 +34,7 @@ const TargetVsAchieveCard = ({
                 <img src='/icons/tv/achieve.gif' alt="efficiency" className={cn("size-[12vh] p-2 pointer-events-none")} />
                 <div className='text-end pr-6'>
                     <p className='text-lg font-medium text-slate-500 tracking-[0.01em]'>Target vs Achieve in pcs</p>
-                    <p className={cn("mt-1 font-semibold text-3xl text-pink-600")}>{count} / {target}</p>
+                    <p className={cn("mt-1 font-semibold text-3xl")}><span className='text-emerald-600'>{count}</span> <span className='text-sky-600'>/ {target}</span></p>
                 </div>
             </div>
             <div className='w-2/3'>

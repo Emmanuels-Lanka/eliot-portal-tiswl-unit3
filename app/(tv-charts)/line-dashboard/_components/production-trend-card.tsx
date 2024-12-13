@@ -137,8 +137,8 @@ const ProductionTrendCard = ({
     }, []);
 
     return (
-        <div className='h-full w-full bg-white p-4 flex flex-col items-start gap-x-2 rounded-xl'>
-            <p className='text-lg font-medium text-slate-500 tracking-[0.01em]'>Production Trend</p>
+        <div className='h-full w-full bg-white p-4 flex flex-col items-start gap-x-2 rounded-xl drop-shadow-sm border'>
+            <p className='text-xl font-medium text-slate-500 tracking-[0.01em]'>Production Trend</p>
             {chartData.length > 0 &&
                 <ProductionTrendLineChart data={chartData} />
             }
