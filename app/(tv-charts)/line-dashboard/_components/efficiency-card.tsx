@@ -88,8 +88,8 @@ const EfficiencyCard = ({
         //     </div>
         // </div>
             <GifAnimatedCard
-                label='Efficiency'
-                value={value ? `${value}%`: "NAN"}
+                label='Efficiency (%)'
+                value={value ? `${value}`: "NAN"}
                 image='/icons/tv/efficiency.gif'
                 color='text-green-600'
                 imgSize='size-[11vh]'
