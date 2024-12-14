@@ -9,6 +9,7 @@ type ReturnDataType = {
     targetWorkingHours: number;
     targetEfficiency: number;
     obbManPowers: number;
+    utilizedManPowers: number;
 }
 
 export async function fetchLineEfficiencyResource(obbSheetId: string): Promise<ReturnDataType | null> {
@@ -22,7 +23,8 @@ export async function fetchLineEfficiencyResource(obbSheetId: string): Promise<R
                 "workingHours", 
                 "targetWorkingHours", 
                 "targetEfficiency", 
-                "obbManPowers"
+                "obbManPowers",
+                "utilizedManPowers"
             FROM 
                 "LineEfficiencyResources"
             WHERE 

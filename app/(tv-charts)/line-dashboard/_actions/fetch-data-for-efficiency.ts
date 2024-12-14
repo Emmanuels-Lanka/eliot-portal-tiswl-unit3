@@ -73,8 +73,7 @@ export async function fetchProductionCount(obbSheetId: string): Promise<number> 
                 AND "qcStatus" = 'pass'
                 AND "timestamp" like ${dateKey};`;
 
-        console.log(data);
-        
+        // console.log(data);
 
         return new Promise((resolve) => resolve(data[0].count));
     } catch (error) {

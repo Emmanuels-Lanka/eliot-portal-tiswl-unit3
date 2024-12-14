@@ -5,6 +5,7 @@ import moment from 'moment-timezone';
 
 import { cn } from '@/lib/utils';
 import { fetchFactoryStartTime, fetchProductionCount, fetchProductionData } from '../_actions/fetch-data-for-efficiency';
+import GifAnimatedCard from './gif-animated-card';
 
 interface EfficiencyCardProps {
     obbSheetId: string;
@@ -36,7 +37,7 @@ const EfficiencyCard = ({
 
             const earnMins = Number(d.count) * Number(smv)
 
-            const Efficiency = Number(((earnMins/availableMinsManpower)*100).toFixed(2))
+            const Efficiency = Number(((earnMins/availableMinsManpower)*100).toFixed(1))
             const count = Number(d.count)
 
             return {
@@ -79,13 +80,21 @@ const EfficiencyCard = ({
     }, [])
 
     return (
-        <div className='h-full w-full bg-white pl-2 pr-4 flex items-center gap-x-2 rounded-xl drop-shadow-sm border'>
-            <img src='/icons/tv/efficiency.gif' alt="efficiency" className={cn("size-[11vh] p-2 pointer-events-none")} />
-            <div className='w-full'>
-                <p className='text-lg font-medium text-slate-500 tracking-[0.01em]'>Efficiency</p>
-                <p className={cn("mt-1 font-semibold text-4xl text-green-600")}>{value ? `${value}%`: "NAN"}</p>
-            </div>
-        </div>
+        // <div className='h-full w-full bg-white pl-2 pr-4 flex items-center gap-x-2 rounded-xl drop-shadow-sm border'>
+        //     <img src='/icons/tv/efficiency.gif' alt="efficiency" className={cn("size-[11vh] p-2 pointer-events-none")} />
+        //     <div className='w-full'>
+        //         <p className='text-lg font-medium text-slate-500 tracking-[0.01em]'>Efficiency</p>
+        //         <p className={cn("mt-1 font-semibold text-4xl text-green-600")}>{value ? `${value}%`: "NAN"}</p>
+        //     </div>
+        // </div>
+            <GifAnimatedCard
+                label='Efficiency'
+                value={value ? `${value}%`: "NAN"}
+                image='/icons/tv/efficiency.gif'
+                color='text-green-600'
+                imgSize='size-[11vh]'
+                textSize='large'
+            />
     )
 }
 

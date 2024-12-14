@@ -46,7 +46,7 @@ const ObbLineTvDashboard = async ({
     }
 
     return (
-        <div className='w-full h-screen'>
+        <div className='w-full h-screen overflow-x-hidden'>
             {/* Dashboard header */}
             <div className='bg-slate-100 px-4 pt-4 flex items-center justify-between'>
                 <div className='flex items-center gap-4'>
@@ -78,15 +78,17 @@ const ObbLineTvDashboard = async ({
                     color='text-pink-600'
                 />
                 <GifAnimatedCard
-                    label='Operator Attendance'
-                    value={attendance.toString()}
+                    label='Attendance'
+                    value={
+                        `${lineEfficiencyResource.utilizedManPowers}/${lineEfficiencyResource.obbManPowers}`
+                    }
                     image='/icons/tv/attendance.gif'
                     color='text-sky-600'
                     imgSize='size-[11vh]'
                     textSize='large'
                 />
                 <GifAnimatedCard
-                    label='Working Hours'
+                    label='Planned Working Hours'
                     value={lineEfficiencyResource.workingHours?.toString() ?? ""}
                     image='/icons/tv/clock.gif'
                     color='text-cyan-600'
