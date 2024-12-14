@@ -399,8 +399,13 @@ const   HmapChart15Compo = ({
         } else {
             if (heatmapData.length > 20) {
                 height = heatmapData.length * 50
-            } else if (heatmapData.length<10) { 
-                height = heatmapData.length * 90
+            } else if (heatmapData.length< 5) { 
+                height = heatmapData.length * 150
+            }else if (heatmapData.length< 10) { 
+                height = heatmapData.length * 125
+            }
+            else if (heatmapData.length< 15) { 
+                height = heatmapData.length * 135
             }
             else { 
                 height = heatmapData.length * 80
