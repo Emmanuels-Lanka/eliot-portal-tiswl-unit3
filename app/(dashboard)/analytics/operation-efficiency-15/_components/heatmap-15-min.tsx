@@ -283,10 +283,21 @@ const   HmapChart15Compo = ({
         }
     }, [heatmapData])
 
+  
     useEffect(() => {
-        handleFetchProductions()
+        const fetchProductions = () => {
+            handleFetchProductions();
+        };
 
-    }, [obbSheetId,date])
+        // Initial fetch
+        fetchProductions();
+
+        // Set up interval to fetch every 5 minutes (300000 milliseconds)
+        const intervalId = setInterval(fetchProductions, 300000);
+
+        // Cleanup function to clear the interval on component unmount
+        return () => clearInterval(intervalId);
+    }, [obbSheetId, date]); 
 
     // useEffect(() => {
      
@@ -402,10 +413,10 @@ const   HmapChart15Compo = ({
             } else if (heatmapData.length< 5) { 
                 height = heatmapData.length * 150
             }else if (heatmapData.length< 10) { 
-                height = heatmapData.length * 125
+                height = heatmapData.length * 100
             }
             else if (heatmapData.length< 15) { 
-                height = heatmapData.length * 135
+                height = heatmapData.length * 90
             }
             else { 
                 height = heatmapData.length * 80
