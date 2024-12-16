@@ -289,13 +289,18 @@ export const SIDEBAR_ROUTES = [
         ]
     },
     {
-        categoryName: "Roaming QC Analytics",
+        categoryName: "Roaming QC",
         routes: [
             {
-                label: "Roaming QC",
+                label: "Roaming QC Analytics",
                 href: "/analytics/roaming-qc",
                 icon: AlignHorizontalDistributeCenter
-            }
+            },
+            {
+                label: "Roaming QC Report",
+                href: "/reports/roaming-qc",
+                icon: FileSpreadsheet
+            },
         ]
     },
 
