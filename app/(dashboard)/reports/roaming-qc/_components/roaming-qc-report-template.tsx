@@ -189,7 +189,7 @@ const RoamingQcReportTemplate: React.FC<RoamingQcReportTemplateProps> = ({ detai
             <Page size="A4" orientation="landscape" style={styles.page}>
                 {/* Header */}
                 <View style={styles.header}>
-                    <Text style={styles.title}>Roaming QC Report</Text>
+                    <Text style={styles.title}>Inline Quality Inspection Report</Text>
                 </View>
 
                 {/* Details Section */}
