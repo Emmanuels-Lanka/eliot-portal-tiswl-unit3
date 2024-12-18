@@ -12,7 +12,8 @@ import { useEffect, useRef, useState } from "react";
 import { getDailyData } from "./actions";
 import SelectObbSheetAndDate from "@/components/dashboard/common/select-style-and-date";
 import { Button } from "@/components/ui/button";
-
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
 interface AnalyticsChartProps {
   obbSheets: {
     id: string;
@@ -163,142 +164,276 @@ const ReportTable = ({ obbSheets }: AnalyticsChartProps) => {
     }
   }, [obbSheetId, date]);
 
-  const handlePrint = () => {
-    const baseUrl = window.location.origin;
-    const printContent = reportRef.current?.innerHTML;
-    let selectedDate = new Date(date);
+  // const handlePrint = () => {
+  //   const baseUrl = window.location.origin;
+  //   const printContent = reportRef.current?.innerHTML;
+  //   let selectedDate = new Date(date);
   
-    // Subtract one day from the selected date
-    selectedDate.setDate(selectedDate.getDate());
+  //   // Subtract one day from the selected date
+  //   selectedDate.setDate(selectedDate.getDate());
   
-    // Format the adjusted date back to a string
-    const formattedDate = selectedDate.toISOString().split('T')[0];
+  //   // Format the adjusted date back to a string
+  //   const formattedDate = selectedDate.toISOString().split('T')[0];
     
-    const htmlContent = `
-      <html>
-        <head>
-          <title>Operator Daily Efficiency Report</title>
-          <style>
-            body {
-              font-family: Arial, sans-serif;
-              margin: 0;
-              padding: 20px;
-            }
-            .container {
-              width: 100%;
-              margin: 0 auto;
-              padding: 20px;
-              box-sizing: border-box;
-            }
-            table {
-              width: 100%;
-              border-collapse: collapse;
-              margin-top: 20px;
-            }
-            th, td {
-              border: 1px solid #ddd;
-              padding: 8px;
-            }
-            th {
-              text-align: center;
-              background-color: gray;
-            }
-            td {
-              text-align: left;
-            }
-            .logo-div {
-              text-align: center;
-            }
-            .logo-div img {
-              width: 170px;
-              height: auto;
-            }
-            .text-center {
-              text-align: center;
-            }
-            .footer-logo img {
-              width: 120px;
-              height: auto;
-            }
-          </style>
-        </head>
-        <body>
-          <div class="logo-div">
-            <img src="${baseUrl}/ha-meem.png" alt="Ha-Meem Logo" style="margin-top:10px;"/>
-            <h5 style="margin-top:10px;">~ Bangladesh ~</h5>
-          </div>
-          <h1 class="text-center">Operator Daily Efficiency Report</h1>
-          <hr />
-          <div>
-            <h5>Factory Name: Apparel Gallery LTD</h5>
-            <h5>Title: Operator Daily Efficiency Report</h5>
-            <h5>Date: ${formattedDate}</h5>
-            <h5>Unit: ${data[0]?.unitname}</h5>
-            <h5>Buyer: ${data[0]?.buyer}</h5>
-            <h5>Style Name: ${data[0]?.style}</h5>
-            <h5>Line Name: ${data[0]?.linename}</h5>
-          </div>
-          ${printContent}
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 50px;">
-            <div>
-              <p><a href="https://rfid-tracker.eliot.global/">https://rfid-tracker.eliot.global/</a></p>
-            </div>
-            <div class="footer-logo">
-              <img src="${baseUrl}/logo.png" alt="Company Footer Logo" />
-            </div>
-          </div>
-        </body>
-      </html>
-    `;
+  //   const htmlContent = `
+  //     <html>
+  //       <head>
+  //         <title>Operator Daily Efficiency Report</title>
+  //         <style>
+  //           body {
+  //             font-family: Arial, sans-serif;
+  //             margin: 0;
+  //             padding: 20px;
+  //           }
+  //           .container {
+  //             width: 100%;
+  //             margin: 0 auto;
+  //             padding: 20px;
+  //             box-sizing: border-box;
+  //           }
+  //           table {
+  //             width: 100%;
+  //             border-collapse: collapse;
+  //             margin-top: 20px;
+  //           }
+  //           th, td {
+  //             border: 1px solid #ddd;
+  //             padding: 8px;
+  //           }
+  //           th {
+  //             text-align: center;
+  //             background-color: gray;
+  //           }
+  //           td {
+  //             text-align: left;
+  //           }
+  //           .logo-div {
+  //             text-align: center;
+  //           }
+  //           .logo-div img {
+  //             width: 170px;
+  //             height: auto;
+  //           }
+  //           .text-center {
+  //             text-align: center;
+  //           }
+  //           .footer-logo img {
+  //             width: 120px;
+  //             height: auto;
+  //           }
+  //         </style>
+  //       </head>
+  //       <body>
+  //         <div class="logo-div">
+  //           <img src="${baseUrl}/ha-meem.png" alt="Ha-Meem Logo" style="margin-top:10px;"/>
+  //           <h5 style="margin-top:10px;">~ Bangladesh ~</h5>
+  //         </div>
+  //         <h1 class="text-center">Operator Daily Efficiency Report</h1>
+  //         <hr />
+  //         <div>
+  //           <h5>Factory Name: Apparel Gallery LTD</h5>
+  //           <h5>Title: Operator Daily Efficiency Report</h5>
+  //           <h5>Date: ${formattedDate}</h5>
+  //           <h5>Unit: ${data[0]?.unitname}</h5>
+  //           <h5>Buyer: ${data[0]?.buyer}</h5>
+  //           <h5>Style Name: ${data[0]?.style}</h5>
+  //           <h5>Line Name: ${data[0]?.linename}</h5>
+  //         </div>
+  //         ${printContent}
+  //         <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 50px;">
+  //           <div>
+  //             <p><a href="https://rfid-tracker.eliot.global/">https://rfid-tracker.eliot.global/</a></p>
+  //           </div>
+  //           <div class="footer-logo">
+  //             <img src="${baseUrl}/logo.png" alt="Company Footer Logo" />
+  //           </div>
+  //         </div>
+  //       </body>
+  //     </html>
+  //   `;
   
-    const blob = new Blob([htmlContent], { type: 'text/html' });
-    const url = URL.createObjectURL(blob);
+  //   const blob = new Blob([htmlContent], { type: 'text/html' });
+  //   const url = URL.createObjectURL(blob);
     
-    const printWindow = window.open(url, '', 'width=800,height=600');
+  //   const printWindow = window.open(url, '', 'width=800,height=600');
     
-    if (printWindow) {
-      printWindow.onload = () => {
-        printWindow.print();
-        URL.revokeObjectURL(url);
-      };
-    } else {
-      console.error("Failed to open print window");
+  //   if (printWindow) {
+  //     printWindow.onload = () => {
+  //       printWindow.print();
+  //       URL.revokeObjectURL(url);
+  //     };
+  //   } else {
+  //     console.error("Failed to open print window");
+  //   }
+  // };
+  
+  // const handleDownloadPDF = async () => {
+  //   if (!reportRef.current || !data.length) return;
+
+  //   try {
+  //     await new Promise(resolve => setTimeout(resolve, 2000));
+  //     const canvas = await html2canvas(reportRef.current, {
+  //       scale: 2,
+  //       logging: false,
+  //       useCORS: true
+  //     } as any);
+
+  //     const imgWidth = 210 -20; // A4 width in mm
+  //     const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      
+  //     const pdf = new jsPDF('p', 'mm', 'a4');
+  //     pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 10, 10, imgWidth, imgHeight);
+      
+  //     const fileName = `Operator_Monthly_Efficiency_Report_${data[0].unitName}_${date}.pdf`;
+  //     pdf.save(fileName);
+  //   } catch (error) {
+  //     console.error('Error generating PDF:', error);
+  //   }
+  // };
+
+  const handleDownloadPDF = async () => {
+    if (!reportRef.current || !data.length) return;
+  
+    try {
+      await new Promise(resolve => setTimeout(resolve, 2000));
+  
+      const canvas = await html2canvas(reportRef.current, {
+        scale: 2,
+        logging: false,
+        useCORS: true,
+      } as any);
+  
+      const imgWidth = 190; // Adjust for margins (A4 width is 210mm, minus 10mm margins on both sides)
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      const pageHeight = pdf.internal.pageSize.getHeight();
+      
+      let position = 0;
+  
+      // Split content into multiple pages if necessary
+      while (position < canvas.height) {
+        const canvasSlice = document.createElement('canvas');
+        canvasSlice.width = canvas.width;
+        canvasSlice.height = Math.min(canvas.height - position, (pageHeight * canvas.width) / imgWidth);
+  
+        const ctx = canvasSlice.getContext('2d');
+        if (ctx) {
+          ctx.drawImage(
+            canvas,
+            0,
+            position,
+            canvas.width,
+            canvasSlice.height,
+            0,
+            0,
+            canvas.width,
+            canvasSlice.height
+          );
+        }
+  
+        const imgData = canvasSlice.toDataURL('image/png');
+        pdf.addImage(imgData, 'PNG', 10, 10, imgWidth, (canvasSlice.height * imgWidth) / canvas.width);
+  
+        position += canvasSlice.height;
+  
+        if (position < canvas.height) {
+          pdf.addPage(); // Add new page
+        }
+      }
+  
+      const fileName = `Operator Daily Efficiency Report_${data[0]?.linename}_${date}.pdf`;
+      pdf.save(fileName);
+    } catch (error) {
+      console.error('Error generating PDF:', error);
     }
   };
-   
+  
+
   return (
     <div>
       <SelectObbSheetAndDate obbSheets={obbSheets} handleSubmit={handleFetchProductions} />
       {data.length > 0 && (
-        <Button className="mt-5" onClick={handlePrint}>
+        <Button className="mt-5" onClick={handleDownloadPDF}>
           Download as PDF
         </Button>
       )}
-      <div ref={reportRef} className="mt-5 mb-10">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Seq No</TableHead>
-              <TableHead>Emp ID</TableHead>
-              <TableHead>Operator Name</TableHead>
-              <TableHead>100% SMV Target/Hr</TableHead>
-              <TableHead>Efficiency(%)</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {data.map((d, rid) => (
-              <TableRow key={rid}>
-                <TableCell>{d.seqNo}</TableCell>
-                <TableCell>{d.employeeId}</TableCell>
-                <TableCell>{d.operatorname}</TableCell>
-                <TableCell>{d.smv ? (60 / d.smv).toFixed(2) : 0}</TableCell>
 
-                <TableCell>{d.efficiency}%</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </div>
+
+     { (obbSheetId && date) &&
+     
+     
+     <div ref={reportRef} className="mt-5 mb-10">
+
+      <div className="text-center">
+          <img src="/ha-meem.png" alt="Ha-Meem Logo" className="mx-auto w-[120px] h-auto mt-[10px]" />
+          <h5 className="mt-[10px]">~ Bangladesh ~</h5>
+          <h1 className="text-center">Operator Daily Efficiency Report</h1>
+          <hr className="my-4" />
+        </div>
+
+
+        
+        
+        <div className="flex justify-around mt-5 text-sm mb-5">
+          <div className="flex-1 mr-[10px] leading-[1.5]">
+            <h5 className="m-0 font-semibold">Factory Name: Apparel Gallery LTD</h5>
+            {/* <h5 className="m-0 font-semibold">Operator: {data[0]?.name}</h5> */}
+            {/* <h5 className="m-0 font-semibold">Employee Id: {data[0]?.employeeId}</h5> */}
+            <h5 className="m-0 font-semibold">Unit: {data[0]?.unitname}</h5>
+
+            <h5 className="font-semibold">Line Name: {data[0]?.linename}</h5>
+            {/* <h5 className="m-0 font-semibold">Report Starting Date: {startdate}</h5>
+            <h5 className="m-0 font-semibold">Report Ending Date: {enddate}</h5> */}
+          </div>
+          <div className="flex-1 justify-around ml-[10px] leading-[1.5]">
+            <h5 className="m-0 font-semibold">Buyer: {data[0]?.buyer}</h5>
+            <h5 className="m-0 font-semibold">Style Name: {data[0]?.style}</h5>
+            {/* <h5 className="m-0 font-semibold">Line Name: {obb?.[0]?.line}</h5> */}
+            <h5 className="m-0 font-semibold">Generated Date: {date}</h5>
+          </div>
+        </div>
+
+
+        <Table className="text-sm min-w-full border-collapse border border-gray-300">
+  <TableHeader>
+    <TableRow className="h-8"> {/* Reduce row height */}
+      <TableHead className="px-2 py-1">Seq No</TableHead> {/* Reduce padding */}
+      <TableHead className="px-2 py-1">Emp ID</TableHead>
+      <TableHead className="px-2 py-1">Operator Name</TableHead>
+      <TableHead className="px-2 py-1">100% SMV Target/Hr</TableHead>
+      <TableHead className="px-2 py-1">Efficiency(%)</TableHead>
+    </TableRow>
+  </TableHeader>
+  <TableBody>
+    {data.map((d, rid) => (
+      <TableRow key={rid} className="h-8"> {/* Reduce row height */}
+        <TableCell className="px-2 py-2">{d.seqNo}</TableCell> {/* Reduce padding */}
+        <TableCell className="px-2 py-2">{d.employeeId}</TableCell>
+        <TableCell className="px-2 py-2">{d.operatorname}</TableCell>
+        <TableCell className="px-2 py-2 text-center">
+          {d.smv ? (60 / d.smv).toFixed(2) : 0}
+        </TableCell>
+        <TableCell className="px-2 py-2 text-center">{d.efficiency}%</TableCell>
+      </TableRow>
+    ))}
+  </TableBody>
+</Table>
+
+        <div className="flex justify-between items-center mt-12">
+  <div>
+    <p>
+      <a href="https://www.portal.eliot.global/" className="text-blue-500 hover:underline">
+        https://www.portal.eliot.global/
+      </a>
+    </p>
+  </div>
+  <div className="footer-logo">
+    <img src="/eliot-logo.png" alt="Company Footer Logo" className="w-[120px] h-auto" />
+  </div>
+</div>
+
+
+      </div>}
     </div>
   );
 };
