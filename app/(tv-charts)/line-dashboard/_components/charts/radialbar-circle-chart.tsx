@@ -72,7 +72,7 @@ const RadialbarCircleChart = ({
     const series = [percentage];
 
     return (
-        <div className="flex flex-col items-center justify-center p-4 text-white rounded-lg">
+        <div className="w-full flex flex-col items-center justify-center text-white rounded-lg">
             <div className="w-full">
                 <Chart options={options} series={series} type="radialBar" height={380} />
             </div>

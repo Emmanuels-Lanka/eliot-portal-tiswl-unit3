@@ -22,7 +22,8 @@ export async function fetchPassProductionData(obbSheetId: string): Promise<Produ
         const sql = neon(process.env.RFID_DATABASE_URL || "");
 
         const today = moment().tz('Asia/Dhaka').format("YYYY-MM-DD");
-        const dateKey = `${"2024-12-12"}%`;
+        // console.log("TODAY: " + today);
+        const dateKey = `${today}%`;
 
         const productDefects = await sql`
             SELECT *
@@ -35,6 +36,8 @@ export async function fetchPassProductionData(obbSheetId: string): Promise<Produ
                 AND part = 'line-end'
             ORDER BY 
                 "createdAt" ASC;`;
+
+        // console.log("PC:", productDefects.length);
 
         return new Promise((resolve) => resolve(productDefects as ProductionDataType));
     } catch (error) {

@@ -47,12 +47,12 @@ const DhuCard = ({
     return (
         <div className='h-full w-full bg-white py-4 pl-2 pr-6 flex items-center gap-x-2 rounded-xl drop-shadow-sm border'>
             <img src='/icons/tv/dhu.gif' alt="efficiency" className={cn("size-[11vh] p-3 pointer-events-none")} />
-            <div className='w-full flex flex-col items-start'>
+            <div className='mt-4 w-full flex flex-col items-start'>
                 <div className='w-full flex justify-between items-end'>
-                    <p className='text-xl font-medium text-slate-500 tracking-[0.01em]'>DHU</p>
-                    <p className={cn("mt-1 font-semibold text-3xl text-orange-600")}>{count}%</p>
+                    <p className='text-2xl font-medium text-slate-500 tracking-[0.01em]'>Line DHU</p>
+                    <p className={cn("mt-1 font-semibold text-4xl text-orange-600")}>{count}%</p>
                 </div>
-                <div className='w-full'>
+                <div className='w-full mt-2'>
                     <ProgressBar percentage={count} startColor="#ff800d" endColor="#dc2626" />
                 </div>
             </div>

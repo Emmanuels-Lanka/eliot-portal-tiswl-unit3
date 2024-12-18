@@ -78,35 +78,28 @@ const ProductionTrendCard = ({
     ) {
         const groupedProduction: { [hour: string]: number } = {};
         const startTime = parse(workStartTime, "yyyy-MM-dd HH:mm:ss", new Date());
-
         let cumulativeProduction = 0;
-
-        for (let i = 0; i < workingHours + 1; i++) {
+    
+        for (let i = 0; i < workingHours; i++) {
             const currentHour = addHours(startTime, i);
-
-            // Skip 13:00 hour group
-            if (format(currentHour, "HH:mm") === "12:00") continue;
-
             const nextHour = addHours(currentHour, 1);
-
-            groupedProduction[format(currentHour, "HH:mm")] = cumulativeProduction;
-
+    
+            // Skip 13:00 hour group
+            if (format(currentHour, "HH:mm") === "13:00") continue;
+    
             // Accumulate production for the current hour
-            productionData.forEach((data) => {
+            const productionCount = productionData.filter((data) => {
                 const productionTime = parse(data.timestamp, "yyyy-MM-dd HH:mm:ss", new Date());
-                if (
-                    productionTime >= currentHour &&
-                    productionTime < (format(currentHour, "HH:mm") === "12:00" ? addHours(nextHour, 2) : nextHour)
-                ) {
-                    cumulativeProduction++;
-                }
-            });
-
-            groupedProduction[format(nextHour, "HH:mm")] = cumulativeProduction;
+                return productionTime >= currentHour && productionTime < nextHour;
+            }).length;
+    
+            cumulativeProduction += productionCount;
+    
+            groupedProduction[format(currentHour, "HH:mm")] = cumulativeProduction;
         }
-
+    
         return groupedProduction;
-    }
+    }    
 
     // Combine target and production data
     function generateTrendChartData(

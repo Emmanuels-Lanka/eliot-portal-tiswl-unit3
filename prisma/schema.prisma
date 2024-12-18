@@ -371,6 +371,7 @@ model RoamingQC {
   createdAt      DateTime      @default(now())
   defects        String[]      @default([])
   inspectedQty   String
+  inspectedBy    String?       @default("Test RQC")
   machineId      String
   colorStatus    String
   sewingMachine  SewingMachine @relation(fields: [machineId], references: [machineId], onDelete: Cascade)
