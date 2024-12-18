@@ -298,7 +298,7 @@ const ReportTable = ({ obbSheets }: AnalyticsChartProps) => {
       await new Promise(resolve => setTimeout(resolve, 2000));
   
       const canvas = await html2canvas(reportRef.current, {
-        scale: 2,
+        scale: 1,
         logging: false,
         useCORS: true,
       } as any);
@@ -331,7 +331,8 @@ const ReportTable = ({ obbSheets }: AnalyticsChartProps) => {
           );
         }
   
-        const imgData = canvasSlice.toDataURL('image/png');
+        const imgData = canvasSlice.toDataURL('image/png', 0.5);
+
         pdf.addImage(imgData, 'PNG', 10, 10, imgWidth, (canvasSlice.height * imgWidth) / canvas.width);
   
         position += canvasSlice.height;
@@ -341,7 +342,7 @@ const ReportTable = ({ obbSheets }: AnalyticsChartProps) => {
         }
       }
   
-      const fileName = `Operator Daily Efficiency Report_${data[0]?.linename}_${date}.pdf`;
+      const fileName = `Line Efficiency Report_${data[0]?.linename}_${date}.pdf`;
       pdf.save(fileName);
     } catch (error) {
       console.error('Error generating PDF:', error);
@@ -370,26 +371,18 @@ const ReportTable = ({ obbSheets }: AnalyticsChartProps) => {
           <h1 className="text-center">Operator Daily Efficiency Report</h1>
           <hr className="my-4" />
         </div>
-
-
-        
-        
         <div className="flex justify-around mt-5 text-sm mb-5">
           <div className="flex-1 mr-[10px] leading-[1.5]">
             <h5 className="m-0 font-semibold">Factory Name: Apparel Gallery LTD</h5>
-            {/* <h5 className="m-0 font-semibold">Operator: {data[0]?.name}</h5> */}
-            {/* <h5 className="m-0 font-semibold">Employee Id: {data[0]?.employeeId}</h5> */}
+      
             <h5 className="m-0 font-semibold">Unit: {data[0]?.unitname}</h5>
 
             <h5 className="font-semibold">Line Name: {data[0]?.linename}</h5>
-            {/* <h5 className="m-0 font-semibold">Report Starting Date: {startdate}</h5>
-            <h5 className="m-0 font-semibold">Report Ending Date: {enddate}</h5> */}
           </div>
           <div className="flex-1 justify-around ml-[10px] leading-[1.5]">
             <h5 className="m-0 font-semibold">Buyer: {data[0]?.buyer}</h5>
             <h5 className="m-0 font-semibold">Style Name: {data[0]?.style}</h5>
-            {/* <h5 className="m-0 font-semibold">Line Name: {obb?.[0]?.line}</h5> */}
-            <h5 className="m-0 font-semibold">Generated Date: {date}</h5>
+            <h5 className="m-0 font-semibold"> Date: {date}</h5>
           </div>
         </div>
 
