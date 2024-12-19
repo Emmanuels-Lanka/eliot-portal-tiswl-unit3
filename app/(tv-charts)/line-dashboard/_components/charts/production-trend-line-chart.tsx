@@ -5,6 +5,8 @@ import { Area, AreaChart, CartesianGrid, LabelList, ReferenceLine, XAxis, YAxis 
 import {
     ChartConfig,
     ChartContainer,
+    ChartLegend,
+    ChartLegendContent,
     ChartTooltip,
     ChartTooltipContent,
 } from "@/components/ui/chart";
@@ -52,14 +54,16 @@ export function ProductionTrendLineChart({ data }: ProductionTrendLineChartProps
                 />
                 <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
                 <ReferenceLine
-                    x="12:00"
-                    stroke="gray"
+                    x="13:00"
+                    stroke="red"
+                    strokeWidth={1.5}
                     strokeDasharray="5 5"
                     label={{
                         value: "Lunch Break",
                         position: "top",
-                        fill: "gray",
-                        fontSize: 12,
+                        fill: "red",
+                        fontSize: 14,
+                        letterSpacing: 0.4
                     }}
                 />
                 <defs>
@@ -128,6 +132,7 @@ export function ProductionTrendLineChart({ data }: ProductionTrendLineChartProps
                         fontSize={12}
                     />
                 </Area>
+                <ChartLegend content={<ChartLegendContent />} />
             </AreaChart>
         </ChartContainer>
     );

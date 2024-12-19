@@ -46,7 +46,7 @@ const ObbLineTvDashboard = async ({
     }
 
     return (
-        <div className='w-full h-screen overflow-x-hidden'>
+        <div className='w-full overflow-x-hidden'>
             {/* Dashboard header */}
             <div className='bg-slate-100 px-4 pt-4 flex items-center justify-between'>
                 <div className='flex items-center gap-4'>
@@ -64,7 +64,7 @@ const ObbLineTvDashboard = async ({
             </div>
 
             {/* Dashboard content */}
-            <div className="bg-slate-100 p-4 h-full grid grid-cols-6 grid-rows-5 gap-6">
+            <div className="h-screen bg-slate-100 p-4 h-full grid grid-cols-6 grid-rows-5 gap-6">
                 <GifAnimatedCard
                     label='Line Chief'
                     value={obbSheet.lineChief?.name as string}
@@ -116,6 +116,7 @@ const ObbLineTvDashboard = async ({
                         obbSheetId={obbSheet.id}
                         productionTarget={lineEfficiencyResource.productionTarget}
                         workingHours={lineEfficiencyResource.workingHours}
+                        factoryStartTime={obbSheet.factoryStartTime}
                     />
                 </div>
                 <div className="col-span-2 row-span-2 col-start-5">

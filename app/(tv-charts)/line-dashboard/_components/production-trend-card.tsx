@@ -1,5 +1,6 @@
 "use client"
 
+import moment from 'moment-timezone';
 import { useEffect, useState } from 'react';
 import { addHours, format, parse } from "date-fns";
 
@@ -11,6 +12,7 @@ interface ProductionTrendCardProps {
     obbSheetId: string;
     productionTarget: number;
     workingHours: number;
+    factoryStartTime: string | null;
 }
 
 type ProductionDataType = {
@@ -37,57 +39,41 @@ const ProductionTrendCard = ({
     obbSheetId,
     productionTarget,
     workingHours,
+    factoryStartTime
 }: ProductionTrendCardProps) => {
+    if (!factoryStartTime) {
+        return (
+            <div className='bg-white h-full border drop-shadow-sm rounded-xl flex justify-center items-center'>
+                <p className='text-xl text-red-600'>Please update the Factory Start time for this OBB</p>
+            </div>
+        )
+    }
+
+    const today = moment().tz('Asia/Dhaka').format("YYYY-MM-DD");
+    const workStartTime = `${today} ${factoryStartTime}:00`;
+
     const [chartData, setChartData] = useState<ChartDataType>([]);
-    const workStartTime = "2024-12-12 08:00:00";
 
-    // Helper function to generate hourly targets
-    function generateHourlyTargets(
-        dayTarget: number,
+    // Generate hourly targets
+    function processProductionChartData(
+        productionData: ProductionDataType,
+        workStartTime: string,
         workingHours: number,
-        workStartTime: string
-    ) {
-        const hourlyTarget = dayTarget / workingHours;
-        const targets: { hour: string; cumulativeTarget: number }[] = [];
-
+        dayTarget: number
+    ): ChartDataType {
+        const hourlyTarget = dayTarget / workingHours; // Target per hour
         const startTime = parse(workStartTime, "yyyy-MM-dd HH:mm:ss", new Date());
-
+    
         let cumulativeTarget = 0;
+        let cumulativeProduction = 0;
+        const chartData: ChartDataType = [];
+    
         for (let i = 0; i < workingHours + 1; i++) {
             const currentHour = addHours(startTime, i);
             const nextHour = addHours(currentHour, 1);
-
-            // Skip 13:00 hour group
-            if (format(currentHour, "HH:mm") === "12:00") continue;
-
-            cumulativeTarget = Math.min(cumulativeTarget + hourlyTarget, dayTarget);
-            targets.push({
-                hour: format(nextHour, "HH:mm"),
-                cumulativeTarget: Math.round(cumulativeTarget),
-            });
-        }
-
-        return targets;
-    }
-
-    // Helper function to group production data by hour
-    function groupProductionByHour(
-        productionData: ProductionDataType,
-        workStartTime: string,
-        workingHours: number
-    ) {
-        const groupedProduction: { [hour: string]: number } = {};
-        const startTime = parse(workStartTime, "yyyy-MM-dd HH:mm:ss", new Date());
-        let cumulativeProduction = 0;
+            const hourLabel = format(nextHour, "HH:mm");
     
-        for (let i = 0; i < workingHours; i++) {
-            const currentHour = addHours(startTime, i);
-            const nextHour = addHours(currentHour, 1);
-    
-            // Skip 13:00 hour group
-            if (format(currentHour, "HH:mm") === "13:00") continue;
-    
-            // Accumulate production for the current hour
+            // Calculate production for the current hour group
             const productionCount = productionData.filter((data) => {
                 const productionTime = parse(data.timestamp, "yyyy-MM-dd HH:mm:ss", new Date());
                 return productionTime >= currentHour && productionTime < nextHour;
@@ -95,36 +81,36 @@ const ProductionTrendCard = ({
     
             cumulativeProduction += productionCount;
     
-            groupedProduction[format(currentHour, "HH:mm")] = cumulativeProduction;
+            // Handle lunch hour logic
+            if (format(currentHour, "HH:mm") === "13:00") {
+                chartData.push({
+                    hour: hourLabel,
+                    target: cumulativeTarget, // No target increment during lunch hour
+                    production: cumulativeProduction,
+                });
+                continue;
+            }
+    
+            // Accumulate target for other hours
+            cumulativeTarget = Math.min(cumulativeTarget + hourlyTarget, dayTarget);
+    
+            chartData.push({
+                hour: hourLabel,
+                target: Math.round(cumulativeTarget),
+                production: cumulativeProduction,
+            });
         }
     
-        return groupedProduction;
-    }    
-
-    // Combine target and production data
-    function generateTrendChartData(
-        dayTarget: number,
-        workingHours: number,
-        workStartTime: string,
-        productionData: ProductionDataType
-    ) {
-        const hourlyTargets = generateHourlyTargets(dayTarget, workingHours, workStartTime);
-        const productionGrouped = groupProductionByHour(productionData, workStartTime, workingHours);
-
-        return hourlyTargets.map((target) => ({
-            hour: target.hour,
-            target: target.cumulativeTarget,
-            production: productionGrouped[target.hour] || 0,
-        }));
+        return chartData;
     }
 
     useEffect(() => {
         (async () => {
             const productionData = await fetchPassProductionData(obbSheetId);
-            console.log("RESSSS", productionData);
+            // console.log("RESSSS", productionData);
 
-            const trendData = generateTrendChartData(productionTarget, workingHours, workStartTime, productionData);
-            console.log(trendData);
+            const trendData = processProductionChartData(productionData, workStartTime, workingHours, productionTarget);
+            // console.log(trendData);
             setChartData(trendData);
         })();
     }, []);

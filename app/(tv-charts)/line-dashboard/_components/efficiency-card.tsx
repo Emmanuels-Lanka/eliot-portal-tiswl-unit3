@@ -64,7 +64,7 @@ const EfficiencyCard = ({
         // console.log("startTimeData:", startTimeData)
         
         const productionData = await fetchProductionData(obbSheetId);
-        // console.log("productionData:", productionData);
+        console.log("productionData:", productionData);
 
         // const count = await fetchProductionCount(obbSheetId);
         // console.log("count:", count)
