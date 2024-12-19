@@ -5,6 +5,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { getDailyData, getDefects, getDHUData, inspaetfetch } from "./actions";
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
 
 
 interface AnalyticsChartProps {
@@ -320,20 +322,118 @@ const DhuReport = ({ obbSheets }: AnalyticsChartProps) => {
       console.error("Failed to open print window");
     }
   };
+  
+    
+  const handleDownloadPDF = async () => {
+    if (!reportRef.current || !data1.length) return;
+  
+    try {
+      await new Promise(resolve => setTimeout(resolve, 2000));
+  
+      const canvas = await html2canvas(reportRef.current, {
+        scale: 1,
+        logging: false,
+        useCORS: true,
+      } as any);
+  
+      const imgWidth = 190; // Adjust for margins (A4 width is 210mm, minus 10mm margins on both sides)
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      const pageHeight = pdf.internal.pageSize.getHeight();
+      
+      let position = 0;
+  
+      // Split content into multiple pages if necessary
+      while (position < canvas.height) {
+        const canvasSlice = document.createElement('canvas');
+        canvasSlice.width = canvas.width;
+        canvasSlice.height = Math.min(canvas.height - position, (pageHeight * canvas.width) / imgWidth);
+  
+        const ctx = canvasSlice.getContext('2d');
+        if (ctx) {
+          ctx.drawImage(
+            canvas,
+            0,
+            position,
+            canvas.width,
+            canvasSlice.height,
+            0,
+            0,
+            canvas.width,
+            canvasSlice.height
+          );
+        }
+  
+        const imgData = canvasSlice.toDataURL('image/png', 0.5);
+        pdf.addImage(imgData, 'PNG', 10, 10, imgWidth, (canvasSlice.height * imgWidth) / canvas.width);
+  
+        position += canvasSlice.height;
+  
+        if (position < canvas.height) {
+          pdf.addPage(); // Add new page
+        }
+      }
+  
+      const fileName = `Operator DHU Report_${data1[0]?.linename}_${dates}.pdf`;
+      pdf.save(fileName);
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+    }
+  };
 
-  return (
-    <>
-      <SelectObbSheetAndDate
+
+    return(
+   <>
+   <SelectObbSheetAndDate
         obbSheets={obbSheets}
         handleSubmit={handleFetchProductions}
       />
-      {data.length > 0 ? (
-        <Button className="mt-5" onClick={handlePrint}>Print</Button>
-      ) : (
+       {data.length>0?(
+ <Button className="mt-5" onClick={handleDownloadPDF}>Print</Button>
+      ):(
         <></>
       )
-      }
+    }
+
+
+
+
+      { (obbSheetId && date) &&
+      
       <div ref={reportRef} className="container mt-5 mb-10">
+
+        <div className="text-center">
+    <img src="/ha-meem.png" alt="Ha-Meem Logo" className="mx-auto w-[120px] h-auto mt-[10px]" />
+    <h5 className="mt-[10px]">~ Bangladesh ~</h5>
+    <h1 className="text-center">Operator DHU Report</h1>
+    <hr className="my-4" />
+  </div>
+
+
+  {/* <h5>Date: ${formattedDate}</h5>
+            <h5>Unit: ${data1[0]?.unitname || ''}</h5>
+            <h5>Style Name: ${data1[0]?.style || ''}</h5>
+            <h5>Line Name: ${data1[0]?.linename || ''}</h5>
+          </div> */}
+
+  <div className="flex justify-around mt-5 text-sm mb-5">
+    <div className="flex-1 mr-[10px] leading-[1.5]">
+      <h5 className="m-0 font-semibold">Factory Name: Apparel Gallery LTD</h5>
+
+      <h5 className="m-0 font-semibold">Unit: {data1[0]?.unitname}</h5>
+
+      <h5 className="font-semibold">Line Name: {data1[0]?.linename}</h5>
+    </div>
+    <div className="flex-1 justify-around ml-[10px] leading-[1.5]">
+      {/* <h5 className="m-0 font-semibold">Buyer: {obbData[0]?.buyer}</h5> */}
+      <h5 className="m-0 font-semibold">Style Name: {data1[0]?.style}</h5>
+      <h5 className="m-0 font-semibold"> Date: {dates}</h5>
+    </div>
+  </div>
+
+
+
+
         <Table>
           <TableHeader>
             <TableRow>
@@ -349,20 +449,33 @@ const DhuReport = ({ obbSheets }: AnalyticsChartProps) => {
           <TableBody>
             {combined.map((d, rid) => (
               <TableRow key={rid}>
-                <TableCell>{d.employeeId}</TableCell>
-                <TableCell>{d.name}</TableCell>
-                <TableCell>{d.operationname}</TableCell>
-                <TableCell>{d.machineid}</TableCell>
-                <TableCell>{d.inspectcount}</TableCell>
-                <TableCell>{d.defectcount}</TableCell>
-                <TableCell>{((d.defectcount/d.inspectcount)*100).toFixed(2)}</TableCell>
+                <TableCell className="px-2 py-2">{d.employeeId}</TableCell>
+                <TableCell className="px-2 py-2">{d.name}</TableCell>
+                <TableCell className="px-2 py-2">{d.operationname}</TableCell>
+                <TableCell className="px-2 py-2">{d.machineid}</TableCell>
+                <TableCell className="px-2 py-2">{d.inspectcount}</TableCell>
+                <TableCell className="px-2 py-2">{d.defectcount}</TableCell>
+                <TableCell className="px-2 py-2">{d.count.toFixed(2)}</TableCell>
+                              
               </TableRow>
             ))}
           </TableBody>
         </Table>
-      </div>
-    </>
-  )
+        <div className="flex justify-between items-center mt-12">
+  <div>
+    <p>
+      <a href="https://www.portal.eliot.global/" className="text-blue-500 hover:underline">
+        https://www.portal.eliot.global/
+      </a>
+    </p>
+  </div>
+  <div className="footer-logo">
+    <img src="/eliot-logo.png" alt="Company Footer Logo" className="w-[120px] h-auto" />
+  </div>
+</div>
+      </div>}
+   </>
+    )
 }
 
 export default DhuReport
