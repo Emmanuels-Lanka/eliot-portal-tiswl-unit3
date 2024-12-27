@@ -29,6 +29,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+import SelectBundleStyles from "../common/select-bundle-styles";
 
 interface CreateObbSheetFormProps {
     units: {
@@ -250,7 +251,7 @@ const CreateObbSheetForm = ({
             try {
                 const response = await axios.get(`/api/obb-sheet?obbSheetId=${obbSheetId}`);
 
-                console.log(response.data);
+                // console.log(response.data);
             } catch (error) {
 
                 if (axios.isAxiosError(error)) {
@@ -663,10 +664,16 @@ const CreateObbSheetForm = ({
                                             Style
                                         </FormLabel>
                                         <FormControl>
-                                            <Input
+                                            {/* <Input
                                                 disabled={isSubmitting}
                                                 placeholder="Enter the style"
                                                 {...field}
+                                            /> */}
+                                            <SelectBundleStyles 
+                                                onChange={(value) => {
+                                                    // console.log("Selected style:", value);
+                                                    field.onChange(value);
+                                                }}
                                             />
                                         </FormControl>
                                         <FormMessage />

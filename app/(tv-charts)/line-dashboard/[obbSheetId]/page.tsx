@@ -64,7 +64,7 @@ const ObbLineTvDashboard = async ({
             </div>
 
             {/* Dashboard content */}
-            <div className="h-screen bg-slate-100 p-4 h-full grid grid-cols-6 grid-rows-5 gap-6">
+            <div className="h-screen bg-slate-100 p-4 grid grid-cols-6 grid-rows-5 gap-6">
                 <GifAnimatedCard
                     label='Line Chief'
                     value={obbSheet.lineChief?.name as string}
