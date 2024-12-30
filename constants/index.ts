@@ -88,7 +88,7 @@ export const MACHINE_BRANDS = [
 
 export const SIDEBAR_ROUTES = [
     {
-        categoryName: null,
+        categoryName: "Dashboard",
         routes: [
             {
                 label: "Dashboard",
@@ -305,7 +305,7 @@ export const SIDEBAR_ROUTES = [
     },
 
     {
-        categoryName: null,
+        categoryName: "Production Lines",
         routes: [
             {
                 label: "Add Production Lines",
@@ -497,6 +497,11 @@ export const HEADER_INFO = [
         href: "/analytics/machine-type",
         icon: BarChart3
     },
+     {
+                label: "Roaming QC",
+                href: "/analytics/roaming-qc",
+                icon: AlignHorizontalDistributeCenter
+            },
     {
         label: "Machine Summary",
         href: "/analytics/machine-summary",
@@ -507,11 +512,26 @@ export const HEADER_INFO = [
         href: "/sewing-operators/create-new",
         icon: UserRoundPlus
     },
+     {
+                label: "Operator DHU Report",
+                href: "/analytics/operator-dhu",
+                icon: BarChartHorizontal
+            },
     {
         label: "Manage Sewing Operators",
         href: "/sewing-operators",
         icon: UserRoundCog
     },
+     {
+                label: "User Credentials",
+                href: "/analytics/qr-generator",
+                icon: QrCode
+            },
+            {
+                label: "Sewing Machine Details",
+                href: "/analytics/sm-qr-generator",
+                icon: QrCode
+            },
     {
         label: "Add Factory Staff",
         href: "/factory-staffs/create-new",
@@ -532,6 +552,10 @@ export const HEADER_INFO = [
         href: "/portal-accounts",
         icon: UserRoundCog
     },
+    {
+    label: "Monthly Efficiency Report",
+                href: "/analytics/operator-report",
+                icon: Table},
     {
         label: "Manage Operations",
         href: "/operations",
