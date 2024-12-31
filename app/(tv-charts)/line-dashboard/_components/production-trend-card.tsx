@@ -41,6 +41,20 @@ const ProductionTrendCard = ({
     workingHours,
     factoryStartTime
 }: ProductionTrendCardProps) => {
+
+    const [chartData, setChartData] = useState<ChartDataType>([]);
+
+    useEffect(() => {
+        (async () => {
+            const productionData = await fetchPassProductionData(obbSheetId);
+            // console.log("RESSSS", productionData);
+
+            const trendData = processProductionChartData(productionData, workStartTime, workingHours, productionTarget);
+            // console.log(trendData);
+            setChartData(trendData);
+        })();
+    }, []);
+
     if (!factoryStartTime) {
         return (
             <div className='bg-white h-full border drop-shadow-sm rounded-xl flex justify-center items-center'>
@@ -52,7 +66,6 @@ const ProductionTrendCard = ({
     const today = moment().tz('Asia/Dhaka').format("YYYY-MM-DD");
     const workStartTime = `${today} ${factoryStartTime}:00`;
 
-    const [chartData, setChartData] = useState<ChartDataType>([]);
 
     // Generate hourly targets
     function processProductionChartData(
@@ -104,16 +117,7 @@ const ProductionTrendCard = ({
         return chartData;
     }
 
-    useEffect(() => {
-        (async () => {
-            const productionData = await fetchPassProductionData(obbSheetId);
-            // console.log("RESSSS", productionData);
-
-            const trendData = processProductionChartData(productionData, workStartTime, workingHours, productionTarget);
-            // console.log(trendData);
-            setChartData(trendData);
-        })();
-    }, []);
+    
 
     return (
         <div className='h-full w-full bg-white p-4 flex flex-col items-start gap-x-2 rounded-xl drop-shadow-sm border'>
