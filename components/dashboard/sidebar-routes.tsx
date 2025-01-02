@@ -39,7 +39,8 @@ const SidebarRoutes = ({ role }: { role: string }) => {
                     <div className={cn(
                         "flex items-center justify-between px-6 py-3 text-slate-200/80 hover:text-slate-200 hover:bg-white/5 transition cursor-pointer",
                     )}>
-                        <span className="text-sm font-semibold">
+                        <span className="text-sm font-semibold flex">
+                        {category.icon && <category.icon className="w-5 h-5 mr-2 justify-center items-center" />}
                             {category.categoryName}
                         </span>
                         <ChevronDown className="w-4 h-4 transition-transform group-hover:rotate-180 duration-1000" />
