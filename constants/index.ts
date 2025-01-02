@@ -24,7 +24,13 @@ import {
     UserRoundPlus,
     LineChart,
     LocateFixed,
-    QrCode
+    QrCode,
+    UserRound,
+    QrCodeIcon,
+    User2,
+    UserX2,
+    LucideUserCheck2,
+    Server
 } from "lucide-react";
 
 export const ROAMING_QC_DEFECTS = [
@@ -88,7 +94,8 @@ export const MACHINE_BRANDS = [
 
 export const SIDEBAR_ROUTES = [
     {
-        categoryName: null,
+        categoryName: "Dashboard",
+        icon:LayoutDashboard,
         routes: [
             {
                 label: "Dashboard",
@@ -99,6 +106,7 @@ export const SIDEBAR_ROUTES = [
     },
     {
         categoryName: "Live Operator Production Analytics",
+        icon: BarChartHorizontal,
         routes: [
             // {
             //     label: "Hourly Achievement",
@@ -142,6 +150,7 @@ export const SIDEBAR_ROUTES = [
     },
     {
         categoryName: "SMV Analytics",
+        icon: BarChart3,
         routes: [
             {
                 label: "Cycle Time Analysis",
@@ -162,6 +171,7 @@ export const SIDEBAR_ROUTES = [
     },
     {
         categoryName: "Operation Efficiency Analytics",
+        icon: LineChart  ,
         routes: [
             {
                 label: "Operation Efficiency (60min)",
@@ -195,6 +205,7 @@ export const SIDEBAR_ROUTES = [
     },
     {
         categoryName: "Operator Efficiency Analytics",
+        icon: BarChartHorizontal,
         routes: [
             {
                 label: "Operator Efficiency (60min)",
@@ -220,6 +231,7 @@ export const SIDEBAR_ROUTES = [
     },
     {
         categoryName: "Records",
+        icon: Table,
         routes: [
 
             {
@@ -237,6 +249,7 @@ export const SIDEBAR_ROUTES = [
     },
     {
         categoryName: "Reports",
+        icon: Table,
         routes: [
 
             {
@@ -260,6 +273,7 @@ export const SIDEBAR_ROUTES = [
     },
     {
         categoryName: "DHU Status",
+        icon: BarChartHorizontal,
         routes: [
             // {
             //     label: "Real-time DHU",
@@ -290,6 +304,7 @@ export const SIDEBAR_ROUTES = [
     },
     {
         categoryName: "Roaming QC",
+        icon: FileSpreadsheet,
         routes: [
             {
                 label: "Roaming QC Analytics",
@@ -305,7 +320,8 @@ export const SIDEBAR_ROUTES = [
     },
 
     {
-        categoryName: null,
+        categoryName: "Production Lines",
+        icon: AlignHorizontalDistributeCenter,
         routes: [
             {
                 label: "Add Production Lines",
@@ -316,6 +332,7 @@ export const SIDEBAR_ROUTES = [
     },
     {
         categoryName: "ELIoT Devices",
+        icon: Airplay,
         routes: [
             {
                 label: "Add",
@@ -331,6 +348,7 @@ export const SIDEBAR_ROUTES = [
     },
     {
         categoryName: "Sewing Machines",
+        icon: Cog,
         routes: [
             {
                 label: "Add",
@@ -356,6 +374,7 @@ export const SIDEBAR_ROUTES = [
     },
     {
         categoryName: "Sewing Operators",
+        icon: ScissorsLineDashed,
         routes: [
             {
                 label: "Add",
@@ -371,6 +390,7 @@ export const SIDEBAR_ROUTES = [
     },
     {
         categoryName: "Factory Staff",
+        icon: UserRound,
         routes: [
             {
                 label: "Add",
@@ -386,6 +406,7 @@ export const SIDEBAR_ROUTES = [
     },
     {
         categoryName: "QR Generators",
+        icon: QrCodeIcon,
         routes: [
             {
                 label: "User Credentials",
@@ -401,6 +422,7 @@ export const SIDEBAR_ROUTES = [
     },
     {
         categoryName: "Portal Account Users",
+        icon: LucideUserCheck2,
         routes: [
             {
                 label: "Add",
@@ -416,6 +438,7 @@ export const SIDEBAR_ROUTES = [
     },
     {
         categoryName: "Production Lines & Operations",
+        icon: Server,
         routes: [
             {
                 label: "Manage Operations",
@@ -431,6 +454,7 @@ export const SIDEBAR_ROUTES = [
     },
     {
         categoryName: "Operation BreakDown & Balancing Sheet",
+        icon: FileSpreadsheet,
         routes: [
             {
                 label: "Create Operation Bulletin",
@@ -446,6 +470,7 @@ export const SIDEBAR_ROUTES = [
     },
     {
         categoryName: "SMS & Email Alerts",
+        icon: Send,
         routes: [
             {
                 label: "Alert logs",
@@ -497,6 +522,11 @@ export const HEADER_INFO = [
         href: "/analytics/machine-type",
         icon: BarChart3
     },
+     {
+                label: "Roaming QC",
+                href: "/analytics/roaming-qc",
+                icon: AlignHorizontalDistributeCenter
+            },
     {
         label: "Machine Summary",
         href: "/analytics/machine-summary",
@@ -507,11 +537,26 @@ export const HEADER_INFO = [
         href: "/sewing-operators/create-new",
         icon: UserRoundPlus
     },
+     {
+                label: "Operator DHU Report",
+                href: "/analytics/operator-dhu",
+                icon: BarChartHorizontal
+            },
     {
         label: "Manage Sewing Operators",
         href: "/sewing-operators",
         icon: UserRoundCog
     },
+     {
+                label: "User Credentials",
+                href: "/analytics/qr-generator",
+                icon: QrCode
+            },
+            {
+                label: "Sewing Machine Details",
+                href: "/analytics/sm-qr-generator",
+                icon: QrCode
+            },
     {
         label: "Add Factory Staff",
         href: "/factory-staffs/create-new",
@@ -532,6 +577,10 @@ export const HEADER_INFO = [
         href: "/portal-accounts",
         icon: UserRoundCog
     },
+    {
+    label: "Monthly Efficiency Report",
+                href: "/analytics/operator-report",
+                icon: Table},
     {
         label: "Manage Operations",
         href: "/operations",
