@@ -1,6 +1,7 @@
 
 
 "use server";
+import { createPostgresClient } from "@/lib/postgres";
 import { neon } from "@neondatabase/serverless";
 
 
@@ -61,12 +62,14 @@ export type getDateTypes = {
 
 export async function getNewData(startdate :string,enddate :string,operatorId:string)  : Promise<newData[]>   {
     
-    const sql = neon(process.env.DATABASE_URL || "");
-   
-    // date=date+"%"
-    const data = await sql
-    `
-SELECT 
+
+    {
+        const client = createPostgresClient();
+      try {
+    
+        await client.connect();
+        const query = `
+         SELECT 
     o.name,
     o.rfid,
     pd."obbOperationId",
@@ -89,9 +92,9 @@ inner join "ObbSheet" obs on obs.id = oo."obbSheetId"
 
 
 WHERE 
-    o.id = ${operatorId}
-    AND pd.timestamp BETWEEN ${startdate} AND ${enddate}  -- Ensure production data is within the desired period
-    AND os."LoginTimestamp" BETWEEN ${startdate} AND ${enddate}  -- Ensure sessions are within the desired period
+    o.id = $3
+    AND pd.timestamp BETWEEN $1 AND $2  -- Ensure production data is within the desired period
+    AND os."LoginTimestamp" BETWEEN $1 AND $2  -- Ensure sessions are within the desired period
 GROUP BY  
     o.name,
     o.rfid,
@@ -102,15 +105,25 @@ GROUP BY
     oo.smv,operation,oo."obbSheetId", o."employeeId"
 ORDER BY 
     production_date;
+        `;
+        const values = [startdate,enddate,operatorId];
+    
+        const result = await client.query(query, values);
+    
+        // console.log("DATAaa: ", result.rows);
+        return new Promise((resolve) => resolve(result.rows as newData[]));
+        
+        
+      } catch (error) {
+        console.error("[TEST_ERROR]", error);
+        throw error;
+      }
+      finally{
+        await client.end()
+      }}
 
 
-
-
-`;
-// console.log(startDate,endDate)
-
-
-return new Promise((resolve) => resolve(data as newData[]  ))
+  
 }
 
 

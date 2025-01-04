@@ -1,76 +1,100 @@
 "use server";
 import { neon } from "@neondatabase/serverless";
 import { ReportData1 } from "./dhu-report";
+import { createPostgresClient, createPostgresClientRfid } from "@/lib/postgres";
 
-export async function getDHUData(obbsheetid: string, date: string): Promise<any[]> {
-    const sql = neon(process.env.RFID_DATABASE_URL || "");
+export async function getDHUData(obbsheetid: string, date: string): Promise<any> {
+    const client = createPostgresClientRfid();
 
-    console.log("dateeee",date)
+    try {
+        await client.connect();
 
-    const dataGmts = await sql
-    `
-        SELECT count(*) as count, "qcStatus" qc, "operatorName" as name, "operatorId" as operatorid 
-        FROM "GmtDefect"
-        WHERE "qcStatus" <> 'pass' AND "obbSheetId" = ${obbsheetid} AND timestamp LIKE ${date}
-        GROUP BY "operatorName", "qcStatus", "operatorId";
-    `;
-    // console.log("data fetched1", dataGmts);
+        // Query for "GmtDefect" data
+        const queryGmtDefects = `
+            SELECT 
+                COUNT(*) AS count, 
+                "qcStatus" AS qc, 
+                "operatorName" AS name, 
+                "operatorId" AS operatorid 
+            FROM "GmtDefect"
+            WHERE "qcStatus" <> 'pass' AND "obbSheetId" = $1 AND timestamp LIKE $2
+            GROUP BY "operatorName", "qcStatus", "operatorId";
+        `;
+        const dataGmts = await client.query(queryGmtDefects, [obbsheetid, date]);
 
-    const dataProducts = await sql
-    `
-        SELECT count(*) as count, "qcStatus" qc, "operatorName" as name 
-        FROM "ProductDefect"
-        WHERE "qcStatus" <> 'pass' AND "obbSheetId" = ${obbsheetid} AND timestamp LIKE ${date}
-        GROUP BY "operatorName", "qcStatus";
-    `;
-    // console.log("data fetched2", dataProducts);
+        // Query for "ProductDefect" data
+        const queryProductDefects = `
+            SELECT 
+                COUNT(*) AS count, 
+                "qcStatus" AS qc, 
+                "operatorName" AS name 
+            FROM "ProductDefect"
+            WHERE "qcStatus" <> 'pass' AND "obbSheetId" = $1 AND timestamp LIKE $2
+            GROUP BY "operatorName", "qcStatus";
+        `;
+        const dataProducts = await client.query(queryProductDefects, [obbsheetid, date]);
 
-    const tc = await sql
-    `
-        SELECT count(*) as count FROM "GmtDefect"
-        WHERE "obbSheetId" = ${obbsheetid} AND timestamp LIKE ${date}
-    `;
+        // Query for total counts in "GmtDefect"
+        const queryTotalGmtDefects = `
+            SELECT COUNT(*) AS count 
+            FROM "GmtDefect"
+            WHERE "obbSheetId" = $1 AND timestamp LIKE $2;
+        `;
+        const tc = await client.query(queryTotalGmtDefects, [obbsheetid, date]);
 
-    const tcProducts = await sql
-    `
-        SELECT count(*) as count FROM "ProductDefect"
-        WHERE "obbSheetId" = ${obbsheetid} AND timestamp LIKE ${date}
-    `;
+        // Query for total counts in "ProductDefect"
+        const queryTotalProductDefects = `
+            SELECT COUNT(*) AS count 
+            FROM "ProductDefect"
+            WHERE "obbSheetId" = $1 AND timestamp LIKE $2;
+        `;
+        const tcProducts = await client.query(queryTotalProductDefects, [obbsheetid, date]);
 
-    const count: number = Number(tc?.[0]?.count) || 1;
-    const countP: number = Number(tcProducts?.[0]?.count) || 1;
+        // Consolidating the data for the final output
+        const count: number = Number(tc.rows[0]?.count) || 1;
+        const countP: number = Number(tcProducts.rows[0]?.count) || 1;
 
-    const updatedGmtDfcts: any[] = [];
+        const updatedGmtDfcts: any[] = [];
 
-    for (const gmtdfct of dataGmts) {
-        const tmpIndex = dataProducts.findIndex(p => p.name === gmtdfct.name);
+        for (const gmtdfct of dataGmts.rows) {
+            const tmpIndex = dataProducts.rows.findIndex(p => p.name === gmtdfct.name);
 
-        if (tmpIndex !== -1) {
-            const tmp = dataProducts[tmpIndex];
-            updatedGmtDfcts.push({ ...gmtdfct, count: tmp.count + gmtdfct.count });
-            dataProducts.splice(tmpIndex, 1);
-        } else {
-            updatedGmtDfcts.push(gmtdfct);
+            if (tmpIndex !== -1) {
+                const tmp = dataProducts.rows[tmpIndex];
+                updatedGmtDfcts.push({ ...gmtdfct, count: tmp.count + gmtdfct.count });
+                dataProducts.rows.splice(tmpIndex, 1);
+            } else {
+                updatedGmtDfcts.push(gmtdfct);
+            }
         }
+
+        for (const prdDfct of dataProducts.rows) {
+            updatedGmtDfcts.push(prdDfct);
+        }
+
+        const res = updatedGmtDfcts.map(d => ({
+            ...d,
+            count: (d.count / (count + countP)) * 100,
+        }));
+
+        return res;
+    } catch (error) {
+        console.error("[ERROR_FETCHING_DEFECT_DATA]", error);
+        throw error;
+    } finally {
+        await client.end();
     }
-
-    for (const prdDfct of dataProducts) {
-        updatedGmtDfcts.push(prdDfct);
-    }
-
-    const res = updatedGmtDfcts.map(d => ({
-        ...d, count: (d.count / (count + countP)) * 100
-    }));
-
-    return res;
 }
 
 export async function getDailyData(obbsheetid: string, date: string): Promise<ReportData1[]> {
-    const sql = neon(process.env.DATABASE_URL || "");
 
-    const data = await sql
-    `
-        SELECT opr.id, opr.name as operatorname,
+    {
+        const client = createPostgresClient();
+      try {
+    
+        await client.connect();
+        const query = `
+          SELECT opr.id, opr.name as operatorname,
                opr.id as operatorid,
                op.name as operationname,
                obbop.target,
@@ -89,31 +113,49 @@ export async function getDailyData(obbsheetid: string, date: string): Promise<Re
         INNER JOIN "Unit" unt ON obbs."unitId" = unt.id
         INNER JOIN "SewingMachine" sm ON obbop."sewingMachineId" = sm.id
         INNER JOIN "ProductionLine" pl ON pl.id = obbs."productionLineId"
-        WHERE pd."timestamp" LIKE ${date} AND obbs.id = ${obbsheetid}
+        WHERE pd."timestamp" LIKE $2 AND obbs.id = $1
         GROUP BY opr.id, opr.name, op.name, obbop.smv, obbop.target, unt.name, obbs.style, sm.id, pl.name, obbs.buyer, obbop."seqNo",opr."employeeId"
         ORDER BY obbop."seqNo" ASC;
-    `;
+        `;
+        const values = [obbsheetid,date];
+    
+        const result = await client.query(query, values);
+    
+        // console.log("DATAaa: ", result.rows);
+        return new Promise((resolve) => resolve(result.rows  as ReportData1[]));
+        
+        
+      } catch (error) {
+        console.error("[TEST_ERROR]", error);
+        throw error;
+      }
+      finally{
+        await client.end()
+      }}
 
-    return data as ReportData1[];
+
 }
 
 export async function getDefects(obbsheetid: string, date: string): Promise<any[]> {
-    const sql = neon(process.env.RFID_DATABASE_URL || "");
-
     const newdate = `${date}%`;
-    console.log("obbsheet id and date", obbsheetid, newdate);
 
-    const data = await sql
-    `
-        SELECT 
+
+
+    {
+        const client = createPostgresClientRfid();
+      try {
+    
+        await client.connect();
+        const query = `
+          SELECT 
             COUNT(pd.id) as defectcount,
             pd."operatorId" as operatorid
         FROM "ProductDefect" pd
         LEFT JOIN "_ProductQC" pqc ON pqc."B" = pd.id
         LEFT JOIN "Defect" d ON d.id = pqc."A"
         WHERE pd."qcStatus" <> 'pass' 
-            AND pd."obbSheetId" = ${obbsheetid}
-            AND pd.timestamp LIKE ${newdate}
+            AND pd."obbSheetId" = $1
+            AND pd.timestamp LIKE $2
         GROUP BY d.name, pd."operatorId"
 
         UNION
@@ -125,28 +167,43 @@ export async function getDefects(obbsheetid: string, date: string): Promise<any[
         LEFT JOIN "_GmtQC" gqc ON gqc."B" = gd.id
         LEFT JOIN "Defect" d ON d.id = gqc."A"
         WHERE gd."qcStatus" <> 'pass' 
-            AND gd."obbSheetId" = ${obbsheetid}
-            AND gd.timestamp LIKE ${newdate}
+            AND gd."obbSheetId" = $1
+            AND gd.timestamp LIKE $2
         GROUP BY d.name, gd."operatorId"
-    `;
+        `;
+        const values = [obbsheetid,newdate];
+    
+        const result = await client.query(query, values);
+    
+        // console.log("DATAaa: ", result.rows);
+        return new Promise((resolve) => resolve(result.rows as any[]));
+        
+        
+      } catch (error) {
+        console.error("[TEST_ERROR]", error);
+        throw error;
+      }
+      finally{
+        await client.end()
+      }}
 
-    return data as any[];
+   
 }
 
 
 export async function inspaetfetch(obbsheetid: string, date: string): Promise<any[]> {
-    const sql = neon(process.env.RFID_DATABASE_URL || "");
 
-    const newdate = `${date}%`;
-    console.log("obbsheet id and date", obbsheetid, newdate);
-
-    const data = await sql
-    `
+    {
+        const client = createPostgresClientRfid();
+      try {
+    
+        await client.connect();
+        const query = `
         SELECT 
           count(*) as inspectcount
           from
           "ProductDefect"
-          where timestamp like ${date} and "obbSheetId"=${obbsheetid} 
+          where timestamp like $2 and "obbSheetId"=$1
 
         UNION
 
@@ -154,13 +211,24 @@ export async function inspaetfetch(obbsheetid: string, date: string): Promise<an
           count(*) as inspectcount
           from
           "GmtDefect"
-          where timestamp like ${date} and "obbSheetId"=${obbsheetid} 
+          where timestamp like $2 and "obbSheetId"=$1
+        `;
+        const values = [obbsheetid,date+"%"];
+    
+        const result = await client.query(query, values);
+    
+        // console.log("DATAaa: ", result.rows);
+        return new Promise((resolve) => resolve(result.rows as any[] ));
+        
+        
+      } catch (error) {
+        console.error("[TEST_ERROR]", error);
+        throw error;
+      }
+      finally{
+        await client.end()
+      }}
 
-    `;
-
-    // console.log("inspect count000000000000000000000000000000000",data)
-
-    return data as any[];
 }
 
 
