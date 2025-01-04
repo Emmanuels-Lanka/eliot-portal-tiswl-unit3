@@ -4,15 +4,20 @@
 import { neon } from "@neondatabase/serverless";
 
 import { ReportData } from "./daily-report";
+import { createPostgresClient } from "@/lib/postgres";
 
 
 export async function getDailyData(obbsheetid:string,date:string)  : Promise<ReportData[]>   {
     
-    const sql = neon(process.env.DATABASE_URL || "");
+    {
+        const client = createPostgresClient();
     date=date+"%"
-    const data = await sql
-    `
-    SELECT 
+
+      try {
+    
+        await client.connect();
+        const query = `
+ SELECT 
     opr.id,
     obbop."seqNo",
     opr.name AS operatorname,
@@ -42,11 +47,11 @@ LEFT JOIN (
         "operatorRfid",
         MIN("LoginTimestamp") AS first_login
     FROM "OperatorSession"
-    WHERE "LoginTimestamp" LIKE ${date}
+    WHERE "LoginTimestamp" LIKE $2
     GROUP BY "operatorRfid"
 ) AS os ON os."operatorRfid" = opr.rfid
-WHERE pd."timestamp" LIKE ${date} 
-    AND obbs.id = ${obbsheetid}
+WHERE pd."timestamp" LIKE $2 
+    AND obbs.id = $1
 GROUP BY 
     opr.id, 
     opr.name, 
@@ -62,12 +67,25 @@ GROUP BY
     opr."employeeId", 
     os.first_login
 ORDER BY obbop."seqNo";
-`;
+        `;
+        const values = [obbsheetid,date];
     
-   console.log(obbsheetid,date)
+        const result = await client.query(query, values);
+    
+        // console.log("DATAaa: ", result.rows);
+        return new Promise((resolve) => resolve(result.rows as ReportData[]));
+        
+        
+      } catch (error) {
+        console.error("[TEST_ERROR]", error);
+        throw error;
+      }
+      finally{
+        await client.end()
+      }}
 
- 
-    return new Promise((resolve) => resolve(data as ReportData[]  ))
+
+
 }
 
 
