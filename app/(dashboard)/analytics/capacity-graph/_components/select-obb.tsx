@@ -32,7 +32,8 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
-import { getObb } from "./action";
+import { getObb } from "../../defect-chart/_components/actions";
+
 // import { getObb } from "./actions";
 
 interface SelectObbSheetAndDateProps {
