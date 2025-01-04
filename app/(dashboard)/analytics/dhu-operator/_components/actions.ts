@@ -1,4 +1,5 @@
 "use server";
+import { createPostgresClientRfid } from "@/lib/postgres";
 import { neon } from "@neondatabase/serverless";
 
 type defects= {
@@ -12,40 +13,76 @@ type defcount= {
 }
 
 export async function getChecked(date:string,obbSheet:string) : Promise<defcount>   {
-    const sql = neon(process.env.RFID_DATABASE_URL || "");
-    // obbsheetid:string,date:string
+    {
+        const client = createPostgresClientRfid();
+      try {
     
-     const data = await sql`WITH counts AS (
-    SELECT COUNT(*) AS gmt_count FROM "GmtDefect" gd WHERE gd.timestamp LIKE ${date} 
-    and "obbSheetId" = ${obbSheet}
+        await client.connect();
+        const query = `
+     WITH counts AS (
+    SELECT COUNT(*) AS gmt_count FROM "GmtDefect" gd WHERE gd.timestamp LIKE $2 
+    and "obbSheetId" = $1
     UNION ALL
-    SELECT COUNT(*) AS product_count FROM "ProductDefect" pd WHERE pd.timestamp LIKE ${date}
-    and "obbSheetId" = ${obbSheet}
+    SELECT COUNT(*) AS product_count FROM "ProductDefect" pd WHERE pd.timestamp LIKE $2
+    and "obbSheetId" = $1
 )
 SELECT SUM(gmt_count) AS total FROM counts;
-`
+        `;
+        const values = [obbSheet,date];
     
-const total = data[0]?.total || 0;
+        const result = await client.query(query, values);
+
+        const total = result.rows[0]?.total || 0;
     
-return { total } as defcount;
+        // console.log("DATAaa: ", result.rows);
+        return { total } as defcount;
+        
+        
+      } catch (error) {
+        console.error("[TEST_ERROR]", error);
+        throw error;
+      }
+      finally{
+        await client.end()
+      }}
+
+
+
 }
 export async function getDefects(date:string,obbSheet:string) : Promise<defects []>   {
-    const sql = neon(process.env.RFID_DATABASE_URL || "");
-    // obbsheetid:string,date:string
+
+    {
+        const client = createPostgresClientRfid();
+      try {
     
-     const data = await sql`select count(*),"operatorName" as operator,part from "GmtDefect" 
-where timestamp like ${date} and "obbSheetId" = ${obbSheet}
+        await client.connect();
+        const query = `
+          select count(*),"operatorName" as operator,part from "GmtDefect" 
+where timestamp like $2 and "obbSheetId" = $1
 and "qcStatus" <> 'pass'
 group by operator,part
 union
 select count(*),"operatorName" as operator,part  from "ProductDefect"
-where "qcStatus" <> 'pass' and  timestamp like ${date} and "obbSheetId" = ${obbSheet}
+where "qcStatus" <> 'pass' and  timestamp like $2 and "obbSheetId" = $1
 group by operator,part
+        `;
+        const values = [obbSheet,date];
+    
+        const result = await client.query(query, values);
+    
+        // console.log("DATAaa: ", result.rows);
+        return new Promise((resolve) => resolve(result.rows as defects[]));
+        
+        
+      } catch (error) {
+        console.error("[TEST_ERROR]", error);
+        throw error;
+      }
+      finally{
+        await client.end()
+      }}
 
 
-`
-    
-    
-    
-    return new Promise((resolve) => resolve(data as defects[]  ))
+
+
 }
