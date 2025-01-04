@@ -1,25 +1,42 @@
 "use server";
+import { createPostgresClient } from "@/lib/postgres";
 import { neon } from "@neondatabase/serverless";
 
 
 
 
 export async function getObb(unit:any) : Promise<{ id: string; name: string }[]>  {
-    const sql = neon(process.env.DATABASE_URL || "");
+  
 
-    
-     const data = await sql`
-    select os.name as name ,os.id as id from "ObbSheet" os 
-
-inner join "Unit" u on u.id= os."unitId"
-
-where os."unitId"=${unit} and os."isActive"
- order by os."createdAt" desc
-
-`
-console.log(unit)
-    return new Promise((resolve) => resolve(data as { id: string; name: string }[]))
-}
+    const client = createPostgresClient();
+    try {
+  
+      await client.connect();
+      const query = `
+        SELECT os.name AS name, os.id AS id 
+        FROM "ObbSheet" os
+        INNER JOIN "Unit" u ON u.id = os."unitId"
+        WHERE os."unitId" = $1 AND os."isActive"
+        ORDER BY os."createdAt" DESC
+      `;
+      const values = [unit];
+  
+      const result = await client.query(query, values);
+  
+      console.log("DATAaa: ", result.rows);
+      return new Promise((resolve) => resolve(result.rows as { id: string; name: string }[]));
+      
+      
+    } catch (error) {
+      console.error("[TEST_ERROR]", error);
+      throw error;
+    }
+    finally{
+      await client.end()
+    }
+  
+  }
+  
 
 
 export async function getOperationSmv(obbSheetId:string,date:string) : Promise<any[]>  {
