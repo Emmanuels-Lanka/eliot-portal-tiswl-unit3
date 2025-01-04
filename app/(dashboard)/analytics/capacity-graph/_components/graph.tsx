@@ -20,7 +20,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
-import { getCapacity, getOperationSmv, getTargetValues } from './action'
+import { getCapacity } from './action'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 export const description = "A line chart with a label"
