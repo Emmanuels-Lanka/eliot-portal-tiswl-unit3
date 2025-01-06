@@ -203,7 +203,7 @@ const RoamingQcReportTemplate: React.FC<RoamingQcReportTemplateProps> = ({ data 
                                     </View>
                                     <View style={styles.tableRow}>
                                         <Text style={styles.tableCell}>{report.date}</Text>
-                                        <Text style={styles.tableCell}>{report.obbSheet.style}</Text>
+                                        <Text style={styles.tableCell}>{report.obbSheet.name}</Text>
                                         <Text style={styles.tableCell}>{report.obbSheet.buyer}</Text>
                                         <Text style={styles.tableCell}>{report.obbSheet.colour}</Text>
                                     </View>
