@@ -1,24 +1,16 @@
 "use server";
+import { createPostgresClient } from "@/lib/postgres";
 import { neon } from "@neondatabase/serverless";
 
 export async function getOperatorEfficiencyData15M(obbsheetid:string,date:string)   {
-    const sql = neon(process.env.DATABASE_URL || "");
-
     
-    
-    //  const data = await sql`SELECT substring(concat(obbopn."seqNo",'-',oprtr.name ) from 0 for 20)  as name,
-    //         pd."productionCount" as count, obbopn.target,pd.timestamp as timestamp
-    //         FROM "ProductionData" pd
-    //         INNER JOIN "ObbOperation" obbopn ON pd."obbOperationId" = obbopn.id
-    //         INNER JOIN "ObbSheet" obbs ON obbopn."obbSheetId" = obbs.id
-    //         INNER JOIN "Operator" oprtr ON oprtr."rfid" = pd."operatorRfid"
-    //         INNER JOIN "Operation" opn ON opn."id" = obbopn."operationId"
-    //         WHERE pd.timestamp like ${date} and  obbs.id = ${obbsheetid}
-    //         group by substring(concat(obbopn."seqNo",'-',oprtr.name ) from 0 for 20),obbopn.target, pd."productionCount",pd.timestamp
-    //         order by  pd.timestamp ;`;
+  {
+    const client = createPostgresClient();
+try {
 
-    // const data = await sql`SELECT substring(concat(obbopn."seqNo",'-(',opn."code",')-',oprtr.name ) from 0 for 25)  as name,
-    const data = await sql`select CONCAT(SUBSTRING(CONCAT('(', opn."code", ')', '-', oprtr.name) FROM 1 FOR 25), ' ', '(', sm."machineId", ') - ',obbopn."seqNo") AS name,
+  await client.connect();
+  const query = `
+    select CONCAT(SUBSTRING(CONCAT('(', opn."code", ')', '-', oprtr.name) FROM 1 FOR 25), ' ', '(', sm."machineId", ') - ',obbopn."seqNo") AS name,
     pd."productionCount" as count, obbopn.target,pd.timestamp as timestamp,obbopn.smv
     FROM "ProductionData" pd
     INNER JOIN "ObbOperation" obbopn ON pd."obbOperationId" = obbopn.id
@@ -27,27 +19,37 @@ export async function getOperatorEfficiencyData15M(obbsheetid:string,date:string
     INNER JOIN "Operation" opn ON opn."id" = obbopn."operationId"
      INNER JOIN 
       "SewingMachine" sm ON sm.id = obbopn."sewingMachineId"
-    WHERE pd.timestamp like ${date} and  obbs.id = ${obbsheetid}
+    WHERE pd.timestamp like $2 and  obbs.id = $1
     group by CONCAT(SUBSTRING(CONCAT('(', opn."code", ')', '-', oprtr.name) FROM 1 FOR 25), ' ', '(', sm."machineId", ') - ',obbopn."seqNo"),obbopn.target, pd."productionCount",pd.timestamp,obbopn.smv
-    order by  pd.timestamp ;`;
+    order by  pd.timestamp 
+  `;
+  const values = [obbsheetid,date];
 
-  //and (oprtr.name like 'AJUFA%' or oprtr.name like 'RATNA%')
-            // INNER JOIN "Operation" opn ON opn.id= obbopn."operationId"
+  const result = await client.query(query, values);
 
-// group by oprtr.name,obbopn."seqNo",obbopn.target, pd."productionCount",pd.timestamp
-    
-    console.log("data",data,obbsheetid)
-    return new Promise((resolve) => resolve(data  ))
-    
+  // console.log("DATAaa: ", result.rows);
+  return new Promise((resolve) => resolve(result.rows ));
+  
+  
+} catch (error) {
+  console.error("[TEST_ERROR]", error);
+  throw error;
+}
+finally{
+  await client.end()
+}
+}    
 }
 
 
 export async function geOperatorList(obbsheetid:string,date:string ) : Promise<any[]>  {
-    const sql = neon(process.env.DATABASE_URL || "");
- 
-    // const data = await sql`SELECT   concat(oo."seqNo",'-',o.name ) as name
 
-    const data = await sql`
+  {
+    const client = createPostgresClient();
+try {
+
+  await client.connect();
+  const query = `
     SELECT 
       CONCAT(SUBSTRING(CONCAT('(', opn."code", ')', '-', oo.name) FROM 1 FOR 25), ' ', '(', sm."machineId", ') - ',oopn."seqNo") AS name
     FROM 
@@ -63,22 +65,28 @@ export async function geOperatorList(obbsheetid:string,date:string ) : Promise<a
     INNER JOIN 
       "SewingMachine" sm ON sm.id = oopn."sewingMachineId"
     WHERE 
-      os.id = ${obbsheetid}  
-      AND pd.timestamp LIKE ${date}
+      os.id = $1  
+      AND pd.timestamp LIKE $2
     GROUP BY 
       CONCAT(SUBSTRING(CONCAT('(', opn."code", ')', '-', oo.name) FROM 1 FOR 25), ' ', '(', sm."machineId", ') - ',oopn."seqNo"), 
       oopn."seqNo"
     ORDER BY 
       oopn."seqNo";
   `;
+  const values = [obbsheetid,date];
+
+  const result = await client.query(query, values);
+
+  // console.log("DATAaa: ", result.rows);
+  return new Promise((resolve) => resolve(result.rows ));
   
-    //order by  substring(concat(oopn."seqNo",'-',oo.name ) from 0 for 20) ;`
-    // group by substring(concat(oopn."seqNo",'-(',opn."code",')-',oo.name ) from 0 for 25) , oopn."seqNo"
-
-    // console.log("geOperationList",data,)
-    // console.log("asd",date,obbsheetid)
-
-
- 
-    return new Promise((resolve) => resolve(data ))
+  
+} catch (error) {
+  console.error("[TEST_ERROR]", error);
+  throw error;
+}
+finally{
+  await client.end()
+}
+}    
 }
