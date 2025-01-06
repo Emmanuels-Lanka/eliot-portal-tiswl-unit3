@@ -15,11 +15,10 @@ type ReturnDataType = RoamingQC & {
     operator: Operator
 }
 
-export async function fetchRoamingQcData(obbSheetId: string, date: DateRange): Promise<ReturnDataType[]> {
+export async function fetchRoamingQcData(obbSheetId: string, date: string): Promise<ReturnDataType[]> {
     try {
-        const startDate = `${date.from?.toISOString().split('T')[0]} 00:00:00`;
-        const endDate = `${date.to?.toISOString().split('T')[0]} 23:59:59`;
-        // console.log("DATE_RANGE:", startDate, "-" ,endDate);
+        const startDate = `${date} 00:00:00`;
+        const endDate = `${date} 23:59:59`;
 
         const data = await db.roamingQC.findMany({
             where: {
@@ -62,7 +61,6 @@ export async function fetchRoamingQcData(obbSheetId: string, date: DateRange): P
             },
             orderBy: {
                 createdAt: "asc",
-                // machineId: "asc"
             }
         });
 

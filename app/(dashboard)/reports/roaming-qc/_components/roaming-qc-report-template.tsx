@@ -1,6 +1,6 @@
 import React from 'react';
 import moment from 'moment-timezone';
-import { Page, Text, View, Document, StyleSheet, Image, Svg, Line } from '@react-pdf/renderer';
+import { Page, Text, View, Document, StyleSheet } from '@react-pdf/renderer';
 import { ObbOperation, ObbSheet, Operation, Operator, ProductionLine, RoamingQC } from "@prisma/client";
 
 type RawDataType = RoamingQC & {
@@ -21,9 +21,14 @@ type ProcessedDataType = {
     }[];
 };
 
+type ReportDataType = {
+    obbSheet: ObbSheet;
+    date: ProcessedDataType["date"];
+    data: ProcessedDataType["data"];
+};
+
 interface RoamingQcReportTemplateProps {
-    details: { label: string, value: string }[];
-    data: ProcessedDataType[];
+    data: ReportDataType[];
 }
 
 const styles = StyleSheet.create({
@@ -97,15 +102,6 @@ const styles = StyleSheet.create({
     tableRow: {
         flexDirection: 'row',
     },
-    opCell: {
-        width: '150px',
-        padding: 5,
-        borderStyle: 'solid',
-        borderColor: '#000',
-        borderRightWidth: 1,
-        borderBottomWidth: 1,
-        textAlign: 'center',
-    },
     tableCell: {
         flex: 1,
         padding: 5,
@@ -116,7 +112,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     noCell: {
-        width: '30px',
+        width: '45px',
         padding: 5,
         borderStyle: 'solid',
         borderColor: '#000',
@@ -125,7 +121,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     hourCell: {
-        width: '100px',
+        width: '70px',
         padding: 5,
         borderStyle: 'solid',
         borderColor: '#000',
@@ -183,89 +179,79 @@ const styles = StyleSheet.create({
     },
 });
 
-const RoamingQcReportTemplate: React.FC<RoamingQcReportTemplateProps> = ({ details, data }) => {
+const RoamingQcReportTemplate: React.FC<RoamingQcReportTemplateProps> = ({ data }) => {
     return (
         <Document>
             <Page size="A4" orientation="landscape" style={styles.page}>
                 {/* Header */}
                 <View style={styles.header}>
-                    <Text style={styles.title}>Inline Quality Inspection Report</Text>
+                    <Text style={styles.title}>Roaming Quality Inspection Report</Text>
                 </View>
 
-                {/* Details Section */}
-                <View style={{ marginBottom: 30, width: "100%" }}>
-                    <View style={styles.table}>
-                        {/* First Row */}
-                        <View style={styles.tableRow}>
-                            {details.slice(0, Math.ceil(details.length / 2)).map((detail, index) => (
-                                <React.Fragment key={index}>
-                                    <Text style={[styles.tableCell, styles.tableHeader]}>{detail.label}</Text>
-                                    <Text style={styles.tableCell}>{detail.value}</Text>
-                                </React.Fragment>
-                            ))}
-                        </View>
-
-                        {/* Second Row */}
-                        <View style={styles.tableRow}>
-                            {details.slice(Math.ceil(details.length / 2)).map((detail, index) => (
-                                <React.Fragment key={index}>
-                                    <Text style={[styles.tableCell, styles.tableHeader]}>{detail.label}</Text>
-                                    <Text style={styles.tableCell}>{detail.value}</Text>
-                                </React.Fragment>
-                            ))}
-                        </View>
-                    </View>
-                </View>
-
-                {/* Table */}
-                {data.map((dateGroup, dateIndex) => (
-                    <View key={dateIndex} style={{ marginBottom: 20 }}>
-                        {/* Date Section */}
-                        <Text style={[styles.tableHeader, { marginBottom: 10, padding: 5, fontSize: "14px", borderRadius: 5 }]}>Date: {dateGroup.date}</Text>
-
-                        {dateGroup.data.map((operationGroup, opIndex) => (
-                            <View key={opIndex} style={{ marginBottom: 15 }}>
-                                {/* Operation ID Section */}
-                                {/* <Text style={[styles.tableHeader, { marginBottom: 5 }]}>
-                                    Operation ID: {operationGroup.obbOperationId}
-                                </Text> */}
-
-                                {/* Records Section */}
+                {/* Report Data */}
+                {data.map((report, reportIndex) => {
+                    if (report.data.length > 0) {
+                        return (
+                            <View key={reportIndex} style={{ marginBottom: 20 }}>
+                                {/* ObbSheet Details Table */}
                                 <View style={styles.table}>
-                                    {/* Table Header */}
                                     <View style={[styles.tableRow, styles.tableHeader]}>
-                                        <Text style={styles.hourCell}>Timestamp</Text>
-                                        <Text style={styles.opCell}>Operation Name</Text>
-                                        <Text style={styles.tableCell}>Operator Name</Text>
-                                        <Text style={styles.tableCell}>Machine</Text>
-                                        <Text style={styles.qtyCell}>Inspected Qty</Text>
-                                        <Text style={styles.tableCell}>Color Status</Text>
-                                        <Text style={styles.tableCell}>Defects</Text>
-                                        <Text style={styles.tableCell}>RQC</Text>
+                                        <Text style={styles.tableCell}>Date</Text>
+                                        <Text style={styles.tableCell}>Style</Text>
+                                        <Text style={styles.tableCell}>Buyer Name</Text>
+                                        <Text style={styles.tableCell}>Color</Text>
                                     </View>
+                                    <View style={styles.tableRow}>
+                                        <Text style={styles.tableCell}>{report.date}</Text>
+                                        <Text style={styles.tableCell}>{report.obbSheet.style}</Text>
+                                        <Text style={styles.tableCell}>{report.obbSheet.buyer}</Text>
+                                        <Text style={styles.tableCell}>{report.obbSheet.colour}</Text>
+                                    </View>
+                                </View>
 
-                                    {/* Records */}
-                                    {operationGroup.records.map((record, recIndex) => (
-                                        <View key={recIndex} style={styles.tableRow}>
-                                            <Text style={styles.hourCell}>{record.timestamp}</Text>
-                                            <Text style={styles.opCell}>{record.obbOperation.operation.name}</Text>
-                                            <Text style={styles.tableCell}>{record.operator.name}</Text>
-                                            <Text style={styles.tableCell}>{record.machineId}</Text>
-                                            <Text style={styles.qtyCell}>{record.inspectedQty}</Text>
-                                            <Text style={styles.tableCell}>{record.colorStatus}</Text>
-                                            <Text style={styles.tableCell}>
-                                                {record.defects.length
-                                                    ? record.defects.join(', ')
-                                                    : 'No defects'}
-                                            </Text>
-                                            <Text style={styles.tableCell}>{record.inspectedBy}</Text>
+                                {/* Processed Data Tables */}
+                                <View style={{ marginTop: 10 }}>
+                                    {report.data.map((operationGroup, opIndex) => (
+                                        <View key={opIndex} style={{ marginTop: 15 }}>
+                                            <View style={styles.table}>
+                                                {/* Table Header */}
+                                                <View style={[styles.tableRow, styles.tableHeader]}>
+                                                    <Text style={styles.noCell}>Round</Text>
+                                                    <Text style={styles.hourCell}>Time</Text>
+                                                    <Text style={styles.tableCell}>Operation Name</Text>
+                                                    <Text style={styles.tableCell}>Operator Name</Text>
+                                                    <Text style={styles.hourCell}>Machine</Text>
+                                                    <Text style={styles.qtyCell}>Ins. Qty</Text>
+                                                    <Text style={styles.hourCell}>Status</Text>
+                                                    <Text style={styles.tableCell}>Defects</Text>
+                                                    <Text style={styles.tableCell}>RQC</Text>
+                                                </View>
+                                                {/* Table Rows */}
+                                                {operationGroup.records.map((record, recIndex) => (
+                                                    <View key={recIndex} style={styles.tableRow}>
+                                                        <Text style={styles.noCell}>{recIndex + 1}</Text>
+                                                        <Text style={styles.hourCell}>{record.timestamp.split(" ")[1]}</Text>
+                                                        <Text style={styles.tableCell}>{record.obbOperation.operation.name}</Text>
+                                                        <Text style={styles.tableCell}>{record.operator.name}</Text>
+                                                        <Text style={styles.hourCell}>{record.machineId}</Text>
+                                                        <Text style={styles.qtyCell}>{record.inspectedQty}</Text>
+                                                        <Text style={styles.hourCell}>{record.colorStatus}</Text>
+                                                        <Text style={styles.tableCell}>
+                                                            {record.defects.length
+                                                                ? record.defects.join(", ")
+                                                                : "No defects"}
+                                                        </Text>
+                                                        <Text style={styles.tableCell}>{record.inspectedBy}</Text>
+                                                    </View>
+                                                ))}
+                                            </View>
                                         </View>
                                     ))}
                                 </View>
                             </View>
-                        ))}
-                    </View>
-                ))}
+                        )
+                    } else return null;
+                })}
 
                 {/* Footer */}
                 <View style={styles.footer}>

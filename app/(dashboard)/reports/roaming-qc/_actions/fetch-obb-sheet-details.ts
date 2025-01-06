@@ -4,18 +4,20 @@ import { ObbSheet } from "@prisma/client";
 
 import { db } from "@/lib/db";
 
-export async function fetchObbSheetDetails(obbSheetId: string): Promise<ObbSheet | null> {
+export async function fetchObbSheetsForUnit(unitName: string): Promise<ObbSheet[]> {
     try {
-        const data = await db.obbSheet.findUnique({
+        const obbSheets = await db.obbSheet.findMany({
             where: {
-                id: obbSheetId
+                unit: {
+                    name: unitName
+                },
+                isActive: true
             }
         });
 
-        // console.log("DATA:", data);
-        return new Promise((resolve) => resolve(data as ObbSheet));
+        return new Promise((resolve) => resolve(obbSheets as ObbSheet[]));
     } catch (error) {
-        console.error("[FETCH_LINE_EFFICIENCY_RESOURCES_ERROR]", error);
-        return null;
+        console.error("[FETCH_OBB_SHEETS_FOR_UNIT_ERROR]", error);
+        return [];
     }
 }
