@@ -8,7 +8,7 @@ import { ObbSheet, ProductionData } from "@prisma/client";
 import HeatmapChart from "@/components/dashboard/charts/heatmap-chart";
 import SelectObbSheetAndDate from "@/components/dashboard/common/select-obbsheet-and-date";
 import { useToast } from "@/components/ui/use-toast";
-import { geOperationList, getData } from "./actions";
+
 import ReactApexChart from "react-apexcharts";
 import { ApexOptions } from "apexcharts";
  

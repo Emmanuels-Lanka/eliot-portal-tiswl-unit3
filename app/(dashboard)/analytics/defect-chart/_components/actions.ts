@@ -2,6 +2,7 @@
 import { neon } from "@neondatabase/serverless";
 import { ProductionDataType } from "./analytics-chart";
 import { defectData } from "./bar-chart-graph";
+import { createPostgresClient } from "@/lib/postgres";
 
 
 export async function getOperatorEfficiency(obbsheetid:string,date:string) : Promise<defectData[]>   {
@@ -53,21 +54,34 @@ GROUP BY
 
 
 export async function getObb(unit:any) : Promise<{ id: string; name: string }[]>  {
-    const sql = neon(process.env.DATABASE_URL || "");
+  
 
-    
-     const data = await sql`
-    select os.name as name ,os.id as id from "ObbSheet" os 
-
-inner join "Unit" u on u.id= os."unitId"
-
-where os."unitId"=${unit}
- order by os."createdAt" desc
-
-`
-            // console.log("unit",unit)
-            // console.log("data",data)
-    
-    
-    return new Promise((resolve) => resolve(data as { id: string; name: string }[]))
-}
+    const client = createPostgresClient();
+    try {
+  
+      await client.connect();
+      const query = `
+        SELECT os.name AS name, os.id AS id 
+        FROM "ObbSheet" os
+        INNER JOIN "Unit" u ON u.id = os."unitId"
+        WHERE os."unitId" = $1 AND os."isActive"
+        ORDER BY os."createdAt" DESC
+      `;
+      const values = [unit];
+  
+      const result = await client.query(query, values);
+  
+      console.log("DATAaa: ", result.rows);
+      return new Promise((resolve) => resolve(result.rows as { id: string; name: string }[]));
+      
+      
+    } catch (error) {
+      console.error("[TEST_ERROR]", error);
+      throw error;
+    }
+    finally{
+      await client.end()
+    }
+  
+  }
+  

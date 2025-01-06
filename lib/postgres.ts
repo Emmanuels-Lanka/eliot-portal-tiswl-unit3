@@ -7,3 +7,10 @@ export const createPostgresClient = () => {
 
     return client;
 };
+export const createPostgresClientRfid = () => {
+    const client = new Client({
+        connectionString: process.env.RFID_DATABASE_URL || "",
+    });
+
+    return client;
+};

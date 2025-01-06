@@ -1,35 +1,20 @@
 "use server"
 import { neon } from "@neondatabase/serverless";
 import { SMVChartData } from "./analytics-chart";
+import { createPostgresClient } from "@/lib/postgres";
 
 export async function getSMV(obbSheetId:String,date:String):Promise<SMVChartData[]> {
-    
-  const sql = neon(process.env.DATABASE_URL || "");
 
-  const datef = `${date}%`; // Start of the day
-//   const endDate = `${date} 23:59:59`; // End of the day
 
-//   console.log("Start Date:", startDate);
-//   console.log("End Date:", endDate);
-//   const smv = await sql `SELECT 
-//   p.id,
-//   o.smv,
-//   op.name,
-//   op.code
-// FROM 
-//   "ProductionSMV" p 
-// JOIN 
-//   "ObbOperation" o ON p."obbOperationId" = o.id
-// JOIN 
-//   "Operation" op ON o."operationId" = op.id
-// WHERE 
-//   o."obbSheetId" = ${obbSheetId}
-//   AND p.timestamp >=${startDate}
-//   AND p.timestamp <= ${endDate }
-// ORDER BY 
-//   p.id ASC;`
+  const datef = `${date}%`; 
 
-const smv = await sql`SELECT 
+  {
+    const client = createPostgresClient();
+  try {
+
+    await client.connect();
+    const query = `
+      SELECT 
     o.smv,
     concat(o."seqNo",' - ',op.name) as name,
     o."seqNo",
@@ -43,18 +28,30 @@ JOIN
     "Operation" op ON o."operationId" = op.id
 inner JOIN "SewingMachine" sm ON sm."id"= o."sewingMachineId"
 WHERE 
-    o."obbSheetId" = ${obbSheetId}
-    AND p.timestamp like ${datef}
+    o."obbSheetId" = $1
+    AND p.timestamp like $2
     and p.smv <> '0.00'
 group by  o.smv,
     op.name,
     o."seqNo",
     sm."machineId" 
 ORDER BY 
-     o."seqNo" ASC;`
-//   console.log("SMV Data",smv)
+     o."seqNo" ASC;
+    `;
+    const values = [obbSheetId,datef];
 
-  console.log("date, ",date,"ob",obbSheetId)
+    const result = await client.query(query, values);
 
-  return new Promise((resolve) => resolve(smv as SMVChartData[] ))
+    // console.log("DATAaa: ", result.rows);
+    return new Promise((resolve) => resolve(result.rows as SMVChartData[]));
+    
+    
+  } catch (error) {
+    console.error("[TEST_ERROR]", error);
+    throw error;
+  }
+  finally{
+    await client.end()
+  }}
+
 }

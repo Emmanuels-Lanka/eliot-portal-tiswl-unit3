@@ -2,6 +2,7 @@
 import { neon } from "@neondatabase/serverless";
 import { DataRecord, EfficiencyData } from "./barchart";
 import { ObbSheet } from "@prisma/client";
+import { createPostgresClient } from "@/lib/postgres";
 
 type defects= {
     count:number;
@@ -40,7 +41,38 @@ export type OperatorRfidData = {
 
 };
 
+export async function getObb(unit:any) : Promise<{ id: string; name: string }[]>  {
+  
 
+    const client = createPostgresClient();
+    try {
+  
+      await client.connect();
+      const query = `
+        SELECT os.name AS name, os.id AS id 
+        FROM "ObbSheet" os
+        INNER JOIN "Unit" u ON u.id = os."unitId"
+        WHERE os."unitId" = $1 AND os."isActive"
+        ORDER BY os."createdAt" DESC
+      `;
+      const values = [unit];
+  
+      const result = await client.query(query, values);
+  
+      console.log("DATAaa: ", result.rows);
+      return new Promise((resolve) => resolve(result.rows as { id: string; name: string }[]));
+      
+      
+    } catch (error) {
+      console.error("[TEST_ERROR]", error);
+      throw error;
+    }
+    finally{
+      await client.end()
+    }
+  
+  }
+  
 
 export async function getObbData(obbSheet:string) : Promise< obb[]>  {
     const sql = neon(process.env.DATABASE_URL || "");
@@ -91,12 +123,14 @@ order by oo."seqNo"
 
 export async function getFinalData(date:string,obbSheet:string) : Promise<OperatorRfidData[]>  {
     // date:string,obbSheet:string
-    const sql = neon(process.env.DATABASE_URL || "");
 
+    {
+        const client = createPostgresClient();
+      try {
     
-     const data = await sql
-     `
-    select oet."operatorRfid", MIN(oet."loginTimestamp") AS login,
+        await client.connect();
+        const query = `
+       select oet."operatorRfid", MIN(oet."loginTimestamp") AS login,
     MAX(oet."logoutTimestamp") AS logout,oet."offStandTime",o.name,
     sum(pd."productionCount"),opn.name operation,oo.smv,o."employeeId" eid
     
@@ -108,12 +142,28 @@ inner join "Operation" opn on opn."id" = oo."operationId"
 
 
 
-where oet."loginTimestamp" like ${date+"%"} and pd."timestamp" like ${date+"%"} 
-and oo."obbSheetId" = ${obbSheet} AND oet."logoutTimestamp" IS NOT NULL
+where oet."loginTimestamp" like $2 and pd."timestamp" like $2 
+and oo."obbSheetId" = $1 AND oet."logoutTimestamp" IS NOT NULL
 
 group by oet."operatorRfid",oet."offStandTime",o.name,operation,oo.smv,eid
 order by oet."operatorRfid"
+        `;
+        const values = [obbSheet,date+"%"];
+    
+        const result = await client.query(query, values);
+    
+        // console.log("DATAaa: ", result.rows);
+        return new Promise((resolve) => resolve(result.rows as OperatorRfidData[]));
+        
+        
+      } catch (error) {
+        console.error("[TEST_ERROR]", error);
+        throw error;
+      }
+      finally{
+        await client.end()
+      }}
 
-`
-    return new Promise((resolve) => resolve(data as OperatorRfidData[]))
+
+
 }
