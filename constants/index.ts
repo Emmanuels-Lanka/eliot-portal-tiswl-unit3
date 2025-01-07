@@ -258,7 +258,7 @@ export const SIDEBAR_ROUTES = [
                 icon: Table
             },
             {
-                label: "Line Efficiency Report",
+                label: "Line Individual Efficiency report",
                 href: "/analytics/line-efficiency-report",
                 icon: Table
             },
@@ -592,7 +592,7 @@ export const HEADER_INFO = [
         icon: ServerCog
     },
     {
-        label: "Line Efficiency Report",
+        label: "Line Individual Efficiency report",
         href: "/analytics/line-efficiency-report",
         icon: Table
     },
