@@ -37,7 +37,8 @@ export type OperatorRfidData = {
     operation: string;
 
     smv: number;
-    eid:string
+    eid:string;
+    seqNo : string
 
 };
 
@@ -124,6 +125,7 @@ order by oo."seqNo"
 export async function getFinalData(date:string,obbSheet:string) : Promise<OperatorRfidData[]>  {
     // date:string,obbSheet:string
 
+    // console.log(date+"%",obbSheet)
     {
         const client = createPostgresClient();
       try {
@@ -132,7 +134,7 @@ export async function getFinalData(date:string,obbSheet:string) : Promise<Operat
         const query = `
        select oet."operatorRfid", MIN(oet."loginTimestamp") AS login,
     MAX(oet."logoutTimestamp") AS logout,oet."offStandTime",o.name,
-    sum(pd."productionCount"),opn.name operation,oo.smv,o."employeeId" eid
+    sum(pd."productionCount"),opn.name operation,oo.smv,o."employeeId" eid,oo."seqNo"
     
     from "OperatorEffectiveTime" oet
 inner join "Operator" o on o."rfid" = oet."operatorRfid"
@@ -145,8 +147,8 @@ inner join "Operation" opn on opn."id" = oo."operationId"
 where oet."loginTimestamp" like $2 and pd."timestamp" like $2 
 and oo."obbSheetId" = $1 AND oet."logoutTimestamp" IS NOT NULL
 
-group by oet."operatorRfid",oet."offStandTime",o.name,operation,oo.smv,eid
-order by oet."operatorRfid"
+group by oet."operatorRfid",oet."offStandTime",o.name,operation,oo.smv,eid,oo."seqNo"
+order by eid desc
         `;
         const values = [obbSheet,date+"%"];
     

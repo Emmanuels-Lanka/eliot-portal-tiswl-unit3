@@ -342,7 +342,7 @@ const ReportTable = ({ obbSheets }: AnalyticsChartProps) => {
         }
       }
   
-      const fileName = `Line Efficiency Report_${data[0]?.linename}_${date}.pdf`;
+      const fileName = `Operator Daily Report_${data[0]?.linename}_${date}.pdf`;
       pdf.save(fileName);
     } catch (error) {
       console.error('Error generating PDF:', error);

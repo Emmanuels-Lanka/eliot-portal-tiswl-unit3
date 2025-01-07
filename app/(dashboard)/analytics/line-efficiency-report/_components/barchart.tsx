@@ -157,9 +157,11 @@ function timeDifferenceInMinutes(minTime: string, maxTime: string): { hours: num
 
 }
 
-function timeStringToMinutes(timeString: string): number {
+function timeStringToMinutes(timeString: string | null | undefined): number {
 
-   
+   if(!timeString){
+    return 0;
+   }
 
     const timeParts = timeString.split(' ');
 
@@ -206,7 +208,7 @@ const BarChartGraphEfficiencyRate = ({ date,obbSheet }: BarChartGraphProps) => {
             setisSubmitting(true)
             
             const data = await getFinalData(date,obbSheet)
-            console.log(data)
+            console.log("aaa",data)
 
 
 
