@@ -234,8 +234,9 @@ export function TableDemo({ tableProp,date,obbData }: TableProps) {
       const sortedTableProp = [...tableProp].sort((a, b) => b.onStndEff - a.onStndEff);
       
       const tableData = sortedTableProp.map(row => [
-        row.operatorRfid,
+        row.eid,
         row.name,
+        row.seqNo,
         row.operation,
         row.production,
         row.smv,
@@ -252,6 +253,7 @@ export function TableDemo({ tableProp,date,obbData }: TableProps) {
         head: [[
           'MO ID',
           'MO Name',
+          'Seq No',
           'Operation',
           'Production pieces',
           'SMV',
@@ -267,13 +269,14 @@ export function TableDemo({ tableProp,date,obbData }: TableProps) {
         styles: { fontSize: 8, cellPadding: 2 },
         columnStyles: {
           0: { halign: 'center' },
-          3: { halign: 'right' },
+          3: { halign: 'left' },
           4: { halign: 'right' },
           5: { halign: 'right' },
           6: { halign: 'right' },
           7: { halign: 'right' },
           8: { halign: 'right' },
-          9: { halign: 'right' }
+          9: { halign: 'right' },
+          10: { halign: 'right' }
         }
       });
   
