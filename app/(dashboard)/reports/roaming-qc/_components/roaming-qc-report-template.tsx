@@ -202,7 +202,7 @@ const RoamingQcReportTemplate: React.FC<RoamingQcReportTemplateProps> = ({ data 
                                         <Text style={styles.tableCell}>Color</Text>
                                     </View>
                                     <View style={styles.tableRow}>
-                                        <Text style={styles.tableCell}>{report.date}</Text>
+                                        <Text style={styles.tableCell}>{moment(report.date).format("DD MMMM, YYYY")}</Text>
                                         <Text style={styles.tableCell}>{report.obbSheet.name}</Text>
                                         <Text style={styles.tableCell}>{report.obbSheet.buyer}</Text>
                                         <Text style={styles.tableCell}>{report.obbSheet.colour}</Text>
@@ -225,6 +225,7 @@ const RoamingQcReportTemplate: React.FC<RoamingQcReportTemplateProps> = ({ data 
                                                     <Text style={styles.hourCell}>Status</Text>
                                                     <Text style={styles.tableCell}>Defects</Text>
                                                     <Text style={styles.tableCell}>RQC</Text>
+                                                    <Text style={styles.hourCell}>Remark</Text>
                                                 </View>
                                                 {/* Table Rows */}
                                                 {operationGroup.records.map((record, recIndex) => (
@@ -242,6 +243,7 @@ const RoamingQcReportTemplate: React.FC<RoamingQcReportTemplateProps> = ({ data 
                                                                 : "No defects"}
                                                         </Text>
                                                         <Text style={styles.tableCell}>{record.inspectedBy}</Text>
+                                                        <Text style={styles.hourCell}>{" "}</Text>
                                                     </View>
                                                 ))}
                                             </View>
