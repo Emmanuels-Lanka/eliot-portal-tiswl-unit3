@@ -15,7 +15,13 @@ import { getObbData } from "./actions";
 import { ObbSheet } from "@prisma/client";
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 
+declare module 'jspdf' {
+  interface jsPDF {
+    autoTable: (options: any) => jsPDF;
+  }
+}
 
 
   export interface TableProps {
@@ -25,6 +31,7 @@ import jsPDF from 'jspdf';
 }
 export function TableDemo({ tableProp,date,obbData }: TableProps) {
 
+ 
   const reportRef = useRef<HTMLDivElement | null>(null);
   const reportRef2 = useRef<HTMLDivElement | null>(null);
 
@@ -160,6 +167,8 @@ export function TableDemo({ tableProp,date,obbData }: TableProps) {
 
 
     function calculateEfficiencyRatio(tableProp: ExtendedOperatorRfidData[]): string {
+
+      
       const totalAvailableHours = tableProp.reduce((a, b) => a + b.hours, 0);
       const totalStdHours = tableProp.reduce((a, b) => a + b.earnHours, 0);
       
@@ -185,65 +194,149 @@ export function TableDemo({ tableProp,date,obbData }: TableProps) {
 
 
 
-    const handleDownloadPDF = async () => {
-      if (!reportRef.current || !obbData.length) return;
-    
-      try {
-        await new Promise(resolve => setTimeout(resolve, 2000));
-    
-        const canvas = await html2canvas(reportRef.current, {
-          scale: 1,
-          logging: false,
-          useCORS: true,
-        } as any);
-    
-        const imgWidth = 190; // Adjust for margins (A4 width is 210mm, minus 10mm margins on both sides)
-        const imgHeight = (canvas.height * imgWidth) / canvas.width;
-        const pdf = new jsPDF('p', 'mm', 'a4');
-        const pageHeight = pdf.internal.pageSize.getHeight();
-        
-        let position = 0;
-    
-        // Split content into multiple pages if necessary
-        while (position < canvas.height) {
-          const canvasSlice = document.createElement('canvas');
-          canvasSlice.width = canvas.width;
-          canvasSlice.height = Math.min(canvas.height - position, (pageHeight * canvas.width) / imgWidth);
-    
-          const ctx = canvasSlice.getContext('2d');
-          if (ctx) {
-            ctx.drawImage(
-              canvas,
-              0,
-              position,
-              canvas.width,
-              canvasSlice.height,
-              0,
-              0,
-              canvas.width,
-              canvasSlice.height
-            );
-          }
-    
-          const imgData = canvasSlice.toDataURL('image/png', 0.5);
-          pdf.addImage(imgData, 'PNG', 10, 10, imgWidth, (canvasSlice.height * imgWidth) / canvas.width);
-    
-          position += canvasSlice.height;
-    
-          if (position < canvas.height) {
-            pdf.addPage(); // Add new page
-          }
+    const handleDownloadPDF = () => {
+      if (!obbData.length) return;
+  
+      const pdf = new jsPDF('l', 'mm', 'a4');
+      
+      
+
+       // Add Ha-Meem logo and header content
+  const logoUrl = '/ha-meem.png'; // Path to the logo
+  const logoWidth = 20; // Adjust logo width as needed
+  const logoHeight = (logoWidth * 120) / 120; // Maintain aspect ratio
+
+  pdf.addImage(logoUrl, 'PNG', (pdf.internal.pageSize.getWidth() - logoWidth) / 2, 10, logoWidth, logoHeight);
+  pdf.setFontSize(12);
+  pdf.text('~ Bangladesh ~', pdf.internal.pageSize.getWidth() / 2, 35, { align: 'center' });
+  pdf.text('Line Individual Efficiency Report', pdf.internal.pageSize.getWidth() / 2, 40, { align: 'center' });
+  pdf.setLineWidth(0.5);
+  pdf.line(15, 45, pdf.internal.pageSize.getWidth() - 15, 45); // Horizontal line
+
+
+      // Add factory details
+      pdf.setFontSize(10);
+      pdf.text([
+        `Factory: Apparel Gallery LTD`,
+        `Unit: ${obbData[0].unit}`,
+        `Line: ${obbData[0].line}`,
+      ], 15, 30);
+  
+      const currentTime = new Date().toLocaleTimeString();
+      pdf.text([
+        // `Buyer: ${obbData[0].buyer}`,
+        // `Style: ${obbData[0].style}`,
+        `Date: ${date}`,
+        `Printed Time: ${currentTime}`
+      ], pdf.internal.pageSize.getWidth() - 80, 30);
+  
+      // Prepare table data
+      const sortedTableProp = [...tableProp].sort((a, b) => b.onStndEff - a.onStndEff);
+      
+      const tableData = sortedTableProp.map(row => [
+        row.eid,
+        row.name,
+        row.seqNo,
+        row.operation,
+        row.production,
+        row.smv,
+        row.hours,
+        row.earnHours,
+        row.offStandHours,
+        row.ovlEff,
+        row.onStndEff
+      ]);
+  
+      // Add the main table
+      pdf.autoTable({
+        startY: 45,
+        head: [[
+          'MO ID',
+          'MO Name',
+          'Operation Code',
+          'Operation',
+          'Production pieces',
+          'SMV',
+          'Available Hours',
+          'Production Standard Hours',
+          'Off Stand Hours',
+          'Overall Efficiency',
+          'On Stand Efficiency'
+        ]],
+        body: tableData,
+        theme: 'grid',
+        headStyles: { fillColor: [128, 128, 128] },
+        styles: { fontSize: 8, cellPadding: 2 },
+        columnStyles: {
+          0: { halign: 'center' },
+          3: { halign: 'left' },
+          4: { halign: 'right' },
+          5: { halign: 'right' },
+          6: { halign: 'right' },
+          7: { halign: 'right' },
+          8: { halign: 'right' },
+          9: { halign: 'right' },
+          10: { halign: 'right' }
         }
+      });
+  
+      // Add totals row
+      const finalY = (pdf as any).lastAutoTable.finalY || 45;
+      pdf.autoTable({
+        startY: finalY + 5,
+        headStyles: { fillColor: [128, 128, 128] },
+        head: [[
+          { content: '', },
+          'Total Available Hours',
+          'Total Production Standard Hours',
+          'Total Off Stand Hours',
+          'Overall Efficiency',
+          'On Stand Efficiency'
+        ]],
+        body: [[
+          { content: 'Total Line Efficiency',  },
+          tableProp.reduce((a, b) => a + b.hours, 0).toFixed(1),
+          tableProp.reduce((a, b) => a + b.earnHours, 0).toFixed(1),
+          tableProp.reduce((a, b) => a + b.offStandHours, 0).toFixed(1),
+          calculateEfficiencyRatio(tableProp),
+          calculateOnEfficiencyRatio(tableProp)
+        ]],
+        theme: 'grid',
+        styles: { fontSize: 8, cellPadding: 2 },
+        columnStyles: {
+          5: { halign: 'right' },
+          6: { halign: 'right' },
+          7: { halign: 'right' },
+          8: { halign: 'right' },
+          9: { halign: 'right' }
+        }
+      });
+  
+      // Add footer
+      const pageHeight = pdf.internal.pageSize.getHeight();
+      pdf.setFontSize(8);
+      pdf.text('https://www.portal.eliot.global/', 15, pageHeight - 10);
+      const eliotLogoUrl = '/eliot-logo.png'; // Path to the Eliot logo
+      const eliotLogoWidth = 20; // Adjust logo width as needed
+      const eliotLogoHeight = (eliotLogoWidth * 200) / 200; // Maintain aspect ratio
+      
+      pdf.addImage(
+        eliotLogoUrl,
+        'PNG',
+        pdf.internal.pageSize.getWidth() - eliotLogoWidth - 15, // Right-aligned with 15mm margin
+        pageHeight - eliotLogoHeight - 10, // Bottom-aligned with 10mm margin
+        eliotLogoWidth,
+        eliotLogoHeight
+      );
     
-        const fileName = `Operator Daily Efficiency Report_${obbData[0]?.line}_${date}.pdf`;
-        pdf.save(fileName);
-      } catch (error) {
-        console.error('Error generating PDF:', error);
-      }
+  
+      // Save the PDF
+      pdf.save(`Line_Individual_Efficiency_report_${obbData[0]?.line}_${date}.pdf`);
     };
+  
 
 
-
+    const sortedTableProp = [...tableProp].sort((a, b) => b.onStndEff - a.onStndEff);
 
     return (
 
@@ -261,7 +354,7 @@ export function TableDemo({ tableProp,date,obbData }: TableProps) {
 <div className="text-center">
     <img src="/ha-meem.png" alt="Ha-Meem Logo" className="mx-auto w-[120px] h-auto mt-[10px]" />
     <h5 className="mt-[10px]">~ Bangladesh ~</h5>
-    <h1 className="text-center">Line Efficiency Report</h1>
+    <h1 className="text-center">Line Individual Efficiency report</h1>
     <hr className="my-4" />
   </div>
 
@@ -273,22 +366,28 @@ export function TableDemo({ tableProp,date,obbData }: TableProps) {
 
       <h5 className="m-0 font-semibold">Unit: {obbData[0].unit}</h5>
 
-      <h5 className="font-semibold">Line Name: {obbData[0]?.line}</h5>
     </div>
     <div className="flex-1 justify-around ml-[10px] leading-[1.5]">
-      <h5 className="m-0 font-semibold">Buyer: {obbData[0]?.buyer}</h5>
-      <h5 className="m-0 font-semibold">Style Name: {obbData[0]?.style}</h5>
+      {/* <h5 className="m-0 font-semibold">Buyer: {obbData[0]?.buyer}</h5>
+      <h5 className="m-0 font-semibold">Style Name: {obbData[0]?.style}</h5> */}
       <h5 className="m-0 font-semibold"> Date: {date}</h5>
+      
+      <h5 className="font-semibold">Line Name: {obbData[0]?.line}</h5>
+    </div>
+    <div>
+    <div id="print-time-placeholder"></div>
+
     </div>
   </div>
-      <Table>
+      <Table style={{ tableLayout: 'fixed' }}>
        
         {/* <TableCaption>LINE EFFICIENCY.</TableCaption> */}
         <TableHeader>
           <TableRow>
             <TableHead className="text-center">MO ID</TableHead>
             <TableHead className="">MO Name</TableHead>
-            <TableHead className="w-[200px]">Operation</TableHead>
+            <TableHead className="w-[100px] text-center" >Operation Code</TableHead>
+            <TableHead className="w-[150px]">Operation</TableHead>
             <TableHead className="text-center">Production pieces</TableHead>
             <TableHead className="text-center">SMV</TableHead>
             <TableHead className="text-center">Available Hours</TableHead>
@@ -300,11 +399,12 @@ export function TableDemo({ tableProp,date,obbData }: TableProps) {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {tableProp.map((invoice,index) => (
+          {sortedTableProp.map((invoice,index) => (
             <TableRow key={index}>
               
-              <TableCell className="text-center px-2 py-2">{invoice.operatorRfid}</TableCell>
+              <TableCell className="text-center px-2 py-2">{invoice.eid}</TableCell>
               <TableCell className="font-medium px-2 py-2">{invoice.name}</TableCell>
+              <TableCell className="font-medium text-center px-2  py-2">{invoice.seqNo}</TableCell>
               <TableCell className="font-medium px-2 py-2">{invoice.operation}</TableCell>
               <TableCell className="font-medium text-right px-2 py-2">{invoice.production}</TableCell>
               <TableCell className="font-medium text-right px-2 py-2">{invoice.smv}</TableCell>
@@ -328,8 +428,8 @@ export function TableDemo({ tableProp,date,obbData }: TableProps) {
           <TableCell className="text-right">Total Available Hours</TableCell>
           <TableCell className="text-center">Total Prodution Standard Hours</TableCell>
           <TableCell className="text-center">Total Off Stand Hours</TableCell>
-          <TableCell className="text-center">Overall Efficiency</TableCell>
-          <TableCell className="text-center">On Stand Efficiency</TableCell>
+          <TableCell className="text-center">Total Overall Efficiency</TableCell>
+          <TableCell className="text-center">Total On Stand Efficiency</TableCell>
         </TableRow>
         <TableRow >
           <TableCell colSpan={5} >Total Line Efficiency</TableCell>
