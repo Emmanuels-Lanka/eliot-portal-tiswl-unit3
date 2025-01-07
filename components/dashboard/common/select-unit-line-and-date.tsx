@@ -1,8 +1,11 @@
 "use client"
 
 import * as z from "zod";
+import { useState } from "react";
+import { format } from "date-fns";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { ProductionLine } from "@prisma/client";
 import { CalendarIcon, Filter, Loader2 } from "lucide-react";
 
 import {
@@ -28,33 +31,44 @@ import {
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Calendar } from "@/components/ui/calendar";
-import { format } from "date-fns";
+import { fetchLinesForUnit } from "@/app/(dashboard)/reports/roaming-qc/_actions/fetch-details";
 
-interface SelectUnitAndDateProps {
-    handleSubmit: (data: { unit: string; date: Date }) => void;
+interface SelectUnitLineAndDateProps {
+    handleSubmit: (data: { unit: string; lineId: string; date: Date }) => void;
 };
 
 const formSchema = z.object({
     unit: z.string().min(1, {
         message: "Unit is required"
     }),
+    lineId: z.string().min(1, {
+        message: "Line is required"
+    }),
     date: z.date()
 });
 
 const UNITS = ["Unit 1", "Unit 2", "Unit 3", "Unit 4", "Unit 5"];
 
-const SelectUnitAndDate = ({
+const SelectUnitLineAndDate = ({
     handleSubmit
-}: SelectUnitAndDateProps) => {
+}: SelectUnitLineAndDateProps) => {
+    const [lines, setLines] = useState<ProductionLine[]>([]);
+
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
             unit: "",
+            lineId: "",
             date: undefined,
         },
     });
 
     const { isSubmitting, isValid } = form.formState;
+
+    const handleSelectUnit = async (unit: string) => {
+        const res = await fetchLinesForUnit(unit);
+        setLines(res);
+    }
 
     return (
         <div className='mt-6 border px-12 pt-6 pb-10 rounded-lg bg-slate-100'>
@@ -64,7 +78,7 @@ const SelectUnitAndDate = ({
                     className="w-full flex flex-col lg:flex-row items-end gap-x-8 gap-y-6 mt-4"
                 >
                     <div className="w-full flex flex-col md:flex-row gap-6">
-                        <div className="md:w-2/3">
+                        <div className="md:w-1/3">
                             <FormField
                                 control={form.control}
                                 name="unit"
@@ -73,16 +87,53 @@ const SelectUnitAndDate = ({
                                         <FormLabel className="text-base">
                                             Unit
                                         </FormLabel>
-                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                        <Select
+                                            onValueChange={(value) => {
+                                                field.onChange(value);
+                                                handleSelectUnit(value);
+                                            }}
+                                            defaultValue={field.value}
+                                        >
                                             <FormControl>
                                                 <SelectTrigger>
                                                     <SelectValue placeholder="Select a unit" />
                                                 </SelectTrigger>
                                             </FormControl>
                                             <SelectContent>
-                                                {UNITS.length && UNITS.map((unit) =>(
+                                                {UNITS.length && UNITS.map((unit) => (
                                                     <SelectItem key={unit} value={unit}>{unit}</SelectItem>
                                                 ))}
+                                            </SelectContent>
+                                        </Select>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
+                        <div className="md:w-1/3">
+                            <FormField
+                                control={form.control}
+                                name="lineId"
+                                render={({ field }) => (
+                                    <FormItem className="flex flex-col">
+                                        <FormLabel className="text-base">
+                                            Line
+                                        </FormLabel>
+                                        <Select
+                                            onValueChange={field.onChange}
+                                            defaultValue={field.value}
+                                        >
+                                            <FormControl>
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Select a line" />
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                                {lines.length ? lines.map((line) => (
+                                                    <SelectItem key={line.id} value={line.id}>{line.name}</SelectItem>
+                                                )) : (
+                                                    <p className="text-sm text-slate-500 px-2 py-1">No lines found</p>
+                                                )}
                                             </SelectContent>
                                         </Select>
                                         <FormMessage />
@@ -149,4 +200,4 @@ const SelectUnitAndDate = ({
     )
 }
 
-export default SelectUnitAndDate
+export default SelectUnitLineAndDate
