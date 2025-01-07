@@ -224,8 +224,8 @@ export function TableDemo({ tableProp,date,obbData }: TableProps) {
   
       const currentTime = new Date().toLocaleTimeString();
       pdf.text([
-        `Buyer: ${obbData[0].buyer}`,
-        `Style: ${obbData[0].style}`,
+        // `Buyer: ${obbData[0].buyer}`,
+        // `Style: ${obbData[0].style}`,
         `Date: ${date}`,
         `Printed Time: ${currentTime}`
       ], pdf.internal.pageSize.getWidth() - 80, 30);
@@ -253,7 +253,7 @@ export function TableDemo({ tableProp,date,obbData }: TableProps) {
         head: [[
           'MO ID',
           'MO Name',
-          'Seq No',
+          'Operation Code',
           'Operation',
           'Production pieces',
           'SMV',
@@ -366,12 +366,13 @@ export function TableDemo({ tableProp,date,obbData }: TableProps) {
 
       <h5 className="m-0 font-semibold">Unit: {obbData[0].unit}</h5>
 
-      <h5 className="font-semibold">Line Name: {obbData[0]?.line}</h5>
     </div>
     <div className="flex-1 justify-around ml-[10px] leading-[1.5]">
-      <h5 className="m-0 font-semibold">Buyer: {obbData[0]?.buyer}</h5>
-      <h5 className="m-0 font-semibold">Style Name: {obbData[0]?.style}</h5>
+      {/* <h5 className="m-0 font-semibold">Buyer: {obbData[0]?.buyer}</h5>
+      <h5 className="m-0 font-semibold">Style Name: {obbData[0]?.style}</h5> */}
       <h5 className="m-0 font-semibold"> Date: {date}</h5>
+      
+      <h5 className="font-semibold">Line Name: {obbData[0]?.line}</h5>
     </div>
     <div>
     <div id="print-time-placeholder"></div>
@@ -385,7 +386,7 @@ export function TableDemo({ tableProp,date,obbData }: TableProps) {
           <TableRow>
             <TableHead className="text-center">MO ID</TableHead>
             <TableHead className="">MO Name</TableHead>
-            <TableHead className="w-[100px] text-right" >Seq No</TableHead>
+            <TableHead className="w-[100px] text-center" >Operation Code</TableHead>
             <TableHead className="w-[150px]">Operation</TableHead>
             <TableHead className="text-center">Production pieces</TableHead>
             <TableHead className="text-center">SMV</TableHead>
