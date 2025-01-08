@@ -259,9 +259,14 @@ export const SIDEBAR_ROUTES = [
             },
             {
                 label: "Line Individual Efficiency report",
-                href: "/analytics/line-efficiency-report",
+                href: "/analytics/line-test",
                 icon: Table
             },
+            // {
+            //     label: "Line Individual Efficiency report",
+            //     href: "/analytics/line-efficiency-report",
+            //     icon: Table
+            // },
             {
                 label: "Monthly Efficiency Report",
                 href: "/analytics/operator-report",
@@ -521,6 +526,11 @@ export const HEADER_INFO = [
         label: "Sewing Machine types",
         href: "/analytics/machine-type",
         icon: BarChart3
+    },
+    {
+        label: "Line Individual Efficiency report",
+        href: "/analytics/line-test",
+        icon: Table
     },
      {
                 label: "Roaming QC",
