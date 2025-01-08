@@ -6,10 +6,10 @@ import { ObbOperation, ObbSheet, Operation, Operator, ProductionLine, RoamingQC 
 
 import { Button } from "@/components/ui/button";
 import { fetchRoamingQcData } from "./_actions/fetch-roaming-qc-data";
-import { fetchObbSheetsForUnit } from "./_actions/fetch-obb-sheet-details";
+import { fetchObbSheetsForUnit } from "./_actions/fetch-details";
 import RoamingQcReportTemplate from "./_components/roaming-qc-report-template";
 import RoamingQcReportViewer from "./_components/roaming-qc-report-viewer";
-import SelectUnitAndDate from "@/components/dashboard/common/select-unit-and-date";
+import SelectUnitLineAndDate from "@/components/dashboard/common/select-unit-line-and-date";
 
 type RawDataType = RoamingQC & {
     obbOperation: ObbOperation & {
@@ -55,11 +55,11 @@ const RoamingQcReportPage = () => {
         };
     };
 
-    const handleProcessReportData = async (data: { unit: string; date: Date }) => {
+    const handleProcessReportData = async (data: { unit: string; lineId: string; date: Date }) => {
         try {
             data.date.setDate(data.date.getDate() + 1);
             const formattedDate = data.date.toISOString().split('T')[0].toString();     // 2024-12-24
-            const obbSheets = await fetchObbSheetsForUnit(data.unit);
+            const obbSheets = await fetchObbSheetsForUnit(data.lineId);
 
             const formattedData: ReportDataType[] = [];
 
@@ -102,7 +102,7 @@ const RoamingQcReportPage = () => {
         <div className="mx-auto max-w-7xl">
             <h1 className="mt-4 text-2xl font-semibold">Roaming QC Report</h1>
 
-            <SelectUnitAndDate
+            <SelectUnitLineAndDate
                 handleSubmit={handleProcessReportData}
             />
 
