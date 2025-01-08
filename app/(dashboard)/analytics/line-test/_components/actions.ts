@@ -152,12 +152,12 @@ export async function getLogin(date:string,obbSheet:string) : Promise<LogData[]>
 MAX(oet."logoutTimestamp")logout,MAX(oet."offStandTime") offStandTime
 from "OperatorEffectiveTime" oet
 inner join "Operator" o on o.rfid = oet."operatorRfid"
-where oet."loginTimestamp" like '2025-01-06%'  and oet."logoutTimestamp" is not null
+where oet."loginTimestamp" like $1 and oet."logoutTimestamp" is not null
 group by oet."operatorRfid",o.name, eid
         `;
-        const values = [obbSheet,date+"%"];
+        const values = [date+"%"];
     
-        const result = await client.query(query);
+        const result = await client.query(query,values);
     
         // console.log("DATAaa: ", result.rows);
         return new Promise((resolve) => resolve(result.rows as LogData[]));
@@ -188,8 +188,8 @@ export async function getNew(date:string,obbSheet:string) : Promise<ProdData[]> 
 oo."seqNo" from "ProductionData" pd
 inner join "ObbOperation" oo on oo.id = pd."obbOperationId"
 inner join "Operation" o on o.id = oo."operationId"
-where pd.timestamp like '2025-01-06%' and
-oo."obbSheetId" = 'm4zkudhn-kKov-jOse5TX'
+where pd.timestamp like $2 and
+oo."obbSheetId" = $1
 
 
 group by pd."operatorRfid" ,o.name,oo.smv,oo."seqNo"
@@ -199,7 +199,7 @@ HAVING
         `;
         const values = [obbSheet,date+"%"];
     
-        const result = await client.query(query);
+        const result = await client.query(query,values);
     
         // console.log("DATAaa: ", result.rows);
         return new Promise((resolve) => resolve(result.rows as ProdData[]));

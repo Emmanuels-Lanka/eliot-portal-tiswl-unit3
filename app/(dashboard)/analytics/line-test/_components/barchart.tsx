@@ -151,8 +151,15 @@ function timeDifferenceInMinutes(minTime: string, maxTime: string): { hours: num
     // Calculate the difference in milliseconds
     const timeDifferenceInMillis = maxDate.getTime() - minDate.getTime();
     // Convert milliseconds to minutes
-    const minutes = (Number((timeDifferenceInMillis / (1000 * 60)).toFixed(1)));
-    const hours = (Number((timeDifferenceInMillis / (1000 * 60*60)).toFixed(1)));
+    let minutes = (Number((timeDifferenceInMillis / (1000 * 60)).toFixed(1)));
+    let hours = (Number((timeDifferenceInMillis / (1000 * 60*60)).toFixed(1)));
+    
+    if (hours >= 1) {
+        hours -= 1;
+        minutes -= 60; // Subtract 1 hour (60 minutes) from minutes
+    }
+    minutes = Number(Math.max(minutes, 0.1).toFixed(1));
+    hours = Number(Math.max(hours, 0.1).toFixed(1));
     return{ hours,minutes};
 
 }
@@ -207,11 +214,11 @@ const BarChartGraphEfficiencyRate = ({ date,obbSheet }: BarChartGraphProps) => {
             
             setisSubmitting(true)
             
-            const data = await getFinalData(date,obbSheet)
+            // const data = await getFinalData(date,obbSheet)
             const newd = await getNew(date,obbSheet)
-            console.log("aaa",newd)
+            // console.log("aaa",newd)
             const login = await getLogin(date,obbSheet)
-            console.log("bbb",login)
+            // console.log("bbb",login)
 
 
             const newMapLast = newd.flatMap((n) => {
@@ -229,7 +236,7 @@ const BarChartGraphEfficiencyRate = ({ date,obbSheet }: BarChartGraphProps) => {
                 return []; // Skip entries without matching `login` data
               });
 
-            console.log("first",newMapLast)
+            // console.log("first",newMapLast)
             const obbData = await getObbData(obbSheet)
             setObbData(obbData)
 

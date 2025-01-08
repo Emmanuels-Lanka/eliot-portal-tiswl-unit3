@@ -222,12 +222,15 @@ export function TableDemo({ tableProp,date,obbData }: TableProps) {
         `Line: ${obbData[0].line}`,
       ], 15, 30);
   
-      const currentTime = new Date().toLocaleTimeString();
+      const now = new Date();
+const formattedDate = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+const formattedTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
+const currentTime = `${formattedDate} - ${formattedTime}`;
       pdf.text([
         // `Buyer: ${obbData[0].buyer}`,
         // `Style: ${obbData[0].style}`,
-        `Date: ${date}`,
-        `Printed Time: ${currentTime}`
+        `Document Date: ${date}`,
+        `Printed Date: ${currentTime}`
       ], pdf.internal.pageSize.getWidth() - 80, 30);
   
       // Prepare table data
@@ -343,7 +346,7 @@ export function TableDemo({ tableProp,date,obbData }: TableProps) {
     <div>
       <div>
       {true && (
-        <Button className="" onClick={handleDownloadPDF}>
+        <Button className="shadow-md" onClick={handleDownloadPDF}>
           Download as PDF
         </Button>
       )}
@@ -409,12 +412,12 @@ export function TableDemo({ tableProp,date,obbData }: TableProps) {
               <TableCell className="font-medium text-right px-2 py-2">{invoice.production}</TableCell>
               <TableCell className="font-medium text-right px-2 py-2">{invoice.smv}</TableCell>
 
-              <TableCell className="text-right px-2 py-2">{invoice.hours}</TableCell>
-              <TableCell className="text-right px-2 py-2">{invoice.earnHours}</TableCell>
-              <TableCell className="text-right px-2 py-2">{invoice.offStandHours}</TableCell>
-              <TableCell className="text-right px-2 py-2">{invoice.ovlEff}</TableCell>
-              <TableCell className="text-right px-2 py-2">{invoice.onStndEff}</TableCell>
-              {/* <TableCell className="text-right">{invoice.totalAmount}</TableCell> */}
+              <TableCell className="text-right font-medium  px-2 py-2">{invoice.hours}</TableCell>
+              <TableCell className="text-right font-medium px-2 py-2">{invoice.earnHours}</TableCell>
+              <TableCell className="text-right font-medium px-2 py-2">{invoice.offStandHours}</TableCell>
+              <TableCell className="text-right font-medium px-2 py-2">{invoice.ovlEff}</TableCell>
+              <TableCell className="text-right font-medium px-2 py-2">{invoice.onStndEff}</TableCell>
+              {/* <TableCell className="text-r font-mediumight">{invoice.totalAmount}</TableCell> */}
             </TableRow>
           ))}
         </TableBody>
