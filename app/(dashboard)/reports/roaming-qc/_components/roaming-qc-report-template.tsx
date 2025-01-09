@@ -229,7 +229,7 @@ const RoamingQcReportTemplate: React.FC<RoamingQcReportTemplateProps> = ({ data 
                                     
                                     {/* Table Rows */}
                                     {report.data.map((operationGroup, opIndex) => (
-                                        <View style={[styles.table, { marginTop: 15 }]}>
+                                        <View key={opIndex} style={[styles.table, { marginTop: 15 }]}>
                                             {operationGroup.records.map((record, recIndex) => {
                                                 const defectCounts = record.defects.reduce<{ [key: string]: number }>((acc, defect) => {
                                                     acc[defect] = (acc[defect] || 0) + 1;
