@@ -404,7 +404,7 @@ model LineEfficiencyResources {
 
 model EliotFirmwareUpdate {
   id              String   @id @default(uuid())
-  eliotSerialNo   String
+  eliotSerialNo   String   @unique
   firmwareUrl     String
   firmwareVersion String?
   status          String   @default("pending")

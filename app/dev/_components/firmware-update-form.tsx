@@ -68,7 +68,7 @@ const FirmwareUpdateForm = ({
     }
 
     return (
-        <div className={cn('mx-auto max-w-7xl mt-16 border px-12 pt-6 pb-10 rounded-lg bg-slate-100')}>
+        <div className={cn('border px-12 pt-6 pb-10 rounded-lg bg-slate-100')}>
             <Form {...form}>
                 <form
                     onSubmit={form.handleSubmit(onSubmit)}
