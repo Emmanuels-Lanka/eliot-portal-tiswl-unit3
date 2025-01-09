@@ -1,16 +1,10 @@
-import { SewingMachine, Unit } from '@prisma/client';
-
 import { db } from '@/lib/db';
-import Multi from '../_components/multi';
+import FirmwareUpdateForm from '../_components/firmware-update-form';
 
 const FirmwareUpdatePage = async () => {
     const devices = await db.eliotDevice.findMany();
 
-    return (
-        <section>
-            <Multi devices={devices}/>
-        </section>
-    )
+    return <FirmwareUpdateForm devices={devices}/>
 }
 
 export default FirmwareUpdatePage

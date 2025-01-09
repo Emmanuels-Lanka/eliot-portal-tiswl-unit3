@@ -401,3 +401,13 @@ model LineEfficiencyResources {
 
   @@index([unitId, obbSheetId])
 }
+
+model EliotFirmwareUpdate {
+  id              String   @id @default(uuid())
+  eliotSerialNo   String
+  firmwareUrl     String
+  firmwareVersion String?
+  status          String   @default("pending")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
