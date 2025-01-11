@@ -4,9 +4,10 @@ import { db } from "@/lib/db";
 
 export async function DELETE() {
     try {
-        const data = await db.productionLine.findMany({
-            include: {
-                machines: true
+        const data = await db.obbSheet.findMany({
+            select: {
+                name: true,
+                productionLine: true
             }
         });
         // const data = await db.eliotDevice.deleteMany();

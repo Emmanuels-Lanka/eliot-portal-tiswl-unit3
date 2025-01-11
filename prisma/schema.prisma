@@ -133,7 +133,7 @@ model SewingMachine {
 model ObbSheet {
   id                      String                    @id @default(uuid())
   name                    String
-  productionLineId        String?
+  productionLineId        String
   unitId                  String
   indEngineerId           String?
   mechanicId              String?
@@ -186,7 +186,7 @@ model ObbSheet {
   indEngineer             Staff?                    @relation("IndEngineer", fields: [indEngineerId], references: [id])
   lineChief               Staff?                    @relation("LineChief", fields: [lineChiefId], references: [id])
   mechanic                Staff?                    @relation("Mechanic", fields: [mechanicId], references: [id])
-  productionLine          ProductionLine?           @relation(fields: [productionLineId], references: [id])
+  productionLine          ProductionLine           @relation(fields: [productionLineId], references: [id])
   qualityIns              Staff?                    @relation("QI", fields: [qualityInsId], references: [id])
   supervisorAssembly      Staff?                    @relation("assembly", fields: [supervisorAssemblyId], references: [id])
   supervisorBack          Staff?                    @relation("back", fields: [supervisorBackId], references: [id])
