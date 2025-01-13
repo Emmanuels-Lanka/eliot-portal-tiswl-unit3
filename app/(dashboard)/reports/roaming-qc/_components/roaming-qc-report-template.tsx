@@ -202,7 +202,7 @@ const RoamingQcReportTemplate: React.FC<RoamingQcReportTemplateProps> = ({ data 
                                         <Text style={styles.tableCell}>Color</Text>
                                     </View>
                                     <View style={styles.tableRow}>
-                                        <Text style={styles.tableCell}>{report.date}</Text>
+                                        <Text style={styles.tableCell}>{moment(report.date).format("DD MMMM, YYYY")}</Text>
                                         <Text style={styles.tableCell}>{report.obbSheet.name}</Text>
                                         <Text style={styles.tableCell}>{report.obbSheet.buyer}</Text>
                                         <Text style={styles.tableCell}>{report.obbSheet.colour}</Text>
@@ -210,24 +210,37 @@ const RoamingQcReportTemplate: React.FC<RoamingQcReportTemplateProps> = ({ data 
                                 </View>
 
                                 {/* Processed Data Tables */}
-                                <View style={{ marginTop: 10 }}>
+                                <View style={{ marginTop: 20 }}>
+                                    <View style={styles.table}>
+                                        {/* Table Header */}
+                                        <View style={[styles.tableRow, styles.tableHeader]}>
+                                            <Text style={styles.noCell}>Round</Text>
+                                            <Text style={styles.hourCell}>Time</Text>
+                                            <Text style={styles.tableCell}>Operation Name</Text>
+                                            <Text style={styles.tableCell}>Operator Name</Text>
+                                            <Text style={styles.hourCell}>Machine</Text>
+                                            <Text style={styles.qtyCell}>Ins. Qty</Text>
+                                            <Text style={styles.hourCell}>Status</Text>
+                                            <Text style={styles.tableCell}>Defects</Text>
+                                            <Text style={styles.tableCell}>RQC</Text>
+                                            <Text style={styles.hourCell}>Action</Text>
+                                        </View>
+                                    </View>
+                                    
+                                    {/* Table Rows */}
                                     {report.data.map((operationGroup, opIndex) => (
-                                        <View key={opIndex} style={{ marginTop: 15 }}>
-                                            <View style={styles.table}>
-                                                {/* Table Header */}
-                                                <View style={[styles.tableRow, styles.tableHeader]}>
-                                                    <Text style={styles.noCell}>Round</Text>
-                                                    <Text style={styles.hourCell}>Time</Text>
-                                                    <Text style={styles.tableCell}>Operation Name</Text>
-                                                    <Text style={styles.tableCell}>Operator Name</Text>
-                                                    <Text style={styles.hourCell}>Machine</Text>
-                                                    <Text style={styles.qtyCell}>Ins. Qty</Text>
-                                                    <Text style={styles.hourCell}>Status</Text>
-                                                    <Text style={styles.tableCell}>Defects</Text>
-                                                    <Text style={styles.tableCell}>RQC</Text>
-                                                </View>
-                                                {/* Table Rows */}
-                                                {operationGroup.records.map((record, recIndex) => (
+                                        <View key={opIndex} style={[styles.table, { marginTop: 15 }]}>
+                                            {operationGroup.records.map((record, recIndex) => {
+                                                const defectCounts = record.defects.reduce<{ [key: string]: number }>((acc, defect) => {
+                                                    acc[defect] = (acc[defect] || 0) + 1;
+                                                    return acc;
+                                                }, {});
+
+                                                const formattedDefects = Object.entries(defectCounts)
+                                                    .map(([defect, count]) => `${defect} (${count})`)
+                                                    .join(", ") || "No defects";
+
+                                                return (
                                                     <View key={recIndex} style={styles.tableRow}>
                                                         <Text style={styles.noCell}>{recIndex + 1}</Text>
                                                         <Text style={styles.hourCell}>{record.timestamp.split(" ")[1]}</Text>
@@ -236,15 +249,12 @@ const RoamingQcReportTemplate: React.FC<RoamingQcReportTemplateProps> = ({ data 
                                                         <Text style={styles.hourCell}>{record.machineId}</Text>
                                                         <Text style={styles.qtyCell}>{record.inspectedQty}</Text>
                                                         <Text style={styles.hourCell}>{record.colorStatus}</Text>
-                                                        <Text style={styles.tableCell}>
-                                                            {record.defects.length
-                                                                ? record.defects.join(", ")
-                                                                : "No defects"}
-                                                        </Text>
+                                                        <Text style={styles.tableCell}>{formattedDefects}</Text>
                                                         <Text style={styles.tableCell}>{record.inspectedBy}</Text>
+                                                        <Text style={styles.hourCell}>{" "}</Text>
                                                     </View>
-                                                ))}
-                                            </View>
+                                                )
+                                            })}
                                         </View>
                                     ))}
                                 </View>

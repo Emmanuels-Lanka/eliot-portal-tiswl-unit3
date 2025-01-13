@@ -1,23 +1,22 @@
 import { NextResponse } from "next/server";
-import DATA from "./data.json";
+// import DATA from "./line.json";
 
 import { db } from "@/lib/db";
 
 export async function POST(req: Request) {
     try {
         // const results = await Promise.all(DATA.map(async (data) => {
-        //     const res = await db.productionData.create({
+        //     const res = await db.productionLine.create({
         //         data: {
-        //             id: data.id,
-        //             operatorRfid: data.operatorRfid,
-        //             eliotSerialNumber: data.eliotSerialNumber,
-        //             productionCount: data.productionCount,
-        //             timestamp: data.timestamp,
-        //             obbOperationId: data.obbOperationId,
+        //             ...data,
+        //             machines: {
+        //                 connect: data.machines.map((m) => ({ id: m.id }))
+        //             }
         //         },
         //     });
         //     return res;
         // }));
+        // console.log("COUNT:", results.length);
 
         return NextResponse.json("results.length", { status: 201 });
     } catch (error) {
