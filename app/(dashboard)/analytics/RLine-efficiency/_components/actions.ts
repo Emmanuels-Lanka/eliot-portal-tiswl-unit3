@@ -62,16 +62,15 @@ export type OperatorRfidData = {
 export async function getObb(unit:any) : Promise<{ id: string; name: string }[]>  {
   
 
-   
+  
     try {
   
-  
+      
       const query = `
-        SELECT os.name AS name, os.id AS id 
-        FROM "ObbSheet" os
-        INNER JOIN "Unit" u ON u.id = os."unitId"
-        WHERE os."unitId" = $1 AND os."isActive"
-        ORDER BY os."createdAt" DESC
+          select pl.id id, pl.name name from "ProductionLine" pl
+          inner join "Unit" u on u.id = pl."unitId"
+          where pl."unitId" = $1
+          order by pl.name
       `;
       const values = [unit];
   
@@ -86,7 +85,7 @@ export async function getObb(unit:any) : Promise<{ id: string; name: string }[]>
       throw error;
     }
     finally{
- 
+      
     }
   
   }
@@ -101,7 +100,7 @@ export async function getObbData(obbSheet:string) : Promise< obb[]>  {
     select u.name unit, pl."name" line,os.* from "Unit" u
 inner join "ProductionLine" pl on pl."unitId" = u.id
 inner join "ObbSheet" os on os."productionLineId" = pl.id
-where os.id = ${obbSheet}
+where pl.id = ${obbSheet}
 
 `
     return new Promise((resolve) => resolve(data as obb[]))
@@ -144,10 +143,10 @@ export async function getLogin(date:string,obbSheet:string) : Promise<LogData[]>
 
     console.log(date+"%",obbSheet)
     {
-       
+      
       try {
     
-    
+        
         const query = `
        select oet."operatorRfid",o.name,o."employeeId" eid,MIN(oet."loginTimestamp") login,
 MAX(oet."logoutTimestamp")logout,MAX(oet."offStandTime") offStandTime
@@ -169,7 +168,7 @@ group by oet."operatorRfid",o.name, eid
         throw error;
       }
       finally{
-   
+        
       }}
 
 
@@ -180,23 +179,27 @@ export async function getNew(date:string,obbSheet:string) : Promise<ProdData[]> 
 
     // console.log(date+"%",obbSheet)
     {
-       
+      
       try {
     
-    
+        
         const query = `
        select pd."operatorRfid",sum(pd."productionCount"),o.name operation,oo.smv,
-oo."seqNo" from "ProductionData" pd
+oo."seqNo",pl.name from "ProductionData" pd
 inner join "ObbOperation" oo on oo.id = pd."obbOperationId"
 inner join "Operation" o on o.id = oo."operationId"
+inner join "ObbSheet" os on os.id = oo."obbSheetId"
+inner join "ProductionLine" pl on pl.id = os."productionLineId"
 where pd.timestamp like $2 and
-oo."obbSheetId" = $1
+pl.id =	$1
 
-
-group by pd."operatorRfid" ,o.name,oo.smv,oo."seqNo"
+group by pd."operatorRfid" ,o.name,oo.smv,oo."seqNo",pl.name
 
 HAVING 
     SUM(pd."productionCount") > 0
+    
+    
+     
         `;
         const values = [obbSheet,date+"%"];
     
@@ -211,7 +214,7 @@ HAVING
         throw error;
       }
       finally{
-   
+        
       }}
 
 
@@ -225,10 +228,10 @@ export async function getFinalData(date:string,obbSheet:string) : Promise<Operat
 
     // console.log(date+"%",obbSheet)
     {
-       
+      
       try {
     
-    
+        
         const query = `
        select oet."operatorRfid", MIN(oet."loginTimestamp") AS login,
     MAX(oet."logoutTimestamp") AS logout,oet."offStandTime",o.name,
@@ -261,7 +264,7 @@ order by eid desc
         throw error;
       }
       finally{
-   
+        
       }}
 
 

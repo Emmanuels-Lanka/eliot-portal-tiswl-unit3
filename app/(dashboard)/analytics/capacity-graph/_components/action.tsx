@@ -2,6 +2,7 @@
 
 import { createPostgresClient } from "@/lib/postgres";
 
+import { poolForPortal } from "@/lib/postgres";
 
 
 export async function getCapacity(obbSheetId:string,date:string) : Promise<any[]>  {
@@ -10,7 +11,7 @@ export async function getCapacity(obbSheetId:string,date:string) : Promise<any[]
         const client = createPostgresClient();
       try {
     
-        await client.connect();
+        
         const query = `
           SELECT 
     AVG(CAST(ps.smv AS NUMERIC)) AS avg,
@@ -51,7 +52,7 @@ ORDER BY
         `;
         const values = [obbSheetId  ,date+"%"];
     
-        const result = await client.query(query, values);
+        const result = await poolForPortal.query(query, values);
     
         // console.log("DATAaa: ", result.rows);
         return new Promise((resolve) => resolve(result.rows as any[] ));
@@ -62,7 +63,7 @@ ORDER BY
         throw error;
       }
       finally{
-        await client.end()
+     
       }}
 
 

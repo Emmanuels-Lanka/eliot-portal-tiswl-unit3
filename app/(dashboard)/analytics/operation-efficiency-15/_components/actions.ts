@@ -1,14 +1,16 @@
 "use server";
-import { createPostgresClient } from "@/lib/postgres";
+
+import { poolForPortal } from "@/lib/postgres";
+
 
 
 export async function getData(obbsheetid:string,date:string)  : Promise<any[]>{
 
     {
-        const client = createPostgresClient();
+        
       try {
     
-        await client.connect();
+       
         const query = `
           SELECT pd."productionCount" as count, concat(o.name, ' - ' ,'(', sm."machineId",')',' - ',oo."seqNo") as name  , pd.timestamp as timestamp, oo."seqNo"
     FROM "ProductionData" pd
@@ -22,7 +24,7 @@ export async function getData(obbsheetid:string,date:string)  : Promise<any[]>{
         `;
         const values = [obbsheetid,date];
     
-        const result = await client.query(query, values);
+        const result = await poolForPortal.query(query, values);
     
         // console.log("DATAaa: ", result.rows);
         return new Promise((resolve) => resolve(result.rows ));
@@ -33,17 +35,17 @@ export async function getData(obbsheetid:string,date:string)  : Promise<any[]>{
         throw error;
       }
       finally{
-        await client.end()
+        
       }}
 }
 
 export async function geOperationList(obbsheetid:string,date:string) : Promise<any[]>  {
 
     {
-        const client = createPostgresClient();
+        
       try {
     
-        await client.connect();
+       
         const query = `
           SELECT concat(o.name, ' - ' ,'(', sm."machineId",')',' - ',oo."seqNo") as name
     FROM "ObbOperation" oo  
@@ -57,7 +59,7 @@ export async function geOperationList(obbsheetid:string,date:string) : Promise<a
         `;
         const values = [obbsheetid,date];
     
-        const result = await client.query(query, values);
+        const result = await poolForPortal.query(query, values);
     
         // console.log("DATAaa: ", result.rows);
         return new Promise((resolve) => resolve(result.rows ));
@@ -68,7 +70,7 @@ export async function geOperationList(obbsheetid:string,date:string) : Promise<a
         throw error;
       }
       finally{
-        await client.end()
+        
       }}
 
 
@@ -80,10 +82,10 @@ export async function geOperationList(obbsheetid:string,date:string) : Promise<a
 export async function getEliotMachineList(obbsheetid:string ,date:string) : Promise<any[]>  {
 
     {
-        const client = createPostgresClient();
+        
       try {
     
-        await client.connect();
+       
         const query = `
           SELECT sm."machineId",ed."serialNumber"
     FROM "ObbOperation" oo  
@@ -97,7 +99,7 @@ export async function getEliotMachineList(obbsheetid:string ,date:string) : Prom
         `;
         const values = [obbsheetid,date];
     
-        const result = await client.query(query, values);
+        const result = await poolForPortal.query(query, values);
     
         // console.log("DATAaa: ", result.rows);
         return new Promise((resolve) => resolve(result.rows ));
@@ -108,7 +110,7 @@ export async function getEliotMachineList(obbsheetid:string ,date:string) : Prom
         throw error;
       }
       finally{
-        await client.end()
+        
       }}
 
 

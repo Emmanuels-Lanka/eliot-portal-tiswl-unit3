@@ -1,16 +1,17 @@
 "use server";
 import { neon } from "@neondatabase/serverless";
 import { ProductionDataType } from "./analytics-chart";
-import { createPostgresClient } from "@/lib/postgres";
+import { poolForPortal } from "@/lib/postgres";
+
 
 export async function   getOperatorEfficiency(obbsheetid:string,date:string) : Promise<ProductionDataType[]>   {
     
 
     {
-        const client = createPostgresClient();
+
       try {
     
-        await client.connect();
+        
         const query = `
           WITH avg_smv AS (
     SELECT oo."seqNo", o.name, AVG(CAST(oo.smv AS NUMERIC)) AS avg
@@ -42,7 +43,7 @@ ORDER BY a."seqNo";
         `;
         const values = [obbsheetid,date];
     
-        const result = await client.query(query, values);
+        const result = await poolForPortal.query(query, values);
     
         // console.log("DATAaa: ", result.rows);
         return new Promise((resolve) => resolve(result.rows ));
@@ -53,7 +54,7 @@ ORDER BY a."seqNo";
         throw error;
       }
       finally{
-        await client.end()
+       
       }}
     
  
@@ -66,10 +67,10 @@ export async function   getHours(obbsheetid:string,date:string) : Promise<Produc
 
 
     {
-        const client = createPostgresClient();
+
       try {
     
-        await client.connect();
+        
         const query = `
           select  MIN(TO_TIMESTAMP(os."LoginTimestamp", 'YYYY-MM-DD HH24:MI:SS')) AS login,
 MAX(TO_TIMESTAMP(os."LogoutTimestamp", 'YYYY-MM-DD HH24:MI:SS')) AS logout , o.name as namee
@@ -86,7 +87,7 @@ order by oo."seqNo"
         `;
         const values = [obbsheetid,date];
     
-        const result = await client.query(query, values);
+        const result = await poolForPortal.query(query, values);
     
         // console.log("DATAaa: ", result.rows);
         return new Promise((resolve) => resolve(result.rows ));
@@ -97,7 +98,7 @@ order by oo."seqNo"
         throw error;
       }
       finally{
-        await client.end()
+     
       }}
 
 

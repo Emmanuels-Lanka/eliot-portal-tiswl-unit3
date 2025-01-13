@@ -1,6 +1,7 @@
 "use server";
-import { createPostgresClientRfid } from "@/lib/postgres";
-import { neon } from "@neondatabase/serverless";
+
+import { poolForRFID } from "@/lib/postgres";
+
 
 type defects= {
     count:number;
@@ -14,10 +15,10 @@ type defcount= {
 
 export async function getChecked(date:string,obbSheet:string) : Promise<defcount>   {
     {
-        const client = createPostgresClientRfid();
+       
       try {
     
-        await client.connect();
+  
         const query = `
      WITH counts AS (
     SELECT COUNT(*) AS gmt_count FROM "GmtDefect" gd WHERE gd.timestamp LIKE $2 
@@ -30,7 +31,7 @@ SELECT SUM(gmt_count) AS total FROM counts;
         `;
         const values = [obbSheet,date];
     
-        const result = await client.query(query, values);
+        const result = await poolForRFID.query(query, values);
 
         const total = result.rows[0]?.total || 0;
     
@@ -43,7 +44,7 @@ SELECT SUM(gmt_count) AS total FROM counts;
         throw error;
       }
       finally{
-        await client.end()
+
       }}
 
 
@@ -52,10 +53,10 @@ SELECT SUM(gmt_count) AS total FROM counts;
 export async function getDefects(date:string,obbSheet:string) : Promise<defects []>   {
 
     {
-        const client = createPostgresClientRfid();
+       
       try {
     
-        await client.connect();
+
         const query = `
           select count(*),"operatorName" as operator,part from "GmtDefect" 
 where timestamp like $2 and "obbSheetId" = $1
@@ -68,7 +69,7 @@ group by operator,part
         `;
         const values = [obbSheet,date];
     
-        const result = await client.query(query, values);
+        const result = await poolForRFID.query(query, values);
     
         // console.log("DATAaa: ", result.rows);
         return new Promise((resolve) => resolve(result.rows as defects[]));
@@ -79,7 +80,7 @@ group by operator,part
         throw error;
       }
       finally{
-        await client.end()
+       
       }}
 
 

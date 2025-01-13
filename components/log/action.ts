@@ -1,17 +1,18 @@
 "use server";
 import { neon } from "@neondatabase/serverless";
 import { ProductionDataType } from "./LogTable";
-import { createPostgresClient } from "@/lib/postgres";
+import { poolForPortal } from "@/lib/postgres";
+
 
 
 export async function getData(obbsheetid:string,date:string)  : Promise<ProductionDataType[]>   {
 
 
   {
-    const client = createPostgresClient();
+    
   try {
 
-    await client.connect();
+    
     const query = `
       SELECT 
   oprt.name, 
@@ -52,7 +53,7 @@ GROUP BY
     `;
     const values = [obbsheetid,date];
 
-    const result = await client.query(query, values);
+    const result = await poolForPortal.query(query, values);
 
     // console.log("DATAaa: ", result.rows);
     return new Promise((resolve) => resolve(result.rows as ProductionDataType[] ));
@@ -63,7 +64,7 @@ GROUP BY
     throw error;
   }
   finally{
-    await client.end()
+
   }}
 
 
