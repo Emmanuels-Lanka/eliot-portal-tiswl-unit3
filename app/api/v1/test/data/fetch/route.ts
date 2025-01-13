@@ -13,12 +13,12 @@ export async function GET() {
 
     try {
         const data = await db.productionData.findMany({
-            where: {
-                timestamp: {
-                    gte: "2025-01-10 00:00:00"
-                },
-                eliotSerialNumber: { not: null }
-            },
+            // where: {
+            //     timestamp: {
+            //         gte: "2025-01-10 00:00:00"
+            //     },
+            //     eliotSerialNumber: { not: null }
+            // },
             orderBy: {
                 createdAt: "asc"
             },

@@ -5,12 +5,12 @@ import { db } from "@/lib/db";
 export async function DELETE() {
     try {
         const data = await db.productionData.count({
-            where: {
-                // timestamp: {
-                //     gte: "2025-01-10 00:00:00"
-                // },
-                eliotSerialNumber: null
-            }
+            // where: {
+            //     // timestamp: {
+            //     //     gte: "2025-01-10 00:00:00"
+            //     // },
+            //     eliotSerialNumber: null
+            // }
         });
 
         // const data = await db.productionData.deleteMany({
