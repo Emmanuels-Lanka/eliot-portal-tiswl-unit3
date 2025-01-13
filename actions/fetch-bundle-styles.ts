@@ -1,6 +1,6 @@
 "use server";
 
-import { poolForRfid } from "@/lib/postgres";
+import { poolForRFID } from "@/lib/postgres";
 
 export async function fetchBundleStyles(): Promise<string[]> {
     try {
@@ -10,7 +10,7 @@ export async function fetchBundleStyles(): Promise<string[]> {
             WHERE "createdAt" >= (NOW() - INTERVAL '3 months')::DATE;
         `;
         
-        const result = await poolForRfid.query(query);
+        const result = await poolForRFID.query(query);
 
         const styles = result.rows.map(style => style.styleNo);
 
