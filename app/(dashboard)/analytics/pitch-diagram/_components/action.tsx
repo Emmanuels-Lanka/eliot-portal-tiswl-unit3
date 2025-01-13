@@ -1,5 +1,6 @@
 "use server";
-import { createPostgresClient } from "@/lib/postgres";
+
+import { poolForPortal } from "@/lib/postgres";
 import { neon } from "@neondatabase/serverless";
 
 
@@ -8,10 +9,9 @@ import { neon } from "@neondatabase/serverless";
 export async function getObb(unit:any) : Promise<{ id: string; name: string }[]>  {
   
 
-    const client = createPostgresClient();
     try {
   
-      await client.connect();
+      
       const query = `
         SELECT os.name AS name, os.id AS id 
         FROM "ObbSheet" os
@@ -21,7 +21,7 @@ export async function getObb(unit:any) : Promise<{ id: string; name: string }[]>
       `;
       const values = [unit];
   
-      const result = await client.query(query, values);
+      const result = await poolForPortal.query(query, values);
   
       console.log("DATAaa: ", result.rows);
       return new Promise((resolve) => resolve(result.rows as { id: string; name: string }[]));
@@ -32,7 +32,7 @@ export async function getObb(unit:any) : Promise<{ id: string; name: string }[]>
       throw error;
     }
     finally{
-      await client.end()
+      
     }
   
   }
@@ -42,10 +42,9 @@ export async function getObb(unit:any) : Promise<{ id: string; name: string }[]>
 export async function getOperationSmv(obbSheetId:string,date:string) : Promise<any[]>  {
 
   {
-    const client = createPostgresClient();
   try {
 
-    await client.connect();
+    
     const query = `
      WITH OperationData AS (
     SELECT os."seqNo", os.smv, o.name
@@ -60,7 +59,7 @@ ORDER BY "seqNo";
     `;
     const values = [obbSheetId];
 
-    const result = await client.query(query, values);
+    const result = await poolForPortal.query(query, values);
 
     // console.log("DATAaa: ", result.rows);
     return new Promise((resolve) => resolve(result.rows as any[] ));
@@ -71,7 +70,7 @@ ORDER BY "seqNo";
     throw error;
   }
   finally{
-    await client.end()
+    
   }}
   
 }

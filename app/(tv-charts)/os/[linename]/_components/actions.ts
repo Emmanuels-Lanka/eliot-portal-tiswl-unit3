@@ -1,16 +1,17 @@
 "use server"
 import { neon } from "@neondatabase/serverless";
 import { SMVChartData } from "./analytics-chart";
-import { createPostgresClient } from "@/lib/postgres";
+import { poolForPortal } from "@/lib/postgres";
+
 
 export async function getSMV(obbSheetId:String,date:String):Promise<SMVChartData[]> {
     const datef = `${date}%`;
 
     {
-        const client = createPostgresClient();
+        
     try {
     
-      await client.connect();
+    
       const query = `
        SELECT 
     o.smv,
@@ -37,7 +38,7 @@ ORDER BY
       `;
       const values = [obbSheetId,datef];
     
-      const result = await client.query(query, values);
+      const result = await poolForPortal.query(query, values);
     
       // console.log("DATAaa: ", result.rows);
       return new Promise((resolve) => resolve(result.rows as SMVChartData[] ));
@@ -48,7 +49,7 @@ ORDER BY
       throw error;
     }
     finally{
-      await client.end()
+     
     }
     }    
 

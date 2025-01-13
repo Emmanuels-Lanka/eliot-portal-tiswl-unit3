@@ -86,7 +86,7 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
 
       
       const prod = await getData(obbSheetId, date);
-
+console.log("first,",prod)
       setProductionData(prod);
       const seq=1;
       // const chartData1: BarchartData[] = prod.map((item) => ({

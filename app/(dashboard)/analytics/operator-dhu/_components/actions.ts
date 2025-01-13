@@ -1,13 +1,13 @@
 "use server";
 import { neon } from "@neondatabase/serverless";
 import { ReportData1 } from "./dhu-report";
-import { createPostgresClient, createPostgresClientRfid } from "@/lib/postgres";
+import { createPostgresClient, createPostgresClientRfid, poolForPortal, poolForRFID } from "@/lib/postgres";
 
 export async function getDHUData(obbsheetid: string, date: string): Promise<any> {
-    const client = createPostgresClientRfid();
+ 
 
     try {
-        await client.connect();
+       
 
         // Query for "GmtDefect" data
         const queryGmtDefects = `
@@ -20,7 +20,7 @@ export async function getDHUData(obbsheetid: string, date: string): Promise<any>
             WHERE "qcStatus" <> 'pass' AND "obbSheetId" = $1 AND timestamp LIKE $2
             GROUP BY "operatorName", "qcStatus", "operatorId";
         `;
-        const dataGmts = await client.query(queryGmtDefects, [obbsheetid, date]);
+        const dataGmts = await poolForRFID.query(queryGmtDefects, [obbsheetid, date]);
 
         // Query for "ProductDefect" data
         const queryProductDefects = `
@@ -32,7 +32,7 @@ export async function getDHUData(obbsheetid: string, date: string): Promise<any>
             WHERE "qcStatus" <> 'pass' AND "obbSheetId" = $1 AND timestamp LIKE $2
             GROUP BY "operatorName", "qcStatus";
         `;
-        const dataProducts = await client.query(queryProductDefects, [obbsheetid, date]);
+        const dataProducts = await poolForRFID.query(queryProductDefects, [obbsheetid, date]);
 
         // Query for total counts in "GmtDefect"
         const queryTotalGmtDefects = `
@@ -40,7 +40,7 @@ export async function getDHUData(obbsheetid: string, date: string): Promise<any>
             FROM "GmtDefect"
             WHERE "obbSheetId" = $1 AND timestamp LIKE $2;
         `;
-        const tc = await client.query(queryTotalGmtDefects, [obbsheetid, date]);
+        const tc = await poolForRFID.query(queryTotalGmtDefects, [obbsheetid, date]);
 
         // Query for total counts in "ProductDefect"
         const queryTotalProductDefects = `
@@ -48,7 +48,7 @@ export async function getDHUData(obbsheetid: string, date: string): Promise<any>
             FROM "ProductDefect"
             WHERE "obbSheetId" = $1 AND timestamp LIKE $2;
         `;
-        const tcProducts = await client.query(queryTotalProductDefects, [obbsheetid, date]);
+        const tcProducts = await poolForRFID.query(queryTotalProductDefects, [obbsheetid, date]);
 
         // Consolidating the data for the final output
         const count: number = Number(tc.rows[0]?.count) || 1;
@@ -82,17 +82,17 @@ export async function getDHUData(obbsheetid: string, date: string): Promise<any>
         console.error("[ERROR_FETCHING_DEFECT_DATA]", error);
         throw error;
     } finally {
-        await client.end();
+    
     }
 }
 
 export async function getDailyData(obbsheetid: string, date: string): Promise<ReportData1[]> {
 
     {
-        const client = createPostgresClient();
+
       try {
     
-        await client.connect();
+     
         const query = `
           SELECT opr.id, opr.name as operatorname,
                opr.id as operatorid,
@@ -119,7 +119,7 @@ export async function getDailyData(obbsheetid: string, date: string): Promise<Re
         `;
         const values = [obbsheetid,date];
     
-        const result = await client.query(query, values);
+        const result = await poolForPortal.query(query, values);
     
         // console.log("DATAaa: ", result.rows);
         return new Promise((resolve) => resolve(result.rows  as ReportData1[]));
@@ -130,7 +130,7 @@ export async function getDailyData(obbsheetid: string, date: string): Promise<Re
         throw error;
       }
       finally{
-        await client.end()
+
       }}
 
 
@@ -142,10 +142,10 @@ export async function getDefects(obbsheetid: string, date: string): Promise<any[
 
 
     {
-        const client = createPostgresClientRfid();
+   
       try {
     
-        await client.connect();
+      
         const query = `
           SELECT 
             COUNT(pd.id) as defectcount,
@@ -173,7 +173,7 @@ export async function getDefects(obbsheetid: string, date: string): Promise<any[
         `;
         const values = [obbsheetid,newdate];
     
-        const result = await client.query(query, values);
+        const result = await poolForRFID.query(query, values);
     
         // console.log("DATAaa: ", result.rows);
         return new Promise((resolve) => resolve(result.rows as any[]));
@@ -184,7 +184,7 @@ export async function getDefects(obbsheetid: string, date: string): Promise<any[
         throw error;
       }
       finally{
-        await client.end()
+   
       }}
 
    
@@ -194,10 +194,10 @@ export async function getDefects(obbsheetid: string, date: string): Promise<any[
 export async function inspaetfetch(obbsheetid: string, date: string): Promise<any[]> {
 
     {
-        const client = createPostgresClientRfid();
+       
       try {
     
-        await client.connect();
+       
         const query = `
         SELECT 
           count(*) as inspectcount
@@ -215,7 +215,7 @@ export async function inspaetfetch(obbsheetid: string, date: string): Promise<an
         `;
         const values = [obbsheetid,date+"%"];
     
-        const result = await client.query(query, values);
+        const result = await poolForRFID.query(query, values);
     
         // console.log("DATAaa: ", result.rows);
         return new Promise((resolve) => resolve(result.rows as any[] ));
@@ -226,7 +226,7 @@ export async function inspaetfetch(obbsheetid: string, date: string): Promise<an
         throw error;
       }
       finally{
-        await client.end()
+      
       }}
 
 }

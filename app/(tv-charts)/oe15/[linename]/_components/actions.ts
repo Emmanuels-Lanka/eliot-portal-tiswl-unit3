@@ -1,14 +1,15 @@
 "use server";
-import { createPostgresClient } from "@/lib/postgres";
-import { neon } from "@neondatabase/serverless";
+
+import { poolForPortal } from "@/lib/postgres";
+
 
 export async function getOperatorEfficiencyData15M(obbsheetid:string,date:string)   {
     
   {
-    const client = createPostgresClient();
+    
 try {
 
-  await client.connect();
+  
   const query = `
     select CONCAT(SUBSTRING(CONCAT('(', opn."code", ')', '-', oprtr.name) FROM 1 FOR 25), ' ', '(', sm."machineId", ') - ',obbopn."seqNo") AS name,
     pd."productionCount" as count, obbopn.target,pd.timestamp as timestamp,obbopn.smv
@@ -25,7 +26,7 @@ try {
   `;
   const values = [obbsheetid,date];
 
-  const result = await client.query(query, values);
+  const result = await poolForPortal.query(query, values);
 
   // console.log("DATAaa: ", result.rows);
   return new Promise((resolve) => resolve(result.rows ));
@@ -36,7 +37,7 @@ try {
   throw error;
 }
 finally{
-  await client.end()
+  
 }
 }    
 }
@@ -45,10 +46,10 @@ finally{
 export async function geOperatorList(obbsheetid:string,date:string ) : Promise<any[]>  {
 
   {
-    const client = createPostgresClient();
+    
 try {
 
-  await client.connect();
+  
   const query = `
     SELECT 
       CONCAT(SUBSTRING(CONCAT('(', opn."code", ')', '-', oo.name) FROM 1 FOR 25), ' ', '(', sm."machineId", ') - ',oopn."seqNo") AS name
@@ -75,7 +76,7 @@ try {
   `;
   const values = [obbsheetid,date];
 
-  const result = await client.query(query, values);
+  const result = await poolForPortal.query(query, values);
 
   // console.log("DATAaa: ", result.rows);
   return new Promise((resolve) => resolve(result.rows ));
@@ -86,7 +87,7 @@ try {
   throw error;
 }
 finally{
-  await client.end()
+  
 }
 }    
 }

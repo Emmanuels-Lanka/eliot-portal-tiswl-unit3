@@ -4,18 +4,19 @@
 import { neon } from "@neondatabase/serverless";
 
 import { ReportData } from "./daily-report";
-import { createPostgresClient } from "@/lib/postgres";
+import { poolForPortal } from "@/lib/postgres";
+
 
 
 export async function getDailyData(obbsheetid:string,date:string)  : Promise<ReportData[]>   {
     
     {
-        const client = createPostgresClient();
+        
     date=date+"%"
 
       try {
     
-        await client.connect();
+    
         const query = `
  SELECT 
     opr.id,
@@ -70,7 +71,7 @@ ORDER BY obbop."seqNo";
         `;
         const values = [obbsheetid,date];
     
-        const result = await client.query(query, values);
+        const result = await poolForPortal.query(query, values);
     
         // console.log("DATAaa: ", result.rows);
         return new Promise((resolve) => resolve(result.rows as ReportData[]));
@@ -81,7 +82,7 @@ ORDER BY obbop."seqNo";
         throw error;
       }
       finally{
-        await client.end()
+      
       }}
 
 

@@ -1,5 +1,6 @@
 "use server";
-import { createPostgresClient } from "@/lib/postgres";
+
+import { poolForPortal } from "@/lib/postgres";
 import { neon } from "@neondatabase/serverless";
 
 export async function getObbSheetID(linename: string): Promise<string> {
@@ -7,10 +8,10 @@ export async function getObbSheetID(linename: string): Promise<string> {
 
   
       {
-          const client = createPostgresClient();
+          
       try {
     
-        await client.connect();
+        
         const query = `
         SELECT oo.id
   FROM "ProductionLine" pl 
@@ -21,7 +22,7 @@ export async function getObbSheetID(linename: string): Promise<string> {
         `;
         const values = [linename];
     
-        const result = await client.query(query, values);
+        const result = await poolForPortal.query(query, values);
     
         console.log("DATAaa: ", result.rows);
         return new Promise((resolve) => resolve(result.rows[0].id));
@@ -32,7 +33,7 @@ export async function getObbSheetID(linename: string): Promise<string> {
         throw error;
       }
       finally{
-        await client.end()
+       
       }
     }
 

@@ -2,7 +2,8 @@
 import { neon } from "@neondatabase/serverless";
 import { DataRecord, EfficiencyData } from "./barchart";
 import { ObbSheet } from "@prisma/client";
-import { createPostgresClient } from "@/lib/postgres";
+import { poolForPortal } from "@/lib/postgres";
+
 
 type defects= {
     count:number;
@@ -61,10 +62,10 @@ export type OperatorRfidData = {
 export async function getObb(unit:any) : Promise<{ id: string; name: string }[]>  {
   
 
-    const client = createPostgresClient();
+  
     try {
   
-      await client.connect();
+      
       const query = `
           select pl.id id, pl.name name from "ProductionLine" pl
           inner join "Unit" u on u.id = pl."unitId"
@@ -73,7 +74,7 @@ export async function getObb(unit:any) : Promise<{ id: string; name: string }[]>
       `;
       const values = [unit];
   
-      const result = await client.query(query, values);
+      const result = await poolForPortal.query(query, values);
   
       console.log("DATAaa: ", result.rows);
       return new Promise((resolve) => resolve(result.rows as { id: string; name: string }[]));
@@ -84,7 +85,7 @@ export async function getObb(unit:any) : Promise<{ id: string; name: string }[]>
       throw error;
     }
     finally{
-      await client.end()
+      
     }
   
   }
@@ -142,10 +143,10 @@ export async function getLogin(date:string,obbSheet:string) : Promise<LogData[]>
 
     console.log(date+"%",obbSheet)
     {
-        const client = createPostgresClient();
+      
       try {
     
-        await client.connect();
+        
         const query = `
        select oet."operatorRfid",o.name,o."employeeId" eid,MIN(oet."loginTimestamp") login,
 MAX(oet."logoutTimestamp")logout,MAX(oet."offStandTime") offStandTime
@@ -156,7 +157,7 @@ group by oet."operatorRfid",o.name, eid
         `;
         const values = [date+"%"];
     
-        const result = await client.query(query,values);
+        const result = await poolForPortal.query(query,values);
     
         // console.log("DATAaa: ", result.rows);
         return new Promise((resolve) => resolve(result.rows as LogData[]));
@@ -167,7 +168,7 @@ group by oet."operatorRfid",o.name, eid
         throw error;
       }
       finally{
-        await client.end()
+        
       }}
 
 
@@ -178,10 +179,10 @@ export async function getNew(date:string,obbSheet:string) : Promise<ProdData[]> 
 
     // console.log(date+"%",obbSheet)
     {
-        const client = createPostgresClient();
+      
       try {
     
-        await client.connect();
+        
         const query = `
        select pd."operatorRfid",sum(pd."productionCount"),o.name operation,oo.smv,
 oo."seqNo",pl.name from "ProductionData" pd
@@ -202,7 +203,7 @@ HAVING
         `;
         const values = [obbSheet,date+"%"];
     
-        const result = await client.query(query,values);
+        const result = await poolForPortal.query(query,values);
     
         // console.log("DATAaa: ", result.rows);
         return new Promise((resolve) => resolve(result.rows as ProdData[]));
@@ -213,7 +214,7 @@ HAVING
         throw error;
       }
       finally{
-        await client.end()
+        
       }}
 
 
@@ -227,10 +228,10 @@ export async function getFinalData(date:string,obbSheet:string) : Promise<Operat
 
     // console.log(date+"%",obbSheet)
     {
-        const client = createPostgresClient();
+      
       try {
     
-        await client.connect();
+        
         const query = `
        select oet."operatorRfid", MIN(oet."loginTimestamp") AS login,
     MAX(oet."logoutTimestamp") AS logout,oet."offStandTime",o.name,
@@ -252,7 +253,7 @@ order by eid desc
         `;
         const values = [obbSheet,date+"%"];
     
-        const result = await client.query(query, values);
+        const result = await poolForPortal.query(query, values);
     
         // console.log("DATAaa: ", result.rows);
         return new Promise((resolve) => resolve(result.rows as OperatorRfidData[]));
@@ -263,7 +264,7 @@ order by eid desc
         throw error;
       }
       finally{
-        await client.end()
+        
       }}
 
 

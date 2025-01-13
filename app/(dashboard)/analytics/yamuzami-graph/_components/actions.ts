@@ -1,5 +1,6 @@
 "use server";
-import { createPostgresClient } from "@/lib/postgres";
+
+import { poolForPortal } from "@/lib/postgres";
 import { neon } from "@neondatabase/serverless";
 // import { ProductionDataType } from "./analytics-chart";
 
@@ -7,10 +8,10 @@ export async function getOperatorEfficiency(obbsheetid:string,date:string,timeVa
     date = date+"%";
 
     {
-        const client = createPostgresClient();
+        
       try {
     
-        await client.connect();
+       
         const query = `
           select sum(pd."productionCount") as total,oo."seqNo" as seqNo,concat(oo."seqNo",'-',o.name) as name,o.name as oprnName,op.name as oprtName,MAX(oet.net) as net,op.rfid
 from "ProductionData" pd
@@ -30,7 +31,7 @@ group by oo."seqNo",o.name,op.name,net,op.rfid;
         `;
         const values = [obbsheetid,date];
     
-        const result = await client.query(query, values);
+        const result = await poolForPortal.query(query, values);
     
         // console.log("DATAaa: ", result.rows);
         return new Promise((resolve) => resolve(result.rows ));
@@ -41,7 +42,7 @@ group by oo."seqNo",o.name,op.name,net,op.rfid;
         throw error;
       }
       finally{
-        await client.end()
+      
       }}
 
 
@@ -56,10 +57,10 @@ export async function getSMV(obbsheetid:string,date:string,timeValue:string)    
     date=date+"%";
 
     {
-        const client = createPostgresClient();
+        
       try {
     
-        await client.connect();
+       
         const query = `
           SELECT 
     AVG(CAST(o.smv AS NUMERIC)) AS avg,
@@ -86,7 +87,7 @@ order by o."seqNo"
         `;
         const values = [obbsheetid,date];
     
-        const result = await client.query(query, values);
+        const result = await poolForPortal.query(query, values);
     
         // console.log("DATAaa: ", result.rows);
         return new Promise((resolve) => resolve(result.rows ));
@@ -97,7 +98,7 @@ order by o."seqNo"
         throw error;
       }
       finally{
-        await client.end()
+      
       }}
 
    

@@ -1,15 +1,16 @@
 "use server";
-import { createPostgresClient } from "@/lib/postgres";
+
+import { poolForPortal } from "@/lib/postgres";
 import { neon } from "@neondatabase/serverless";
 
 
 export async function getData(obbsheetid:string,date:string)  : Promise<any[]>{
 
     {
-        const client = createPostgresClient();
+        
     try {
     
-      await client.connect();
+      
       const query = `
         SELECT pd."productionCount" as count, concat(substring(concat(o.name ) from 0 for 20),' ','(',sm."machineId",') - ',oo."seqNo") as name  ,
      pd.timestamp as timestamp, oo."seqNo",oo.target,oo.smv as smv
@@ -23,7 +24,7 @@ export async function getData(obbsheetid:string,date:string)  : Promise<any[]>{
       `;
       const values = [obbsheetid,date];
     
-      const result = await client.query(query, values);
+      const result = await poolForPortal.query(query, values);
     
       // console.log("DATAaa: ", result.rows);
       return new Promise((resolve) => resolve(result.rows ));
@@ -34,7 +35,7 @@ export async function getData(obbsheetid:string,date:string)  : Promise<any[]>{
       throw error;
     }
     finally{
-      await client.end()
+      
     }
     }    
     
@@ -47,10 +48,10 @@ export async function geOperationList(obbsheetid:string , date:string) : Promise
 
 
     {
-        const client = createPostgresClient();
+        
     try {
     
-      await client.connect();
+      
       const query = `
         SELECT concat (substring(concat(o.name ) from 0 for 20),' ','(',sm."machineId",') - ',oo."seqNo")  as name
     FROM "ObbOperation" oo  
@@ -66,7 +67,7 @@ export async function geOperationList(obbsheetid:string , date:string) : Promise
       `;
       const values = [obbsheetid,date];
     
-      const result = await client.query(query, values);
+      const result = await poolForPortal.query(query, values);
     
       // console.log("DATAaa: ", result.rows);
       return new Promise((resolve) => resolve(result.rows ));
@@ -77,7 +78,7 @@ export async function geOperationList(obbsheetid:string , date:string) : Promise
       throw error;
     }
     finally{
-      await client.end()
+      
     }
     }    
 
@@ -88,10 +89,10 @@ export async function geOperationList(obbsheetid:string , date:string) : Promise
 
 export async function getEliotMachineList(obbsheetid:string,date:string ) : Promise<any[]>  {
     {
-        const client = createPostgresClient();
+        
     try {
     
-      await client.connect();
+      
       const query = `
         SELECT sm."machineId",ed."serialNumber"
     FROM "ObbOperation" oo  
@@ -105,7 +106,7 @@ export async function getEliotMachineList(obbsheetid:string,date:string ) : Prom
       `;
       const values = [obbsheetid,date];
     
-      const result = await client.query(query, values);
+      const result = await poolForPortal.query(query, values);
     
       // console.log("DATAaa: ", result.rows);
       return new Promise((resolve) => resolve(result.rows ));
@@ -116,7 +117,7 @@ export async function getEliotMachineList(obbsheetid:string,date:string ) : Prom
       throw error;
     }
     finally{
-      await client.end()
+      
     }
     }    
 
