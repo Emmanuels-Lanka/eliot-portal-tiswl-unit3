@@ -15,7 +15,7 @@ export const createPostgresClientRfid = () => {
     return client;
 };
 
-import { Pool } from 'pg';
+
 
 export const poolForPortal = new Pool({
     connectionString: process.env.DATABASE_URL || "",
