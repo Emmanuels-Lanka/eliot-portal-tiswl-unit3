@@ -21,8 +21,7 @@ type obb = ObbSheet &{
 }
 
 export async function getChecked(date:string,obbSheet:string) : Promise<defcount>   {
-    const sql = neon(process.env.RFID_DATABASE_URL || "");
-
+    
     try {
   
         const query = `

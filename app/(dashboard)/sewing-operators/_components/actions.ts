@@ -107,8 +107,7 @@ SELECT SUM(gmt_count) AS total FROM counts;
 
 }
 export async function getDefects(date:string,obbSheet:string,operatorId: string) : Promise<defects []>   {
-    const sql = neon(process.env.RFID_DATABASE_URL || "");
-
+   
     try {
   
         const query = `
