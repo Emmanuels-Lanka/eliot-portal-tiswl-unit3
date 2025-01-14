@@ -100,7 +100,6 @@ model EliotDevice {
   modelNumber    String
   serialNumber   String           @unique
   hasTrained     Boolean?         @default(false)
-  productionData ProductionData[]
   sewingMachines SewingMachine?
 }
 
@@ -268,12 +267,11 @@ model StaffSession {
 model ProductionData {
   id                String       @id @default(uuid())
   operatorRfid      String
-  eliotSerialNumber String?
+  eliotSerialNumber String
   obbOperationId    String
   productionCount   Int
   timestamp         String
   createdAt         DateTime     @default(now())
-  eliotDevice       EliotDevice? @relation(fields: [eliotSerialNumber], references: [serialNumber])
   obbOperation      ObbOperation @relation(fields: [obbOperationId], references: [id], onDelete: Cascade)
   operator          Operator     @relation(fields: [operatorRfid], references: [rfid], onDelete: Cascade)
 
