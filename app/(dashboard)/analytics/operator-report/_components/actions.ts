@@ -1,7 +1,8 @@
 
 
 "use server";
-import { createPostgresClient } from "@/lib/postgres";
+import { poolForPortal } from "@/lib/postgres";
+// import { createPostgresClient } from "@/lib/postgres";
 import { neon } from "@neondatabase/serverless";
 
 
@@ -64,10 +65,10 @@ export async function getNewData(startdate :string,enddate :string,operatorId:st
     
 
     {
-        const client = createPostgresClient();
+        
       try {
     
-        await client.connect();
+
         const query = `
          SELECT 
     o.name,
@@ -108,7 +109,7 @@ ORDER BY
         `;
         const values = [startdate,enddate,operatorId];
     
-        const result = await client.query(query, values);
+        const result = await poolForPortal.query(query, values);
     
         // console.log("DATAaa: ", result.rows);
         return new Promise((resolve) => resolve(result.rows as newData[]));
@@ -119,7 +120,7 @@ ORDER BY
         throw error;
       }
       finally{
-        await client.end()
+   
       }}
 
 

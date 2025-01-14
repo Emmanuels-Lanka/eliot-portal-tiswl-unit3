@@ -1,15 +1,15 @@
 "use server";
 import { neon } from "@neondatabase/serverless";
 import { ProductionDataType } from "./components/analytics-chart";
-import { createPostgresClient } from "@/lib/postgres";
+import { poolForPortal } from "@/lib/postgres";
 
 export async function getData(obbsheetid:string,date:string) : Promise<ProductionDataType[]>   {
 
 {
-    const client = createPostgresClient();
+  
   try {
 
-    await client.connect();
+    
     const query = `
       select SUM(pd."productionCount") as count
 ,concat(oo."seqNo",'-',o.name ) as name ,oo.target,sm."machineId" as machine
@@ -23,7 +23,7 @@ export async function getData(obbsheetid:string,date:string) : Promise<Productio
     `;
     const values = [obbsheetid,date];
 
-    const result = await client.query(query, values);
+    const result = await poolForPortal.query(query, values);
 
     // console.log("DATAaa: ", result.rows);
     return new Promise((resolve) => resolve(result.rows as ProductionDataType[]));
@@ -34,7 +34,7 @@ export async function getData(obbsheetid:string,date:string) : Promise<Productio
     throw error;
   }
   finally{
-    await client.end()
+
   }}
 
 
@@ -47,10 +47,10 @@ export async function getData(obbsheetid:string,date:string) : Promise<Productio
 export async function getExelData(obbsheetid:string,date:string)    {
 
     {
-        const client = createPostgresClient();
+
       try {
     
-        await client.connect();
+        
         const query = `SELECT 
     SUM(pd."productionCount") AS count,
     CONCAT(oo."seqNo", '-', o.name) AS name,
@@ -78,7 +78,7 @@ ORDER BY
         `;
         const values = [obbsheetid,date];
     
-        const result = await client.query(query, values);
+        const result = await poolForPortal.query(query, values);
     
         // console.log("DATAaa: ", result.rows);
         return new Promise((resolve) => resolve(result.rows as ProductionDataType[]));
@@ -89,6 +89,6 @@ ORDER BY
         throw error;
       }
       finally{
-        await client.end()
+    
       }}
   }

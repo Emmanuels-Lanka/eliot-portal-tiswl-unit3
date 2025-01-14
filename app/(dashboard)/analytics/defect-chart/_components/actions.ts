@@ -2,15 +2,16 @@
 import { neon } from "@neondatabase/serverless";
 import { ProductionDataType } from "./analytics-chart";
 import { defectData } from "./bar-chart-graph";
-import { createPostgresClient } from "@/lib/postgres";
+import { poolForPortal } from "@/lib/postgres";
+
 
 
 export async function getOperatorEfficiency(obbsheetid:string,date:string) : Promise<defectData[]>   {
     const sql = neon(process.env.RFID_DATABASE_URL || "");
 
-    
-     const data = await sql
-     `SELECT
+
+    const query = `
+        SELECT
     pd."part",
     COUNT(DISTINCT pd."gmtId") AS garment_count
 FROM 
@@ -21,8 +22,8 @@ LEFT JOIN
     "Defect" d ON d.id = gdd."A"
 WHERE
     pd."qcStatus" <> 'pass'
-    AND pd."obbSheetId" = ${obbsheetid}
-    AND pd."timestamp" LIKE ${date}
+    AND pd."obbSheetId" = $1
+    AND pd."timestamp" LIKE $2
 GROUP BY 
     pd."part"
 
@@ -39,16 +40,20 @@ LEFT JOIN
     "Defect" d ON d.id = gdd."A"
 WHERE
     pd."qcStatus" <> 'pass' 
-    AND pd."obbSheetId" = ${obbsheetid}
-    AND pd."timestamp" LIKE ${date}
+    AND pd."obbSheetId" = $1
+    AND pd."timestamp" LIKE $2
 GROUP BY 
     pd."part";
-`
+      `;
+      const values = [obbsheetid,date];
+  
+      const result = await poolForPortal.query(query, values);
+    
     
             // console.log(data)
     
     
-    return new Promise((resolve) => resolve(data as defectData[] ))
+    return new Promise((resolve) => resolve(result.rows as defectData[] ))
 }
 
 
@@ -56,10 +61,8 @@ GROUP BY
 export async function getObb(unit:any) : Promise<{ id: string; name: string }[]>  {
   
 
-    const client = createPostgresClient();
     try {
   
-      await client.connect();
       const query = `
         SELECT os.name AS name, os.id AS id 
         FROM "ObbSheet" os
@@ -69,7 +72,7 @@ export async function getObb(unit:any) : Promise<{ id: string; name: string }[]>
       `;
       const values = [unit];
   
-      const result = await client.query(query, values);
+      const result = await poolForPortal.query(query, values);
   
       console.log("DATAaa: ", result.rows);
       return new Promise((resolve) => resolve(result.rows as { id: string; name: string }[]));
@@ -80,7 +83,7 @@ export async function getObb(unit:any) : Promise<{ id: string; name: string }[]>
       throw error;
     }
     finally{
-      await client.end()
+ 
     }
   
   }

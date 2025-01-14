@@ -529,7 +529,7 @@ export const HEADER_INFO = [
     },
     {
         label: "Line Individual Efficiency report",
-        href: "/analytics/line-test",
+        href: "/analytics/RLine-efficiency",
         icon: Table
     },
      {
