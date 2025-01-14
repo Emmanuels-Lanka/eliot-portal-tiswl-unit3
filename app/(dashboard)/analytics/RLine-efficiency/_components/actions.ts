@@ -1,5 +1,5 @@
 "use server";
-import { neon } from "@neondatabase/serverless";
+// import { neon } from "@neondatabase/serverless";
 import { DataRecord, EfficiencyData } from "./barchart";
 import { ObbSheet } from "@prisma/client";
 import { poolForPortal } from "@/lib/postgres";
@@ -92,50 +92,84 @@ export async function getObb(unit:any) : Promise<{ id: string; name: string }[]>
   
 
 export async function getObbData(obbSheet:string) : Promise< obb[]>  {
-    const sql = neon(process.env.DATABASE_URL || "");
 
-    
-     const data = await sql
-     `
-    select u.name unit, pl."name" line,os.* from "Unit" u
+  try {
+  
+  
+    const query = `
+       select u.name unit, pl."name" line,os.* from "Unit" u
 inner join "ProductionLine" pl on pl."unitId" = u.id
 inner join "ObbSheet" os on os."productionLineId" = pl.id
-where pl.id = ${obbSheet}
+where pl.id = $1
+    `;
+    const values = [obbSheet];
 
-`
-    return new Promise((resolve) => resolve(data as obb[]))
+    const result = await poolForPortal.query(query, values);
+
+    console.log("DATAaa: ", result.rows);
+    return new Promise((resolve) => resolve(result.rows as obb[]));
+    
+    
+  } catch (error) {
+    console.error("[TEST_ERROR]", error);
+    throw error;
+  }
+
+
 }
 export async function getUnit() : Promise<{ id: string; name: string }[]>  {
-    const sql = neon(process.env.DATABASE_URL || "");
-
-    
-     const data = await sql`
-     select id as id , name as name from "Unit" u 
+  try {
+  
+  
+    const query = `
+      select id as id , name as name from "Unit" u 
 
 
  order by "createdAt" desc
+    `;
+    const values = [];
 
-`
-    return new Promise((resolve) => resolve(data as { id: string; name: string }[]))
+    const result = await poolForPortal.query(query);
+
+    console.log("DATAaa: ", result.rows);
+    return new Promise((resolve) => resolve(result.rows as { id: string; name: string }[]));
+    
+    
+  } catch (error) {
+    console.error("[TEST_ERROR]", error);
+    throw error;
+  }
+
 }
 
-
 export async function getProducts(date:string,obbSheet:string) : Promise<DataRecord[]>  {
-    const sql = neon(process.env.DATABASE_URL || "");
 
-    
-     const data = await sql
-     `
- select oo."seqNo",pd."operatorRfid",o.name name,opn."name" operation,oo.smv,sum(pd."productionCount") count,oo."obbSheetId" from "ProductionData" pd 
+  try {
+  
+  
+    const query = `
+       select oo."seqNo",pd."operatorRfid",o.name name,opn."name" operation,oo.smv,sum(pd."productionCount") count,oo."obbSheetId" from "ProductionData" pd 
 inner join "Operator" o on o.rfid = pd."operatorRfid"
 inner join "ObbOperation" oo on oo.id = pd."obbOperationId"
 inner join "Operation" opn on opn.id = oo."operationId"
 INNER JOIN "ObbSheet" os ON oo."obbSheetId" = os.id 
-where pd.timestamp like ${date+"%"} and os.id = ${obbSheet}
+where pd.timestamp like $1 and os.id = $2
 group by pd."operatorRfid",o.name,oo.smv,oo."seqNo",opn."name",oo."obbSheetId"
 order by oo."seqNo"
-`
-    return new Promise((resolve) => resolve(data as DataRecord[]))
+    `;
+    const values = [date+"%",obbSheet];
+
+    const result = await poolForPortal.query(query, values);
+
+    console.log("DATAaa: ", result.rows);
+    return new Promise((resolve) => resolve(result.rows as DataRecord[]));
+    
+    
+  } catch (error) {
+    console.error("[TEST_ERROR]", error);
+    throw error;
+  }
+    
 }
 
 export async function getLogin(date:string,obbSheet:string) : Promise<LogData[]>  {
