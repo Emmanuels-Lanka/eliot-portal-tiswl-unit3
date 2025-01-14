@@ -7,7 +7,7 @@ import { poolForPortal } from "@/lib/postgres";
 
 
 export async function getOperatorEfficiency(obbsheetid:string,date:string) : Promise<defectData[]>   {
-    const sql = neon(process.env.RFID_DATABASE_URL || "");
+ 
 
 
     const query = `

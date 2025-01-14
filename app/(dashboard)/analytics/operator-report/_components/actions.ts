@@ -139,21 +139,24 @@ export interface EmployeeRecord {
 
 export async function getEmployee()  : Promise<EmployeeRecord[]>   {
     
-    const sql = neon(process.env.DATABASE_URL || "");
-   
-    // date=date+"%"
-    const data = await sql
-    `
-    select id,name,"employeeId",rfid from "Operator"
-
-
-
-
-`;
-// console.log(startDate,endDate)
-
-
-return new Promise((resolve) => resolve(data as EmployeeRecord[]  ))
+    try {
+  
+        const query = `
+          select id,name,"employeeId",rfid from "Operator"
+        `;
+        // const values = [obbSheet];
+    
+        const result = await poolForPortal.query(query);
+    
+        // console.log("DATAaa: ", result.rows);
+        return new Promise((resolve) => resolve(result.rows as EmployeeRecord[]));
+        
+        
+      } catch (error) {
+        console.error("[TEST_ERROR]", error);
+        throw error;
+      }
+  
 }
 
 

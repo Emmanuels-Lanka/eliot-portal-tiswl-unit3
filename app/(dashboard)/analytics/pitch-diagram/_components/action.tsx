@@ -50,7 +50,7 @@ export async function getOperationSmv(obbSheetId:string,date:string) : Promise<a
     SELECT os."seqNo", os.smv, o.name
     FROM "ObbOperation" os
     INNER JOIN "Operation" o ON o.id = os."operationId"
-    WHERE os."obbSheetId" = $1
+    WHERE os."obbSheetId" =$1
 )
 SELECT *, (SELECT COUNT(DISTINCT name) FROM OperationData) AS operations
 FROM OperationData
@@ -77,21 +77,25 @@ ORDER BY "seqNo";
 
 
 export async function getTargetValues(obbSheetId:string) : Promise<any[]>  {
-    const sql = neon(process.env.DATABASE_URL || "");
 
+  try {
+  
+    const query = `
+    select "totalSMV" as tsmv,"obbOperationsNo"as operations , name as obb from "ObbSheet" 
+where id=$1
+    `;
+    const values = [obbSheetId];
+
+    const result = await poolForPortal.query(query,values);
+
+    // console.log("DATAaa: ", result.rows);
+    return new Promise((resolve) => resolve(result.rows as any[]));
     
-     const data = await sql
-     `
-      select "totalSMV" as tsmv,"obbOperationsNo"as operations , name as obb from "ObbSheet" 
-where id=${obbSheetId}
-
-`
     
-//      const data = await sql`
-//       select l."totalSMV" as tsmv,l."obbManPowers" from "LineEfficiencyResources" l
-// where l."obbSheetId" = ${obbSheetId}
+  } catch (error) {
+    console.error("[TEST_ERROR]", error);
+    throw error;
+  }
 
-// `
-// console.log(obbSheetId)
-    return new Promise((resolve) => resolve(data as any []))
+
 }

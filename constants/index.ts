@@ -259,7 +259,7 @@ export const SIDEBAR_ROUTES = [
             },
             {
                 label: "Line Individual Efficiency report",
-                href: "/analytics/line-test",
+                href: "/analytics/RLine-efficiency",
                 icon: Table
             },
             // {
