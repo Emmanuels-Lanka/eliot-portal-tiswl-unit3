@@ -100,6 +100,7 @@ model EliotDevice {
   modelNumber    String
   serialNumber   String           @unique
   hasTrained     Boolean?         @default(false)
+  ProductionData ProductionData[]
   sewingMachines SewingMachine?
 }
 
@@ -185,7 +186,7 @@ model ObbSheet {
   indEngineer             Staff?                    @relation("IndEngineer", fields: [indEngineerId], references: [id])
   lineChief               Staff?                    @relation("LineChief", fields: [lineChiefId], references: [id])
   mechanic                Staff?                    @relation("Mechanic", fields: [mechanicId], references: [id])
-  productionLine          ProductionLine           @relation(fields: [productionLineId], references: [id])
+  productionLine          ProductionLine            @relation(fields: [productionLineId], references: [id])
   qualityIns              Staff?                    @relation("QI", fields: [qualityInsId], references: [id])
   supervisorAssembly      Staff?                    @relation("assembly", fields: [supervisorAssemblyId], references: [id])
   supervisorBack          Staff?                    @relation("back", fields: [supervisorBackId], references: [id])
@@ -267,11 +268,12 @@ model StaffSession {
 model ProductionData {
   id                String       @id @default(uuid())
   operatorRfid      String
-  eliotSerialNumber String
+  eliotSerialNumber String?
   obbOperationId    String
   productionCount   Int
   timestamp         String
   createdAt         DateTime     @default(now())
+  EliotDevice       EliotDevice? @relation(fields: [eliotSerialNumber], references: [serialNumber])
   obbOperation      ObbOperation @relation(fields: [obbOperationId], references: [id], onDelete: Cascade)
   operator          Operator     @relation(fields: [operatorRfid], references: [rfid], onDelete: Cascade)
 
@@ -369,9 +371,9 @@ model RoamingQC {
   createdAt      DateTime       @default(now())
   defects        String[]       @default([])
   inspectedQty   String
+  inspectedBy    String?        @default("Test RQC")
   machineId      String?
   colorStatus    String
-  inspectedBy    String?        @default("Test RQC")
   sewingMachine  SewingMachine? @relation(fields: [machineId], references: [machineId])
   obbOperation   ObbOperation   @relation(fields: [obbOperationId], references: [id], onDelete: Cascade)
   operator       Operator       @relation(fields: [operatorRfid], references: [rfid], onDelete: Cascade)
