@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/select"
 import { fetchBundleStyles } from "@/actions/fetch-bundle-styles";
 
-const SelectBundleStyles = ({onChange}: {onChange: (value: string) => void}) => {
+const SelectBundleStyles = ({ defaultValue, onChange }: { defaultValue?: string; onChange: (value: string) => void} ) => {
     const [styles, setStyles] = useState<string[]>([]);
 
     useEffect(() => {
@@ -23,7 +23,7 @@ const SelectBundleStyles = ({onChange}: {onChange: (value: string) => void}) => 
     }, []);
 
     return (
-        <Select onValueChange={onChange}>
+        <Select onValueChange={onChange} defaultValue={defaultValue}>
             <SelectTrigger className="w-full">
                 <SelectValue placeholder="Select style" />
             </SelectTrigger>

@@ -58,7 +58,7 @@ export async function PUT(
 ) {
     try {
         const { 
-            unitId, productionLineId, indEngineer, supervisor1, supervisor2, supervisor3, supervisor4, mechanic, qualityIns, accInputMan, fabInputMan, lineChief,
+            version, unitId, productionLineId, indEngineer, supervisor1, supervisor2, supervisor3, supervisor4, mechanic, qualityIns, accInputMan, fabInputMan, lineChief,
             buyer, style, item, operators, helpers, startingDate, endingDate, workingHours, factoryStartTime, factoryStopTime, bundleTime, personalAllowance,
             efficiencyLevel1, efficiencyLevel2, efficiencyLevel3, itemReference, totalMP, totalSMV, availableMinPerHour, obbOperationsNo, bottleNeckTarget, target100, 
             ucl, lcl, balancingLoss, balancingRatio, colour, supResponseTime, mecResponseTime, qiResponseTime, 
@@ -81,7 +81,7 @@ export async function PUT(
             }
         });
 
-        const name = `${line?.name}-${style}`
+        const name = `${line?.name}-${style}-v${version}`
 
         const updatedSheet = await db.obbSheet.update({
             where: {
