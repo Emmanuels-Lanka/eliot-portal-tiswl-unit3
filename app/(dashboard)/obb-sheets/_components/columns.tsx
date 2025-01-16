@@ -88,10 +88,10 @@ const ActionCell = ({ row }: { row: any }) => {
         setIsLoading(false);
     }
 
-    const handleDuplicate = async (obbSheet: ObbSheet) => {
-        console.log("Duplicate:", obbSheet);
+    const handleDuplicate = async (obbSheetId: string) => {
+        // console.log("Duplicate:", obbSheet);
         try {
-            const res = await handleDuplicateObb(obbSheet);
+            const res = await handleDuplicateObb(obbSheetId);
             if (!res) {
                 toast({
                     title: "Failed to duplicate OBB sheet!",
@@ -155,7 +155,7 @@ const ActionCell = ({ row }: { row: any }) => {
                         <DropdownMenuSeparator />
                         <DropdownMenuItem
                             disabled={isLoading}
-                            onClick={() => handleDuplicate(row.original)}
+                            onClick={() => handleDuplicate(row.original.id)}
                             className="gap-2 font-medium cursor-pointer"
                         >
                             <Copy className="w-4 h-4" />
@@ -188,6 +188,10 @@ export const columns: ColumnDef<ObbSheet>[] = [
         header: "Name (line-style)",
     },
     {
+        accessorKey: "style",
+        header: "Style",
+    },
+    {
         accessorKey: "unit.name",
         header: "Unit",
     },
@@ -201,11 +205,7 @@ export const columns: ColumnDef<ObbSheet>[] = [
     },
     {
         accessorKey: "colour",
-        header: "Colour",
-    },
-    {
-        accessorKey: "item",
-        header: "Item",
+        header: "Color",
     },
     {
         accessorKey: "updatedAt",
