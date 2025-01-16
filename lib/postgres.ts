@@ -1,4 +1,4 @@
-import { Client } from 'pg';
+import { Client, Pool } from 'pg';
 
 export const createPostgresClient = () => {
     const client = new Client({

@@ -51,7 +51,7 @@ const AnalyticsChart = ({ linename }: { linename: string }) => {
 
   function processProductionData(productionData: ProductionDataForChartTypes[]): OperationEfficiencyOutputTypes {
     const hourGroups = [
-      "7:00 AM - 8:00 AM", "8:00 AM - 9:00 AM", "9:00 AM - 10:00 AM",
+       "8:00 AM - 9:00 AM", "9:00 AM - 10:00 AM",
       "10:00 AM - 11:00 AM", "11:00 AM - 12:00 PM", "12:00 PM - 1:00 PM",
       "1:00 PM - 2:00 PM", "2:00 PM - 3:00 PM", "3:00 PM - 4:00 PM",
       "4:00 PM - 5:00 PM", "5:00 PM - 6:00 PM", "6:00 PM - 7:00 PM"
@@ -62,9 +62,9 @@ const AnalyticsChart = ({ linename }: { linename: string }) => {
       const hour = date.getHours();
       const minutes = date.getMinutes();
       if (minutes >= 5) {
-        return hourGroups[Math.max(0, Math.min(11, hour - 7))];
+        return hourGroups[Math.max(0, Math.min(10, hour - 8))];
       }
-      return hourGroups[Math.max(0, Math.min(11, hour - 8))];
+      return hourGroups[Math.max(0, Math.min(10, hour - 9))];
     };
 
     // Find the most recent timestamp from the data
@@ -162,7 +162,7 @@ const AnalyticsChart = ({ linename }: { linename: string }) => {
   useEffect(() => {
     if (obbSheetId && date) {
       handleFetchProductions();
-      const intervalId = setInterval(handleFetchProductions, 5 * 60 * 1000);
+      const intervalId = setInterval(handleFetchProductions,  10 * 60 * 1000);
       return () => clearInterval(intervalId);
     }
   }, [obbSheetId, date]);
