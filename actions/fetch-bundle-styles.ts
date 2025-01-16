@@ -1,24 +1,19 @@
 "use server";
 
-import { poolForRFID } from '@/lib/postgres';
-import { neon } from '@neondatabase/serverless';
+import { poolForRFID } from "@/lib/postgres";
 
 export async function fetchBundleStyles(): Promise<string[]> {
-
-
     try {
-  
         const query = `
-       SELECT DISTINCT "styleNo"
+            SELECT DISTINCT "styleNo"
             FROM "GmtData"
             WHERE "createdAt" >= (NOW() - INTERVAL '3 months')::DATE;
         `;
-        // const values = [obbsheetid,date];
-    
+        
         const result = await poolForRFID.query(query);
-        const styles = result.rows.map(style => style.styleNo);
-    
-        // console.log("DATAaa: ", result.rows);
+
+        const styles = result.rows.map((style: any) => style.styleNo);
+
         return new Promise((resolve) => resolve(styles as string[]));
         
         

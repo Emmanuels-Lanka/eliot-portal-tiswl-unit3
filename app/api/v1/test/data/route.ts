@@ -1,17 +1,23 @@
 import { NextResponse } from "next/server";
-// import DATA from "./line.json";
+import DATA from "./pro-data-9.json";
 
 import { db } from "@/lib/db";
 
 export async function POST(req: Request) {
     try {
         // const results = await Promise.all(DATA.map(async (data) => {
-        //     const res = await db.productionLine.create({
+        //     // const count = await db.productionData.count({
+        //     //     where: {
+        //     //         id: data.id,
+        //     //         eliotSerialNumber: null,
+        //     //     }
+        //     // });
+
+        //     // if (count === 0) {
+        //     // }
+        //     const res = await db.productionData.create({
         //         data: {
         //             ...data,
-        //             machines: {
-        //                 connect: data.machines.map((m) => ({ id: m.id }))
-        //             }
         //         },
         //     });
         //     return res;

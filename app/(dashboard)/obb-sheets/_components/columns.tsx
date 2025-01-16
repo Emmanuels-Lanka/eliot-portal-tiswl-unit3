@@ -2,11 +2,12 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ArrowUpDown, Loader2, Trash2, Edit, MoreHorizontal, Ban, Sparkle } from "lucide-react";
+import { ArrowUpDown, Loader2, Trash2, Edit, MoreHorizontal, Ban, Sparkle, Copy } from "lucide-react";
 import axios from "axios";
 import { ObbSheet, Staff } from "@prisma/client"
 import { useRouter } from "next/navigation";
 import { ColumnDef } from "@tanstack/react-table"
+import moment from "moment-timezone";
 
 import {
     DropdownMenu,
@@ -20,6 +21,7 @@ import { cn } from "@/lib/utils";
 import ConfirmModel from "@/components/model/confirm-model";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
+import { handleDuplicateObb } from "../_actions/handle-duplicate-obb";
 
 const ActionCell = ({ row }: { row: any }) => {
     const { id } = row.original;
@@ -86,6 +88,32 @@ const ActionCell = ({ row }: { row: any }) => {
         setIsLoading(false);
     }
 
+    const handleDuplicate = async (obbSheet: ObbSheet) => {
+        console.log("Duplicate:", obbSheet);
+        try {
+            const res = await handleDuplicateObb(obbSheet);
+            if (!res) {
+                toast({
+                    title: "Failed to duplicate OBB sheet!",
+                    variant: "error",
+                });
+                return;
+            } else {
+                toast({
+                    title: "Successfully duplicated OBB sheet!",
+                    variant: "success",
+                });
+                router.push(`/obb-sheets/${res.id}`);
+            }
+        } catch (error: any) {
+            console.error("DUPLICATE_OBB_ERROR", error);
+            toast({
+                title: error.response.data || "Something went wrong! Try again",
+                variant: "error"
+            });
+        }
+    }
+
     return (
         <div className="flex gap-2">
 
@@ -123,6 +151,15 @@ const ActionCell = ({ row }: { row: any }) => {
                                 <Sparkle className="w-4 h-4" />
                             }
                             {row.original.isActive === true ? "Deactive" : "Active"}
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem
+                            disabled={isLoading}
+                            onClick={() => handleDuplicate(row.original)}
+                            className="gap-2 font-medium cursor-pointer"
+                        >
+                            <Copy className="w-4 h-4" />
+                            Duplicate
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
                         <ConfirmModel onConfirm={() => onDelete(id)}>
@@ -169,6 +206,31 @@ export const columns: ColumnDef<ObbSheet>[] = [
     {
         accessorKey: "item",
         header: "Item",
+    },
+    {
+        accessorKey: "updatedAt",
+        header: ({ column }) => {
+            return (
+                <Button
+                    variant="ghost"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                    className="-ml-3"
+                >
+                    Last Update
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+            )
+        },
+        cell: ({ row }) => {
+            const dateValue: Date = row.getValue("updatedAt");
+            const date = new Date(dateValue);
+            const formattedDate = moment(date).format('DD MMM, YYYY');
+            const formattedTime = moment(date).format('hh:mm A');
+
+            return (
+                <p>{formattedTime} ({formattedDate})</p>
+            )
+        }
     },
     {
         id: "actions",

@@ -670,6 +670,7 @@ const CreateObbSheetForm = ({
                                                 {...field}
                                             /> */}
                                             <SelectBundleStyles 
+                                                defaultValue={field.value}
                                                 onChange={(value) => {
                                                     // console.log("Selected style:", value);
                                                     field.onChange(value);
