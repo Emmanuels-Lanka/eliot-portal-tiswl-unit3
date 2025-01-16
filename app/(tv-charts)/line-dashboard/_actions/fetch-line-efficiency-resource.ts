@@ -1,5 +1,6 @@
 "use server"
 
+import { poolForRFID } from '@/lib/postgres';
 import { neon } from '@neondatabase/serverless';
 
 type ReturnDataType = {
@@ -14,10 +15,12 @@ type ReturnDataType = {
 
 export async function fetchLineEfficiencyResource(obbSheetId: string): Promise<ReturnDataType | null> {
     try {
-        const sql = neon(process.env.RFID_DATABASE_URL || "");
+      
 
-        const data = await sql `
-            SELECT 
+        try {
+  
+            const query = `
+             SELECT 
                 "totalSMV", 
                 "endQcTarget" as "productionTarget", 
                 "workingHours", 
@@ -28,10 +31,22 @@ export async function fetchLineEfficiencyResource(obbSheetId: string): Promise<R
             FROM 
                 "LineEfficiencyResources"
             WHERE 
-                "obbSheetId" = ${obbSheetId};`;
+                "obbSheetId" = $1;
+            `;
+            const values = [obbSheetId];
+        
+            const result = await poolForRFID.query(query, values);
+        
+            // console.log("DATAaa: ", result.rows);
+            return new Promise((resolve) => resolve(result.rows[0] as ReturnDataType));
+            
+            
+          } catch (error) {
+            console.error("[TEST_ERROR]", error);
+            throw error;
+          }
 
-        // console.log("LINE:", data);
-        return new Promise((resolve) => resolve(data[0] as ReturnDataType));
+        
     } catch (error) {
         console.error("[FETCH_LINE_EFFICIENCY_RESOURCES_ERROR]", error);
         return null;

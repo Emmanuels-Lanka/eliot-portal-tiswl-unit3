@@ -1,14 +1,16 @@
 "use server";
 import { neon } from "@neondatabase/serverless";
 import { ProductionDataType } from "../../daily-achivement/components/analytics-chart";
+import { poolForPortal } from "@/lib/postgres";
 
 
 export async function getData(obbsheetid:string,date:string) : Promise<ProductionDataType[]>   {
-    const sql = neon(process.env.DATABASE_URL || "");
+   
 
-    const data = await sql
-    `
-        SELECT 
+    try {
+  
+        const query = `
+         SELECT 
             pd."id",
             pd."productionCount" as count,
             pd."timestamp",
@@ -25,14 +27,23 @@ export async function getData(obbsheetid:string,date:string) : Promise<Productio
         INNER JOIN "ObbSheet" os ON oo."obbSheetId" = os.id
         INNER JOIN "Operation" o ON o.id = oo."operationId"
         LEFT JOIN "Operator" op ON pd."operatorRfid" = op.id
-        WHERE os.id = ${obbsheetid} AND pd.timestamp LIKE  ${date}
+        WHERE os.id = $1 AND pd.timestamp LIKE  $2
 
         ORDER BY oo."seqNo" ASC;
-    `;
-
-    //console.log("data fetched",data,111)
-
-
- 
-    return new Promise((resolve) => resolve(data as ProductionDataType[] ))
+        `;
+        const values = [obbsheetid,date];
+    
+        const result = await poolForPortal.query(query, values);
+    
+        // console.log("DATAaa: ", result.rows);
+        return new Promise((resolve) => resolve(result.rows as ProductionDataType[]));
+        
+        
+      } catch (error) {
+        console.error("[TEST_ERROR]", error);
+        throw error;
+      }
+   
+   
+   
 }

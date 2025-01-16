@@ -2,6 +2,7 @@
 import { neon } from "@neondatabase/serverless";
 import { ReportData } from "../../analytics/daily-report/_components/daily-report";
 import { learnCurveData } from "./curve-graph";
+import { poolForPortal, poolForRFID } from "@/lib/postgres";
 
 type defects= {
     count:number;
@@ -15,12 +16,11 @@ type defcount= {
 
 
 export async function getEfficiency(date:string,obbSheet:string,operatorId:string) : Promise<learnCurveData[]>   {
-    const sql = neon(process.env.DATABASE_URL || "");
-
-    console.log("first",date,obbSheet,operatorId)
-    // obbsheetid:string,date:string
-    
-     const data = await sql`SELECT 
+   
+    try {
+  
+        const query = `
+       SELECT 
     DATE(pd."timestamp") AS day,  -- Group by each day for the learning curve
     oo."seqNo", 
     SUM(pd."productionCount") AS count, 
@@ -48,30 +48,38 @@ LEFT JOIN (
 ) AS os ON os."operatorRfid" = o.rfid AND DATE(pd."timestamp") = os.login_date  -- Join on date
 WHERE 
     DATE(pd."timestamp") < CURRENT_DATE  -- Ensure type consistency with date
-    AND o.id = ${operatorId}
+    AND o.id = $1
 GROUP BY 
     day, oo."seqNo", o.name, opn.name, oo.smv, os.first_login
 ORDER BY 
-    day, oo."seqNo";
-
-
-
-
-`
+    day, oo."seqNo"
+        `;
+        const values = [operatorId];
     
-console.log("id",operatorId)
-
-return new Promise((resolve) => resolve(data as learnCurveData[]  ))
+        const result = await poolForPortal.query(query,values);
+    
+        // console.log("DATAaa: ", result.rows);
+        return new Promise((resolve) => resolve(result.rows as learnCurveData[]));
+        
+        
+      } catch (error) {
+        console.error("[TEST_ERROR]", error);
+        throw error;
+      }
+   
+   
+    
 }
 
 
 export async function getChecked(date:string,obbSheet:string) : Promise<defcount>   {
-    const sql = neon(process.env.RFID_DATABASE_URL || "");
+ 
+  
 
-    console.log("first",date,obbSheet)
-    // obbsheetid:string,date:string
-    
-     const data = await sql`WITH counts AS (
+    try {
+  
+        const query = `
+       WITH counts AS (
     SELECT COUNT(*) AS gmt_count FROM "GmtDefect" gd WHERE gd.timestamp LIKE ${date} 
     and "obbSheetId" = ${obbSheet}
     UNION ALL
@@ -79,30 +87,51 @@ export async function getChecked(date:string,obbSheet:string) : Promise<defcount
     and "obbSheetId" = ${obbSheet}
 )
 SELECT SUM(gmt_count) AS total FROM counts;
-`
+        `;
+        const values = [obbSheet];
     
-const total = data[0]?.total || 0;
+        const result = await poolForRFID.query(query,values);
     
-return { total } as defcount;
+        // console.log("DATAaa: ", result.rows);
+        const total = result.rows[0]?.total || 0;
+    
+        return { total } as defcount;
+        
+        
+      } catch (error) {
+        console.error("[TEST_ERROR]", error);
+        throw error;
+      }
+    
+     
+
 }
 export async function getDefects(date:string,obbSheet:string,operatorId: string) : Promise<defects []>   {
-    const sql = neon(process.env.RFID_DATABASE_URL || "");
-    // obbsheetid:string,date:string
-    
-     const data = await sql`select count(*),"operatorName" as operator,part from "GmtDefect" gd
-where timestamp like ${date} and "obbSheetId" =${obbSheet} and 
-"qcStatus" <> 'pass' and gd."operatorId" = ${operatorId}
+   
+    try {
+  
+        const query = `
+       select count(*),"operatorName" as operator,part from "GmtDefect" gd
+where timestamp like $1 and "obbSheetId" =$2 and 
+"qcStatus" <> 'pass' and gd."operatorId" = $3
 group by operator,part
 union
 select count(*),"operatorName" as operator,part  from "ProductDefect" pd
-where "qcStatus" <> 'pass' and  timestamp like ${date} and "obbSheetId" = ${obbSheet}
-and pd."operatorId" = ${operatorId}
+where "qcStatus" <> 'pass' and  timestamp like $1 and "obbSheetId" = $2
+and pd."operatorId" = $3
 group by operator,part
-
-
-`
+        `;
+        const values = [date,obbSheet,operatorId];
     
+        const result = await poolForPortal.query(query,values);
     
+        // console.log("DATAaa: ", result.rows);
+        return new Promise((resolve) => resolve(result.rows as defects[]));
+        
+        
+      } catch (error) {
+        console.error("[TEST_ERROR]", error);
+        throw error;
+      }
     
-    return new Promise((resolve) => resolve(data as defects[]  ))
 }

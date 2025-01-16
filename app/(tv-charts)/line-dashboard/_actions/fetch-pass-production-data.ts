@@ -1,5 +1,6 @@
 "use server"
 
+import { poolForRFID } from '@/lib/postgres';
 import { neon } from '@neondatabase/serverless';
 import moment from 'moment-timezone';
 
@@ -19,27 +20,39 @@ type ProductionDataType = {
 
 export async function fetchPassProductionData(obbSheetId: string): Promise<ProductionDataType> {
     try {
-        const sql = neon(process.env.RFID_DATABASE_URL || "");
+      
 
         const today = moment().tz('Asia/Dhaka').format("YYYY-MM-DD");
         // console.log("TODAY: " + today);
         const dateKey = `${today}%`;
 
-        const productDefects = await sql`
-            SELECT *
+        try {
+  
+            const query = `
+             SELECT *
             FROM 
                 "ProductDefect"
             WHERE 
-                timestamp like ${dateKey}
-                AND "obbSheetId" = ${obbSheetId}
+                timestamp like $2
+                AND "obbSheetId" = $1
                 AND "qcStatus" = 'pass'
                 AND part = 'line-end'
             ORDER BY 
-                "createdAt" ASC;`;
+                "createdAt" ASC;
+            `;
+            const values = [obbSheetId,dateKey];
+        
+            const result = await poolForRFID.query(query, values);
+        
+            // console.log("DATAaa: ", result.rows);
+            return new Promise((resolve) => resolve(result.rows as ProductionDataType));
+            
+            
+          } catch (error) {
+            console.error("[TEST_ERROR]", error);
+            throw error;
+          }
 
-        // console.log("PC:", productDefects.length);
-
-        return new Promise((resolve) => resolve(productDefects as ProductionDataType));
     } catch (error) {
         console.error("[FETCH_PASSED_PRODUCTION_DATA_ERROR]", error);
         return [];

@@ -1,26 +1,34 @@
 "use server";
+import { poolForPortal } from "@/lib/postgres";
 import { neon } from "@neondatabase/serverless";
 
 export async function getData(linename:string) :Promise<string>{
-  const sql = neon(process.env.DATABASE_URL || "");
-  console.log("linename",linename,)
-  const data = await sql`
-  SELECT oo.id
+
+
+  try {
+  
+    const query = `
+   SELECT oo.id
   FROM "ProductionLine" pl 
   INNER JOIN "ObbSheet" oo 
   ON pl.id = oo."productionLineId"
-  WHERE oo."isActive"=true and pl.name=${linename}
+  WHERE oo."isActive"=true and pl.name=$1
   order by oo."updatedAt" asc
-`;
+    `;
+    const values = [linename];
 
-  console.log("data",data.length)
+    const result = await poolForPortal.query(query,values);
+
+    // console.log("DATAaa: ", result.rows);
+    return new Promise((resolve) => resolve(result.rows[0].id));
+    
+    
+  } catch (error) {
+    console.error("[TEST_ERROR]", error);
+    throw error;
+  }
+
+
+
   
-  if(data.length>0){
-    return new Promise((resolve) => resolve(data[0].id))
-
-  }
-  else{
-  return new Promise((resolve) => resolve(""))
-   
-  }
 }

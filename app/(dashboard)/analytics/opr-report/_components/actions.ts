@@ -57,11 +57,10 @@ export type getDateTypes = {
 
 export async function getDailyData(obbsheetid:string,startDate:string,endDate:string)  : Promise<ReportData[]>   {
     
-    const sql = neon(process.env.DATABASE_URL || "");
-    // date=date+"%"
-    const data = await sql 
-    `
-    SELECT 
+    try {
+  
+        const query = `
+        SELECT 
     opr.id,
     obbop."seqNo",
     opr.name AS operatorname,
@@ -112,52 +111,73 @@ GROUP BY
     opr."employeeId", 
     os.first_login,obbs.name
 ORDER BY obbop."seqNo";
-
-
-`;
+        `;
+        // const values = [obbSheet];
     
-//    console.log(obbsheetid,date)
+        const result = await poolForPortal.query(query);
+    
+        // console.log("DATAaa: ", result.rows);
+        return new Promise((resolve) => resolve(result.rows as ReportData[]));
+        
+        
+      } catch (error) {
+        console.error("[TEST_ERROR]", error);
+        throw error;
+      }
 
- 
-    return new Promise((resolve) => resolve(data as ReportData[]  ))
 }
 
 export async function getEffData(obbsheetid:string,startDate:string,endDate:string)  : Promise<ProductionData[]>   {
     
-        const sql = neon(process.env.DATABASE_URL || "");
+      
         startDate = startDate + " 00:00:00";
         endDate = endDate + " 23:59:59"; 
         // date=date+"%"
-        const data = await sql
-`   select sum(pd."productionCount") counts,op."name" operator,
+
+        try {
+  
+            const query = `
+               select sum(pd."productionCount") counts,op."name" operator,
  pd."obbOperationId",o.name operation,oo.smv,oo."seqNo",op."employeeId" from "ProductionData" pd
     inner join "Operator" op on op."rfid" = pd."operatorRfid"
     inner join "ObbOperation" oo on oo.id = pd."obbOperationId"
     INNER JOIN 
         "Operation" o ON o.id = oo."operationId"
-    where pd.timestamp BETWEEN ${startDate} AND ${endDate}
+    where pd.timestamp BETWEEN $1 AND $2
     and oo."obbSheetId" = 'm39kvtz3-GXrCcRB8Ft0Q'
     group by op."name",pd."obbOperationId",o.name,oo.smv,oo."seqNo",op."employeeId"
     HAVING 
         sum(pd."productionCount") > 0
     order by counts desc
-`
-// console.log(startDate,endDate)
-
- 
-    return new Promise((resolve) => resolve(data as ProductionData[]  ))
+            `;
+            const values = [startDate,endDate];
+        
+            const result = await poolForPortal.query(query, values);
+        
+            // console.log("DATAaa: ", result.rows);
+            return new Promise((resolve) => resolve(result.rows as ProductionData[]));
+            
+            
+          } catch (error) {
+            console.error("[TEST_ERROR]", error);
+            throw error;
+          }
+       
 }
 
 
 
 export async function getCount(obbsheetid:string,startDate:string,endDate:string)  : Promise<getCountType[]>   {
     
-    const sql = neon(process.env.DATABASE_URL || "");
+    
     startDate = startDate + " 00:00:00";
     endDate = endDate + " 23:59:59"; 
     // date=date+"%"
-    const data = await sql
-` SELECT 
+
+    try {
+  
+        const query = `
+         SELECT 
     DATE("timestamp") AS production_date, 
     "operatorRfid",
     SUM("productionCount") AS daily_total,op."name",
@@ -170,21 +190,32 @@ WHERE "timestamp" BETWEEN '2024-12-01 00:00:00' AND '2024-12-03 23:59:59' and "o
 GROUP BY production_date, "operatorRfid",name,"LoginDate",oo.smv
 HAVING SUM("productionCount") IS NOT NULL AND SUM("productionCount") > 0
 ORDER BY production_date, "operatorRfid";
-`;
-// console.log(startDate,endDate)
+        `;
+        // const values = [obbSheet];
+    
+        const result = await poolForPortal.query(query);
+    
+        // console.log("DATAaa: ", result.rows);
+        return new Promise((resolve) => resolve(result.rows as getCountType[]));
+        
+        
+      } catch (error) {
+        console.error("[TEST_ERROR]", error);
+        throw error;
+      }
 
-
-return new Promise((resolve) => resolve(data as getCountType[]  ))
 }
 
 export async function getTimeslot(obbsheetid:string,startDate:string,endDate:string)  : Promise<getDateTypes[]>   {
     
-    const sql = neon(process.env.DATABASE_URL || "");
+    
     startDate = startDate + " 00:00:00";
     endDate = endDate + " 23:59:59"; 
-    // date=date+"%"
-    const data = await sql
-`SELECT "operatorRfid", 
+
+    try {
+  
+        const query = `
+         SELECT "operatorRfid", 
        "LoginTimestamp"::timestamp, 
        "LogoutTimestamp"::timestamp,
        Date("LoginTimestamp") ,
@@ -196,22 +227,33 @@ and oo."obbSheetId" = 'm39kvtz3-GXrCcRB8Ft0Q' and "operatorRfid" <> 'OP-00000'
   AND "LoginTimestamp" IS NOT NULL
   AND "LogoutTimestamp" IS NOT NULL
 order by "operatorRfid"
-`;
-// console.log(startDate,endDate)
-
-
-return new Promise((resolve) => resolve(data as getDateTypes[]  ))
+        `;
+        // const values = [obbSheet];
+    
+        const result = await poolForPortal.query(query);
+    
+        // console.log("DATAaa: ", result.rows);
+        return new Promise((resolve) => resolve(result.rows as getDateTypes[]));
+        
+        
+      } catch (error) {
+        console.error("[TEST_ERROR]", error);
+        throw error;
+      }
+   
 }
 
 
 
 export async function getNewData()  : Promise<newData[]>   {
     
-    const sql = neon(process.env.DATABASE_URL || "");
+    
    
-    // date=date+"%"
-    const data = await sql
-`SELECT 
+
+    try {
+  
+        const query = `
+        SELECT 
     o.name,
     o.rfid,
     os."obbOperationId",
@@ -248,19 +290,28 @@ GROUP BY
 ORDER BY 
     o.rfid, 
     production_date;
-
-
-`;
-// console.log(startDate,endDate)
-
-
-return new Promise((resolve) => resolve(data as newData[]  ))
+        `;
+        // const values = [obbSheet];
+    
+        const result = await poolForPortal.query(query);
+    
+        // console.log("DATAaa: ", result.rows);
+        return new Promise((resolve) => resolve(result.rows as newData[]));
+        
+        
+      } catch (error) {
+        console.error("[TEST_ERROR]", error);
+        throw error;
+      }
+    // date=date+"%"
+    
 }
 
 
 
 import { db } from "@/lib/db";
 import { ReportData } from "../../daily-report/_components/daily-report";
+import { poolForPortal } from "@/lib/postgres";
 
 
 export const getPrisma = async ()=>{

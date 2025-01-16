@@ -1,28 +1,64 @@
 "use server";
+import { poolForRFID } from "@/lib/postgres";
 import { neon } from "@neondatabase/serverless";
 
 
 export async function   getDHUData(obbsheetid:string,date:string) :Promise<any[]>   {
-    const sql = neon(process.env.RFID_DATABASE_URL || "");
+ 
 
     //console.log("dara",obbsheetid,"",date)
-    const dataGmts = await sql`select count(*) as count ,"qcStatus" qc, "operatorName" as name from "GmtDefect"
-    WHERE "qcStatus" <> 'pass' AND "obbSheetId"= ${obbsheetid} AND timestamp LIKE ${date}
-    group by "operatorName","qcStatus";`;
-    console.log("data fetched1",dataGmts)
+    // const dataGmts = await sql`select count(*) as count ,"qcStatus" qc, "operatorName" as name from "GmtDefect"
+    // WHERE "qcStatus" <> 'pass' AND "obbSheetId"= ${obbsheetid} AND timestamp LIKE ${date}
+    // group by "operatorName","qcStatus";`;
+    // console.log("data fetched1",dataGmts)
+
+    const datag = `select count(*) as count ,"qcStatus" qc, "operatorName" as name from "GmtDefect"
+    WHERE "qcStatus" <> 'pass' AND "obbSheetId"= $1 AND timestamp LIKE $2
+    group by "operatorName","qcStatus";
+            `;
+    const values = [obbsheetid,date];
+    const result = await poolForRFID.query(datag,values);
+const dataGmts = result.rows
     
-    const dataProducts = await sql`select count(*) as count ,"qcStatus" qc, "operatorName" as name 
+
+    // const dataProducts = await sql`select count(*) as count ,"qcStatus" qc, "operatorName" as name 
+    // from "ProductDefect"
+    // WHERE "qcStatus" <> 'pass' AND "obbSheetId"= ${obbsheetid} AND timestamp LIKE ${date}
+    // group by "operatorName","qcStatus";`;
+
+    const datap = `select count(*) as count ,"qcStatus" qc, "operatorName" as name 
     from "ProductDefect"
-    WHERE "qcStatus" <> 'pass' AND "obbSheetId"= ${obbsheetid} AND timestamp LIKE ${date}
-    group by "operatorName","qcStatus";`;
+    WHERE "qcStatus" <> 'pass' AND "obbSheetId"= $1 AND timestamp LIKE $2
+    group by "operatorName","qcStatus";`
+
+    const values2 = [obbsheetid,date];
+    const result2 = await poolForRFID.query(datap,values2);
+const dataProducts = result2.rows
+
     console.log("data fetched2",dataProducts)
     console.log("length1",dataProducts.length)
 
-    const tc = await sql`select count(*) as count from "GmtDefect"
-    WHERE "obbSheetId"= ${obbsheetid} AND timestamp LIKE ${date}`;
 
-    const tcProducts = await sql`select count(*) as count from "ProductDefect"
-    WHERE "obbSheetId"= ${obbsheetid} AND timestamp LIKE ${date}`;
+
+    // const tc = await sql`select count(*) as count from "GmtDefect"
+    // WHERE "obbSheetId"= ${obbsheetid} AND timestamp LIKE ${date}`;
+
+    const datatc = `select count(*) as count from "GmtDefect"
+    WHERE "obbSheetId"= $1 AND timestamp LIKE $2`
+
+    const values3 = [obbsheetid,date];
+    const result3 = await poolForRFID.query(datap,values3);
+const tc = result2.rows
+
+    // const tcProducts = await sql`select count(*) as count from "ProductDefect"
+    // WHERE "obbSheetId"= ${obbsheetid} AND timestamp LIKE ${date}`;
+
+    const tcp = `select count(*) as count from "ProductDefect"
+    WHERE "obbSheetId"= ${obbsheetid} AND timestamp LIKE ${date}`
+
+    const values4 = [obbsheetid,date];
+    const result4 = await poolForRFID.query(datap,values4);
+const tcProducts = result2.rows
 
     // console.log("data fetched",data)
     console.log("Row Count",tc)
