@@ -10,38 +10,39 @@ interface CategorizedStaff {
   [key: string]: Staff[];
 }
 
-const ObbSheetId = async ({
-  params
-}: {
-  params: { obbSheetId: string }
-}) => {
+const ObbSheetId = async ({ params }: { params: { obbSheetId: string } }) => {
+
+  
   const units = await db.unit.findMany({
     select: {
       name: true,
       id: true,
-    }
+    },
   });
 
   const staffs: Staff[] | null = await db.staff.findMany();
 
-  const categorizedStaff: CategorizedStaff = staffs.reduce((acc: CategorizedStaff, staff: Staff) => {
-    const { designation } = staff;
-    if (!acc[designation]) {
-      acc[designation] = [];
-    }
-    acc[designation].push(staff);
-    return acc;
-  }, {});
+  const categorizedStaff: CategorizedStaff = staffs.reduce(
+    (acc: CategorizedStaff, staff: Staff) => {
+      const { designation } = staff;
+      if (!acc[designation]) {
+        acc[designation] = [];
+      }
+      acc[designation].push(staff);
+      return acc;
+    },
+    {}
+  );
 
   const sheets = await db.obbSheet.findUnique({
     where: {
-      id: params.obbSheetId
-    }
+      id: params.obbSheetId,
+    },
   });
 
   const obbOperations = await db.obbSheet.findUnique({
     where: {
-      id: params.obbSheetId
+      id: params.obbSheetId,
     },
     select: {
       obbOperations: {
@@ -51,7 +52,7 @@ const ObbSheetId = async ({
               id: true,
               name: true,
               code: true,
-            }
+            },
           },
           sewingMachine: {
             select: {
@@ -59,33 +60,33 @@ const ObbSheetId = async ({
               brandName: true,
               machineType: true,
               machineId: true,
-              activeObbOperationId: true
-            }
+              activeObbOperationId: true,
+            },
           },
           supervisor: {
             select: {
               id: true,
               name: true,
-              employeeId: true
-            }
-          }
+              employeeId: true,
+            },
+          },
         },
         orderBy: {
-          seqNo: 'asc',
-        }
+          seqNo: "asc",
+        },
       },
       supervisorFront: true,
-      supervisorBack: true
-    }
+      supervisorBack: true,
+    },
   });
-  
+
   // const assignedMachinesToOperations = obbOperations?.obbOperations
   //   .filter(item => item.sewingMachine !== null)
   //   .filter(item => item.sewingMachine?.activeObbOperationId !== null)
   //   .map(item => item.sewingMachine?.id);
 
   // console.log("AAAA", assignedMachinesToOperations);
-  
+
   const operations: Operation[] | null = await db.operation.findMany();
 
   let machines: SewingMachine[] | null = null;
@@ -93,14 +94,15 @@ const ObbSheetId = async ({
   if (sheets?.productionLineId) {
     const machinesForLine = await db.productionLine.findUnique({
       where: {
-        id: sheets?.productionLineId
+        id: sheets?.productionLineId,
       },
       select: {
-        machines: true
-      }
+        machines: true,
+      },
     });
 
-    machines = machinesForLine?.machines.filter(machine => machine.isAssigned) ?? [];
+    machines =
+      machinesForLine?.machines.filter((machine) => machine.isAssigned) ?? [];
   }
 
   return (
@@ -114,7 +116,7 @@ const ObbSheetId = async ({
         supervisor1={obbOperations?.supervisorFront || null}
         supervisor2={obbOperations?.supervisorBack || null}
       /> */}
-      <ObbOperationsList 
+      <ObbOperationsList
         operations={operations}
         machines={machines}
         obbOperations={obbOperations?.obbOperations}
@@ -123,26 +125,30 @@ const ObbSheetId = async ({
       <div className="space-y-4">
         <div className="flex justify-between items-end gap-4">
           <div>
-            <h2 className="text-slate-800 text-xl font-medium">Update OBB Sheet</h2>
-            <p className="text-slate-500 text-sm">You can update the OBB sheet which you created!</p>
+            <h2 className="text-slate-800 text-xl font-medium">
+              Update OBB Sheet
+            </h2>
+            <p className="text-slate-500 text-sm">
+              You can update the OBB sheet which you created!
+            </p>
           </div>
-          <GenerateObbReport obbSheetId={params.obbSheetId}/>
+          <GenerateObbReport obbSheetId={params.obbSheetId} />
         </div>
-        <CreateObbSheetForm 
-          units={units} 
+        <CreateObbSheetForm
+          units={units}
           mechanics={categorizedStaff?.["mechanics"]}
           supervisor={categorizedStaff?.["supervisor"]}
           qualityInspector={categorizedStaff?.["quality-inspector"]}
           industrialEngineer={categorizedStaff?.["industrial-engineer"]}
           accessoriesInputMan={categorizedStaff?.["accessories-input-man"]}
-          fabricInputMan={categorizedStaff?.["fabric-input-man"]} 
+          fabricInputMan={categorizedStaff?.["fabric-input-man"]}
           lineChief={categorizedStaff?.["line-chief"]}
           initialData={sheets}
           obbSheetId={params.obbSheetId}
         />
       </div>
     </section>
-  )
-}
+  );
+};
 
 export default ObbSheetId
