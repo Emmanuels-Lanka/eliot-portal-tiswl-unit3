@@ -12,7 +12,7 @@ export async function fetchBundleStyles(): Promise<string[]> {
         
         const result = await poolForRFID.query(query);
 
-        const styles = result.rows.map(style => style.styleNo);
+        const styles = result.rows.map((style: any) => style.styleNo);
 
         return new Promise((resolve) => resolve(styles as string[]));
     } catch (error) {

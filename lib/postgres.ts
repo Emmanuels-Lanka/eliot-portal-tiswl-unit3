@@ -1,5 +1,6 @@
 import { Client, Pool } from 'pg';
 
+// Using the Client connection
 export const createPostgresClient = () => {
     const client = new Client({
         connectionString: process.env.DATABASE_URL || "",
@@ -15,8 +16,7 @@ export const createPostgresClientRfid = () => {
     return client;
 };
 
-
-
+// Using the Pool connection
 export const poolForPortal = new Pool({
     connectionString: process.env.DATABASE_URL || "",
     max: 20,

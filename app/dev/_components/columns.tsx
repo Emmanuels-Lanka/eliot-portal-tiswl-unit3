@@ -79,9 +79,9 @@ export const columns: ColumnDef<EliotFirmwareUpdate>[] = [
                 <Badge
                     variant="outline"
                     className={cn("text-sm",
-                        status === "pending" && "text-yellow-600",
-                        status === "done" && "text-green-600",
-                        status === "failed" && "text-red-600",
+                        status.toLowerCase() === "pending" && "text-yellow-600",
+                        status.toLowerCase() === "done" && "text-green-600",
+                        status.toLowerCase() === "failed" && "text-red-600",
                     )}
                 >
                     {status}
@@ -96,9 +96,9 @@ export const columns: ColumnDef<EliotFirmwareUpdate>[] = [
 
             return (
                 <>
-                    {status !== "pending" ?
-                        status !== "done" ?
-                            status === "failed" && <div className={cn("rounded-full w-2.5 h-2.5 bg-red-600")} />
+                    {status.toLowerCase() !== "pending" ?
+                        status.toLowerCase() !== "done" ?
+                            status.toLowerCase() === "failed" && <div className={cn("rounded-full w-2.5 h-2.5 bg-red-600")} />
                             :
                             <div className={cn("rounded-full w-2.5 h-2.5 bg-green-600")} />
                         :

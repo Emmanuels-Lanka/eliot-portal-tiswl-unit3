@@ -57,7 +57,8 @@ const FirmwareUpdateForm = ({
                 variant: "success"
             });
             router.refresh();
-            form.reset();
+            form.setValue("firmwareUrl", "");
+            // form.reset();
         } catch (error: any) {
             console.error("ERROR", error);
             toast({

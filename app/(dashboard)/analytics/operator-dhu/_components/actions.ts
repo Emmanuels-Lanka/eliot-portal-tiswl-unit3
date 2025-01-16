@@ -57,7 +57,7 @@ export async function getDHUData(obbsheetid: string, date: string): Promise<any>
         const updatedGmtDfcts: any[] = [];
 
         for (const gmtdfct of dataGmts.rows) {
-            const tmpIndex = dataProducts.rows.findIndex(p => p.name === gmtdfct.name);
+            const tmpIndex = dataProducts.rows.findIndex((p: any) => p.name === gmtdfct.name);
 
             if (tmpIndex !== -1) {
                 const tmp = dataProducts.rows[tmpIndex];
