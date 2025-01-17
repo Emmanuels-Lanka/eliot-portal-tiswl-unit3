@@ -23,6 +23,9 @@ import {
 } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { pendingToCancelledStatus } from "../_actions/pending-to-cancelled"
+import { useToast } from "@/components/ui/use-toast"
+import ConfirmModel from "@/components/model/confirm-model"
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[]
@@ -33,6 +36,7 @@ export function DataTable<TData, TValue>({
     columns,
     data,
 }: DataTableProps<TData, TValue>) {
+    const { toast } = useToast();
     const [sorting, setSorting] = React.useState<SortingState>([])
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
 
@@ -56,10 +60,26 @@ export function DataTable<TData, TValue>({
         },
     })
 
+    const handlePendingToCancelledStatus = async () => {
+        const res = await pendingToCancelledStatus();
+        // console.log("RES: ", res);
+        if (res?.count !== 0) {
+            toast({
+                title: `Status updated for ${res?.count} device(s).`,
+                variant: "success"
+            });
+        } else {
+            toast({
+                title: "Nothing 'pending' to update!",
+                variant: "error"
+            });
+        }
+    }
+
     return (
         <div>
             {/* Search bar */}
-            <div className="flex items-center py-4">
+            <div className="flex justify-between items-center py-4 gap-2">
                 <Input
                     placeholder="Search serial number..."
                     value={(table.getColumn("eliotSerialNo")?.getFilterValue() as string) ?? ""}
@@ -68,6 +88,18 @@ export function DataTable<TData, TValue>({
                     }
                     className="max-w-sm"
                 />
+                <div>
+                    <ConfirmModel
+                        subTitle="This action cannot be undone. It will change the status 'pending' to 'cancelled'."
+                        onConfirm={handlePendingToCancelledStatus}
+                    >
+                        <Button
+                            variant="secondary"
+                        >
+                            Pending ➜ Cancelled
+                        </Button>
+                    </ConfirmModel>
+                </div>
             </div>
 
             {/* Table */}
