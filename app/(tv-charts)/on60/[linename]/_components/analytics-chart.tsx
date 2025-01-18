@@ -107,7 +107,7 @@ const AnalyticsChart = ({ linename }: { linename: string }) => {
         const machines = operations.map(op => ` ${op.obbOperation.sewingMachine.machineId}`);
         const eliot = operations.map(op => ` ${op.data[0].eliotSerialNumber}`);
  const resultData = hourGroups
-      .filter(hourGroup => hourGroup !== mostRecentHourGroup) // Exclude the most recent hour group
+ .filter(hourGroup => hourGroup !== mostRecentHourGroup  && hourGroup !== "1:00 PM - 2:00 PM") // Exclude the most recent hour group
       .map(hourGroup => ({
             hourGroup,
             operation: operations.map(op => {
