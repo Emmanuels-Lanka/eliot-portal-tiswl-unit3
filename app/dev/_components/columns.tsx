@@ -74,11 +74,12 @@ export const columns: ColumnDef<EliotFirmwareUpdate>[] = [
         },
         cell: ({ row }) => {
             const status: string = row.getValue("status") || "";
+            // const status = "failed";
 
             return (
                 <Badge
-                    variant="outline"
-                    className={cn("text-sm",
+                    variant={status.toLowerCase() === "cancelled" ? "destructive" : "outline"}
+                    className={cn("text-sm capitalize",
                         status.toLowerCase() === "pending" && "text-yellow-600",
                         status.toLowerCase() === "done" && "text-green-600",
                         status.toLowerCase() === "failed" && "text-red-600",

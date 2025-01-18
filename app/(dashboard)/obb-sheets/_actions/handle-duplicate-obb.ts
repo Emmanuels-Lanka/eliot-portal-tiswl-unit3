@@ -3,26 +3,46 @@
 import { db } from "@/lib/db";
 import { generateUniqueId } from "@/actions/generate-unique-id";
 
-export async function handleDuplicateObb(obbSheet: any) {
-    const { 
-        version, unitId, productionLineId, indEngineerId, supervisorFrontId, supervisorBackId, supervisorAssemblyId, supervisorLineEndId, mechanicId, qualityInsId, accInputManId, fabInputManId, lineChiefId, 
-        buyer, style, item, operators, helpers, startingDate, endingDate, workingHours, factoryStartTime, factoryStopTime, bundleTime, personalAllowance,
-        efficiencyLevel1, efficiencyLevel2, efficiencyLevel3, itemReference, totalMP, totalSMV, availableMinPerHour, obbOperationsNo, bottleNeckTarget, target100, 
-        ucl, lcl, balancingLoss, balancingRatio, colour, supResponseTime, mecResponseTime, qiResponseTime, 
-    } = obbSheet;
-
+export async function handleDuplicateObb(obbSheetId: string) {
     try {
+        const obbSheet = await db.obbSheet.findUnique({
+            where: {
+                id: obbSheetId
+            },
+            include: {
+                productionLine: { select: { name: true } },
+                obbOperations: true
+            }
+        });
+        
+        if (!obbSheet) {
+            throw new Error("OBB Sheet not found");
+        }
+
+        const { id, name, productionLine, obbOperations, isActive, createdAt, updatedAt, ...restObb } = obbSheet;
+        
         const data = await db.obbSheet.create({
             data: {
                 id: generateUniqueId(),
-                name: `${obbSheet.productionLine.name}-${style}-v${version} Copy`,
-                isActive: false, productionLineId, unitId,
-                indEngineerId, supervisorFrontId, supervisorBackId, supervisorAssemblyId, supervisorLineEndId, mechanicId, qualityInsId, accInputManId, fabInputManId, lineChiefId,
-                buyer, style, item, operators, helpers, startingDate, endingDate, factoryStartTime, factoryStopTime, workingHours: parseFloat(workingHours), bundleTime, personalAllowance,
-                efficiencyLevel1, efficiencyLevel2, efficiencyLevel3, itemReference, totalMP, totalSMV: parseFloat(totalSMV), availableMinPerHour, obbOperationsNo, bottleNeckTarget,
-                target100, ucl, lcl, balancingLoss, balancingRatio, colour, supResponseTime, mecResponseTime, qiResponseTime
+                name: `${productionLine.name}-${obbSheet.style}-v${obbSheet.version} Copy`,
+                isActive: false,
+                ...restObb
             }
         });
+
+        if (obbOperations.length > 0 ) {
+            await db.obbOperation.createMany({
+                data: obbOperations.map(operation => {
+                    const { id, obbSheetId, isActive, sewingMachineId, createdAt, updatedAt, ...restOp } = operation;
+                    return {
+                        id: generateUniqueId(),
+                        obbSheetId: data.id,
+                        isActive: false,
+                        ...restOp
+                    }
+                })
+            });
+        }
 
         return data;
     } catch (error) {
