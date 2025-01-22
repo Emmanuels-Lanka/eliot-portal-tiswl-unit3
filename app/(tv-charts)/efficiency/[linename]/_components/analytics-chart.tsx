@@ -125,15 +125,24 @@ const AnalyticsChart = ({ linename }: { linename: string }) => {
             operationsMap[data.obbOperationId].push(data);
         });
 
+        const customOrder = ['front', 'back', 'assembly', 'line-end'];
         const operations = Object.values(operationsMap).map(group => ({
             obbOperation: group[0].obbOperation,
             data: group,
             operator: group[0]
-        })).sort((a, b) => a.obbOperation.seqNo - b.obbOperation.seqNo);
+        })).sort((a, b) => {
+            const partA = a.obbOperation.part.toLowerCase();
+            const partB = b.obbOperation.part.toLowerCase();
+            const partComparison = customOrder.indexOf(partA) - customOrder.indexOf(partB);
+            if (partComparison === 0) {
+                return a.obbOperation.seqNo - b.obbOperation.seqNo;
+            }
+            return partComparison;
+        });
 
         // const categories = operations.map(op => `${op.obbOperation.operation.name}-${op.obbOperation.seqNo}`);
         
-        const categories = operations.map(op => `${shortenOperationName(op.obbOperation.operation.name)} - ( ${shortenOperationName(op.operator.operator.name)}) - ( ${op.obbOperation.smv}) - ( ${op.obbOperation.sewingMachine.machineId} ) - ${op.obbOperation.seqNo}`);
+        const categories = operations.map(op => `${op.obbOperation.part} - ${shortenOperationName(op.obbOperation.operation.name)} - ( ${shortenOperationName(op.operator.operator.name)}) - ( ${op.obbOperation.smv}) - ( ${op.obbOperation.sewingMachine.machineId} ) - ${op.obbOperation.seqNo}`);
         const machines = operations.map(op => ` ${op.obbOperation.sewingMachine.machineId}`);
         const eliot = operations.map(op => ` ${op.data[0].eliotSerialNumber}`);
  const resultData = hourGroups

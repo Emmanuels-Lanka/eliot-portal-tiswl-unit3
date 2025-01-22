@@ -70,6 +70,7 @@ type ProductionDataForChartTypes = {
         seqNo: number;
         target: number;
         smv: number;
+        part:string;
         operation: {
             name: string;
         };
