@@ -60,6 +60,8 @@ import ConfirmModel from "@/components/model/confirm-model";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/components/ui/use-toast";
 import ObbOperationsForm from "./obb-operations-form";
+import { handleBulkObbOperationsActivate } from "../../_actions/handle-bulk-obb-operations-activate";
+import { handleBulkObbOperationsDeactivate } from "../../_actions/handle-bulk-obb-operations-deactivate";
 
 interface DataTableProps<TData, TValue> {
     data: ObbOperationData[];
@@ -257,22 +259,16 @@ export function DataTable<TData, TValue>({
         );
     };
 
-    const handleBulkStatus = async ({ type }: { type: string }) => {
-        const obbOperationIds: string[] = table
-            .getFilteredSelectedRowModel()
-            .rows.map((op) => op.original.id);
+    const handleBulkStatus = async ({ type }: { type: "activate" | "deactivate" }) => {
+        const selectedOperations = table.getFilteredSelectedRowModel().rows.map((op) => op.original);
 
         try {
-            setIsBulkUpdating(true);
-            const data = await axios.put(`/api/obb-operation/bulk/${type}`, {
-                obbOperationIds,
-            });
-            window.location.reload();
-            toast({
-                title: `Successfully ${type === "active" ? "activated" : "deactivated"
-                    } the selected operations!`,
-                variant: "success",
-            });
+            const results = type === "activate" ?
+                await handleBulkObbOperationsActivate(selectedOperations) :
+                await handleBulkObbOperationsDeactivate(selectedOperations);
+
+            console.log("Update Results:", results);
+            
         } catch (error: any) {
             console.error("BULK_STATUS_ERROR", error);
             toast({
@@ -280,9 +276,32 @@ export function DataTable<TData, TValue>({
                 variant: "error",
             });
         } finally {
-            // table.getFilteredSelectedRowModel().rows.push();
+            table.getFilteredSelectedRowModel().rows.push();
             setIsBulkUpdating(false);
+            window.location.reload();
         }
+
+        // try {
+        //     setIsBulkUpdating(true);
+        //     const data = await axios.put(`/api/obb-operation/bulk/${type}`, {
+        //         obbOperationIds,
+        //     });
+        //     window.location.reload();
+        //     toast({
+        //         title: `Successfully ${type === "active" ? "activated" : "deactivated"
+        //             } the selected operations!`,
+        //         variant: "success",
+        //     });
+        // } catch (error: any) {
+        //     console.error("BULK_STATUS_ERROR", error);
+        //     toast({
+        //         title: error.response.data || "Something went wrong! Try again",
+        //         variant: "error",
+        //     });
+        // } finally {
+        //     table.getFilteredSelectedRowModel().rows.push();
+        //     setIsBulkUpdating(false);
+        // }
     };
 
     const columns: ColumnDef<ObbOperation | any>[] = [
@@ -488,23 +507,23 @@ export function DataTable<TData, TValue>({
                 {table.getFilteredSelectedRowModel().rows.length > 0 && (
                     <div className="mt-4 space-x-4">
                         <Button
-                            onClick={() => handleBulkStatus({ type: "active" })}
+                            onClick={() => handleBulkStatus({ type: "activate" })}
                             className="bg-green-600 hover:bg-green-600 hover:opacity-90"
                             disabled={isBulkUpdating}
                         >
                             <Sparkle className="w-4 h-4" />
-                            Active
+                            Activate
                         </Button>
                         <Button
                             variant="destructive"
                             onClick={() =>
-                                handleBulkStatus({ type: "deactive" })
+                                handleBulkStatus({ type: "deactivate" })
                             }
                             className="gap-1"
                             disabled={isBulkUpdating}
                         >
                             <Ban className="w-4 h-4" />
-                            Deactive
+                            Deactivate
                         </Button>
                     </div>
                 )}
