@@ -68,6 +68,34 @@ const AnalyticsChart = ({ linename }: { linename: string }) => {
            String(today.getMonth() + 1).padStart(2, '0') + '-' + 
            String(today.getDate()).padStart(2, '0');
   };
+
+
+  function shortenOperationName(operationName:string) {
+    // Check if the input is a valid string
+    if (typeof operationName !== 'string' || operationName.trim() === '') {
+        return ''; // Return an empty string for invalid input
+    }
+
+    // Split the operation name into words
+    const words = operationName.split(' ').filter(word => word); // Filter out any empty strings
+
+    // If there are no words, return an empty string
+    if (words.length === 0) {
+        return '';
+    }
+
+    // Get the first two words
+    const firstTwoWords = words.slice(0, 2).join(' ');
+
+    // Get the rest of the words and convert them to short form
+    const restShortForm = words.slice(2).map(word => word[0] + '.').join(' ');
+
+    // Combine the first two words with the short form of the rest
+    return restShortForm ? `${firstTwoWords} ${restShortForm}` : firstTwoWords;
+}
+
+
+
     function processProductionData(productionData: ProductionDataForChartTypes[]): OperationEfficiencyOutputTypes {
         const hourGroups = ["8:00 AM - 9:00 AM", "9:00 AM - 10:00 AM", "10:00 AM - 11:00 AM", "11:00 AM - 12:00 PM", "12:00 PM - 1:00 PM", "1:00 PM - 2:00 PM", "2:00 PM - 3:00 PM", "3:00 PM - 4:00 PM", "4:00 PM - 5:00 PM", "5:00 PM - 6:00 PM", "6:00 PM - 7:00 PM"];
 
@@ -99,11 +127,13 @@ const AnalyticsChart = ({ linename }: { linename: string }) => {
 
         const operations = Object.values(operationsMap).map(group => ({
             obbOperation: group[0].obbOperation,
-            data: group
+            data: group,
+            operator: group[0]
         })).sort((a, b) => a.obbOperation.seqNo - b.obbOperation.seqNo);
 
         // const categories = operations.map(op => `${op.obbOperation.operation.name}-${op.obbOperation.seqNo}`);
-        const categories = operations.map(op => `${op.obbOperation.operation.name} - ( ${op.obbOperation.sewingMachine.machineId} ) - ${op.obbOperation.seqNo}`);
+        
+        const categories = operations.map(op => `${shortenOperationName(op.obbOperation.operation.name)} - ( ${shortenOperationName(op.operator.operator.name)}) - ( ${op.obbOperation.smv}) - ( ${op.obbOperation.sewingMachine.machineId} ) - ${op.obbOperation.seqNo}`);
         const machines = operations.map(op => ` ${op.obbOperation.sewingMachine.machineId}`);
         const eliot = operations.map(op => ` ${op.data[0].eliotSerialNumber}`);
  const resultData = hourGroups
@@ -188,12 +218,12 @@ const AnalyticsChart = ({ linename }: { linename: string }) => {
     return (
         <>
 
-        <div>
-        <div className="h-[200]">
+        <div className="h-screen">
+        <div className="h-auto">
       <div className='flex justify-center items-center gap-3 w-screen'>
         {/* <Cog className='w-7 h-7 text-voilet' /> */}
         <LogoImporter/>
-        <h1 className='text-[#0071c1] my-4 text-3xl '>Dashboard - Hourly Efficiency  - {linename} </h1>
+        <h1 className='text-[#0071c1] my-4 text-3xl  text-center'>Dashboard -  Efficiency TV Graph- {linename} </h1>
       </div>
 
       {heatmapData ?
