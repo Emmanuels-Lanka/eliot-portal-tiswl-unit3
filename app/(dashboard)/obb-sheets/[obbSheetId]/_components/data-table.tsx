@@ -260,6 +260,7 @@ export function DataTable<TData, TValue>({
     };
 
     const handleBulkStatus = async ({ type }: { type: "activate" | "deactivate" }) => {
+        setIsBulkUpdating(true);
         const selectedOperations = table.getFilteredSelectedRowModel().rows.map((op) => op.original);
 
         try {
