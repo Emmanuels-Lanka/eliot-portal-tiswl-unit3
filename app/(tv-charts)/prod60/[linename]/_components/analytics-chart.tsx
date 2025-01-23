@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { ObbSheet } from "@prisma/client";
 import { Loader2 } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
-import { getObbSheetID } from "@/components/tv-charts/achievement-rate-operation/actions";
+import { getLinebyOS, getObbSheetID } from "@/components/tv-charts/achievement-rate-operation/actions";
 import LogoImporter from "@/components/dashboard/common/eliot-logo";
 import EffiencyHeatmap from "./effheat";
 
@@ -37,6 +37,7 @@ const AnalyticsChart = ({ linename }: { linename: string }) => {
   const [heatmapData, setHeatmapData] = useState<OperationEfficiencyOutputTypes>();
   const [obbSheet, setObbSheet] = useState<ObbSheet | null>(null);
   const [obbSheetId, setObbSheetId] = useState<string>("");
+  const [lineName, setLineName] = useState<string>("")
   const [date, setDate] = useState<string>("");
 
   const getFormattedDate = () => {
@@ -108,9 +109,11 @@ const AnalyticsChart = ({ linename }: { linename: string }) => {
 
   const fetchObbSheetId = async () => {
     try {
-      const id = await getObbSheetID(linename);
-      if (id) {
-        setObbSheetId(id);
+      // const id = await getObbSheetID(linename);
+      const line =await getLinebyOS(linename);
+      if (line) {
+        setObbSheetId(linename);
+        setLineName(line);
         setDate(getFormattedDate());
       }
     } catch (error) {
@@ -162,7 +165,7 @@ const AnalyticsChart = ({ linename }: { linename: string }) => {
         <div className="flex items-center gap-3">
           <LogoImporter />
           <h1 className="text-[#0071c1] text-3xl font-semibold">
-            Dashboard - Hourly Production - {linename}
+            Dashboard - Hourly Production - {lineName}
           </h1>
         </div>
 
@@ -183,7 +186,7 @@ const AnalyticsChart = ({ linename }: { linename: string }) => {
         ) : (
           <div className="text-center py-8">
             <p className="text-lg text-muted-foreground">
-              No Layout for Line {linename} - {date}
+              No Layout for Line {lineName} - {date}
             </p>
           </div>
         )}

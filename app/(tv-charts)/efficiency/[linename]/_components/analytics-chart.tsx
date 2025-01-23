@@ -10,7 +10,7 @@ import HeatmapChart from "@/components/dashboard/charts/heatmap-chart";
 import SelectObbSheetAndDate from "@/components/dashboard/common/select-obbsheet-and-date";
 import { useToast } from "@/components/ui/use-toast";
 // import EffiencyHeatmap from "@/components/dashboard/charts/efficiency-heatmap";
-import { getObbSheetID } from "@/components/tv-charts/achievement-rate-operation/actions";
+import { getLinebyOS, getObbSheetID } from "@/components/tv-charts/achievement-rate-operation/actions";
 import LogoImporter from "@/components/dashboard/common/eliot-logo";
 import EffiencyHeatmap from "./effheat";
 // import EffiencyHeatmap from "./effheatmap";
@@ -42,15 +42,18 @@ const AnalyticsChart = ({ linename }: { linename: string }) => {
     const [obbSheet, setObbSheet] = useState<ObbSheet | null>(null);
 
     
-  const [obbSheetId, setobbSheetId] = useState<string>("")
-  
+    const [obbSheetId, setobbSheetId] = useState<string>("")
+    const [lineName, setLineName] = useState<string>("")
+    
   const [date, setDate] = useState<string>("");
 
   const fetchObbSheetId = async () => {
     try {
-      const id = await getObbSheetID(linename);
-      if (id) {
-        setobbSheetId(id);
+    //   const id = await getObbSheetID(linename);
+      const line =await getLinebyOS(linename);
+      if (line) {
+        setobbSheetId(linename);
+        setLineName(line);
         setDate(getFormattedDate());
       }
     } catch (error) {
@@ -232,7 +235,7 @@ const AnalyticsChart = ({ linename }: { linename: string }) => {
       <div className='flex justify-center items-center gap-3 w-screen'>
         {/* <Cog className='w-7 h-7 text-voilet' /> */}
         <LogoImporter/>
-        <h1 className='text-[#0071c1] my-4 text-3xl  text-center'>Dashboard -  Efficiency TV Graph- {linename} </h1>
+        <h1 className='text-[#0071c1] my-4 text-3xl  text-center'>Dashboard -  Efficiency TV Graph- {lineName} </h1>
       </div>
 
       {heatmapData ?
@@ -242,7 +245,7 @@ const AnalyticsChart = ({ linename }: { linename: string }) => {
        efficiencyLow={obbSheet?.efficiencyLevel1}
        efficiencyHigh={obbSheet?.efficiencyLevel3}
        heatmapData={heatmapData}
-   />: <span>No Layout for Line {linename} - {date}</span>}
+   />: <span>No Layout for Line {lineName} - {date}</span>}
     </div>
         </div>
             
