@@ -72,6 +72,10 @@ const AnalyticsChart = ({ linename }: { linename: string }) => {
            String(today.getDate()).padStart(2, '0');
   };
 
+  const upcase= (part:string) =>{
+    return part.toUpperCase();
+  }
+  
 
   function shortenOperationName(operationName:string) {
     // Check if the input is a valid string
@@ -145,7 +149,7 @@ const AnalyticsChart = ({ linename }: { linename: string }) => {
 
         // const categories = operations.map(op => `${op.obbOperation.operation.name}-${op.obbOperation.seqNo}`);
         
-        const categories = operations.map(op => `${op.obbOperation.part} - ${shortenOperationName(op.obbOperation.operation.name)} - ( ${shortenOperationName(op.operator.operator.name)}) - ( ${op.obbOperation.smv}) - ( ${op.obbOperation.sewingMachine.machineId} ) - ${op.obbOperation.seqNo}`);
+        const categories = operations.map(op => `${upcase(op.obbOperation.part)} - ${shortenOperationName(op.obbOperation.operation.name)} - ( ${shortenOperationName(op.operator.operator.name)}) - ( ${op.obbOperation.smv}) - ( ${op.obbOperation.sewingMachine.machineId} ) - ${op.obbOperation.seqNo}`);
         const machines = operations.map(op => ` ${op.obbOperation.sewingMachine.machineId}`);
         const eliot = operations.map(op => ` ${op.data[0].eliotSerialNumber}`);
  const resultData = hourGroups
@@ -159,10 +163,10 @@ const AnalyticsChart = ({ linename }: { linename: string }) => {
                 const efficiency = filteredData.length > 0 ? (totalProduction === 0 ? 0 : (earnmins / 60) * 100) : null;
              
                 
-                return { name: `${op.obbOperation.seqNo}-${op.obbOperation.operation.name}`, efficiency: efficiency !== null ? Math.round(efficiency +0.0001) : null };
+                return { name: `${op.obbOperation.seqNo}-${op.obbOperation.operation.name}`, efficiency: efficiency !== null ? Math.round(efficiency +0.0001) : null ,part: op.obbOperation.part};
             })
         }));
-
+        console.log("first", resultData,categories,machines,eliot)
         return {
             data: resultData,
             categories,
