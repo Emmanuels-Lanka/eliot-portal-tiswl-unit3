@@ -10,7 +10,7 @@ import HeatmapChart from "@/components/dashboard/charts/heatmap-chart";
 import SelectObbSheetAndDate from "@/components/dashboard/common/select-obbsheet-and-date";
 import { useToast } from "@/components/ui/use-toast";
 import EffiencyHeatmap from "./effheat";
-import { getObbSheetID } from "@/components/tv-charts/achievement-rate-operation/actions";
+import { getLinebyOS, getObbSheetID } from "@/components/tv-charts/achievement-rate-operation/actions";
 import LogoImporter from "@/components/dashboard/common/eliot-logo";
 
 interface AnalyticsChartProps {
@@ -40,6 +40,7 @@ const AnalyticsChart = ({ linename }: { linename: string }) => {
   const [heatmapData, setHeatmapData] = useState<OperationEfficiencyOutputTypes>();
   const [obbSheet, setObbSheet] = useState<ObbSheet | null>(null);
   const [obbSheetId, setObbSheetId] = useState<string>("");
+  const [lineName, setLineName] = useState<string>("");
   const [date, setDate] = useState<string>("");
 
   const getFormattedDate = () => {
@@ -119,9 +120,12 @@ const AnalyticsChart = ({ linename }: { linename: string }) => {
 
   const fetchObbSheetId = async () => {
     try {
-      const id = await getObbSheetID(linename);
-      if (id) {
-        setObbSheetId(id);
+      // const id = await getObbSheetID(linename);
+      const line = await getLinebyOS(linename);
+      console.log("line",line)
+      if (line) {
+        setObbSheetId(linename);
+        setLineName(line);
         setDate(getFormattedDate());
       }
     } catch (error) {
@@ -173,7 +177,7 @@ const AnalyticsChart = ({ linename }: { linename: string }) => {
         <div className="flex items-center gap-3">
           <LogoImporter />
           <h1 className="text-[#0071c1] text-3xl font-semibold">
-            Dashboard - Operator Efficiency Hourly - {linename}
+            Dashboard - Operator Efficiency Hourly - {lineName}
           </h1>
         </div>
 
@@ -193,7 +197,7 @@ const AnalyticsChart = ({ linename }: { linename: string }) => {
         ) : (
           <div className="text-center py-8">
             <p className="text-lg text-muted-foreground">
-              No Layout for Line {linename} - {date}
+              No Layout for Line {lineName} - {date}
             </p>
           </div>
         )}
