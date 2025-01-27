@@ -37,6 +37,7 @@ const AchievedProductionCard = ({
                 color='text-orange-600'
                 imgSize='size-[11vh]'
                 textSize='large'
+                long={true}
             />
     )
 }

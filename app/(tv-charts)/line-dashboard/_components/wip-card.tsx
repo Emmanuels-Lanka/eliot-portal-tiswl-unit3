@@ -36,7 +36,7 @@ const WipCard = ({
                 image='/icons/tv/sewing-machine.gif'
                 color='text-violet-600'
                 imgSize='size-[10vh]'
-                textSize='large'
+                textSize='medium'
             />
     )
 }

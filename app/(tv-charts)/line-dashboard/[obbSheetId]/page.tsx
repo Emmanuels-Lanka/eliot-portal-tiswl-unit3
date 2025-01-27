@@ -46,25 +46,25 @@ const ObbLineTvDashboard = async ({
     }
 
     return (
-        <div className='w-full overflow-x-hidden'>
+        <div className='w-full overflow-x-hidden bg-gradient-to-tr from-black to-slate-600'>
             {/* Dashboard header */}
-            <div className='bg-slate-100 px-4 pt-4 flex items-center justify-between'>
+            <div className='  px-4 pt-4 flex items-center justify-between'>
                 <div className='flex items-center gap-4'>
                     <Link href="/line-dashboard" >
                         <div className='size-8 bg-sky-600 flex justify-center items-center rounded-md hover:bg-sky-700'>
                             <ChevronLeft className='text-white' size={28} />
                         </div>
                     </Link>
-                    <h1 className='text-2xl font-semibold'>Sewing Line TV Dashboard</h1>
+                    <h1 className='text-2xl text-white font-semibold'>Sewing Line TV Dashboard</h1>
                 </div>
                 <div className='text-end'>
-                    <p className='text-lg font-semibold'>{obbSheet.productionLine.name}</p>
-                    <p className='text-sm text-slate-600'>{formattedDate}</p>
+                    <p className='text-lg text-white font-semibold'>{obbSheet.productionLine.name}</p>
+                    <p className='text-sm  text-white'>{formattedDate}</p>
                 </div>
             </div>
 
             {/* Dashboard content */}
-            <div className="h-screen bg-slate-100 p-4 grid grid-cols-6 grid-rows-5 gap-6">
+            <div className="h-screen  p-4 grid grid-cols-6 grid-rows-5 gap-6">
                 <GifAnimatedCard
                     label='Line Chief'
                     value={obbSheet.lineChief?.name as string}
@@ -85,15 +85,16 @@ const ObbLineTvDashboard = async ({
                     image='/icons/tv/attendance.gif'
                     color='text-sky-600'
                     imgSize='size-[11vh]'
-                    textSize='large'
+                    // textSize='large'
                 />
                 <GifAnimatedCard
-                    label='Planned Working Hours'
+                    label='Planned Working Hrs'
                     value={lineEfficiencyResource.workingHours?.toString() ?? ""}
                     image='/icons/tv/clock.gif'
                     color='text-cyan-600'
                     imgSize='size-[10vh]'
-                    textSize='large'
+                    textSize='medium'
+                    long={true}
                 />
                 <GifAnimatedCard
                     label='Production Target'
@@ -101,7 +102,8 @@ const ObbLineTvDashboard = async ({
                     image='/icons/tv/target.gif'
                     color='text-sky-600'
                     imgSize='size-[11vh]'
-                    textSize='large'
+                    textSize='medium'
+                    long = {true}
                 />
                 <GifAnimatedCard
                     label='Efficiency Target'
@@ -109,7 +111,8 @@ const ObbLineTvDashboard = async ({
                     image='/icons/tv/star.gif'
                     color='text-orange-600'
                     imgSize='size-[10vh]'
-                    textSize='large'
+                    textSize='medium'
+                    long = {true}
                 />
                 <div className="col-span-4 row-span-3">
                     <ProductionTrendCard

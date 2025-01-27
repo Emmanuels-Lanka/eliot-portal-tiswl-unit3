@@ -101,7 +101,21 @@ const AnalyticsChart = ({ linename }: { linename: string }) => {
     return restShortForm ? `${firstTwoWords} ${restShortForm}` : firstTwoWords;
 }
 
-
+const abbreviatePart = (part: string) => {
+    switch (part.toLowerCase()) {
+      case 'front':
+        return 'FRNT';
+      case 'back':
+        return 'BACK';
+      case 'assembly':
+        return 'ASSE';
+      case 'line-end':
+        return 'LEND';
+      default:
+        return part.toUpperCase();
+    }
+  };
+  
 
     function processProductionData(productionData: ProductionDataForChartTypes[]): OperationEfficiencyOutputTypes {
         const hourGroups = ["8:00 AM - 9:00 AM", "9:00 AM - 10:00 AM", "10:00 AM - 11:00 AM", "11:00 AM - 12:00 PM", "12:00 PM - 1:00 PM", "1:00 PM - 2:00 PM", "2:00 PM - 3:00 PM", "3:00 PM - 4:00 PM", "4:00 PM - 5:00 PM", "5:00 PM - 6:00 PM", "6:00 PM - 7:00 PM"];
@@ -149,7 +163,7 @@ const AnalyticsChart = ({ linename }: { linename: string }) => {
 
         // const categories = operations.map(op => `${op.obbOperation.operation.name}-${op.obbOperation.seqNo}`);
         
-        const categories = operations.map(op => `(${upcase(op.obbOperation.part)}) - ${shortenOperationName(op.obbOperation.operation.name)} - ( ${shortenOperationName(op.operator.operator.name)}) - ( ${op.obbOperation.smv}) - ( ${op.obbOperation.sewingMachine.machineId} ) - ${op.obbOperation.seqNo}`);
+        const categories = operations.map(op => ` ${shortenOperationName(op.obbOperation.operation.name)} -  ${shortenOperationName(op.operator.operator.name)} - ( ${op.obbOperation.smv}) - ${abbreviatePart(op.obbOperation.part)} - ( ${op.obbOperation.sewingMachine.machineId} ) - ${op.obbOperation.seqNo}`);
         const machines = operations.map(op => ` ${op.obbOperation.sewingMachine.machineId}`);
         const eliot = operations.map(op => ` ${op.data[0].eliotSerialNumber}`);
  const resultData = hourGroups

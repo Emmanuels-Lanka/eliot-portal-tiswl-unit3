@@ -146,7 +146,7 @@ const EffiencyHeatmap = ({
                 />
             </div>
             
-            <div className="flex justify-center gap-2 mt-5 2xl:hidden block">
+            <div className="flex justify-center gap-2 mt-5 2xl:hidden ">
                 <Button 
                     onClick={() => setChartWidth((p) => p + 200)} 
                     className="rounded-full bg-gray-300"

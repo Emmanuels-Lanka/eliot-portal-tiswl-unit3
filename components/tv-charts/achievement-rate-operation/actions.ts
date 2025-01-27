@@ -86,7 +86,7 @@ try {
   const result = await client.query(query, values);
 
   // console.log("DATAaa: ", result.rows);
-  return new Promise((resolve) => resolve("result.rows[0].name" as string));
+  return new Promise((resolve) => resolve(result.rows[0].name as string));
   
   
 } catch (error) {

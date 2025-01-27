@@ -7,6 +7,7 @@ interface GifAnimatedCardProps {
     color: string;
     imgSize?: string;
     textSize?: "small" | "medium" | "large";
+    long?:boolean
 }
 
 const GifAnimatedCard = ({
@@ -15,12 +16,13 @@ const GifAnimatedCard = ({
     image,
     color,
     imgSize,
+    long = false,
     textSize = "small",
 }: GifAnimatedCardProps) => {
     const fontSize = textSize === "small" ? "text-2xl" : textSize === "medium" ? "text-3xl" : "text-6xl";
 
     return (
-        <div className='h-full w-full bg-white pt-4 pb-4 flex flex-col justify-between items-center gap-x-2 rounded-xl drop-shadow-sm border'>
+        <div className='h-full w-full bg-white pt-4 pb-4 flex flex-col justify-between items-center gap-x-2 rounded-xl shadow-lg transition-transform duration-300 hover:shadow-2xl hover:translate-y-1 border'>
             <div className='w-full flex items-center pl-4 pr-4'>
                 <p className={cn("w-3/5 z-10 text-center font-semibold", color, fontSize)}>{value ? value.toUpperCase() : "NAN"}</p>
                 <div className='w-2/5 '>
@@ -32,7 +34,7 @@ const GifAnimatedCard = ({
                     />
                 </div>
             </div>
-            <p className='px-2 w-full text-xl text-center font-medium text-slate-500 tracking-[0.01em]'>{label}</p>
+            <p className={`px-2 w-full ${long ? 'text-sm': 'text-xl'} text-center font-medium text-slate-500 tracking-[0.01em]`}>{label}</p>
         </div>
     )
 }

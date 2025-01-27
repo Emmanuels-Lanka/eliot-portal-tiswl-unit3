@@ -31,10 +31,12 @@ const TargetVsAchieveCard = ({
     return (
         <div className='h-full w-full bg-white flex items-center rounded-xl drop-shadow-sm border'>
             <div className='w-1/2 flex flex-col items-end pr-6 -mt-6'>
+<div className=''>
                 <img src='/icons/tv/achieve.gif' alt="efficiency" className={cn("size-[12vh] p-2 pointer-events-none")} />
-                <div className='text-end'>
+
+</div>                <div className='text-end'>
                     <p className='text-lg font-medium text-slate-500 tracking-[0.01em]'>Target vs Achieve in pcs</p>
-                    <p className={cn("mt-6 font-semibold text-5xl")}><span className='text-emerald-600'>{count}</span> <span className='text-sky-600'>/ {target}</span></p>
+                    <p className={cn("mt-6 font-semibold text-3xl")}><span className='text-emerald-600'>{count}</span> <span className='text-sky-600'>/ {target}</span></p>
                 </div>
             </div>
             <div className='w-2/3 absolute -right-10 '>

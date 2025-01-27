@@ -1,10 +1,10 @@
 "use server";
 
 import { poolForRFID } from "@/lib/postgres";
-import { neon } from "@neondatabase/serverless";
+
 
 export async function calculateWIP(obbSheetId: string): Promise<number> {
-    const sql = neon(process.env.RFID_DATABASE_URL || "");
+    
 
     try {
         // const frontCount = await sql `
