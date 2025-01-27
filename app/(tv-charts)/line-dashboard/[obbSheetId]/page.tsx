@@ -47,26 +47,24 @@ const ObbLineTvDashboard = async ({
 
     return (
         <div className='w-full overflow-x-hidden'>
-
-            <div className='bg-gradient-to-tr from-black to-slate-600 '>
             {/* Dashboard header */}
-            <div className=' px-4 pt-4 flex items-center justify-between'>
+            <div className='bg-slate-100 px-4 pt-4 flex items-center justify-between'>
                 <div className='flex items-center gap-4'>
                     <Link href="/line-dashboard" >
                         <div className='size-8 bg-sky-600 flex justify-center items-center rounded-md hover:bg-sky-700'>
                             <ChevronLeft className='text-white' size={28} />
                         </div>
                     </Link>
-                    <h1 className='text-2xl font-semibold text-white'>Sewing Line TV Dashboard</h1>
+                    <h1 className='text-2xl font-semibold'>Sewing Line TV Dashboard</h1>
                 </div>
                 <div className='text-end'>
-                    <p className='text-lg text-white font-semibold'>{obbSheet.productionLine.name}</p>
+                    <p className='text-lg font-semibold'>{obbSheet.productionLine.name}</p>
                     <p className='text-sm text-slate-600'>{formattedDate}</p>
                 </div>
             </div>
 
             {/* Dashboard content */}
-            <div className="h-screen  p-4 grid grid-cols-6 grid-rows-5 gap-6">
+            <div className="h-screen bg-slate-100 p-4 grid grid-cols-6 grid-rows-5 gap-6">
                 <GifAnimatedCard
                     label='Line Chief'
                     value={obbSheet.lineChief?.name as string}
@@ -158,7 +156,6 @@ const ObbLineTvDashboard = async ({
                         target={lineEfficiencyResource.productionTarget}
                     />
                 </div>
-            </div>
             </div>
         </div>
     )
