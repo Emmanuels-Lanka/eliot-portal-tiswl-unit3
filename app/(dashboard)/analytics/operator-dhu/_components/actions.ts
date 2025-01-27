@@ -1,7 +1,7 @@
 "use server";
 import { neon } from "@neondatabase/serverless";
 import { ReportData1 } from "./dhu-report";
-import { createPostgresClient, createPostgresClientRfid, poolForPortal, poolForRFID } from "@/lib/postgres";
+import {  poolForPortal, poolForRFID } from "@/lib/postgres";
 
 export async function getDHUData(obbsheetid: string, date: string): Promise<any> {
  

@@ -1,6 +1,5 @@
 "use server";
 
-import { createPostgresClient } from "@/lib/postgres";
 
 import { poolForPortal } from "@/lib/postgres";
 
@@ -8,7 +7,7 @@ import { poolForPortal } from "@/lib/postgres";
 export async function getCapacity(obbSheetId:string,date:string) : Promise<any[]>  {
 
     {
-        const client = createPostgresClient();
+       
       try {
     
         

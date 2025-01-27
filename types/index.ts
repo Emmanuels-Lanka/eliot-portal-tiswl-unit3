@@ -51,6 +51,32 @@ type MachineDataWithObbOperation = {
     } | null;
 }
 
+type ProductionBoardDataType = {
+  id: string;
+  operatorRfid: string;
+  eliotSerialNumber: string;
+  obbOperationId: string;
+  productionCount: number;
+  timestamp: string;
+  createdAt: string;
+  obbOperation: {
+    totalSMV: any;
+    id: string;
+    seqNo: number;
+    target: number;
+    operation: {
+      name: string;
+    };
+    obbSheet: {
+      id: string;
+      name: string;
+      buyer: string;
+      style: string;
+      totalSMV: string;
+        target100: number;
+    };
+  };
+};
 type ProductionDataForChartTypes = {
     id: string;
     operatorRfid: string;

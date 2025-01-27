@@ -37,6 +37,38 @@ finally{
 
 }
 
+
+export async function getUnitID(unit: string): Promise<string> {
+
+  
+  {
+    const client = createPostgresClient();
+try {
+
+  await client.connect();
+  const query = `
+     SELECT name from "Unit" where id=$1
+  `;
+  const values = [unit];
+
+  const result = await client.query(query, values);
+
+  // console.log("DATAaa: ", result.rows);
+  return new Promise((resolve) => resolve(result.rows[0].name));
+  
+  
+} catch (error) {
+  console.error("[TEST_ERROR]", error);
+  throw error;
+}
+finally{
+  await client.end()
+}
+}
+
+}
+
+
 export async function getLinebyOS(linename: string): Promise<string > {
 
   
@@ -55,7 +87,7 @@ try {
   const result = await client.query(query, values);
 
   // console.log("DATAaa: ", result.rows);
-  return new Promise((resolve) => resolve(result.rows[0].name as string));
+  return new Promise((resolve) => resolve("result.rows[0].name" as string));
   
   
 } catch (error) {
