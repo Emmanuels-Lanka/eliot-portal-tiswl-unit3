@@ -3,7 +3,6 @@
 "use server";
 import { poolForPortal } from "@/lib/postgres";
 
-import { neon } from "@neondatabase/serverless";
 
 
 

@@ -1,5 +1,4 @@
 "use server";
-import { neon } from "@neondatabase/serverless";
 import { ProductionDataType } from "./analytics-chart";
 import { poolForPortal } from "@/lib/postgres";
 

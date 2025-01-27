@@ -1,5 +1,4 @@
 "use server"
-import { neon } from "@neondatabase/serverless";
 import { ReportData } from "./efficiency-report";
 import { poolForPortal } from "@/lib/postgres";
 

@@ -1,7 +1,6 @@
 "use server";
 
 import { poolForPortal } from "@/lib/postgres";
-import { neon } from "@neondatabase/serverless";
 // import { ProductionDataType } from "./analytics-chart";
 
 export async function getOperatorEfficiency(obbsheetid:string,date:string,timeValue:string)    {

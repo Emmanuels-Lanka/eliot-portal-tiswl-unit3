@@ -1,5 +1,4 @@
 "use server";
-import { neon } from "@neondatabase/serverless";
 import { ReportData } from "../../analytics/daily-report/_components/daily-report";
 import { learnCurveData } from "./curve-graph";
 import { poolForPortal, poolForRFID } from "@/lib/postgres";

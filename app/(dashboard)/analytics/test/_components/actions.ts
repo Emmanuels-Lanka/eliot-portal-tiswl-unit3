@@ -1,6 +1,5 @@
 "use server";
 import { poolForPortal, poolForRFID } from "@/lib/postgres";
-import { neon } from "@neondatabase/serverless";
 
 
 export async function getData()  : Promise<any[]>{

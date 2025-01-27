@@ -1,6 +1,5 @@
 "use server";
 import { poolForPortal } from "@/lib/postgres";
-import { neon } from "@neondatabase/serverless";
 
 
 export async function getData(obbsheetid:string,date:string)  : Promise<any[]>{

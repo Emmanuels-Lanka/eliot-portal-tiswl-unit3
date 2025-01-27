@@ -1,7 +1,6 @@
 "use server";
 
 import moment from 'moment-timezone';
-import { neon } from "@neondatabase/serverless";
 import { poolForRFID } from '@/lib/postgres';
 
 export async function calculateRejection(obbSheetId: string): Promise<number> {

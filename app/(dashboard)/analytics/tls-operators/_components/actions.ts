@@ -1,6 +1,5 @@
 "use server";
 import { poolForRFID } from "@/lib/postgres";
-import { neon } from "@neondatabase/serverless";
 
 
 export async function   getDHUData(obbsheetid:string,date:string) :Promise<any[]>   {

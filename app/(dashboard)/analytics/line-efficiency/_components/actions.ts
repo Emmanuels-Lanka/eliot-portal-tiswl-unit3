@@ -1,5 +1,4 @@
 "use server";
-import { neon } from "@neondatabase/serverless";
 import { DataRecord, EfficiencyData } from "./barchart";
 import { ObbSheet } from "@prisma/client";
 import { poolForPortal, poolForRFID } from "@/lib/postgres";
