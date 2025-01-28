@@ -24,8 +24,8 @@ import { getCapacity } from './action'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 export const description = "A line chart with a label"
-import jsPDF from "jspdf";
 import * as XLSX from 'xlsx';
+import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import { TableDemo } from './table-compo'
 
@@ -137,46 +137,45 @@ const GraphCompo  = ({date,obbSheet}:any) => {
     
   
   
-
-    const saveAsPDF = async () => {
-      if (chartRef.current) {
-        const canvas = await html2canvas(chartRef.current);
-        const imgData = canvas.toDataURL('image/png');
-        const pdf = new jsPDF({
-          orientation: 'landscape',
-          unit: 'px',
-          format: [canvas.width, canvas.height + 150],
-        });
-    
-        const baseUrl = window.location.origin;
-        const logoUrl = `${baseUrl}/logo.png`;
-    
-        const logo = new Image();
-        logo.src = logoUrl;
-        logo.onload = () => {
-          const logoWidth = 110;
-          const logoHeight = 50;
-          const logoX = (canvas.width / 2) - (logoWidth + 150); // Adjust to place the logo before the text
-          const logoY = 50;
-    
-          // Add the logo to the PDF
-          pdf.addImage(logo, 'PNG', logoX, logoY, logoWidth, logoHeight);
-    
-          // Set text color to blue
-          pdf.setTextColor(0,113,193); // RGB for blue
-    
-          // Set larger font size and align text with the logo
-          pdf.setFontSize(24);
-          pdf.text('Dashboard -Target vs Actual - Production', logoX + logoWidth + 20, 83, { align: 'left' });
-    
-          // Add the chart image to the PDF
-          pdf.addImage(imgData, 'PNG', 0, 150, canvas.width, canvas.height);
-    
-          // Save the PDF
-          pdf.save('chart.pdf');
-        };
-      }
-    };
+  const saveAsPDF = async () => {
+    if (chartRef.current) {
+      const canvas = await html2canvas(chartRef.current, { scale: 2 }as any); // Increase scale for better quality
+      const imgData = canvas.toDataURL('image/jpeg', 0.5); // Use JPEG and reduce quality to 50%
+      const pdf = new jsPDF({
+        orientation: 'landscape',
+        unit: 'px',
+        format: [canvas.width, canvas.height + 150],
+      });
+  
+      const baseUrl = window.location.origin;
+      const logoUrl = `${baseUrl}/logo.png`;
+  
+      const logo = new Image();
+      logo.src = logoUrl;
+      logo.onload = () => {
+        const logoWidth = 110;
+        const logoHeight = 50;
+        const logoX = (canvas.width / 2) - (logoWidth + 150); // Adjust to place the logo before the text
+        const logoY = 50;
+  
+        // Add the logo to the PDF
+        pdf.addImage(logo, 'PNG', logoX, logoY, logoWidth, logoHeight);
+  
+        // Set text color to blue
+        pdf.setTextColor(0, 113, 193); // RGB for blue
+  
+        // Set larger font size and align text with the logo
+        pdf.setFontSize(24);
+        pdf.text('Dashboard -Target vs Actual - Production', logoX + logoWidth + 20, 83, { align: 'left' });
+  
+        // Add the chart image to the PDF
+        pdf.addImage(imgData, 'JPEG', 0, 150, canvas.width, canvas.height);
+  
+        // Save the PDF
+        pdf.save('chart.pdf');
+      };
+    }
+  };
 
 
     const settingFlag = () => {
