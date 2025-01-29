@@ -30,7 +30,7 @@ const RadialbarCircleChart = ({
                     value: {
                         fontSize: '14px',
                         fontFamily: 'Inter',
-                        color: 'gray'
+                        color: 'white'
                     },
                     total: {
                         show: true,

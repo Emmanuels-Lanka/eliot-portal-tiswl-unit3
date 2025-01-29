@@ -38,6 +38,7 @@ const RejectionCard = ({
                 color='text-red-600'
                 imgSize='size-[11vh]'
                 textSize='large'
+                long = {true}
             />
     )
 }

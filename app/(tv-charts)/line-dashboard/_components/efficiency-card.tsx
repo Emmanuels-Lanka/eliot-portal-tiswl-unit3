@@ -94,6 +94,7 @@ const EfficiencyCard = ({
                 color='text-green-600'
                 imgSize='size-[11vh]'
                 textSize='large'
+                long={true}
             />
     )
 }

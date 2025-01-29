@@ -70,12 +70,14 @@ const ObbLineTvDashboard = async ({
                     value={obbSheet.lineChief?.name as string}
                     image='/icons/tv/user.gif'
                     color='text-violet-600'
+                    long={true}
                 />
                 <GifAnimatedCard
                     label='Running Style'
                     value={obbSheet.style}
                     image='/icons/tv/measure.gif'
-                    color='text-pink-600'
+                    color='text-pink-600 mr-4 my-3'
+                    long={true}
                 />
                 <GifAnimatedCard
                     label='Attendance'
@@ -86,6 +88,7 @@ const ObbLineTvDashboard = async ({
                     color='text-sky-600'
                     imgSize='size-[11vh]'
                     // textSize='large'
+                    long={true}
                 />
                 <GifAnimatedCard
                     label='Planned Working Hrs'

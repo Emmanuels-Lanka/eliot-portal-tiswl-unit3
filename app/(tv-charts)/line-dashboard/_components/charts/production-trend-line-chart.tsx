@@ -55,13 +55,13 @@ export function ProductionTrendLineChart({ data }: ProductionTrendLineChartProps
                 <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
                 <ReferenceLine
                     x="13:00"
-                    stroke="red"
+                    stroke="#f87171"
                     strokeWidth={1.5}
                     strokeDasharray="5 5"
                     label={{
                         value: "Lunch Break",
                         position: "top",
-                        fill: "red",
+                        fill: "#f87171",
                         fontSize: 14,
                         letterSpacing: 0.4
                     }}
