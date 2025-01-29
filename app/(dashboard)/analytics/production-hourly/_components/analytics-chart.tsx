@@ -82,8 +82,8 @@ const AnalyticsChart = ({
         console.log("op",operations)
 
         // const categories = operations.map(op => `${op.obbOperation.operation.name}-${op.obbOperation.seqNo}`);
-        const categories = operations.map(op => `${op.obbOperation.operation.name} - ( ${op.obbOperation.sewingMachine.machineId} ) - ${op.obbOperation.seqNo}`);
-        const machines = operations.map(op => ` ${op.obbOperation.sewingMachine.machineId}`);
+        const categories = operations.map(op => `${op.obbOperation.operation.name} - ( ${op.obbOperation?.sewingMachine?.machineId || 'Unknown Machine ID'}) - ${op.obbOperation.seqNo}`);
+        const machines = operations.map(op => ` ${op.obbOperation?.sewingMachine?.machineId || 'Unknown Machine ID'}`);
         const eliot = operations.map(op => ` ${op.data[0].eliotSerialNumber}`);
         const resultData = hourGroups.map(hourGroup => ({
             hourGroup,
