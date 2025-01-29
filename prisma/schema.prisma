@@ -271,9 +271,9 @@ model ProductionData {
   eliotSerialNumber String?
   obbOperationId    String
   productionCount   Int
-  totalPcs        Int?
   timestamp         String
   createdAt         DateTime     @default(now())
+  totalPcs          Int?
   EliotDevice       EliotDevice? @relation(fields: [eliotSerialNumber], references: [serialNumber])
   obbOperation      ObbOperation @relation(fields: [obbOperationId], references: [id], onDelete: Cascade)
   operator          Operator     @relation(fields: [operatorRfid], references: [rfid], onDelete: Cascade)
@@ -356,7 +356,7 @@ model ProductionSMV {
   smv            String
   timestamp      String
   obbOperationId String
-  efficiency      Int?
+  efficiency     Int?
   obbOperation   ObbOperation @relation(fields: [obbOperationId], references: [id], onDelete: Cascade)
   operator       Operator     @relation(fields: [operatorRfid], references: [rfid], onDelete: Cascade)
 

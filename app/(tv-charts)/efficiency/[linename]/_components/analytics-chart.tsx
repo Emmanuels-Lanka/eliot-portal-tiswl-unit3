@@ -163,8 +163,8 @@ const abbreviatePart = (part: string) => {
 
         // const categories = operations.map(op => `${op.obbOperation.operation.name}-${op.obbOperation.seqNo}`);
         
-        const categories = operations.map(op => ` ${shortenOperationName(op.obbOperation.operation.name)} -  ${shortenOperationName(op.operator.operator.name)} - ( ${op.obbOperation.smv}) - ${abbreviatePart(op.obbOperation.part)} - ( ${op.obbOperation.sewingMachine.machineId} ) - ${op.obbOperation.seqNo}`);
-        const machines = operations.map(op => ` ${op.obbOperation.sewingMachine.machineId}`);
+        const categories = operations.map(op => ` ${shortenOperationName(op.obbOperation.operation.name)} -  ${shortenOperationName(op.operator.operator.name)} - ( ${op.obbOperation.smv}) - ${abbreviatePart(op.obbOperation.part)} - ( ${op.obbOperation?.sewingMachine?.machineId || 'Unknown Machine ID'} ) - ${op.obbOperation.seqNo}`);
+        const machines = operations.map(op => ` ${op.obbOperation?.sewingMachine?.machineId || 'Unknown Machine ID'}`);
         const eliot = operations.map(op => ` ${op.data[0].eliotSerialNumber}`);
  const resultData = hourGroups
  .filter(hourGroup => hourGroup !== mostRecentHourGroup  && hourGroup !== "1:00 PM - 2:00 PM") // Exclude the most recent hour group
