@@ -272,6 +272,7 @@ model ProductionData {
   obbOperationId    String
   productionCount   Int
   efficiency        Int?
+  totalPcs          Int?
   timestamp         String
   createdAt         DateTime     @default(now())
   EliotDevice       EliotDevice? @relation(fields: [eliotSerialNumber], references: [serialNumber])
