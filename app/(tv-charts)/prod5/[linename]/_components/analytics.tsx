@@ -15,7 +15,7 @@ import { ApexOptions } from "apexcharts";
 
 import { getFormattedTime } from "@/lib/utils-time";
 import Hmap15 from "./heatmap";
-import { getObbSheetID } from "@/components/tv-charts/achievement-rate-operation/actions";
+import { getLinebyOS, getObbSheetID } from "@/components/tv-charts/achievement-rate-operation/actions";
 import LogoImporter from "@/components/dashboard/common/eliot-logo";
 
 
@@ -85,13 +85,16 @@ const AnalyticsChartHmap15 = ({ linename }: { linename: string }) => {
     const [heatmapCategories, setHeatmapCategories] = useState<string[] | null>(null);
     const [newDate, setNewDate] = useState<any>();
   const [obbSheetId, setobbSheetId] = useState<string>("")
+  const [lineName, setLineName] = useState<string>("")
 
 
   
      
     const handleFetchProductions = async () => {
         try {
-            const obbSheetId1 = await getObbSheetID(linename);
+            const obbSheetId1 = linename;
+            const line =await getLinebyOS(linename);
+            setLineName(line);
             setobbSheetId(obbSheetId1)
             const y = new Date().getFullYear().toString()
             const m = (new Date().getMonth() + 1).toString().padStart(2, "0")
@@ -157,11 +160,11 @@ const AnalyticsChartHmap15 = ({ linename }: { linename: string }) => {
       <div className='flex justify-center items-center gap-3 w-screen'>
         {/* <Cog className='w-7 h-7 text-voilet' /> */}
         <LogoImporter/>
-        <h1 className='text-[#0071c1] my-4 text-3xl '>Dashboard - 5 Minutes Production - {linename} </h1>
+        <h1 className='text-[#0071c1] my-4 text-3xl '>Dashboard - 5 Minutes Production - {lineName} </h1>
       </div>
 
       {obbSheetId ?
-        <Hmap15 obbSheetId={obbSheetId} date={newDate}></Hmap15> : <span>No Layout for Line {linename} - {newDate}</span>}
+        <Hmap15 obbSheetId={obbSheetId} date={newDate}></Hmap15> : <span>No Layout for Line {lineName} - {newDate}</span>}
     </div>
         </div>
         </div>

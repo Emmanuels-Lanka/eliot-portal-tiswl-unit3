@@ -77,7 +77,7 @@ try {
 
   await client.connect();
   const query = `
-    select pl.name from "ProductionLine" pl
+    select concat(pl.name , ' - ',"os"."style") as name from "ProductionLine" pl
     inner join "ObbSheet" os on os."productionLineId" = pl.id
     where os.id=$1
   `;
