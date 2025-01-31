@@ -22,7 +22,9 @@ export async function GET(
                 // operatorRfid: "OP-00090",
                 // obbOperationId: "ly8pb4yn-rC6auXtWFDaK",
                 obbOperation: {
-                    obbSheetId: obbSheetId,
+                    obbSheet:{
+                        productionLineId:obbSheetId
+                    }
                 },
                 timestamp: {
                     gte: startDate,
@@ -62,7 +64,7 @@ export async function GET(
             }
         });
         // console.log("DATA COUNT:", productionData.length);
-        // console.log("DATA:", productionData);
+        console.log("DATA:", productionData);
 
         const obbSheet = await db.obbSheet.findUnique({
             where: {

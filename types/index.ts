@@ -117,6 +117,7 @@ type OperationEfficiencyOutputTypes = {
     data: {
         hourGroup: string,
         operation: {
+            part?: any;
             name: string,
             efficiency: number | null
         }[];
@@ -124,6 +125,7 @@ type OperationEfficiencyOutputTypes = {
     categories: string[];
     machines?: string[];
     eliot?:string[];
+    part?: string[];
     
 };
 

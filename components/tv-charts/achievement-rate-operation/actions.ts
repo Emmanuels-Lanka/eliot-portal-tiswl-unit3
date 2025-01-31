@@ -99,3 +99,33 @@ finally{
 }
 
 }
+export async function getLine(linename: string): Promise<string > {
+
+  
+  {
+    const client = createPostgresClient();
+try {
+
+  await client.connect();
+  const query = `
+    select pl.name from "ProductionLine" pl
+where pl.id =$1
+  `;
+  const values = [linename];
+
+  const result = await client.query(query, values);
+
+  // console.log("DATAaa: ", result.rows);
+  return new Promise((resolve) => resolve(result.rows[0].name as string));
+  
+  
+} catch (error) {
+  console.error("[TEST_ERROR]", error);
+  throw error;
+}
+finally{
+  await client.end()
+}
+}
+
+}
