@@ -6,6 +6,7 @@ import moment from 'moment-timezone';
 import { cn } from '@/lib/utils';
 import { fetchFactoryStartTime, fetchProductionCount, fetchProductionData } from '../_actions/fetch-data-for-efficiency';
 import GifAnimatedCard from './gif-animated-card';
+import { Puzzle } from 'lucide-react';
 
 interface EfficiencyCardProps {
     obbSheetId: string;
@@ -95,6 +96,8 @@ const EfficiencyCard = ({
                 imgSize='size-[11vh]'
                 textSize='large'
                 long={true}
+                icon={<Puzzle color="#16A34A"  className='h-full w-full rounded-full' />}
+          
             />
     )
 }

@@ -8,6 +8,7 @@ interface GifAnimatedCardProps {
     imgSize?: string;
     textSize?: "small" | "medium" | "large";
     long?:boolean
+    icon?: React.ReactNode
 }
 
 const GifAnimatedCard = ({
@@ -18,6 +19,7 @@ const GifAnimatedCard = ({
     imgSize,
     long = false,
     textSize = "small",
+    icon
 }: GifAnimatedCardProps) => {
     const fontSize = textSize === "small" ? "text-2xl" : textSize === "medium" ? "text-3xl" : "text-6xl";
 
@@ -26,12 +28,21 @@ const GifAnimatedCard = ({
             <div className='w-full flex items-center pl-4 pr-4'>
                 <p className={cn("w-3/5 z-10 text-center  font-semibold", color, fontSize)}>{value ? value.toUpperCase() : "NAN"}</p>
                 <div className='w-2/5 '>
-                    <img
+                    { !icon ? <img
                         src={image}
                         alt={label}
                         // className={cn("-mr-4 pointer-events-none", imgSize ? `${imgSize} p-1` : "size-[12vh]")}
                         className='w-full rounded-full'
-                    />
+                    /> : 
+                    <div>
+                    {
+                        icon && 
+                        <div className=' ml-2 rounded-full'>
+                        {icon}
+                        </div>
+                    }
+                    </div>
+                    }
                 </div>
             </div>
             <p className={`px-2 w-full ${long ? 'text-sm': 'text-xl'} text-center font-medium text-slate-300 tracking-[0.01em]`}>{label}</p>

@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
 import { calculateRejection } from '../_actions/calculate-rejection';
 import GifAnimatedCard from './gif-animated-card';
+import { Ban } from 'lucide-react';
 
 interface RejectionCardProps {
     obbSheetId: string;
@@ -39,6 +40,9 @@ const RejectionCard = ({
                 imgSize='size-[11vh]'
                 textSize='large'
                 long = {true}
+                icon={<Ban color="#DC2626" className='h-full w-full rounded-full' />}
+                 
+                
             />
     )
 }

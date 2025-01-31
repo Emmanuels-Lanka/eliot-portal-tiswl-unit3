@@ -36,7 +36,7 @@ const RadialbarCircleChart = ({
                         show: true,
                         label: label,
                         color: '#0980D4',
-                        fontSize: '24px',
+                        fontSize: '22px',
                         fontWeight: 'bold',
                         fontFamily: 'Inter',
                         formatter: function (w) {

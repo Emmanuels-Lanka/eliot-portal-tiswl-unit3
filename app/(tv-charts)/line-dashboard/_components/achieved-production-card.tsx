@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
 import { fetchLineEndPassCount } from '../_actions/dhu/fetch-line-end-pass-count';
 import GifAnimatedCard from './gif-animated-card';
+import { PackageOpen } from 'lucide-react';
 
 interface AchievedProductionCardProps {
     obbSheetId: string;
@@ -38,6 +39,8 @@ const AchievedProductionCard = ({
                 imgSize='size-[11vh]'
                 textSize='large'
                 long={true}
+                icon={<PackageOpen color="#EA580C" className='h-full w-full rounded-full' />}
+                 
             />
     )
 }

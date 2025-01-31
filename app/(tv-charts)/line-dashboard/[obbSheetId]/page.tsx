@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ChevronLeft } from 'lucide-react';
+import { ChevronLeft, Goal, PencilRuler, PercentCircle, Settings, UserRoundCog, UsersRound } from 'lucide-react';
 import { format } from 'date-fns';
 
 import { db } from '@/lib/db';
@@ -71,6 +71,7 @@ const ObbLineTvDashboard = async ({
                     image='/icons/tv/user.gif'
                     color='text-violet-600'
                     long={true}
+                    icon={<UserRoundCog color="#7C3AED" className='h-full w-full rounded-full' />} // Pass the component as a prop
                 />
                 <GifAnimatedCard
                     label='Running Style'
@@ -78,6 +79,7 @@ const ObbLineTvDashboard = async ({
                     image='/icons/tv/measure.gif'
                     color='text-pink-600 mr-4 my-3'
                     long={true}
+                    icon={<PencilRuler color="#DB2777" className='h-full w-full rounded-full' />}
                 />
                 <GifAnimatedCard
                     label='Attendance'
@@ -89,6 +91,8 @@ const ObbLineTvDashboard = async ({
                     imgSize='size-[11vh]'
                     // textSize='large'
                     long={true}
+                    icon={<UsersRound color="#0284C7" className='h-full w-full rounded-full' />}
+
                 />
                 <GifAnimatedCard
                     label='Planned Working Hrs'
@@ -96,8 +100,10 @@ const ObbLineTvDashboard = async ({
                     image='/icons/tv/clock.gif'
                     color='text-cyan-600'
                     imgSize='size-[10vh]'
-                    textSize='medium'
+                    textSize='large'
                     long={true}
+                    icon={<Settings color="#0891B2" className='h-full w-full rounded-full' />}
+                    
                 />
                 <GifAnimatedCard
                     label='Production Target'
@@ -107,6 +113,9 @@ const ObbLineTvDashboard = async ({
                     imgSize='size-[11vh]'
                     textSize='medium'
                     long = {true}
+                
+                    icon={<Goal color="#0284C7" className='h-full w-full rounded-full' />}
+
                 />
                 <GifAnimatedCard
                     label='Efficiency Target'
@@ -114,8 +123,11 @@ const ObbLineTvDashboard = async ({
                     image='/icons/tv/star.gif'
                     color='text-orange-600'
                     imgSize='size-[10vh]'
-                    textSize='medium'
+                    textSize='large'
                     long = {true}
+                    
+                    icon={<PercentCircle color="#EA580C" className='h-full w-full rounded-full' />}
+                    
                 />
                 <div className="col-span-4 row-span-3">
                     <ProductionTrendCard

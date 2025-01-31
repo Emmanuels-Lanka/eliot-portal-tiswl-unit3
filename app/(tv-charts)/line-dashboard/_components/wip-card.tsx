@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
 import { calculateWIP } from '../_actions/calculate-wip';
 import GifAnimatedCard from './gif-animated-card';
+import { Waypoints } from 'lucide-react';
 
 interface WipCardProps {
     obbSheetId: string;
@@ -37,6 +38,8 @@ const WipCard = ({
                 color='text-violet-600'
                 imgSize='size-[10vh]'
                 textSize='medium'
+                icon={<Waypoints color="#7C3AED" className='h-full w-full rounded-full' />}
+                 
             />
     )
 }
