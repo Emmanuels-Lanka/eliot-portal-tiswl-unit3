@@ -101,6 +101,11 @@ export const SIDEBAR_ROUTES = [
                 label: "Dashboard",
                 href: "/dashboard",
                 icon: LayoutDashboard
+            },
+            {
+                label: "Activity Log",
+                href: "/activity-log",
+                icon: Cog
             }
         ]
     },

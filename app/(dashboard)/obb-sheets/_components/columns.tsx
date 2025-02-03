@@ -116,7 +116,6 @@ const ActionCell = ({ row }: { row: any }) => {
 
     return (
         <div className="flex gap-2">
-
             <div className="w-full flex justify-between items-center">
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>

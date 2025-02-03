@@ -413,3 +413,10 @@ model EliotFirmwareUpdate {
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 }
+
+model ActivityLog {
+  id        String   @id @default(uuid())
+  part      String
+  activity  String
+  timestamp DateTime @default(now())
+}
