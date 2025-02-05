@@ -30,6 +30,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import SelectBundleStyles from "../common/select-bundle-styles";
+import moment from "moment-timezone";
 
 interface CreateObbSheetFormProps {
     units: {
@@ -46,6 +47,10 @@ interface CreateObbSheetFormProps {
     initialData?: ObbSheet | null;
     obbSheetId?: string;
     mode?: string;
+    user?: {
+        email: string;
+        role: string;
+    }
 }
 
 const formSchema = z.object({
@@ -127,7 +132,8 @@ const CreateObbSheetForm = ({
     lineChief,
     initialData,
     obbSheetId,
-    mode
+    mode,
+    user
 }: CreateObbSheetFormProps) => {
     const { toast } = useToast();
     const router = useRouter();
@@ -204,20 +210,31 @@ const CreateObbSheetForm = ({
         };
     });
 
+    const handleCreateActivityLog = async (activity: string) => {
+        const payload = {
+            part: "Obb Sheet",
+            activity,
+        }
+        console.log("Created activity log: ", activity);
+        
+        try {
+            const res = await axios.post('/api/activity-log', payload);
+        } catch (error: any) {
+            console.error("ERROR", error);
+            toast({
+                title: error.response.data || "Something went wrong! Try again",
+                variant: "error"
+            });
+        }
+    }
+
     const onSubmit = async (data: z.infer<typeof formSchema>) => {
         if (mode && mode === 'create') {
             try {
                 const res = await axios.post('/api/obb-sheet', data);
                 toast({
-                    title: "Successfully created new OBB sheet",
+                    title: `Successfully created new OBB sheet: ${res.data.data.style}`,
                     variant: "success",
-                    description: (
-                        <div className='mt-2 bg-slate-200 py-2 px-3 md:w-[336px] rounded-md'>
-                            <code className="text-slate-800">
-                                Style: {res.data.data.style}
-                            </code>
-                        </div>
-                    ),
                 });
                 router.push(`/obb-sheets/${res.data.data.id}`);
                 router.refresh();
@@ -227,6 +244,8 @@ const CreateObbSheetForm = ({
                     title: error.response.data || "Something went wrong! Try again",
                     variant: "error"
                 });
+            } finally {
+                await handleCreateActivityLog(`Created new OBB sheet for style ${data.style} by ${user?.email ?? "unknown"} (${user?.role})`);
             }
         } else {
             try {
@@ -242,6 +261,8 @@ const CreateObbSheetForm = ({
                     title: error.response.data || "Something went wrong! Try again",
                     variant: "error"
                 });
+            } finally {
+                await handleCreateActivityLog(`Updated the OBB style (${data.style}) by ${user?.email ?? "unknown"} (${user?.role})`);
             }
         }
     }
