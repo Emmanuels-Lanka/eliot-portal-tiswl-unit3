@@ -135,14 +135,14 @@ const EffiencyHeatmap = ({
     };
 
     return (
-        <div className="mx-auto max-w-[1850px]">
-            <div id="chart" ref={chartRef}>
+        <div className="mx-auto max-w-ful h-full w-full">
+            <div id="chart" ref={chartRef} className='w-full'>
                 <ReactApexChart 
                     options={options} 
                     series={series} 
                     type="heatmap" 
-                    height={height} 
-                    width={chartWidth} 
+                    height={height}
+                    
                 />
             </div>
             

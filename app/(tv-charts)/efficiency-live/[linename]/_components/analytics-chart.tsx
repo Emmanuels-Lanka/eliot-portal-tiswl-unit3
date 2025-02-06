@@ -341,30 +341,33 @@ const abbreviatePart = (part: string) => {
 
     return (
       <>
+       <div className="h-screen w-screen flex flex-col">
+  {/* Header Section */}
+  <div className="flex justify-center items-center gap-3 w-full py-4">
+    <LogoImporter />
+    <h1 className="text-[#0071c1] text-3xl text-center">
+      Dashboard - LIVE Efficiency TV Graph - {lineName}
+    </h1>
+  </div>
 
-      <div className="h-screen">
-              <div className="h-auto">
-            <div className='flex justify-center items-center gap-3 w-screen'>
-              {/* <Cog className='w-7 h-7 text-voilet' /> */}
-              <LogoImporter/>
-              <h1 className='text-[#0071c1] my-4 text-3xl  text-center'>Dashboard -  LIVE Efficiency TV Graph- {lineName} </h1>
-            </div>
-      
-            {heatmapData ?
-             <EffiencyHeatmap
-             xAxisLabel='Operations'
-          
-             efficiencyLow={obbSheet?.efficiencyLevel1}
-             efficiencyHigh={obbSheet?.efficiencyLevel3}
-             heatmapData={heatmapData}
-         />: <span>No Layout for Line {lineName} - {date}</span>}
-          </div>
-              </div>
-                  
-               
-              </>
-
-    )
+  {/* Heatmap Section */}
+  <div className="flex-1 flex justify-center items-center">
+    {heatmapData ? (
+      <EffiencyHeatmap
+        xAxisLabel="Operations"
+        efficiencyLow={obbSheet?.efficiencyLevel1}
+        efficiencyHigh={obbSheet?.efficiencyLevel3}
+        heatmapData={heatmapData}
+      />
+    ) : (
+      <span className="text-lg text-gray-500">
+        No Layout for Line {lineName} - {date}
+      </span>
+    )}
+  </div>
+</div>
+      </>
+    );
 }
 
 export default AnalyticsChart
