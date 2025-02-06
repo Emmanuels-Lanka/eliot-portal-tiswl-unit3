@@ -192,12 +192,9 @@ const abbreviatePart = (part: string) => {
       .map(hourGroup => ({
             hourGroup,
             operation: operations.map(op => {
-              const loginTimestamp = op.operator.operator?.operatorSessions?.[0]?.LoginTimestamp;
-              if (!loginTimestamp) {
-                
-              };
-
-              const loginTime = new Date(loginTimestamp); // Convert to Date object
+              
+             
+              // const loginTimestamp = op.operator.operator?.operatorSessions?.[0]?.LoginTimestamp;
               const currentTime = new Date(); // Get present time
         
               // Calculate time difference in minutes
@@ -212,7 +209,15 @@ const abbreviatePart = (part: string) => {
 
                 // console.log(loginTimestamp)
                 const filteredData = op.data.filter(data => getHourGroup(data.timestamp) === hourGroup);
+                // const obbop = filteredData[0].obbOperationId
+                console.log(filteredData)
                 if (filteredData.length === 0) return { name: op.obbOperation.operation.name, efficiency: null };
+                
+               
+               const log = filteredData[0].operator.operatorSessions?.find((s)=>s.obbOperationId === op.obbOperation.id )?.LoginTimestamp
+                
+                // const loginTimestamp = filteredData[0]?.operator?.operatorSessions?.[0]?.LoginTimestamp;
+                const loginTime = new Date(log); // Convert to Date object
 
                 const  lastProduction = filteredData[0].productionCount;
                 const  lastProductionTime = filteredData[0].timestamp;
@@ -258,7 +263,7 @@ const abbreviatePart = (part: string) => {
                 return { name: `${op.obbOperation.seqNo}-${op.obbOperation.operation.name}`, efficiency: lastProduction !== null ? Math.round(efficiency +0.0001) : null 
                 ,part: op.obbOperation.part,timeDiffMinutes:timeDiffMinutes,
                 totalProduction:productionCount,firstProduction,lastProduction,
-                smv:op.obbOperation.smv,opLogin:loginTime,is2Passed,lastProductionTime};
+                smv:op.obbOperation.smv,opLogin:loginTime,is2Passed,lastProductionTime,operator:op.operator.operatorRfid};
             })
         }));
         console.log("first", resultData)
