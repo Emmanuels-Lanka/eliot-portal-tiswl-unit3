@@ -184,6 +184,7 @@ const abbreviatePart = (part: string) => {
         const categories = operations.map(op => ` ${shortenOperationName(op.obbOperation.operation.name)} -  ${shortenOperationName(op.operator.operator.name)} - ( ${op.obbOperation.smv}) - ${abbreviatePart(op.obbOperation.part)} - ( ${op.obbOperation?.sewingMachine?.machineId || 'Unknown Machine ID'} ) - ${op.obbOperation.seqNo}`);
         const machines = operations.map(op => ` ${op.obbOperation?.sewingMachine?.machineId || 'Unknown Machine ID'}`);
         const eliot = operations.map(op => ` ${op.data[0].eliotSerialNumber}`);
+
  const resultData = hourGroups
 //  hourGroup !== mostRecentHourGroup  &&  removed from
  .filter(hourGroup => hourGroup !== "1:00 PM - 2:00 PM") // Exclude the most recent hour group
@@ -199,24 +200,48 @@ const abbreviatePart = (part: string) => {
               const currentTime = new Date(); // Get present time
         
               // Calculate time difference in minutes
-              let timeDiffMinutes = (currentTime.getTime() - loginTime.getTime()) / (1000 * 60);
+              // let timeDiffMinutes = (currentTime.getTime() - loginTime.getTime()) / (1000 * 60);
         
               // If current time is past 2 PM, subtract 60 minutes
-              if (currentTime.getHours() >= 14) {
-                timeDiffMinutes -= 60;
-              }
+              // if (currentTime.getHours() >= 14) {
+              //   timeDiffMinutes -= 60;
+              // }
+              
 
 
-                console.log(loginTimestamp)
+                // console.log(loginTimestamp)
                 const filteredData = op.data.filter(data => getHourGroup(data.timestamp) === hourGroup);
-                const totalProduction = filteredData.reduce((sum, curr) => sum + curr.productionCount, 0);
-                const earnmins = op.obbOperation.smv * totalProduction
-                const efficiency = filteredData.length > 0 ? (totalProduction === 0 ? 0 : ((earnmins * 100) / timeDiffMinutes)) : null;
+                if (filteredData.length === 0) return { name: op.obbOperation.operation.name, efficiency: null };
+
+                const  lastProduction = filteredData[0].productionCount;
+                const  lastProductionTime = filteredData[0].timestamp;
+                const  firstProduction= filteredData[filteredData.length - 1].productionCount;
+                const productionCount = lastProduction - firstProduction;
+                const earnMins = productionCount * op.obbOperation.smv;
+                const liveEarnMins = lastProduction*op.obbOperation.smv
+
+                let efficiency: number | null = null;
+
+                  // const firstTime = new Date(filteredData[0].timestamp);
+                  const lastTime = new Date(lastProductionTime)
+                  // const currentTime = new Date(); no need cuz of time zone issues  
+                  const timeDiffMinutes = (lastTime.getTime() - loginTime.getTime()) / (1000 * 60);
+                  efficiency = timeDiffMinutes > 0 ? (liveEarnMins * 100) / timeDiffMinutes : 0;
+              
+``
+
+                // const totalProduction = filteredData.reduce((sum, curr) => sum + curr.productionCount, 0);
+                // const earnmins = op.obbOperation.smv * totalProduction
+              console.log("fd",filteredData)
+
+
+                //  efficiency = filteredData.length > 0 ? (totalProduction === 0 ? 0 : ((earnmins * 100) / timeDiffMinutes)) : null;
                 //  const efficiency = totalProduction
                 const timeDiff = timeDiffMinutes
              
                 
-                return { name: `${op.obbOperation.seqNo}-${op.obbOperation.operation.name}`, efficiency: efficiency !== null ? Math.round(efficiency +0.0001) : null ,part: op.obbOperation.part,timeDiffMinutes:timeDiffMinutes,totalProduction:totalProduction};
+                
+                return { name: `${op.obbOperation.seqNo}-${op.obbOperation.operation.name}`, efficiency: lastProduction !== null ? Math.round(efficiency +0.0001) : null ,part: op.obbOperation.part,timeDiffMinutes:timeDiffMinutes,totalProduction:productionCount,firstProduction,lastProduction,smv:op.obbOperation.smv};
             })
         }));
         console.log("first", resultData,categories,machines,eliot)
@@ -246,7 +271,7 @@ const abbreviatePart = (part: string) => {
        
 
             const response = await axios.get(`/api/efficiency-live?obbSheetId=${obbSheetId}&date=${date}`);
-            console.log("re",response.data.data)
+            // console.log("re",response.data.data)
             const heatmapData = processProductionData(response.data.data);
             
             setHeatmapData(heatmapData);
