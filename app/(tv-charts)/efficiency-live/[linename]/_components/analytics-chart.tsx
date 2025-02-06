@@ -210,7 +210,7 @@ const abbreviatePart = (part: string) => {
                 // console.log(loginTimestamp)
                 const filteredData = op.data.filter(data => getHourGroup(data.timestamp) === hourGroup);
                 // const obbop = filteredData[0].obbOperationId
-                console.log(filteredData)
+                // console.log(filteredData)
                 if (filteredData.length === 0) return { name: op.obbOperation.operation.name, efficiency: null };
                 
                
@@ -234,11 +234,17 @@ const abbreviatePart = (part: string) => {
                   let timeDiffMinutes = (lastTime.getTime() - loginTime.getTime()) / (1000 * 60);
                   
                   let is2Passed :boolean = false
-                  if (lastTime.getHours() > 14 || (lastTime.getHours() === 14 && lastTime.getMinutes() >= 5)) {
-                    timeDiffMinutes -= 60;
-                    is2Passed = true
-                }
+                  let isLoggedBfr2 :boolean =false
 
+                  if (
+                      lastTime.getHours() > 14 || (lastTime.getHours() === 14 && lastTime.getMinutes() >= 5)
+                    ) {
+                      if (loginTime.getHours() < 14 || (loginTime.getHours() === 14 && loginTime.getMinutes() < 5)) {
+                        timeDiffMinutes -= 60;
+                        isLoggedBfr2 = true
+                      }
+                      is2Passed = true;
+                    }
                     
                   // If current time is past 2 PM, subtract 60 minutes
               // if (currentTime.getHours() >= 14) {
@@ -263,7 +269,8 @@ const abbreviatePart = (part: string) => {
                 return { name: `${op.obbOperation.seqNo}-${op.obbOperation.operation.name}`, efficiency: lastProduction !== null ? Math.round(efficiency +0.0001) : null 
                 ,part: op.obbOperation.part,timeDiffMinutes:timeDiffMinutes,
                 totalProduction:productionCount,firstProduction,lastProduction,
-                smv:op.obbOperation.smv,opLogin:loginTime,is2Passed,lastProductionTime,operator:op.operator.operatorRfid};
+                smv:op.obbOperation.smv,opLogin:loginTime,is2Passed,lastProductionTime,operator:op.operator.operatorRfid,
+                isLoggedBfr2};
             })
         }));
         console.log("first", resultData)
@@ -327,7 +334,7 @@ const abbreviatePart = (part: string) => {
           const intervalId = setInterval(handleFetchProductions, 5 * 60 * 1000);
           return () => clearInterval(intervalId);
         }
-      }, [obbSheetId, date]);
+      }, [obbSheetId, date,linename]);
     
 
 
