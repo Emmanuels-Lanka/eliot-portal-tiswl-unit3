@@ -13,6 +13,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { getLinebyOS, getObbSheetID } from "@/components/tv-charts/achievement-rate-operation/actions";
 import LogoImporter from "@/components/dashboard/common/eliot-logo";
 import EffiencyHeatmap from "./effheat";
+import { boolean, string } from "zod";
 // import EffiencyHeatmap from "./effheatmap";
 
 type ProductionDataForChartTypes = {
@@ -225,14 +226,27 @@ const abbreviatePart = (part: string) => {
                   // const firstTime = new Date(filteredData[0].timestamp);
                   const lastTime = new Date(lastProductionTime)
                   // const currentTime = new Date(); no need cuz of time zone issues  
-                  const timeDiffMinutes = (lastTime.getTime() - loginTime.getTime()) / (1000 * 60);
+                  let timeDiffMinutes = (lastTime.getTime() - loginTime.getTime()) / (1000 * 60);
+                  
+                  let is2Passed :boolean = false
+                  if (lastTime.getHours() > 14 || (lastTime.getHours() === 14 && lastTime.getMinutes() >= 5)) {
+                    timeDiffMinutes -= 60;
+                    is2Passed = true
+                }
+
+                    
+                  // If current time is past 2 PM, subtract 60 minutes
+              // if (currentTime.getHours() >= 14) {
+              //   timeDiffMinutes -= 60;
+              // }
+              
                   efficiency = timeDiffMinutes > 0 ? (liveEarnMins * 100) / timeDiffMinutes : 0;
               
 ``
 
                 // const totalProduction = filteredData.reduce((sum, curr) => sum + curr.productionCount, 0);
                 // const earnmins = op.obbOperation.smv * totalProduction
-              console.log("fd",filteredData)
+              // console.log("fd",filteredData)
 
 
                 //  efficiency = filteredData.length > 0 ? (totalProduction === 0 ? 0 : ((earnmins * 100) / timeDiffMinutes)) : null;
@@ -241,10 +255,13 @@ const abbreviatePart = (part: string) => {
              
                 
                 
-                return { name: `${op.obbOperation.seqNo}-${op.obbOperation.operation.name}`, efficiency: lastProduction !== null ? Math.round(efficiency +0.0001) : null ,part: op.obbOperation.part,timeDiffMinutes:timeDiffMinutes,totalProduction:productionCount,firstProduction,lastProduction,smv:op.obbOperation.smv};
+                return { name: `${op.obbOperation.seqNo}-${op.obbOperation.operation.name}`, efficiency: lastProduction !== null ? Math.round(efficiency +0.0001) : null 
+                ,part: op.obbOperation.part,timeDiffMinutes:timeDiffMinutes,
+                totalProduction:productionCount,firstProduction,lastProduction,
+                smv:op.obbOperation.smv,opLogin:loginTime,is2Passed,lastProductionTime};
             })
         }));
-        console.log("first", resultData,categories,machines,eliot)
+        console.log("first", resultData)
         return {
             data: resultData,
             categories,
