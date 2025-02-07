@@ -229,7 +229,7 @@ const abbreviatePart = (part: string) => {
                 // const lastHourProd = 
                 const productionCount = lastProduction - previousHourData;
                 const earnMins = productionCount * op.obbOperation.smv;
-                const liveEarnMins = lastProduction*op.obbOperation.smv
+                // const liveEarnMins = lastProduction*op.obbOperation.smv
 
                 let efficiency: number | null = null;
 
@@ -253,7 +253,8 @@ const abbreviatePart = (part: string) => {
                     
                
               
-                  efficiency = timeDiffMinutes > 0 ? (liveEarnMins * 100) / timeDiffMinutes : 0;
+                  // efficiency = timeDiffMinutes > 0 ? (liveEarnMins * 100) / timeDiffMinutes : 0;
+                  efficiency = productionCount > 0 ? (earnMins/60) *100: 0;
               
 ``
 
@@ -261,7 +262,7 @@ const abbreviatePart = (part: string) => {
              
                 
                 
-                return { name: `${op.obbOperation.seqNo}-${op.obbOperation.operation.name}`, efficiency: productionCount !== null ? Math.round(productionCount ) : null 
+                return { name: `${op.obbOperation.seqNo}-${op.obbOperation.operation.name}`, efficiency: efficiency !== null ? Math.round(efficiency+.001 ) : null 
                 ,part: op.obbOperation.part,timeDiffMinutes:timeDiffMinutes,previousHourData,
                 totalProduction:productionCount,firstProduction,lastProduction,
                 smv:op.obbOperation.smv,opLogin:loginTime,is2Passed,lastProductionTime,operator:op.operator.operatorRfid,
@@ -341,7 +342,7 @@ const abbreviatePart = (part: string) => {
   <div className="flex justify-center items-center gap-3 h-[80px] py-2 w-full ">
     <LogoImporter />
     <h1 className="text-[#0071c1] text-3xl text-center">
-      Dashboard - LIVE Production TV Graph - {lineName}
+      Dashboard -  Hourly Efficiency TV Graph - For Live {lineName}
     </h1>
   </div>
 

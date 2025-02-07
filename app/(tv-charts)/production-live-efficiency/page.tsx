@@ -11,7 +11,7 @@ const Efficiency = async () => {
         <div className='mx-auto max-w-4xl'>
             <div className='mt-24'>
                 <h1 className='text-center text-2xl font-medium text-sky-700 mb-6'>Select Obb Sheet for this Line</h1>
-                <SelectObbSheet obbSheets={obbSheets} route="/production-live" />
+                <SelectObbSheet obbSheets={obbSheets} route="/production-live-efficiency" />
             </div>
         </div>
     )
