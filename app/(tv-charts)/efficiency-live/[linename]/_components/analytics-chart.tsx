@@ -214,8 +214,10 @@ const abbreviatePart = (part: string) => {
                 if (filteredData.length === 0) return { name: op.obbOperation.operation.name, efficiency: null };
                 
                
-               const log = filteredData[0].operator.operatorSessions?.find((s)=>s.obbOperationId === op.obbOperation.id )?.LoginTimestamp
-                
+                const log = filteredData[0].operator.operatorSessions
+                ?.filter((s) => s.obbOperationId === op.obbOperation.id)
+                ?.sort((a, b) => new Date(b.LoginTimestamp).getTime() - new Date(a.LoginTimestamp).getTime())[0]
+                ?.LoginTimestamp;
                 // const loginTimestamp = filteredData[0]?.operator?.operatorSessions?.[0]?.LoginTimestamp;
                 const loginTime = new Date(log); // Convert to Date object
 
