@@ -40,6 +40,9 @@ export async function GET(
                                 LoginTimestamp:{
                                     gte:startDate,
                                     lte:endDate
+                                },
+                                isLoggedIn:{
+                                    equals:true
                                 }
                             }
                         }
