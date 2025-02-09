@@ -41,9 +41,7 @@ export async function GET(
                                     gte:startDate,
                                     lte:endDate
                                 },
-                                isLoggedIn:{
-                                    equals:true
-                                }
+                               
                             }
                         }
                     }

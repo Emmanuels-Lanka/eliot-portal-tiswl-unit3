@@ -14,6 +14,7 @@ import { getLinebyOS, getObbSheetID } from "@/components/tv-charts/achievement-r
 import LogoImporter from "@/components/dashboard/common/eliot-logo";
 import EffiencyHeatmap from "./effheat";
 import { boolean, string } from "zod";
+import Image from "next/image";
 // import EffiencyHeatmap from "./effheatmap";
 
 type ProductionDataForChartTypes = {
@@ -123,13 +124,13 @@ const AnalyticsChart = ({ linename }: { linename: string }) => {
 const abbreviatePart = (part: string) => {
     switch (part.toLowerCase()) {
       case 'front':
-        return 'FRNT';
+        return 'F';
       case 'back':
-        return 'BACK';
+        return 'B';
       case 'assembly':
-        return 'ASSE';
+        return 'A';
       case 'line-end':
-        return 'LEND';
+        return 'E';
       default:
         return part.toUpperCase();
     }
@@ -182,7 +183,7 @@ const abbreviatePart = (part: string) => {
 
         // const categories = operations.map(op => `${op.obbOperation.operation.name}-${op.obbOperation.seqNo}`);
         
-        const categories = operations.map(op => ` ${shortenOperationName(op.obbOperation.operation.name)} -  ${shortenOperationName(op.operator.operator.name)} - ( ${op.obbOperation.smv}) - ${abbreviatePart(op.obbOperation.part)} - ( ${op.obbOperation?.sewingMachine?.machineId || 'Unknown Machine ID'} ) - ${op.obbOperation.seqNo}`);
+        const categories = operations.map(op => ` ${shortenOperationName(op.obbOperation.operation.name)} -  ${shortenOperationName(op.operator.operator.name)} - ${op.obbOperation.smv} - ${abbreviatePart(op.obbOperation.part)} - ${op.obbOperation?.sewingMachine?.machineId || 'Unknown Machine ID'} - ${op.obbOperation.seqNo}`);
         const machines = operations.map(op => ` ${op.obbOperation?.sewingMachine?.machineId || 'Unknown Machine ID'}`);
         const eliot = operations.map(op => ` ${op.data[0].eliotSerialNumber}`);
 
@@ -343,31 +344,44 @@ const abbreviatePart = (part: string) => {
 
     return (
       <>
-       <div className="h-screen w-screen flex flex-col">
-  {/* Header Section */}
-  <div className="flex justify-center items-center gap-3 w-full py-4">
-    <LogoImporter />
-    <h1 className="text-[#0071c1] text-3xl text-center">
-      Dashboard - LIVE Efficiency TV Graph - {lineName}
-    </h1>
-  </div>
+        <div className="h-screen  w-screen flex flex-col ">
+          {/* Header Section */}
+            <div className="flex justify-center items-center gap-3 w-full py-4">
+              
+                <div>
+                
+                <Image
+                                src="/eliot-logo.png"
+                                alt='logo'
+                                width={200}
+                                height={200}
+                                className='py-0'
+                            />
+                
+                    </div>
 
-  {/* Heatmap Section */}
-  <div className="flex-1 flex justify-center items-center">
-    {heatmapData ? (
-      <EffiencyHeatmap
-        xAxisLabel="Operations"
-        efficiencyLow={obbSheet?.efficiencyLevel1}
-        efficiencyHigh={obbSheet?.efficiencyLevel3}
-        heatmapData={heatmapData}
-      />
-    ) : (
-      <span className="text-lg text-gray-500">
-        No Layout for Line {lineName} - {date}
-      </span>
-    )}
-  </div>
-</div>
+
+              <h1 className="text-[#0071c1] text-3xl text-center">
+                Dashboard - LIVE Efficiency TV Graph - {lineName}
+              </h1>
+            </div>
+
+          {/* Heatmap Section */}
+          <div className=" flex justify-center items-center">
+            {heatmapData ? (
+              <EffiencyHeatmap
+                xAxisLabel="Operations"
+                efficiencyLow={obbSheet?.efficiencyLevel1}
+                efficiencyHigh={obbSheet?.efficiencyLevel3}
+                heatmapData={heatmapData}
+              />
+            ) : (
+              <span className="text-lg text-gray-500">
+                No Layout for Line {lineName} - {date}
+              </span>
+            )}
+          </div>
+        </div>
       </>
     );
 }
