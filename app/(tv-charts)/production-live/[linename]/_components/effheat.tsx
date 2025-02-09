@@ -100,7 +100,7 @@ const EffiencyHeatmap = ({
                     fontSize: '12px',
                     fontFamily: 'Inter, sans-serif',
                 }, rotate: -90,
-                minHeight: 400,
+                minHeight: 550,
             },
             categories: categories,
         
@@ -120,12 +120,12 @@ const EffiencyHeatmap = ({
 
     return (
         <div className="mx-auto max-w-ful h-full w-full">
-            <div id="chart" ref={chartRef} className='w-full'>
+            <div id="chart" ref={chartRef} className='w-full h-[100px]'>
                 <ReactApexChart 
                     options={options} 
                     series={series} 
                     type="heatmap" 
-                    height={height}
+                    // height={height}
                     
                 />
             </div>

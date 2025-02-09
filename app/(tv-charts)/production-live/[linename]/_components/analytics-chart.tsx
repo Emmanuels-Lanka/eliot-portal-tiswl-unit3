@@ -123,13 +123,13 @@ const AnalyticsChart = ({ linename }: { linename: string }) => {
 const abbreviatePart = (part: string) => {
     switch (part.toLowerCase()) {
       case 'front':
-        return 'FRNT';
+        return 'F';
       case 'back':
-        return 'BACK';
+        return 'B';
       case 'assembly':
-        return 'ASSE';
+        return 'A';
       case 'line-end':
-        return 'LEND';
+        return 'L';
       default:
         return part.toUpperCase();
     }
@@ -182,7 +182,7 @@ const abbreviatePart = (part: string) => {
 
         // const categories = operations.map(op => `${op.obbOperation.operation.name}-${op.obbOperation.seqNo}`);
         
-        const categories = operations.map(op => ` ${shortenOperationName(op.obbOperation.operation.name)} -  ${shortenOperationName(op.operator.operator.name)} - ( ${op.obbOperation.smv}) - ${abbreviatePart(op.obbOperation.part)} - ( ${op.obbOperation?.sewingMachine?.machineId || 'Unknown Machine ID'} ) - ${op.obbOperation.seqNo}`);
+        const categories = operations.map(op => ` ${shortenOperationName(op.obbOperation.operation.name)} -  ${shortenOperationName(op.operator.operator.name)} -  ${op.obbOperation.smv} - ${abbreviatePart(op.obbOperation.part)} -  ${op.obbOperation?.sewingMachine?.machineId || 'Unknown Machine ID'}  - ${op.obbOperation.seqNo}`);
         const machines = operations.map(op => ` ${op.obbOperation?.sewingMachine?.machineId || 'Unknown Machine ID'}`);
         const eliot = operations.map(op => ` ${op.data[0].eliotSerialNumber}`);
 
