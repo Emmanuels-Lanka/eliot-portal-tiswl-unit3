@@ -135,6 +135,16 @@ const abbreviatePart = (part: string) => {
         return part.toUpperCase();
     }
   };
+
+  function shortenName(name :string) {
+    let words = name.split(" ");
+    if (words.length === 0) return "";
+    
+    let firstWord = words[0]; // First word remains the same
+    let shortForm = words.slice(1).map(word => word[0]).join("."); // First letters of other words
+    
+    return shortForm ? `${firstWord}   ${shortForm}` : firstWord;
+  }
   
 
     function processProductionData(productionData: ProductionDataForChartTypes[]): OperationEfficiencyOutputTypes {
@@ -183,7 +193,7 @@ const abbreviatePart = (part: string) => {
 
         // const categories = operations.map(op => `${op.obbOperation.operation.name}-${op.obbOperation.seqNo}`);
         
-        const categories = operations.map(op => ` ${shortenOperationName(op.obbOperation.operation.name)} -  ${shortenOperationName(op.operator.operator.name)} - ${op.obbOperation.smv} - ${abbreviatePart(op.obbOperation.part)} - ${op.obbOperation?.sewingMachine?.machineId || 'Unknown Machine ID'} - ${op.obbOperation.seqNo}`);
+        const categories = operations.map(op => ` ${shortenOperationName(op.obbOperation.operation.name)}-${shortenName(op.operator.operator.name)}-${op.obbOperation.smv}-${abbreviatePart(op.obbOperation.part)}-${op.obbOperation?.sewingMachine?.machineId || 'Unknown Machine ID'}-${op.obbOperation.seqNo}`);
         const machines = operations.map(op => ` ${op.obbOperation?.sewingMachine?.machineId || 'Unknown Machine ID'}`);
         const eliot = operations.map(op => ` ${op.data[0].eliotSerialNumber}`);
 
