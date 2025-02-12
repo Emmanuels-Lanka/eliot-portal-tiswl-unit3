@@ -65,6 +65,8 @@ model Operator {
   productionSMV            ProductionSMV[]
   roamingQC                RoamingQC[]
   tslRecords               TrafficLightSystem[]
+    ProductionEfficiencyData ProductionEfficiency[]
+
 }
 
 model Unit {
@@ -101,6 +103,7 @@ model EliotDevice {
   serialNumber   String           @unique
   hasTrained     Boolean?         @default(false)
   ProductionData ProductionData[]
+  ProductionEfficiencyData ProductionEfficiency[]
   sewingMachines SewingMachine?
 }
 
@@ -233,7 +236,8 @@ model ObbOperation {
   roamingQC        RoamingQC[]
   staffSessions    StaffSession[]
   tslRecords       TrafficLightSystem[]
-
+  ProductionEfficiencyData ProductionEfficiency[]
+  
   @@index([operationId, obbSheetId])
 }
 
@@ -280,6 +284,23 @@ model ProductionData {
   operator          Operator     @relation(fields: [operatorRfid], references: [rfid], onDelete: Cascade)
 
   @@index([operatorRfid, eliotSerialNumber, obbOperationId])
+}
+
+model ProductionEfficiency {
+  id                String       @id @default(uuid())
+  operatorRfid      String
+  eliotSerialNumber String?
+  obbOperationId    String
+  totalPcs          Int?
+  efficiency     Int?
+  timestamp         String
+  createdAt         DateTime     @default(now())
+  EliotDevice EliotDevice? @relation(fields: [eliotSerialNumber],references: [serialNumber])
+  obbOperation      ObbOperation @relation(fields: [obbOperationId], references: [id], onDelete: Cascade)
+  operator          Operator     @relation(fields: [operatorRfid], references: [rfid], onDelete: Cascade)
+
+
+  
 }
 
 model AlertLog {
