@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import { useRef } from "react";
 import { Button } from "@/components/ui/button";
@@ -23,7 +23,23 @@ const EffiencyHeatmap = ({
     const categories = heatmapData.categories || [];
     const [chartWidth, setChartWidth] = useState<number>(1850);
     const chartRef = useRef<HTMLDivElement>(null);
+ useEffect(() => {
+        const handleResize = () => {
+            if (window.innerWidth < 640) {
+                setChartWidth(window.innerWidth - 20); // Adjust for mobile screens
+            } else {
+                setChartWidth(1850); // Default width for larger screens
+            }
+        };
 
+        window.addEventListener('resize', handleResize);
+        handleResize(); // Call initially to set the correct width
+
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
+
+    
     let series: { name: string; data: (number | null)[] }[] = heatmapData.data.map(hourGroup => ({
         name: hourGroup.hourGroup,
         data: hourGroup.operation.map(op => op.efficiency === null ? -1 : op.efficiency)
@@ -31,6 +47,7 @@ const EffiencyHeatmap = ({
 
     const totalCount = series.length;
     const height = totalCount < 50 ? '600%' : totalCount < 60 ? '700%' : '600%';
+    
 
     const options = {
         chart: {
@@ -119,32 +136,32 @@ const EffiencyHeatmap = ({
 
 
     return (
-        <div className="mx-auto max-w-ful h-full w-full">
-            <div id="chart" ref={chartRef} className='w-full h-[100px]'>
-                <ReactApexChart 
-                    options={options} 
-                    series={series} 
-                    type="heatmap" 
-                    // height={height}
-                    
-                />
-            </div>
-            
-            <div className="flex justify-center gap-2 mt-5 2xl:hidden ">
-                <Button 
-                    onClick={() => setChartWidth((p) => p + 200)} 
-                    className="rounded-full bg-gray-300"
-                >
-                    +
-                </Button>
-                <Button 
-                    onClick={() => setChartWidth((p) => p - 200)} 
-                    className="rounded-full bg-gray-300"
-                >
-                    -
-                </Button>
-            </div>
-        </div>
+       <div className="mx-auto max-w-full h-full w-full">
+                   <div id="chart" ref={chartRef} className='w-full'>
+                       <ReactApexChart 
+                           options={options} 
+                           series={series} 
+                           type="heatmap" 
+                           height={height}
+                           width={chartWidth}
+                       />
+                   </div>
+                   
+                   <div className="flex justify-center gap-2 mt-5 2xl:hidden">
+                       <Button 
+                           onClick={() => setChartWidth((p) => p + 200)} 
+                           className="rounded-full bg-gray-300"
+                       >
+                           +
+                       </Button>
+                       <Button 
+                           onClick={() => setChartWidth((p) => p - 200)} 
+                           className="rounded-full bg-gray-300"
+                       >
+                           -
+                       </Button>
+                   </div>
+               </div>
     );
 }
 
