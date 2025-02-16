@@ -23,20 +23,7 @@ const EffiencyHeatmap = ({
     const categories = heatmapData.categories || [];
     const [chartWidth, setChartWidth] = useState<number>(1850);
     const chartRef = useRef<HTMLDivElement>(null);
- useEffect(() => {
-        const handleResize = () => {
-            if (window.innerWidth < 640) {
-                setChartWidth(window.innerWidth - 20); // Adjust for mobile screens
-            } else {
-                setChartWidth(1850); // Default width for larger screens
-            }
-        };
 
-        window.addEventListener('resize', handleResize);
-        handleResize(); // Call initially to set the correct width
-
-        return () => window.removeEventListener('resize', handleResize);
-    }, []);
 
 
     
