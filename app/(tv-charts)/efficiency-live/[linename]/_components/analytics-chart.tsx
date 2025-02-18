@@ -24,6 +24,8 @@ type ProductionDataForChartTypes = {
   eliotSerialNumber: string;
   obbOperationId: string;
   productionCount: number;
+  totalPcs:number;
+  efficiency :number;
   timestamp: string;
   createdAt: Date;
   operator: {
@@ -136,16 +138,22 @@ const abbreviatePart = (part: string) => {
     }
   };
 
-  function shortenName(name :string) {
-    let words = name.split(" ");
-    if (words.length === 0) return "";
+  // function shortenName(name :string) {
+  //   let words = name.split(" ");
+  //   if (words.length === 0) return "";
     
-    let firstWord = words[0]; // First word remains the same
-    let shortForm = words.slice(1).map(word => word[0]).join("."); // First letters of other words
+  //   let firstWord = words[0]; // First word remains the same
+  //   let shortForm = words.slice(1).map(word => word[0]).join("."); // First letters of other words
     
-    return shortForm ? `${firstWord}   ${shortForm}` : firstWord;
-  }
+  //   return shortForm ? `${firstWord}   ${shortForm}` : firstWord;
+  // }
   
+  function shortenName(name: string): string {
+    const words = name.trim().split(/\s+/);
+    return words.length <= 2 
+        ? name.trim() 
+        : `${words[0]} ${words[1]} ${words.slice(2).map(w => w[0]).join(".")}`;
+}
 
     function processProductionData(productionData: ProductionDataForChartTypes[]): OperationEfficiencyOutputTypes {
         const hourGroups = ["8:00 AM - 9:00 AM", "9:00 AM - 10:00 AM", "10:00 AM - 11:00 AM", "11:00 AM - 12:00 PM", "12:00 PM - 1:00 PM", "1:00 PM - 2:00 PM", "2:00 PM - 3:00 PM", "3:00 PM - 4:00 PM", "4:00 PM - 5:00 PM", "5:00 PM - 6:00 PM", "6:00 PM - 7:00 PM"];
@@ -239,6 +247,8 @@ const abbreviatePart = (part: string) => {
                 const earnMins = productionCount * op.obbOperation.smv;
                 const liveEarnMins = lastProduction*op.obbOperation.smv
 
+                const directEfficiency = filteredData[0].efficiency
+
                 let efficiency: number | null = null;
 
                   // const firstTime = new Date(filteredData[0].timestamp);
@@ -279,7 +289,7 @@ const abbreviatePart = (part: string) => {
              
                 
                 
-                return { name: `${op.obbOperation.seqNo}-${op.obbOperation.operation.name}`, efficiency: lastProduction !== null ? Math.round(efficiency +0.0001) : null 
+                return { name: `${op.obbOperation.seqNo}-${op.obbOperation.operation.name}`, efficiency: lastProduction !== null ? Math.round(directEfficiency +0.0001) : null 
                 ,part: op.obbOperation.part,timeDiffMinutes:timeDiffMinutes,
                 totalProduction:productionCount,firstProduction,lastProduction,
                 smv:op.obbOperation.smv,opLogin:loginTime,is2Passed,lastProductionTime,operator:op.operator.operatorRfid,
@@ -312,7 +322,9 @@ const abbreviatePart = (part: string) => {
            const date =  yyyyMMdd.toString()
        
 
-            const response = await axios.get(`/api/efficiency-live?obbSheetId=${obbSheetId}&date=${date}`);
+            // const response = await axios.get(`/api/efficiency-live?obbSheetId=${obbSheetId}&date=${date}`);
+            const response = await axios.get(`/api/efficiency-direct?obbSheetId=${obbSheetId}&date=${date}`);
+
             // console.log("re",response.data.data)
             const heatmapData = processProductionData(response.data.data);
             

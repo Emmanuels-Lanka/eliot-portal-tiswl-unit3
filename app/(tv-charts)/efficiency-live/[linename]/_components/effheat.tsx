@@ -107,7 +107,7 @@ const EffiencyHeatmap = ({
                     fontFamily: 'Inter, sans-serif',
                 },
                 rotate: -90,
-                minHeight: 550,
+                minHeight: 400,
             },
             categories: categories,
         },
