@@ -23,6 +23,7 @@ type ProductionDataForChartTypes = {
   eliotSerialNumber: string;
   obbOperationId: string;
   productionCount: number;
+  totalPcs:number;
   timestamp: string;
   createdAt: Date;
   operator: {
@@ -206,7 +207,7 @@ const abbreviatePart = (part: string) => {
                 const loginTime = new Date(log); // Convert to Date object
 
                 
-                const  lastProduction = filteredData[0].productionCount;
+                const  lastProduction = filteredData[0].totalPcs;
                 const  lastProductionTime = filteredData[0].timestamp;
                 const  firstProduction= filteredData[filteredData.length - 1].productionCount;
                 const currentHourIndex = hourGroups.indexOf(hourGroup);
@@ -261,7 +262,7 @@ const abbreviatePart = (part: string) => {
              
                 
                 
-                return { name: `${op.obbOperation.seqNo}-${op.obbOperation.operation.name}`, efficiency: productionCount !== null ? Math.round(productionCount ) : null 
+                return { name: `${op.obbOperation.seqNo}-${op.obbOperation.operation.name}`, efficiency: lastProduction !== null ? Math.round(lastProduction ) : null 
                 ,part: op.obbOperation.part,timeDiffMinutes:timeDiffMinutes,previousHourData,
                 totalProduction:productionCount,firstProduction,lastProduction,
                 smv:op.obbOperation.smv,opLogin:loginTime,is2Passed,lastProductionTime,operator:op.operator.operatorRfid,
@@ -294,7 +295,8 @@ const abbreviatePart = (part: string) => {
            const date =  yyyyMMdd.toString()
        
 
-            const response = await axios.get(`/api/efficiency-live?obbSheetId=${obbSheetId}&date=${date}`);
+            // const response = await axios.get(`/api/efficiency-live?obbSheetId=${obbSheetId}&date=${date}`);
+            const response = await axios.get(`/api/efficiency-direct?obbSheetId=${obbSheetId}&date=${date}`);
             // console.log("re",response.data.data)
             const heatmapData = processProductionData(response.data.data);
             
