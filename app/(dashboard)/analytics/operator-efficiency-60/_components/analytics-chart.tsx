@@ -19,6 +19,43 @@ interface AnalyticsChartProps {
     title: string;
 }
 
+type ProductionDataForChartTypes = {
+    id: string;
+    operatorRfid: string;
+    eliotSerialNumber: string;
+    obbOperationId: string;
+    productionCount: number;
+    efficiency: number;
+    timestamp: string;
+    createdAt: Date;
+    operator: {
+        name: string;
+        employeeId: string;
+        rfid: string;
+    };
+   
+    obbOperation: {
+        id: string;
+        seqNo: number;
+        target: number;
+        smv: number;
+        part:string;
+        operation: {
+            name: string;
+        };
+        sewingMachine: {
+            
+                machineId:string
+            
+        }
+        
+    };
+    data: {
+
+    }
+   
+};
+
 const AnalyticsChart = ({
     obbSheets,
     title
@@ -29,7 +66,7 @@ const AnalyticsChart = ({
     const [heatmapData, setHeatmapData] = useState<OperationEfficiencyOutputTypes>();
     const [obbSheet, setObbSheet] = useState<ObbSheet | null>(null);
 
-    function processProductionData(productionData: ProductionDataForChartTypes[]): OperationEfficiencyOutputTypes {
+    function processProductionData(productionData: ProductionDataForChartTypes[],state:boolean): OperationEfficiencyOutputTypes {
         const hourGroups = ["7:00 AM - 8:00 AM", "8:00 AM - 9:00 AM", "9:00 AM - 10:00 AM", "10:00 AM - 11:00 AM", "11:00 AM - 12:00 PM", "12:00 PM - 1:00 PM", "1:00 PM - 2:00 PM", "2:00 PM - 3:00 PM", "3:00 PM - 4:00 PM", "4:00 PM - 5:00 PM", "5:00 PM - 6:00 PM", "6:00 PM - 7:00 PM"];
 
         // const getHourGroup = (timestamp: string): string => {
@@ -73,9 +110,25 @@ const AnalyticsChart = ({
             hourGroup,
             operation: operations.map(op => {
                 const filteredData = op.data.filter(data => getHourGroup(data.timestamp) === hourGroup);
-                const totalProduction = filteredData.reduce((sum, curr) => sum + curr.productionCount, 0);
-                const earnMinutes = op.operator.obbOperation.smv * totalProduction
-                const efficiency = filteredData.length > 0 ? (totalProduction === 0 ? 0 : (earnMinutes / 60) * 100) : null;
+
+                let prod :number;
+                let efficiency :number | null;
+                if(!state){
+                     prod = filteredData.reduce((sum, curr) => sum + curr.productionCount, 0)
+                     const earnmins = op.operator.obbOperation.smv * prod
+                     efficiency = filteredData.length > 0 ? (prod === 0 ? 0 : Math.min((earnmins / 60) * 100, 100))  : null;
+                }
+                else{
+                    if (filteredData.length === 0) return { name: op.operator.operator.name, efficiency: null };
+                  efficiency = filteredData[0].efficiency
+                }
+
+
+
+
+
+
+                
                 return { name: `${op.operator.obbOperation.seqNo}-${op.operator.operator.name}`, efficiency: efficiency !== null ? Math.round(efficiency+0.0001) : null };
             })
         }));
@@ -93,8 +146,15 @@ const AnalyticsChart = ({
             data.date.setDate(data.date.getDate() + 1);
             const formattedDate = data.date.toISOString().split('T')[0];
 
-            const response = await axios.get(`/api/efficiency/production?obbSheetId=${data.obbSheetId}&date=${formattedDate}`);
-            const heatmapData = processProductionData(response.data.data);
+            let response 
+            let state = true
+           
+            response = await axios.get(`/api/efficiency-direct?obbSheetId=${data.obbSheetId}&date=${formattedDate}`);
+            if(response.data.data.length === 0){
+                state = false
+               response = await axios.get(`/api/efficiency/production?obbSheetId=${data.obbSheetId}&date=${formattedDate}`);
+            }
+            const heatmapData = processProductionData(response.data.data,state);
             console.log("HEATMAP:", heatmapData.data);
             console.log("CATEGORIES:", heatmapData.categories);
 
