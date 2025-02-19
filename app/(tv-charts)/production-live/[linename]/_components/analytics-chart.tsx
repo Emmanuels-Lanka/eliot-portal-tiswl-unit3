@@ -209,7 +209,7 @@ const abbreviatePart = (part: string) => {
                 
                 const  lastProduction = filteredData[0].totalPcs;
                 const  lastProductionTime = filteredData[0].timestamp;
-                const  firstProduction= filteredData[filteredData.length - 1].productionCount;
+                const  firstProduction= filteredData[filteredData.length - 1].totalPcs;
                 const currentHourIndex = hourGroups.indexOf(hourGroup);
                 let previousHourData: number = 0;
 
