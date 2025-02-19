@@ -240,9 +240,9 @@ const abbreviatePart = (part: string) => {
                 // const loginTimestamp = filteredData[0]?.operator?.operatorSessions?.[0]?.LoginTimestamp;
                 const loginTime = new Date(log); // Convert to Date object
 
-                const  lastProduction = filteredData[0].productionCount;
+                const  lastProduction = filteredData[0].totalPcs  ;
                 const  lastProductionTime = filteredData[0].timestamp;
-                const  firstProduction= filteredData[filteredData.length - 1].productionCount;
+                const  firstProduction= filteredData[filteredData.length - 1].totalPcs  ;
                 const productionCount = lastProduction - firstProduction;
                 const earnMins = productionCount * op.obbOperation.smv;
                 const liveEarnMins = lastProduction*op.obbOperation.smv

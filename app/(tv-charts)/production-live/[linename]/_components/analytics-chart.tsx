@@ -209,7 +209,7 @@ const abbreviatePart = (part: string) => {
                 
                 const  lastProduction = filteredData[0].totalPcs;
                 const  lastProductionTime = filteredData[0].timestamp;
-                const  firstProduction= filteredData[filteredData.length - 1].productionCount;
+                const  firstProduction= filteredData[filteredData.length - 1].totalPcs;
                 const currentHourIndex = hourGroups.indexOf(hourGroup);
                 let previousHourData: number = 0;
 
@@ -224,7 +224,7 @@ const abbreviatePart = (part: string) => {
                 
                   // Assign the first productionCount value if available, otherwise keep it as 0
                   if (filteredPreviousData.length > 0) {
-                    previousHourData = filteredPreviousData[0].productionCount;
+                    previousHourData = filteredPreviousData[0].totalPcs;
                   }
                 }
                 // const lastHourProd = 
@@ -262,7 +262,7 @@ const abbreviatePart = (part: string) => {
              
                 
                 
-                return { name: `${op.obbOperation.seqNo}-${op.obbOperation.operation.name}`, efficiency: lastProduction !== null ? Math.round(lastProduction ) : null 
+                return { name: `${op.obbOperation.seqNo}-${op.obbOperation.operation.name}`, efficiency: productionCount !== null ? Math.round(productionCount ) : null 
                 ,part: op.obbOperation.part,timeDiffMinutes:timeDiffMinutes,previousHourData,
                 totalProduction:productionCount,firstProduction,lastProduction,
                 smv:op.obbOperation.smv,opLogin:loginTime,is2Passed,lastProductionTime,operator:op.operator.operatorRfid,
