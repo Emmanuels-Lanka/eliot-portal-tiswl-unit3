@@ -9,11 +9,12 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useEffect, useRef, useState } from "react";
-import { getDailyData } from "./actions";
+import { getDailyData, getLatestRecordsPerOperator } from "./actions";
 import SelectObbSheetAndDate from "@/components/dashboard/common/select-style-and-date";
 import { Button } from "@/components/ui/button";
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
+import { ProductionEfficiency } from "@prisma/client";
 interface AnalyticsChartProps {
   obbSheets: {
     id: string;
@@ -36,6 +37,7 @@ export type ReportData = {
   linename: string;
   buyer: string;
   employeeId: string;
+  rfid:string;
   seqNo: string;
   first: any;
   last: any;
@@ -77,7 +79,8 @@ const ReportTable = ({ obbSheets }: AnalyticsChartProps) => {
           efficiency: 0,
           achievements: "Below Target",
           smv:operatorData[0].smv,
-          seqNo:operatorData[0].seqNo
+          seqNo:operatorData[0].seqNo,
+          rfid: operatorData[0].rfid
         };
       }
 
@@ -120,18 +123,20 @@ const ReportTable = ({ obbSheets }: AnalyticsChartProps) => {
         efficiency,
         achievements: achievement,
         smv:operatorData[0].smv,
-        seqNo:operatorData[0].seqNo
+        seqNo:operatorData[0].seqNo,
+        rfid: operatorData[0].rfid
+
       };
     });
   };
 
-  const groupByOperator = (details: ReportDataOut[]) => {
+  const groupByOperator = (details: any[]) => {
     const operatorsMap: { [key: string]: ReportDataOut[] } = {};
     details.forEach((data) => {
-      if (!operatorsMap[data.employeeId]) {
-        operatorsMap[data.employeeId] = [];
+      if (!operatorsMap[data.rfid]) {
+        operatorsMap[data.rfid] = [];
       }
-      operatorsMap[data.employeeId].push(data);
+      operatorsMap[data.rfid].push(data);
     });
     return operatorsMap;
   };
@@ -150,12 +155,31 @@ const ReportTable = ({ obbSheets }: AnalyticsChartProps) => {
     });
   }
 
+  const mergeEfficiencyData = (achievements: any[], effData: ProductionEfficiency[]) => {
+    return achievements.map((achievement) => {
+      // Find matching efficiency data by rfid
+      const matchedEfficiency = effData.find((eff) => eff.operatorRfid === achievement.rfid);
+  
+      return {
+        ...achievement,
+        efficiencyDB: matchedEfficiency ? matchedEfficiency.efficiency : achievement.efficiency, // Update efficiency if found
+      };
+    });
+  };
+
+
   const getDetails = async () => {
     const details = await getDailyData(obbSheetId, date);
+    const detailsNew = await getLatestRecordsPerOperator(obbSheetId, date) ;
+    console.log(details)
     const timeData = getMinutesDifference(details);
     const groupedData = groupByOperator(timeData);
     const result = calculateAverageEfficiency(groupedData);
-    setData(result);
+    console.log(result)
+     const finalData = mergeEfficiencyData(result, detailsNew?.data || [])
+     console.log(finalData)
+     const sortedData = finalData.sort((a, b) => a.employeeId.localeCompare(b.employeeId));
+    setData(sortedData);
   };
 
   useEffect(() => {
@@ -406,7 +430,7 @@ const ReportTable = ({ obbSheets }: AnalyticsChartProps) => {
         <TableCell className="px-2 py-2 text-center">
           {d.smv ? (60 / d.smv).toFixed(2) : 0}
         </TableCell>
-        <TableCell className="px-2 py-2 text-center">{d.efficiency}%</TableCell>
+        <TableCell className="px-2 py-2 text-center">{d.efficiencyDB}%</TableCell>
       </TableRow>
     ))}
   </TableBody>
