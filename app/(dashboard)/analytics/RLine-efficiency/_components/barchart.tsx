@@ -217,7 +217,7 @@ const BarChartGraphEfficiencyRate = ({ date,obbSheet }: BarChartGraphProps) => {
             console.log("line",obbSheet)
             // const data = await getFinalData(date,obbSheet)
             const newd = await getNew(date,obbSheet)
-            // console.log("aaa",newd)
+            console.log("aaa",newd)
             const login = await getLogin(date,obbSheet)
             // console.log("bbb",login)
 
@@ -230,7 +230,7 @@ const BarChartGraphEfficiencyRate = ({ date,obbSheet }: BarChartGraphProps) => {
                     name: found.name, // Add the name from the second query
                     eid: found.eid, // Add the employee ID from the second query
                     login: found.login, // Add the min login timestamp
-                    logout: found.logout, // Add the max logout timestamp
+                    logout: n.timestamp, // Add the max logout timestamp
                     offStandTime: found.offstandtime, // Add the off-stand time
                   }));
                 }
