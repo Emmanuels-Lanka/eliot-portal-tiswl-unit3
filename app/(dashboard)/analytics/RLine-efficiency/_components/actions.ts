@@ -26,6 +26,7 @@ export type ProdData = {
   seqNo: number;
   smv: number;
   sum: string;
+  timestamp:string;
 };
 export type LogData = {
   eid: string;
@@ -217,20 +218,25 @@ export async function getNew(date:string,obbSheet:string) : Promise<ProdData[]> 
     
         
         const query = `
-       select pd."operatorRfid",sum(pd."productionCount"),o.name operation,oo.smv,
-oo."seqNo",pl.name from "ProductionData" pd
-inner join "ObbOperation" oo on oo.id = pd."obbOperationId"
-inner join "Operation" o on o.id = oo."operationId"
-inner join "ObbSheet" os on os.id = oo."obbSheetId"
-inner join "ProductionLine" pl on pl.id = os."productionLineId"
-where pd.timestamp like $2 and
-pl.id =	$1
+    SELECT DISTINCT ON (pd."operatorRfid") 
+    pd."operatorRfid",
+    pd."totalPcs" AS sum,
+    pd."timestamp",
+    o.name AS operation,
+    oo.smv,
+    oo."seqNo",
+    pl.name
+FROM "ProductionEfficiency" pd
+INNER JOIN "ObbOperation" oo ON oo.id = pd."obbOperationId"
+INNER JOIN "Operation" o ON o.id = oo."operationId"
+INNER JOIN "ObbSheet" os ON os.id = oo."obbSheetId"
+INNER JOIN "ProductionLine" pl ON pl.id = os."productionLineId"
+WHERE pd.timestamp LIKE $2 
+AND pl.id = $1
+ORDER BY pd."operatorRfid", pd."timestamp" DESC;
 
-group by pd."operatorRfid" ,o.name,oo.smv,oo."seqNo",pl.name
 
-HAVING 
-    SUM(pd."productionCount") > 0
-    
+
     
      
         `;

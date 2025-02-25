@@ -2,8 +2,10 @@
 
 "use server";
 
+import { db } from "@/lib/db";
 import { ReportData } from "./daily-report";
 import { poolForPortal } from "@/lib/postgres";
+import { NextResponse } from "next/server";
 
 
 
@@ -31,6 +33,7 @@ export async function getDailyData(obbsheetid:string,date:string)  : Promise<Rep
     pl.name AS linename,
     obbs.buyer,
     opr."employeeId",
+    opr."rfid",
     os.first_login AS first,  -- Earliest timestamp from subquery
     MAX(pd."timestamp") AS last  -- Latest timestamp in the group
 FROM "ProductionData" pd
@@ -65,6 +68,7 @@ GROUP BY
     pl.name, 
     obbs.buyer, 
     opr."employeeId", 
+    opr."rfid",
     os.first_login
 ORDER BY obbop."seqNo";
         `;
@@ -88,4 +92,46 @@ ORDER BY obbop."seqNo";
 
 }
 
+
+export const getLatestRecordsPerOperator = async (obbSheetId: string, date: string) => {
+  const startDate = `${date} 00:00:00`;
+  const endDate = `${date} 23:59:59`;
+
+  try {
+    // Step 1: Get latest timestamp per operator
+    const latestTimestamps = await db.productionEfficiency.groupBy({
+      by: ["operatorRfid"],
+      _max: {
+        timestamp: true, // Get the max timestamp for each operator
+      },
+      where: {
+        obbOperation: {
+          obbSheetId: obbSheetId,
+        },
+        timestamp: {
+          gte: startDate,
+          lte: endDate,
+        },
+      },
+    });
+
+    // Step 2: Get full records matching latest timestamps
+    const latestRecords = await db.productionEfficiency.findMany({
+      where: {
+        OR: latestTimestamps.map((record) => ({
+          operatorRfid: record.operatorRfid,
+          timestamp: record._max.timestamp!,
+        })),
+      },
+      orderBy: {
+        timestamp: "desc",
+      },
+    });
+
+    return { data: latestRecords, message: "Fetched last record of each operator" };
+  } catch (error) {
+    console.error("[PRODUCTION_EFFICIENCY_ERROR]", error);
+    return { error: "Internal Error" };
+  }
+};
 
