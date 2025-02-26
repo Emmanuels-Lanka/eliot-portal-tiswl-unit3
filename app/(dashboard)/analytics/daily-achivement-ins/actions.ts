@@ -9,17 +9,30 @@ export async function getData(obbsheetid:string,date:string) : Promise<Productio
         
       try {
     
+        // select SUM(pd."productionCount") as count
+        // ,concat(oo."seqNo",'-',o.name ) as name ,oo.target,sm."machineId" as machine
+        // FROM "ProductionData" pd
+        // INNER JOIN "ObbOperation" oo ON pd."obbOperationId" = oo.id
+        // INNER JOIN "ObbSheet" os ON oo."obbSheetId" = os.id
+        // INNER JOIN "Operation" o ON o.id= oo."operationId"
+        // INNER JOIN "SewingMachine" sm on sm.id = oo."sewingMachineId"
+        // WHERE os.id = $1 and pd.timestamp like $2
+        // group by o.name,oo.target,oo."seqNo",machine order by  oo."seqNo" 
         
         const query = `
-       select SUM(pd."productionCount") as count
-,concat(oo."seqNo",'-',o.name ) as name ,oo.target,sm."machineId" as machine
-    FROM "ProductionData" pd
+      
+
+select DISTINCT on (o.name,"oo"."seqNo",oo.target,"sm"."machineId") pd."totalPcs" as count,
+
+    concat(oo."seqNo",'-',o.name ) as name ,oo.target,sm."machineId" as machine
+    FROM "ProductionEfficiency" pd
     INNER JOIN "ObbOperation" oo ON pd."obbOperationId" = oo.id
     INNER JOIN "ObbSheet" os ON oo."obbSheetId" = os.id
     INNER JOIN "Operation" o ON o.id= oo."operationId"
     INNER JOIN "SewingMachine" sm on sm.id = oo."sewingMachineId"
     WHERE os.id = $1 and pd.timestamp like $2
-    group by o.name,oo.target,oo."seqNo",machine order by  oo."seqNo" 
+    order by  oo."seqNo",o.name,oo.target,machine ,pd.timestamp desc
+
         `;
         const values = [obbsheetid,date];
     
