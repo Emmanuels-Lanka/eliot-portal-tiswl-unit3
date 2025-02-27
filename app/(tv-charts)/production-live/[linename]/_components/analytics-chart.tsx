@@ -214,20 +214,21 @@ const abbreviatePart = (part: string) => {
                 let previousHourData: number = 0;
 
                 if (currentHourIndex > 0) {
-                  // Get the previous hour group
-                  const previousHourGroup = hourGroups[currentHourIndex - 1];
+                  // Iterate backward to find the nearest previous hour with data
+                  for (let i = currentHourIndex - 1; i >= 0; i--) {
+                    const previousHourGroup = hourGroups[i];
                 
-                  // Filter the data for the previous hour group
-                  const filteredPreviousData = op.data.filter(
-                    (data) => getHourGroup(data.timestamp) === previousHourGroup
-                  );
+                    // Filter data for the previous valid hour group
+                    const filteredPreviousData = op.data.filter(
+                      (data) => getHourGroup(data.timestamp) === previousHourGroup
+                    );
                 
-                  // Assign the first productionCount value if available, otherwise keep it as 0
-                  if (filteredPreviousData.length > 0) {
-                    previousHourData = filteredPreviousData[0].totalPcs;
+                    if (filteredPreviousData.length > 0) {
+                      previousHourData = filteredPreviousData[0].totalPcs; 
+                      break; // Stop looping once a valid previous hour is found
+                    }
                   }
                 }
-                // const lastHourProd = 
                 const productionCount = lastProduction - previousHourData;
                 const earnMins = productionCount * op.obbOperation.smv;
                 const liveEarnMins = lastProduction*op.obbOperation.smv
