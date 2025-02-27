@@ -129,11 +129,11 @@ export const SIDEBAR_ROUTES = [
                 icon: BarChartHorizontal
                 
             },
-            {
-                label: "Production Heatmap (15min)",
-                href: "/analytics/operation-efficiency-15",
-                icon: BarChartHorizontal
-            },
+            // {
+            //     label: "Production Heatmap (15min)",
+            //     href: "/analytics/operation-efficiency-15",
+            //     icon: BarChartHorizontal
+            // },
             {
                 label:"Hourly Production",
                 href: "/analytics/production-hourly",

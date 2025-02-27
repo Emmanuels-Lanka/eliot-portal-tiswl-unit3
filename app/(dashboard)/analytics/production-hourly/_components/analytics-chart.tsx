@@ -138,20 +138,23 @@ const AnalyticsChart = ({
                     const  lastProduction = filteredData[0].totalPcs;
                     const currentHourIndex = hourGroups.indexOf(hourGroup);
                     let previousHourData: number = 0;
-                    if (currentHourIndex > 0) {
-                        // Get the previous hour group
-                        const previousHourGroup = hourGroups[currentHourIndex - 1];
-                      
-                        // Filter the data for the previous hour group
-                        const filteredPreviousData = op.data.filter(
-                          (data) => getHourGroup(data.timestamp) === previousHourGroup
-                        );
-                      
-                        // Assign the first productionCount value if available, otherwise keep it as 0
-                        if (filteredPreviousData.length > 0) {
-                          previousHourData = filteredPreviousData[0].totalPcs;
-                        }
+                   
+                if (currentHourIndex > 0) {
+                    // Iterate backward to find the nearest previous hour with data
+                    for (let i = currentHourIndex - 1; i >= 0; i--) {
+                      const previousHourGroup = hourGroups[i];
+                  
+                      // Filter data for the previous valid hour group
+                      const filteredPreviousData = op.data.filter(
+                        (data) => getHourGroup(data.timestamp) === previousHourGroup
+                      );
+                  
+                      if (filteredPreviousData.length > 0) {
+                        previousHourData = filteredPreviousData[0].totalPcs; 
+                        break; // Stop looping once a valid previous hour is found
                       }
+                    }
+                  }
                       // const lastHourProd = 
                       prod = lastProduction - previousHourData;
                 }
