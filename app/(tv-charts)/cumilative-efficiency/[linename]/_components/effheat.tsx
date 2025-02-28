@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { useRef } from "react";
 import { Button } from "@/components/ui/button";
@@ -103,11 +103,11 @@ const EffiencyHeatmap = ({
             labels: {
                 style: {
                     colors: '#0070c0',
-                    fontSize: '12px',
+                    fontSize: '11px',
                     fontFamily: 'Inter, sans-serif',
                 },
                 rotate: -90,
-                minHeight: 420,
+                minHeight: 400,
             },
             categories: categories,
         },
@@ -134,20 +134,19 @@ const EffiencyHeatmap = ({
         },
     };
 
-
     return (
-        <div className="mx-auto max-w-ful h-full w-full">
+        <div className="mx-auto max-w-full h-full w-full">
             <div id="chart" ref={chartRef} className='w-full'>
                 <ReactApexChart 
                     options={options} 
                     series={series} 
                     type="heatmap" 
                     height={height}
-                    
+                    width={chartWidth}
                 />
             </div>
             
-            <div className="flex justify-center gap-2 mt-5 2xl:hidden ">
+            <div className="flex justify-center gap-2 mt-5 2xl:hidden">
                 <Button 
                     onClick={() => setChartWidth((p) => p + 200)} 
                     className="rounded-full bg-gray-300"

@@ -23,6 +23,7 @@ type ProductionDataForChartTypes = {
   eliotSerialNumber: string;
   obbOperationId: string;
   productionCount: number;
+  totalPcs:number;
   timestamp: string;
   createdAt: Date;
   operator: {
@@ -123,13 +124,13 @@ const AnalyticsChart = ({ linename }: { linename: string }) => {
 const abbreviatePart = (part: string) => {
     switch (part.toLowerCase()) {
       case 'front':
-        return 'FRNT';
+        return 'F';
       case 'back':
-        return 'BACK';
+        return 'B';
       case 'assembly':
-        return 'ASSE';
+        return 'A';
       case 'line-end':
-        return 'LEND';
+        return 'L';
       default:
         return part.toUpperCase();
     }
@@ -182,7 +183,7 @@ const abbreviatePart = (part: string) => {
 
         // const categories = operations.map(op => `${op.obbOperation.operation.name}-${op.obbOperation.seqNo}`);
         
-        const categories = operations.map(op => ` ${shortenOperationName(op.obbOperation.operation.name)} -  ${shortenOperationName(op.operator.operator.name)} - ( ${op.obbOperation.smv}) - ${abbreviatePart(op.obbOperation.part)} - ( ${op.obbOperation?.sewingMachine?.machineId || 'Unknown Machine ID'} ) - ${op.obbOperation.seqNo}`);
+        const categories = operations.map(op => ` ${shortenOperationName(op.obbOperation.operation.name)} -  ${shortenOperationName(op.operator.operator.name)} -  ${op.obbOperation.smv} - ${abbreviatePart(op.obbOperation.part)} -  ${op.obbOperation?.sewingMachine?.machineId || 'Unknown Machine ID'}  - ${op.obbOperation.seqNo}`);
         const machines = operations.map(op => ` ${op.obbOperation?.sewingMachine?.machineId || 'Unknown Machine ID'}`);
         const eliot = operations.map(op => ` ${op.data[0].eliotSerialNumber}`);
 
@@ -200,36 +201,37 @@ const abbreviatePart = (part: string) => {
                 if (filteredData.length === 0) return { name: op.obbOperation.operation.name, efficiency: null };
                 
                
-               const log = filteredData[0].operator.operatorSessions?.find((s)=>s.obbOperationId === op.obbOperation.id )?.LoginTimestamp
+               const log = filteredData[0].operator.operatorSessions?.find((s)=>s.obbOperationId === op.obbOperation.id || s.operatorRfid === op.operator.operatorRfid)?.LoginTimestamp
                 
                 // const loginTimestamp = filteredData[0]?.operator?.operatorSessions?.[0]?.LoginTimestamp;
                 const loginTime = new Date(log); // Convert to Date object
 
                 
-                const  lastProduction = filteredData[0].productionCount;
+                const  lastProduction = filteredData[0].totalPcs;
                 const  lastProductionTime = filteredData[0].timestamp;
-                const  firstProduction= filteredData[filteredData.length - 1].productionCount;
+                const  firstProduction= filteredData[filteredData.length - 1].totalPcs;
                 const currentHourIndex = hourGroups.indexOf(hourGroup);
                 let previousHourData: number = 0;
 
                 if (currentHourIndex > 0) {
-                  // Get the previous hour group
-                  const previousHourGroup = hourGroups[currentHourIndex - 1];
+                  // Iterate backward to find the nearest previous hour with data
+                  for (let i = currentHourIndex - 1; i >= 0; i--) {
+                    const previousHourGroup = hourGroups[i];
                 
-                  // Filter the data for the previous hour group
-                  const filteredPreviousData = op.data.filter(
-                    (data) => getHourGroup(data.timestamp) === previousHourGroup
-                  );
+                    // Filter data for the previous valid hour group
+                    const filteredPreviousData = op.data.filter(
+                      (data) => getHourGroup(data.timestamp) === previousHourGroup
+                    );
                 
-                  // Assign the first productionCount value if available, otherwise keep it as 0
-                  if (filteredPreviousData.length > 0) {
-                    previousHourData = filteredPreviousData[0].productionCount;
+                    if (filteredPreviousData.length > 0) {
+                      previousHourData = filteredPreviousData[0].totalPcs; 
+                      break; // Stop looping once a valid previous hour is found
+                    }
                   }
                 }
-                // const lastHourProd = 
                 const productionCount = lastProduction - previousHourData;
                 const earnMins = productionCount * op.obbOperation.smv;
-                // const liveEarnMins = lastProduction*op.obbOperation.smv
+                const liveEarnMins = lastProduction*op.obbOperation.smv
 
                 let efficiency: number | null = null;
 
@@ -253,8 +255,7 @@ const abbreviatePart = (part: string) => {
                     
                
               
-                  // efficiency = timeDiffMinutes > 0 ? (liveEarnMins * 100) / timeDiffMinutes : 0;
-                  efficiency = productionCount > 0 ? (earnMins/60) *100: 0;
+                  efficiency = timeDiffMinutes > 0 ? (liveEarnMins * 100) / timeDiffMinutes : 0;
               
 ``
 
@@ -262,7 +263,7 @@ const abbreviatePart = (part: string) => {
              
                 
                 
-                return { name: `${op.obbOperation.seqNo}-${op.obbOperation.operation.name}`, efficiency: efficiency !== null ? Math.round(efficiency+.001 ) : null 
+                return { name: `${op.obbOperation.seqNo}-${op.obbOperation.operation.name}`, efficiency: productionCount !== null ? Math.round(efficiency ) : null 
                 ,part: op.obbOperation.part,timeDiffMinutes:timeDiffMinutes,previousHourData,
                 totalProduction:productionCount,firstProduction,lastProduction,
                 smv:op.obbOperation.smv,opLogin:loginTime,is2Passed,lastProductionTime,operator:op.operator.operatorRfid,
@@ -295,7 +296,8 @@ const abbreviatePart = (part: string) => {
            const date =  yyyyMMdd.toString()
        
 
-            const response = await axios.get(`/api/efficiency-live?obbSheetId=${obbSheetId}&date=${date}`);
+            // const response = await axios.get(`/api/efficiency-live?obbSheetId=${obbSheetId}&date=${date}`);
+            const response = await axios.get(`/api/efficiency-direct?obbSheetId=${obbSheetId}&date=${"2025-02-26"}`);
             // console.log("re",response.data.data)
             const heatmapData = processProductionData(response.data.data);
             
@@ -342,7 +344,7 @@ const abbreviatePart = (part: string) => {
   <div className="flex justify-center items-center gap-3 h-[80px] py-2 w-full ">
     <LogoImporter />
     <h1 className="text-[#0071c1] text-3xl text-center">
-      Dashboard -  Hourly Efficiency TV Graph - For Live {lineName}
+      Dashboard - Cumilative Efficiency TV Graph - {lineName}
     </h1>
   </div>
 
