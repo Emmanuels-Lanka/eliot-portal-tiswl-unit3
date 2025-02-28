@@ -24,7 +24,7 @@ const ProductionEfficiency60 = async () => {
         <div className='flex flex-col justify-center mt-4 items-center'>
           <TabsList>
             <TabsTrigger value="1">Live Efficiency</TabsTrigger>
-            <TabsTrigger value="2">Cumilative Efficieny</TabsTrigger>
+            <TabsTrigger value="2">Cumilative Efficiency</TabsTrigger>
           </TabsList>
           <p className="mt-1 text-sm text-slate-500">
             (Please click the tabs to change the heatmaps)

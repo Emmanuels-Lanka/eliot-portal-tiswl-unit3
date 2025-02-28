@@ -297,7 +297,7 @@ const abbreviatePart = (part: string) => {
        
 
             // const response = await axios.get(`/api/efficiency-live?obbSheetId=${obbSheetId}&date=${date}`);
-            const response = await axios.get(`/api/efficiency-direct?obbSheetId=${obbSheetId}&date=${"2025-02-26"}`);
+            const response = await axios.get(`/api/efficiency-direct?obbSheetId=${obbSheetId}&date=${date}`);
             // console.log("re",response.data.data)
             const heatmapData = processProductionData(response.data.data);
             

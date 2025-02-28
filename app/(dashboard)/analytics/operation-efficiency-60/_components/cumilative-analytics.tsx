@@ -187,7 +187,9 @@ function processProductionData(productionData: ProductionDataForChartTypes[]): O
                     
                
               
-                  efficiency = timeDiffMinutes > 0 ? (liveEarnMins * 100) / timeDiffMinutes : 0;
+                    // efficiency = timeDiffMinutes > 0 ? Math.min((liveEarnMins * 100) / timeDiffMinutes, 100) : 0;
+                    efficiency = timeDiffMinutes > 0  ? Math.max(Math.min((liveEarnMins * 100) / timeDiffMinutes, 100), 0)  : 0;
+                    
               
 ``
 
@@ -217,7 +219,7 @@ function processProductionData(productionData: ProductionDataForChartTypes[]): O
         try {
             data.date.setDate(data.date.getDate() + 1);
             const formattedDate = data.date.toISOString().split('T')[0];
-            const response = await axios.get(`/api/efficiency-direct?obbSheetId=${data.obbSheetId}&date=${"2025-02-26"}`);
+            const response = await axios.get(`/api/efficiency-direct?obbSheetId=${data.obbSheetId}&date=${formattedDate}`);
 
 
             const heatmapData = processProductionData(response.data.data);
@@ -254,6 +256,9 @@ function processProductionData(productionData: ProductionDataForChartTypes[]): O
                 {heatmapData ?
                     <div className="mt-12">
                         {/* <h2 className="text-lg mb-2 font-medium text-slate-700">{title}</h2> */}
+                        <div className="items-center text-lg font-semibold flex justify-center mb-4">
+                        <h1>Cumilative Efficiency </h1>
+                       </div>
                         <EffiencyHeatmap
                             xAxisLabel='Operations'
                             height={700}
