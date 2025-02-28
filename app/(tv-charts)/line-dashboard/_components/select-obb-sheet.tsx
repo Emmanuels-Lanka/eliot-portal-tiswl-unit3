@@ -37,7 +37,7 @@ const SelectObbSheet = ({
     };
 
     return (
-        <div className='border px-10 pt-8 p-10 rounded-lg bg-slate-100 space-y-2'>
+        <div className='border px-10 pt-8 p-10 rounded-lg bg-slate-100 space-y-2 shadow-lg'>
             <h1 className="text-slate-600 font-medium">Select OBB Sheet</h1>
             <Popover open={open} onOpenChange={setOpen}>
                 <PopoverTrigger asChild>
