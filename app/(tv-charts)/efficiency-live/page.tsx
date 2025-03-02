@@ -9,6 +9,7 @@ const Efficiency = async () => {
         orderBy: { createdAt: "desc" },
     });
 
+    console.log(obbSheets)
             
     return (
         <div className='mx-auto max-w-4xl'>
