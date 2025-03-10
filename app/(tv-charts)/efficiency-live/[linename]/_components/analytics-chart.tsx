@@ -323,7 +323,7 @@ const abbreviatePart = (part: string) => {
        
 
             // const response = await axios.get(`/api/efficiency-live?obbSheetId=${obbSheetId}&date=${date}`);
-            const response = await axios.get(`/api/efficiency-direct?obbSheetId=${obbSheetId}&date=${date}`);
+            const response = await axios.get(`/api/efficiency-direct?obbSheetId=${obbSheetId}&date=${date}` ,{timeout: 15000}   );
 
             // console.log("re",response.data.data)
             const heatmapData = processProductionData(response.data.data);
