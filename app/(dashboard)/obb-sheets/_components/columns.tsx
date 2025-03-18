@@ -232,8 +232,31 @@ export const columns: ColumnDef<ObbSheet>[] = [
         }
     },
     {
-        id: "actions",
-        header: "Action",
-        cell: ({ row }) => <ActionCell row={row} />
-    }
+        accessorKey: "isActive",
+        header: ({ column }) => {
+            return (
+                <Button
+                    variant="ghost"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                    className="-ml-3"
+                >
+                    Action
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+            )
+        },
+        cell: ({ row }) => <ActionCell row={row} />,
+        sortingFn: (rowA, rowB) => {
+            const isActiveA = rowA.original.isActive;
+            const isActiveB = rowB.original.isActive;
+            if (isActiveA === isActiveB) return 0;
+            return isActiveA ? 1 : -1;
+        },
+    },
+
+    // {
+    //     id: "actions",
+    //     header: "Action",
+    //     cell: ({ row }) => <ActionCell row={row} />
+    // }
 ]
