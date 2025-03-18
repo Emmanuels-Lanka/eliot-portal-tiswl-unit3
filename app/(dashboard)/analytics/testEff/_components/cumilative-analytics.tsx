@@ -220,13 +220,13 @@ function processProductionData(productionData: ProductionDataForChartTypes[]): O
         try {
             data.date.setDate(data.date.getDate() + 1);
             const formattedDate = data.date.toISOString().split('T')[0];
-            const response = await axios.get(`/api/efficiency-direct?obbSheetId=${data.obbSheetId}&date=${formattedDate}`);
+            // const response = await axios.get(`/api/efficiency-direct?obbSheetId=${data.obbSheetId}&date=${formattedDate}`);
 
             const res :any = await fetchProductionData(data.obbSheetId,formattedDate)
             const heatmapData = processProductionData(res.data);
             
             setHeatmapData(heatmapData);
-            setObbSheet(response.data.obbSheet);
+            setObbSheet(res.data.obbSheet);
 
             router.refresh();
         } catch (error: any) {
