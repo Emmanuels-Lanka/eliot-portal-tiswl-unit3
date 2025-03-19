@@ -184,28 +184,138 @@ const ActionCell = ({ row }: { row: any }) => {
 export const columns: ColumnDef<ObbSheet>[] = [
     {
         accessorKey: "name",
-        header: "Name (line-style)",
+        header: ({ column }) => {
+            return (
+                <Button
+                    variant="ghost"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                    className="-ml-5"
+                >
+                    Name (line-style)
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+            )
+        },
+        cell: ({ row }) => {
+            const value: string = row.getValue("name");
+            return (
+                <p className="capitalize">{value}</p>
+            )
+        }
     },
     {
         accessorKey: "style",
-        header: "Style",
+        header: ({ column }) => {
+            return (
+                <Button
+                    variant="ghost"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                    className="-ml-5"
+                >
+                    Style
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+            )
+        },
+        cell: ({ row }) => {
+            const value: string = row.getValue("style");
+            return (
+                <p className="capitalize">{value}</p>
+            )
+        }
     },
     {
         accessorKey: "unit.name",
-        header: "Unit",
+        header: ({ column }) => (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="p-1 flex items-center gap-1 min-w-0"
+          >
+            Unit <ArrowUpDown className="h-3 w-3" />
+          </Button>
+        ),
+        sortingFn: "alphanumeric",
     },
     {
         accessorKey: "productionLine.name",
-        header: "Line",
+        header: ({ column }) => (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="p-1 flex items-center gap-1 min-w-0"
+          >
+            Line <ArrowUpDown className="h-3 w-3" />
+          </Button>
+        ),
+        sortingFn: "alphanumeric",
     },
     {
         accessorKey: "buyer",
-        header: "Buyer",
+        header: ({ column }) => {
+            return (
+                <Button
+                    variant="ghost"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                    className="-ml-5"
+                >
+                    Buyer
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+            )
+        },
+        cell: ({ row }) => {
+            const value: string = row.getValue("buyer");
+            return (
+                <p className="capitalize">{value}</p>
+            )
+        }
     },
     {
         accessorKey: "colour",
-        header: "Color",
+        header: ({ column }) => {
+            return (
+                <Button
+                    variant="ghost"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                    className="-ml-5"
+                >
+                    Colour
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+            )
+        },
+        cell: ({ row }) => {
+            const value: string = row.getValue("colour");
+            return (
+                <p className="capitalize">{value}</p>
+            )
+        }
     },
+    // {
+    //     accessorKey: "name",
+    //     header: "Name (line-style)",
+    // },
+    // {
+    //     accessorKey: "style",
+    //     header: "Style",
+    // },
+    // {
+    //     accessorKey: "unit.name",
+    //     header: "Unit",
+    // },
+    // {
+    //     accessorKey: "productionLine.name",
+    //     header: "Line",
+    // },
+    // {
+    //     accessorKey: "buyer",
+    //     header: "Buyer",
+    // },
+    // {
+    //     accessorKey: "colour",
+    //     header: "Color",
+    // },
     {
         accessorKey: "updatedAt",
         header: ({ column }) => {
