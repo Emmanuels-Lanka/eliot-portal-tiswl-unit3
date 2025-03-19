@@ -10,6 +10,7 @@ import HeatmapChart from "@/components/dashboard/charts/heatmap-chart";
 import SelectObbSheetAndDate from "@/components/dashboard/common/select-obbsheet-and-date";
 import { useToast } from "@/components/ui/use-toast";
 import EffiencyHeatmap from "@/components/dashboard/charts/efficiency-heatmap";
+import { fetchDirectProductionData } from "@/actions/efficiency-direct-action";
 
 interface AnalyticsChartProps {
     obbSheets: {
@@ -219,13 +220,15 @@ function processProductionData(productionData: ProductionDataForChartTypes[]): O
         try {
             data.date.setDate(data.date.getDate() + 1);
             const formattedDate = data.date.toISOString().split('T')[0];
-            const response = await axios.get(`/api/efficiency-direct?obbSheetId=${data.obbSheetId}&date=${formattedDate}`);
+            // const response = await axios.get(`/api/efficiency-direct?obbSheetId=${data.obbSheetId}&date=${formattedDate}`);
+
+            const response : any = await fetchDirectProductionData(data.obbSheetId, formattedDate);
 
 
-            const heatmapData = processProductionData(response.data.data);
+            const heatmapData  = processProductionData(response.data);
             
             setHeatmapData(heatmapData);
-            setObbSheet(response.data.obbSheet);
+            setObbSheet(response.obbSheet);
 
             router.refresh();
         } catch (error: any) {
