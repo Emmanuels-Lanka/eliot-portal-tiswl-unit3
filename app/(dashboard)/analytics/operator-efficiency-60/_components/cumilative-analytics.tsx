@@ -10,6 +10,7 @@ import HeatmapChart from "@/components/dashboard/charts/heatmap-chart";
 import SelectObbSheetAndDate from "@/components/dashboard/common/select-obbsheet-and-date";
 import { useToast } from "@/components/ui/use-toast";
 import EffiencyHeatmap from "@/components/dashboard/charts/efficiency-heatmap";
+import { fetchDirectProductionData } from "@/actions/efficiency-direct-action";
 
 interface AnalyticsChartProps {
     obbSheets: {
@@ -212,9 +213,14 @@ const OperatorCumilative = ({
 
            
            
-            const response = await axios.get(`/api/efficiency-direct?obbSheetId=${data.obbSheetId}&date=${formattedDate}`);
-            console.log("re",response.data.data)
-            const heatmapData = processProductionData(response.data.data);
+            // const response = await axios.get(`/api/efficiency-direct?obbSheetId=${data.obbSheetId}&date=${formattedDate}`);
+            // console.log("re",response.data.data)
+            // const heatmapData = processProductionData(response.data.data);
+
+             const response : any = await fetchDirectProductionData(data.obbSheetId, formattedDate);
+            
+            
+                        const heatmapData  = processProductionData(response.data);
             console.log("HEATMAP:", heatmapData.data);
             console.log("CATEGORIES:", heatmapData.categories);
 
