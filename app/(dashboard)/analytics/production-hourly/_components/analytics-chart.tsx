@@ -10,6 +10,7 @@ import HeatmapChart from "@/components/dashboard/charts/heatmap-chart";
 import SelectObbSheetAndDate from "@/components/dashboard/common/select-obbsheet-and-date";
 import { useToast } from "@/components/ui/use-toast";
 import EffiencyHeatmap from "./heatmap";
+import { fetchDirectProductionData } from "@/actions/efficiency-direct-action";
 // import EffiencyHeatmap from "@/components/dashboard/charts/efficiency-heatmap";
 
 
@@ -184,19 +185,35 @@ const AnalyticsChart = ({
         try {
             data.date.setDate(data.date.getDate() + 1);
             const formattedDate = data.date.toISOString().split('T')[0];
-            let response 
-            let state = true
+            // let response 
+            // let state = true
            
-            response = await axios.get(`/api/efficiency-direct?obbSheetId=${data.obbSheetId}&date=${formattedDate}`);
-            if(response.data.data.length === 0){
-                state = false
-               response = await axios.get(`/api/efficiency/production?obbSheetId=${data.obbSheetId}&date=${formattedDate}`);
-            }
+            // response = await axios.get(`/api/efficiency-direct?obbSheetId=${data.obbSheetId}&date=${formattedDate}`);
+            // if(response.data.data.length === 0){
+            //     state = false
+            //    response = await axios.get(`/api/efficiency/production?obbSheetId=${data.obbSheetId}&date=${formattedDate}`);
+            // }
             
-            const heatmapData = processProductionData(response.data.data,state);
+            // const heatmapData = processProductionData(response.data.data,state);
             
-            setHeatmapData(heatmapData);
-            setObbSheet(response.data.obbSheet);
+            // setHeatmapData(heatmapData);
+            // setObbSheet(response.data.obbSheet);
+
+            let response :any
+                        let state = true
+                       
+                        // response = await axios.get(`/api/efficiency-direct?obbSheetId=${data.obbSheetId}&date=${formattedDate}`);
+                         response  = await fetchDirectProductionData(data.obbSheetId, formattedDate);
+            
+                        if(response.data.length === 0){
+                            state = false
+                           response = await axios.get(`/api/efficiency/production?obbSheetId=${data.obbSheetId}&date=${formattedDate}`);
+                        }
+            
+                        const heatmapData = processProductionData(response.data,state);
+                        
+                        setHeatmapData(heatmapData);
+                        setObbSheet(response.data.obbSheet);
 
             router.refresh();
         } catch (error: any) {
