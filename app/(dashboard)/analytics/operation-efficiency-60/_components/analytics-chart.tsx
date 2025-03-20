@@ -10,6 +10,7 @@ import HeatmapChart from "@/components/dashboard/charts/heatmap-chart";
 import SelectObbSheetAndDate from "@/components/dashboard/common/select-obbsheet-and-date";
 import { useToast } from "@/components/ui/use-toast";
 import EffiencyHeatmap from "@/components/dashboard/charts/efficiency-heatmap";
+import { fetchDirectProductionData } from "@/actions/efficiency-direct-action";
 
 interface AnalyticsChartProps {
     obbSheets: {
@@ -155,16 +156,18 @@ const AnalyticsChart = ({
         try {
             data.date.setDate(data.date.getDate() + 1);
             const formattedDate = data.date.toISOString().split('T')[0];
-            let response 
+            let response :any
             let state = true
            
-            response = await axios.get(`/api/efficiency-direct?obbSheetId=${data.obbSheetId}&date=${formattedDate}`);
-            if(response.data.data.length === 0){
+            // response = await axios.get(`/api/efficiency-direct?obbSheetId=${data.obbSheetId}&date=${formattedDate}`);
+             response  = await fetchDirectProductionData(data.obbSheetId, formattedDate);
+
+            if(response.data.length === 0){
                 state = false
                response = await axios.get(`/api/efficiency/production?obbSheetId=${data.obbSheetId}&date=${formattedDate}`);
             }
 
-            const heatmapData = processProductionData(response.data.data,state);
+            const heatmapData = processProductionData(response.data,state);
             
             setHeatmapData(heatmapData);
             setObbSheet(response.data.obbSheet);

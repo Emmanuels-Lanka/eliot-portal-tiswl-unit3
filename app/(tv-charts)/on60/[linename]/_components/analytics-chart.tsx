@@ -149,7 +149,7 @@ const AnalyticsChart = ({ linename }: { linename: string }) => {
            const date =  yyyyMMdd.toString()
        
 
-            const response = await axios.get(`/api/efficiency/production?obbSheetId=${obbSheetId}&date=${date}`);
+            const response = await axios.get(`/api/efficiency/production?obbSheetId=${obbSheetId}&date=${date}`,{timeout: 30000}  );
             const heatmapData = processProductionData(response.data.data);
             
             setHeatmapData(heatmapData);
