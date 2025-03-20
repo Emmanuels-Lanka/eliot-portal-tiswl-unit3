@@ -14,6 +14,7 @@ import { getLinebyOS, getObbSheetID } from "@/components/tv-charts/achievement-r
 import LogoImporter from "@/components/dashboard/common/eliot-logo";
 import EffiencyHeatmap from "./effheat";
 import { boolean, string } from "zod";
+import { fetchDirectProductionData } from "@/actions/efficiency-direct-action";
 // import EffiencyHeatmap from "./effheatmap";
 
 type ProductionDataForChartTypes = {
@@ -297,12 +298,18 @@ const abbreviatePart = (part: string) => {
        
 
             // const response = await axios.get(`/api/efficiency-live?obbSheetId=${obbSheetId}&date=${date}`);
-            const response = await axios.get(`/api/efficiency-direct?obbSheetId=${obbSheetId}&date=${date}`);
-            // console.log("re",response.data.data)
-            const heatmapData = processProductionData(response.data.data);
+            // const response = await axios.get(`/api/efficiency-direct?obbSheetId=${obbSheetId}&date=${date}`);
+            // // console.log("re",response.data.data)
+            // const heatmapData = processProductionData(response.data.data);
+            
+            // setHeatmapData(heatmapData);
+            // setObbSheet(response.data.obbSheet);
+
+            const response : any = await fetchDirectProductionData(obbSheetId, date);
+            const heatmapData = processProductionData(response.data);
             
             setHeatmapData(heatmapData);
-            setObbSheet(response.data.obbSheet);
+            setObbSheet(response.obbSheet);
 
             router.refresh();
         } catch (error: any) {

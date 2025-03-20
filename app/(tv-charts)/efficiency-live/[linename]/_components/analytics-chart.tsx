@@ -15,6 +15,7 @@ import LogoImporter from "@/components/dashboard/common/eliot-logo";
 import EffiencyHeatmap from "./effheat";
 import { boolean, string } from "zod";
 import Image from "next/image";
+import { fetchDirectProductionData } from "@/actions/efficiency-direct-action";
 // import EffiencyHeatmap from "./effheatmap";
 
 type ProductionDataForChartTypes = {
@@ -274,8 +275,8 @@ const abbreviatePart = (part: string) => {
               //   timeDiffMinutes -= 60;
               // }
               
-                  efficiency = timeDiffMinutes > 0 ? (liveEarnMins * 100) / timeDiffMinutes : 0;
-              
+                  // efficiency = timeDiffMinutes > 0 ? (liveEarnMins * 100) / timeDiffMinutes : 0;
+              efficiency = timeDiffMinutes > 0 ? Math.min((liveEarnMins * 100) / timeDiffMinutes, 100) : 0;
 ``
 
                 // const totalProduction = filteredData.reduce((sum, curr) => sum + curr.productionCount, 0);
@@ -311,8 +312,6 @@ const abbreviatePart = (part: string) => {
         if (!obbSheetId || !date) return;
         try {
             
-        
-
             const y = new Date().getFullYear().toString()
             const m = (new Date().getMonth() + 1).toString().padStart(2, "0")
             //const d = new Date().getDate().toString().padStart(2, "0")
@@ -321,15 +320,20 @@ const abbreviatePart = (part: string) => {
           
            const date =  yyyyMMdd.toString()
        
-
             // const response = await axios.get(`/api/efficiency-live?obbSheetId=${obbSheetId}&date=${date}`);
-            const response = await axios.get(`/api/efficiency-direct?obbSheetId=${obbSheetId}&date=${date}` ,{timeout: 30000}   );
+            // const response = await axios.get(`/api/efficiency-direct?obbSheetId=${obbSheetId}&date=${date}` ,{timeout: 30000}   );
 
-            // console.log("re",response.data.data)
-            const heatmapData = processProductionData(response.data.data);
+            // // console.log("re",response.data.data)
+            // const heatmapData = processProductionData(response.data.data);
             
+            // setHeatmapData(heatmapData);
+            // setObbSheet(response.data.obbSheet);
+
+            const response : any = await fetchDirectProductionData(obbSheetId, date);
+            const heatmapData = processProductionData(response.data);
+
             setHeatmapData(heatmapData);
-            setObbSheet(response.data.obbSheet);
+            setObbSheet(response.obbSheet);
 
             router.refresh();
         } catch (error: any) {

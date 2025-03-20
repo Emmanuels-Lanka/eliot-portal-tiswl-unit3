@@ -62,11 +62,10 @@ model Operator {
   operatorNonEffectiveTime OperatorNonEffectiveTime[]
   operatorSessions         OperatorSession[]
   productionData           ProductionData[]
+  ProductionEfficiencyData ProductionEfficiency[]
   productionSMV            ProductionSMV[]
   roamingQC                RoamingQC[]
   tslRecords               TrafficLightSystem[]
-    ProductionEfficiencyData ProductionEfficiency[]
-
 }
 
 model Unit {
@@ -94,17 +93,17 @@ model ProductionLine {
 }
 
 model EliotDevice {
-  id             String           @id @default(uuid())
-  isAssigned     Boolean          @default(false)
-  createdAt      DateTime         @default(now())
-  updatedAt      DateTime         @updatedAt
-  installedDate  String
-  modelNumber    String
-  serialNumber   String           @unique
-  hasTrained     Boolean?         @default(false)
-  ProductionData ProductionData[]
+  id                       String                 @id @default(uuid())
+  isAssigned               Boolean                @default(false)
+  createdAt                DateTime               @default(now())
+  updatedAt                DateTime               @updatedAt
+  installedDate            String
+  modelNumber              String
+  serialNumber             String                 @unique
+  hasTrained               Boolean?               @default(false)
+  ProductionData           ProductionData[]
   ProductionEfficiencyData ProductionEfficiency[]
-  sewingMachines SewingMachine?
+  sewingMachines           SewingMachine?
 }
 
 model SewingMachine {
@@ -169,7 +168,6 @@ model ObbSheet {
   createdAt               DateTime                  @default(now())
   updatedAt               DateTime                  @updatedAt
   isActive                Boolean                   @default(false)
-  isVisible               Boolean                   @default(false)
   supervisorAssemblyId    String?
   supervisorBackId        String?
   supervisorFrontId       String?
@@ -183,6 +181,9 @@ model ObbSheet {
   totalSMV                Float?
   version                 String                    @default("1.0")
   availableMinPerHour     Int?
+  isVisible               Boolean                   @default(false)
+  threshold               Int?
+  thresholdStatus         Boolean?
   lineEfficiencyResources LineEfficiencyResources[]
   obbOperations           ObbOperation[]
   accInputMan             Staff?                    @relation("AccInputMan", fields: [accInputManId], references: [id])
@@ -211,34 +212,34 @@ model Operation {
 }
 
 model ObbOperation {
-  id               String               @id @default(uuid())
-  seqNo            Int                  @default(0)
-  operationId      String
-  obbSheetId       String
-  smv              Float
-  target           Int
-  spi              Int
-  length           Int
-  totalStitches    Int
-  createdAt        DateTime             @default(now())
-  updatedAt        DateTime             @updatedAt
-  supervisorId     String?
-  isActive         Boolean              @default(false)
-  sewingMachineId  String?
-  part             String?
-  isCombined       Boolean              @default(false)
-  obbSheet         ObbSheet             @relation(fields: [obbSheetId], references: [id], onDelete: Cascade)
-  operation        Operation            @relation(fields: [operationId], references: [id], onDelete: Cascade)
-  sewingMachine    SewingMachine?       @relation(fields: [sewingMachineId], references: [id])
-  supervisor       Staff?               @relation(fields: [supervisorId], references: [id])
-  operatorSessions OperatorSession[]
-  productionData   ProductionData[]
-  productionSMV    ProductionSMV[]
-  roamingQC        RoamingQC[]
-  staffSessions    StaffSession[]
-  tslRecords       TrafficLightSystem[]
+  id                       String                 @id @default(uuid())
+  seqNo                    Int                    @default(0)
+  operationId              String
+  obbSheetId               String
+  smv                      Float
+  target                   Int
+  spi                      Int
+  length                   Int
+  totalStitches            Int
+  createdAt                DateTime               @default(now())
+  updatedAt                DateTime               @updatedAt
+  supervisorId             String?
+  isActive                 Boolean                @default(false)
+  sewingMachineId          String?
+  part                     String?
+  isCombined               Boolean                @default(false)
+  obbSheet                 ObbSheet               @relation(fields: [obbSheetId], references: [id], onDelete: Cascade)
+  operation                Operation              @relation(fields: [operationId], references: [id], onDelete: Cascade)
+  sewingMachine            SewingMachine?         @relation(fields: [sewingMachineId], references: [id])
+  supervisor               Staff?                 @relation(fields: [supervisorId], references: [id])
+  operatorSessions         OperatorSession[]
+  productionData           ProductionData[]
   ProductionEfficiencyData ProductionEfficiency[]
-  
+  productionSMV            ProductionSMV[]
+  roamingQC                RoamingQC[]
+  staffSessions            StaffSession[]
+  tslRecords               TrafficLightSystem[]
+
   @@index([operationId, obbSheetId])
 }
 
@@ -276,10 +277,10 @@ model ProductionData {
   eliotSerialNumber String?
   obbOperationId    String
   productionCount   Int
-  totalPcs          Int?
-  efficiency     Int?
   timestamp         String
   createdAt         DateTime     @default(now())
+  totalPcs          Int?
+  efficiency        Int?
   EliotDevice       EliotDevice? @relation(fields: [eliotSerialNumber], references: [serialNumber])
   obbOperation      ObbOperation @relation(fields: [obbOperationId], references: [id], onDelete: Cascade)
   operator          Operator     @relation(fields: [operatorRfid], references: [rfid], onDelete: Cascade)
@@ -293,15 +294,12 @@ model ProductionEfficiency {
   eliotSerialNumber String?
   obbOperationId    String
   totalPcs          Int?
-  efficiency     Int?
+  efficiency        Int?
   timestamp         String
   createdAt         DateTime     @default(now())
-  EliotDevice EliotDevice? @relation(fields: [eliotSerialNumber],references: [serialNumber])
+  EliotDevice       EliotDevice? @relation(fields: [eliotSerialNumber], references: [serialNumber])
   obbOperation      ObbOperation @relation(fields: [obbOperationId], references: [id], onDelete: Cascade)
   operator          Operator     @relation(fields: [operatorRfid], references: [rfid], onDelete: Cascade)
-
-
-  
 }
 
 model AlertLog {
