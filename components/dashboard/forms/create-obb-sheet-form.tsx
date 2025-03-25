@@ -98,6 +98,8 @@ const formSchema = z.object({
     endingDate: z.date(),
     factoryStartTime: z.string().optional(),
     factoryStopTime: z.string().optional(),
+    intervalStartTime: z.string().optional(),
+    intervalStopTime: z.string().optional(),
     bundleTime: z.string().optional(),
     personalAllowance: z.string().optional(),
     workingHours: z.number().optional(),
@@ -166,6 +168,8 @@ const CreateObbSheetForm = ({
             endingDate: endingDateFormated || undefined,
             factoryStartTime: initialData?.factoryStartTime || "",
             factoryStopTime: initialData?.factoryStopTime || "",
+            intervalStartTime: initialData?.intervalStartTime || "",
+            intervalStopTime: initialData?.intervalStopTime || "",
             bundleTime: initialData?.bundleTime || "",
             personalAllowance: initialData?.personalAllowance || "",
             workingHours: initialData?.workingHours || 10,
@@ -582,10 +586,7 @@ const CreateObbSheetForm = ({
                                     </FormItem>
                                 )}
                             />
-                        </div>
-
-                        <div className="flex flex-col gap-y-6">
-                            <FormField
+                              <FormField
                                 control={form.control}
                                 name="qualityIns"
                                 render={({ field }) => (
@@ -609,6 +610,11 @@ const CreateObbSheetForm = ({
                                     </FormItem>
                                 )}
                             />
+                        </div>
+
+                        <div className="flex flex-col gap-y-6">
+                            
+                
                             <FormField
                                 control={form.control}
                                 name="accInputMan"
@@ -840,9 +846,55 @@ const CreateObbSheetForm = ({
                                     </FormItem>
                                 )}
                             />
+                            <FormField
+                                control={form.control}
+                                name="intervalStartTime"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>
+                                            Interval Starting Time
+                                        </FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                type="time"
+                                                disabled={isSubmitting}
+                                                placeholder="Enter starting time    "
+                                                value={field.value ? field.value.slice(0, 5) : ""}
+                                                onChange={(e) => field.onChange(`${e.target.value}:00`)} // Appends :00
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+
+                        <FormField
+                                control={form.control}
+                                name="intervalStopTime"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>
+                                        Interval Ending Time
+                                        </FormLabel>
+                                        <FormControl>
+                                        <Input
+                                                type="time"
+                                                disabled={isSubmitting}
+                                                placeholder="Enter Interval Ending time    "
+                                                value={field.value ? field.value.slice(0, 5) : ""}
+                                                onChange={(e) => field.onChange(`${e.target.value}:00`)} // Appends :00
+                                               
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
                         </div>
 
                         <div className="flex flex-col gap-y-6">
+                        
+                            
                             <FormField
                                 control={form.control}
                                 name="totalSMV"

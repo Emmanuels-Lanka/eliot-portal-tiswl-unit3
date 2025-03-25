@@ -184,6 +184,8 @@ model ObbSheet {
   isVisible               Boolean                   @default(false)
   threshold               Int?
   thresholdStatus         Boolean?
+  intervalStartTime       String                    @default("13:00:00")
+  intervalStopTime        String                    @default("14:00:00")
   lineEfficiencyResources LineEfficiencyResources[]
   obbOperations           ObbOperation[]
   accInputMan             Staff?                    @relation("AccInputMan", fields: [accInputManId], references: [id])
