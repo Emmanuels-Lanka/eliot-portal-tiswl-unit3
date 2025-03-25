@@ -676,7 +676,7 @@ const CreateObbSheetForm = ({
                                     </FormItem>
                                 )}
                             />
-                            <FormField
+                            {/* <FormField
                                 control={form.control}
                                 name="style"
                                 render={({ field }) => (
@@ -685,17 +685,34 @@ const CreateObbSheetForm = ({
                                             Style
                                         </FormLabel>
                                         <FormControl>
-                                            {/* <Input
-                                                disabled={isSubmitting}
-                                                placeholder="Enter the style"
-                                                {...field}
-                                            /> */}
+                                            
                                             <SelectBundleStyles 
                                                 defaultValue={field.value}
                                                 onChange={(value) => {
                                                     // console.log("Selected style:", value);
                                                     field.onChange(value);
                                                 }}
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            /> */}
+                             <FormField
+                                control={form.control}
+                                name="style"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel className="text-sm">
+                                            Style
+                                        </FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                disabled={isSubmitting}
+                                                placeholder="Enter the style"
+                                                value={field.value ?? ''} // Ensure value is always a string
+                                                onChange={field.onChange}
+                                                onBlur={field.onBlur}
                                             />
                                         </FormControl>
                                         <FormMessage />
