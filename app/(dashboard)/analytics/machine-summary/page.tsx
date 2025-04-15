@@ -1,52 +1,44 @@
-
-import { Cog } from 'lucide-react'
-import React from 'react'
+import { Cog } from "lucide-react";
+import React from "react";
 // import LogTable from '../../../../components/log/LogTable'
-import { db } from '@/lib/db';
-import LogTable from './_components/LogTable';
+import { db } from "@/lib/db";
+import LogTable from "./_components/LogTable";
 // import SearchComponent from '@/components/log/SearchCompo';
 
 const page = async () => {
-
-
+    
   const obbSheets = await db.obbSheet.findMany({
     where: {
-        isActive: true,
+      isActive: true,
     },
     orderBy: {
-        createdAt: "desc",
+      createdAt: "desc",
     },
     select: {
-        id: true,
-        name: true
-    }
-});
-const units = await db.unit.findMany({
-    
+      id: true,
+      name: true,
+    },
+  });
+
+  const units = await db.unit.findMany({
     orderBy: {
-        createdAt: "asc",
+      createdAt: "asc",
     },
     select: {
-        id: true,
-        name: true
-    }
-});
+      id: true,
+      name: true,
+    },
+  });
 
-// console.log(units)
+  // console.log(units)
 
-return (
+  return (
     <div>
-    
-        <div className="container">
-          
-        <LogTable obbSheets={obbSheets} units={units} ></LogTable>
+      <div className="container">
+        <LogTable obbSheets={obbSheets} units={units}></LogTable>
       </div>
-  </div>
-  )
+    </div>
+  );
+};
 
-
-}
-
-
-
-export default page
+export default page;

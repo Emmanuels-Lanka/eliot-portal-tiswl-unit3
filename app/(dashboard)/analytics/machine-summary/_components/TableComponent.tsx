@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect } from "react";
 import {
   Table,
   TableBody,
@@ -7,8 +7,17 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Key } from 'lucide-react';
-import { ProductionDataType } from './LogTable';
+import { Key } from "lucide-react";
+import { ProductionDataType } from "./LogTable";
+
+interface MachineSummaryData {
+  type: string
+  total: number
+  lineCounts: {
+    [key: string]: number
+  }
+  unassigned: number
+}
 
 interface TableProps {
   data: {
@@ -18,21 +27,21 @@ interface TableProps {
 
 const TableComponent: React.FC<TableProps> = ({ data }) => {
   const staticLineNames = [
-    'LINE-113-114',
-    'LINE-115-116',
-    'LINE-117-118',
-    'LINE-119-120',
-    'LINE-121-122',
-    'LINE-123-124',
-    'LINE-125-126',
+    "LINE-113-114",
+    "LINE-115-116",
+    "LINE-117-118",
+    "LINE-119-120",
+    "LINE-121-122",
+    "LINE-123-124",
+    "LINE-125-126",
   ];
 
-  
-  const formattedLineNames = staticLineNames.map(line => line.replace('LINE-', 'LINE-\n'));
-
+  const formattedLineNames = staticLineNames.map((line) =>
+    line.replace("LINE-", "LINE-\n")
+  );
 
   const getCountForLine = (row: ProductionDataType, lineName: string) => {
-    return row.linename === lineName ? row.count : '-';
+    return row.linename === lineName ? row.count : "-";
   };
 
   return (
@@ -42,12 +51,10 @@ const TableComponent: React.FC<TableProps> = ({ data }) => {
           <TableRow>
             <TableHead rowSpan={2}>M/C Type</TableHead>
             <TableHead rowSpan={2}>No of M/C in Unit</TableHead>
-            <TableHead colSpan={7} className='text-center'>
+            <TableHead colSpan={7} className="text-center">
               Assigned M/C
             </TableHead>
-            <TableHead rowSpan={2}>
-              Un Assigned M/C
-            </TableHead>
+            <TableHead rowSpan={2}>Un Assigned M/C</TableHead>
           </TableRow>
           <TableRow>
             {formattedLineNames.map((lineName) => (
@@ -71,7 +78,8 @@ const TableComponent: React.FC<TableProps> = ({ data }) => {
               {staticLineNames.map((lineName) => (
                 <TableCell key={lineName}>
                   <div className="font-medium text-center">
-                    {value.find((row) => row.linename === lineName)?.count || '-'}
+                    {value.find((row) => row.linename === lineName)?.count ||
+                      "-"}
                   </div>
                 </TableCell>
               ))}
