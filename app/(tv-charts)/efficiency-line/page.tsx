@@ -2,6 +2,8 @@ import { db } from '@/lib/db';
 import SelectObbSheet from '../line-dashboard/_components/select-obb-sheet';
 import SelectLine from '../line-dashboard/_components/select-line';
 
+export const dynamic = 'force-dynamic'; 
+
 const Efficiency = async () => {
     
     const lines = await db.productionLine.findMany({

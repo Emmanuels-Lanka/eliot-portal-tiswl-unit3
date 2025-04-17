@@ -1,10 +1,11 @@
 import { db } from '@/lib/db';
 import SelectObbSheet from '../line-dashboard/_components/select-obb-sheet';
+export const dynamic = 'force-dynamic'; 
 
 const Efficiency = async () => {
     const obbSheets = await db.obbSheet.findMany({
         where: { isActive: true },
-        orderBy: { createdAt: "desc" },
+        orderBy: { name: "asc" },
     });
 
     return (
