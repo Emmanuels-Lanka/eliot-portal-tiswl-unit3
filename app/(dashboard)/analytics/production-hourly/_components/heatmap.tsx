@@ -238,7 +238,23 @@ const EffiencyHeatmap = ({
 
     let height = 800
     const chartWidth = heatmapData && heatmapData.categories.length > 0 ? heatmapData.categories.length * 100 : 1000;
-    const width = heatmapData && heatmapData.categories.length > 0 ?heatmapData.categories.length * 60 : 600;
+    // const width = heatmapData && heatmapData.categories.length > 0 ?heatmapData.categories.length * 60 : 600;
+
+
+    const getChartWidth = () => {
+      if (!heatmapData?.categories?.length) return 1000; // Default if no data
+      
+      const minWidth = 600;  // Minimum width (for 1-2 categories)
+      const maxWidth = 2000; // Maximum width (to prevent overflow)
+      const baseWidthPerCategory = 60; // Base width per category
+      
+      // Calculate width, but clamp between min and max
+      const calculatedWidth = heatmapData.categories.length * baseWidthPerCategory;
+      
+      return Math.min(Math.max(calculatedWidth, minWidth), maxWidth);
+    };
+    
+    const width = getChartWidth();
     return (
         // <div className='bg-slate-100 pt-5 pl-8 rounded-lg border w-full mb-16 overflow-x-auto'>
                     <div>
