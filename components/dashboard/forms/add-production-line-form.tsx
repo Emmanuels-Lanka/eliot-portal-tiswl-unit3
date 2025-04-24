@@ -42,6 +42,10 @@ interface AddProductionLineFormProps {
         id: string;
         name: string;
     }[];
+    user?: {
+        email: string;
+        role: string;
+    }
 }
 
 // const formSchema = z.object({
@@ -90,7 +94,8 @@ const formSchema = z.object({
 });
 
 const AddProductionLineForm = ({
-    units
+    units,
+    user
 }: AddProductionLineFormProps) => {
     const { toast } = useToast();
     const [isOpen, setIsOpen] = useState(false);
@@ -105,25 +110,15 @@ const AddProductionLineForm = ({
         },
     });
 
-    const { isSubmitting, isValid } = form.formState;
-
-    const onSubmit = async (data: z.infer<typeof formSchema>) => {
+    const handleCreateActivityLog = async (activity: string) => {
+        const payload = {
+            part: "LINE Name",
+            activity,
+        }
+        console.log("Created activity log: ", activity);
+        
         try {
-            const res = await axios.post('/api/production-line', data);
-            toast({
-                title: "Successfully created new line",
-                variant: "success",
-                description: (
-                    <div className='mt-2 bg-slate-200 py-2 px-3 md:w-[336px] rounded-md'>
-                        <code className="text-slate-800">
-                            Line name: {res.data.data.name}
-                        </code>
-                    </div>
-                ),
-            });
-            router.refresh();
-            form.reset();
-            setIsOpen(false)
+            const res = await axios.post('/api/activity-log', payload);
         } catch (error: any) {
             console.error("ERROR", error);
             toast({
@@ -132,6 +127,78 @@ const AddProductionLineForm = ({
             });
         }
     }
+
+    const { isSubmitting, isValid } = form.formState;
+
+    const onSubmit = async (data: z.infer<typeof formSchema>) => {
+            try {
+                const res = await axios.post('/api/production-line', data);
+                toast({
+                    title: "Successfully created new line",
+                    variant: "success",
+                    description: (
+                        <div className='mt-2 bg-slate-200 py-2 px-3 md:w-[336px] rounded-md'>
+                            <code className="text-slate-800">
+                                Line name: {res.data.data.name}
+                            </code>
+                        </div>
+                    ),
+                });
+                router.refresh();
+                form.reset();
+                setIsOpen(false)
+            } catch (error: any) {
+                console.error("ERROR", error);
+                toast({
+                    title: error.response.data || "Something went wrong! Try again",
+                    variant: "error"
+                });
+            }
+        finally {
+            const selectedUnit = units.find(unit => unit.id === data.unitId);
+            const selectedUnitName = selectedUnit?.name || "Unknown Unit";
+            await handleCreateActivityLog(`Created ${data.name} for ${selectedUnitName} by ${user?.email ?? "unknown"} (${user?.role})`);
+        }
+    }
+
+    // const onSubmit = async (data: z.infer<typeof formSchema>) => {
+    //     if (mode && mode === 'create') {
+    //         try {
+    //             const res = await axios.post('/api/obb-sheet', data);
+    //             toast({
+    //                 title: `Successfully created new OBB sheet: ${res.data.data.style}`,
+    //                 variant: "success",
+    //             });
+    //             router.push(`/obb-sheets/${res.data.data.id}`);
+    //             router.refresh();
+    //         } catch (error: any) {
+    //             console.error("ERROR", error);
+    //             toast({
+    //                 title: error.response.data || "Something went wrong! Try again",
+    //                 variant: "error"
+    //             });
+    //         } finally {
+    //             await handleCreateActivityLog(`Created new OBB sheet for style ${data.style} by ${user?.email ?? "unknown"} (${user?.role})`);
+    //         }
+    //     } else {
+    //         try {
+    //             const res = await axios.put(`/api/obb-sheet/${obbSheetId}`, data);
+    //             toast({
+    //                 title: "Updated successfully",
+    //                 variant: "success",
+    //             });
+    //             router.refresh();
+    //         } catch (error: any) {
+    //             console.error("ERROR", error);
+    //             toast({
+    //                 title: error.response.data || "Something went wrong! Try again",
+    //                 variant: "error"
+    //             });
+    //         } finally {
+    //             await handleCreateActivityLog(`Updated the OBB style (${data.style}) by ${user?.email ?? "unknown"} (${user?.role})`);
+    //         }
+    //     }
+    // }
 
     return (
         <Dialog open={isOpen}>
