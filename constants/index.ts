@@ -375,9 +375,14 @@ export const SIDEBAR_ROUTES = [
                 href: "/analytics/machine-type",
                 icon: BarChart3
             },
+            // {
+            //     label: "Machine Summary",
+            //     href: "/analytics/machine-summary",
+            //     icon: TableProperties
+            // },
             {
                 label: "Machine Summary",
-                href: "/analytics/machine-summary",
+                href: "/analytics/machine-summary-new",
                 icon: TableProperties
             },
         ]
@@ -542,9 +547,14 @@ export const HEADER_INFO = [
                 href: "/analytics/roaming-qc",
                 icon: AlignHorizontalDistributeCenter
             },
+    // {
+    //     label: "Machine Summary",
+    //     href: "/analytics/machine-summary",
+    //     icon: TableProperties
+    // },
     {
         label: "Machine Summary",
-        href: "/analytics/machine-summary",
+        href: "/analytics/machine-summary-new",
         icon: TableProperties
     },
     {
