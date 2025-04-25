@@ -249,7 +249,9 @@ const CreateObbSheetForm = ({
                     variant: "error"
                 });
             } finally {
-                await handleCreateActivityLog(`Created new OBB sheet for style ${data.style} by ${user?.email ?? "unknown"} (${user?.role})`);
+                const selectedLine = lines.find(line => line.id === data.productionLineId);
+                const productionLineName = selectedLine?.name ?? "Unknown Line";
+                await handleCreateActivityLog(`Created new OBB sheet for style ${data.style} , ${productionLineName} by ${user?.email ?? "unknown"} (${user?.role})`);
             }
         } else {
             try {
