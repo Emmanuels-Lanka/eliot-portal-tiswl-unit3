@@ -229,5 +229,91 @@ export async function inspaetfetch(obbsheetid: string, date: string): Promise<an
       }}
 
 }
+export async function getDefectsNew(obbsheetid: string, date: string): Promise<any[]> {
+
+    {
+       
+      try {
+    
+       
+        const query = `
+       select count(*),"operatorName","obbOperationId" from "GmtDefect" g
+where "g"."timestamp" like $2 and
+"qcStatus" <> 'pass' and "obbSheetId" = $1
+
+group by "operatorName","obbOperationId"
+
+
+
+union
+
+select count(*),"operatorName","obbOperationId" from "ProductDefect" g
+where "g"."timestamp" like $2 and
+"qcStatus" <> 'pass' and "obbSheetId" = $1
+
+group by "operatorName","obbOperationId"
+
+order by count desc
+
+
+
+
+      
+        `;
+        const values = [obbsheetid,date+"%"];
+    
+        const result = await poolForRFID.query(query, values);
+    
+
+        const defectsWithOperation = [];
+        for (const defect of result.rows) {
+          let operationName = null;
+          let operationCode = null;
+          let machineId = null;
+    
+          if (defect.obbOperationId) {
+            const opQuery = `
+              SELECT 
+                o.name AS "operationName",
+                o.code AS "operationCode",
+                sm."machineId" AS "machineId"
+
+              FROM "ObbOperation" oo
+              INNER JOIN "Operation" o ON oo."operationId" = o.id
+              inner join "SewingMachine" sm on sm.id = oo."sewingMachineId"
+              WHERE oo.id = $1
+            `;
+            const opResult = await poolForPortal.query(opQuery, [defect.obbOperationId]);
+            if (opResult.rows.length > 0) {
+              operationName = opResult.rows[0].operationName;
+              operationCode = opResult.rows[0].operationCode;
+              machineId = opResult.rows[0].machineId;
+
+            }
+          }
+    
+          defectsWithOperation.push({
+            ...defect,
+            operationName,
+            operationCode,
+            machineId
+          });
+        }
+
+        
+        return defectsWithOperation;
+        // console.log("DATAaa: ", result.rows);
+        
+        
+        
+      } catch (error) {
+        console.error("[TEST_ERROR]", error);
+        throw error;
+      }
+      finally{
+      
+      }}
+
+}
 
 

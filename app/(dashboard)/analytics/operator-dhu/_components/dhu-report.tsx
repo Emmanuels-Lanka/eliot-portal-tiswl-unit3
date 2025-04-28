@@ -2,11 +2,12 @@
 
 import SelectObbSheetAndDate from "@/components/dashboard/common/select-obbsheet-and-date";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { getDailyData, getDefects, getDHUData, inspaetfetch } from "./actions";
+import { getDailyData, getDefects, getDefectsNew, getDHUData, inspaetfetch } from "./actions";
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
+import { getChecked } from "../../dhu-operator/_components/actions";
 
 
 interface AnalyticsChartProps {
@@ -77,7 +78,7 @@ const DhuReport = ({ obbSheets }: AnalyticsChartProps) => {
   const [data1, setData1] = useState<ReportData1[]>([]);
   const [data2, setData2] = useState<ReportData2[]>([]);
   const [data3, setData3] = useState<ReportData3[]>([]);
-  const [combined, setcombined] = useState<combinedData[]>([]);
+  const [combined, setcombined] = useState<any[]>([]);
   const [obbSheetId, setObbSheetId] = useState<string>("");
   const reportRef = useRef<any>(null);
 
@@ -95,51 +96,69 @@ const DhuReport = ({ obbSheets }: AnalyticsChartProps) => {
 
 
   const getDetails = async () => {
-    const details = await getDHUData(obbSheetId, date);
-    const details1 = await getDailyData(obbSheetId, date);
-    const details2 = await getDefects(obbSheetId, date);
-    const details3 = await inspaetfetch(obbSheetId, date);
 
 
-    setData(details);
-    setData1(details1);
-    setData2(details2);
-    setData3(details3);
-    console.log("details 3333333333333333", details3)
-    const combinedMap = new Map<string, combinedData>();
+    const defects= await getDefectsNew(obbSheetId, date)
+    console.log("def,",defects)
 
-    for (const detail of details) {
-      for (const detail1 of details1) {
-        for (const detail2 of details2) {
-          for (const detail3 of details3) {
-            if (detail.operatorid === detail1.operatorid && detail.operatorid === detail2.operatorid && detail3.inspectcount > 0) {
-              const key = detail.operatorid;
-              const existing = combinedMap.get(key);
+    const checked = await getChecked(date,obbSheetId)
 
-              if (existing) {
-                // If a record for this operator already exists, sum the defectcount as numbers
-                existing.defectcount += Number(detail2.defectcount);
-                // Add an instance number if needed
-
-              } else {
-                // Add new record to the map
-                combinedMap.set(key, {
-                  ...detail,
-                  ...detail1,
-                  ...detail2,
-                  ...detail3,
-                  defectcount: Number(detail2.defectcount),  // Ensure defectcount is treated as a number
-                  name: `${detail.name}`,    // Include seqNo in the name
-                });
-              }
-            }
-          }
-        }
+    console.log("count",checked.total)
+    const newMap = defects.map((d:any)=>{
+      return{
+        ...d,
+        dhu : Number((( d.count/ checked.total)*100).toFixed(3)),
+        totalCount: checked
       }
-    }
+    })
+
+
+    console.log("first",newMap)
+    // const details = await getDHUData(obbSheetId, date);
+    // const details1 = await getDailyData(obbSheetId, date);
+    // const details2 = await getDefects(obbSheetId, date);
+    // const details3 = await inspaetfetch(obbSheetId, date);
+
+
+    // setData(details);
+    // setData1(details1);
+    // setData2(details2);
+    // setData3(details3);
+    // console.log("details 3333333333333333", details3)
+    // const combinedMap = new Map<string, combinedData>();
+
+    // for (const detail of details) {
+    //   for (const detail1 of details1) {
+    //     for (const detail2 of details2) {
+    //       for (const detail3 of details3) {
+    //         if (detail.operatorid === detail1.operatorid && detail.operatorid === detail2.operatorid && detail3.inspectcount > 0) {
+    //           const key = detail.operatorid;
+    //           const existing = combinedMap.get(key);
+
+    //           if (existing) {
+    //             // If a record for this operator already exists, sum the defectcount as numbers
+    //             existing.defectcount += Number(detail2.defectcount);
+    //             // Add an instance number if needed
+
+    //           } else {
+    //             // Add new record to the map
+    //             combinedMap.set(key, {
+    //               ...detail,
+    //               ...detail1,
+    //               ...detail2,
+    //               ...detail3,
+    //               defectcount: Number(detail2.defectcount),  // Ensure defectcount is treated as a number
+    //               name: `${detail.name}`,    // Include seqNo in the name
+    //             });
+    //           }
+    //         }
+    //       }
+    //     }
+    //   }
+    // }
 
     // Convert Map back to array for rendering
-    setcombined(Array.from(combinedMap.values()));
+    setcombined(newMap);
   };
 
 
@@ -258,7 +277,7 @@ const DhuReport = ({ obbSheets }: AnalyticsChartProps) => {
               background-color: gray;
             }
             td {
-              text-align: left;
+              text-align: right;
             }
             .logo-div {
               text-align: center;
@@ -437,7 +456,7 @@ const DhuReport = ({ obbSheets }: AnalyticsChartProps) => {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Emp ID:</TableHead>
+              {/* <TableHead>Emp ID:</TableHead> */}
               <TableHead>Operator Name</TableHead>
               <TableHead>Operation Name</TableHead>
               <TableHead>Operated Machine</TableHead>
@@ -449,13 +468,14 @@ const DhuReport = ({ obbSheets }: AnalyticsChartProps) => {
           <TableBody>
             {combined.map((d, rid) => (
               <TableRow key={rid}>
-                <TableCell className="px-2 py-2">{d.employeeId}</TableCell>
-                <TableCell className="px-2 py-2">{d.name}</TableCell>
-                <TableCell className="px-2 py-2">{d.operationname}</TableCell>
-                <TableCell className="px-2 py-2">{d.machineid}</TableCell>
-                <TableCell className="px-2 py-2">{d.inspectcount}</TableCell>
-                <TableCell className="px-2 py-2">{d.defectcount}</TableCell>
-                <TableCell className="px-2 py-2">{d.count.toFixed(2)}</TableCell>
+                {/* <TableCell className="px-2 py-2">{d.employeeId}</TableCell> */}
+                <TableCell className="px-2 py-2 text-left">{d.operatorName}</TableCell>
+                <TableCell className="px-2 py-2 text-left">{d.operationName}</TableCell>
+                <TableCell className="px-2 py-2 text-left">{d.machineId}</TableCell>
+                <TableCell className="px-2 py-2 text-center">{d.totalCount.total}</TableCell>
+                <TableCell className="px-2 py-2 text-center">{d.count}</TableCell>
+                <TableCell className="px-2 py-2 text-center">{d.dhu}</TableCell>
+                {/* <TableCell className="px-2 py-2">{d.count.toFixed(2)}</TableCell> */}
                               
               </TableRow>
             ))}
