@@ -23,13 +23,36 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { handleDuplicateObb } from "../_actions/handle-duplicate-obb";
 
-const ActionCell = ({ row }: { row: any }) => {
+interface ActionCellProps {
+    row: any;
+    user?: {
+        email: string;
+        role: string;
+    };
+}
+
+const ActionCell = ({ row, user }: ActionCellProps) => {
+// const ActionCell = ({ row }: { row: any }) => {
     const { id } = row.original;
 
     const { toast } = useToast();
     const router = useRouter();
 
     const [isLoading, setIsLoading] = useState(false);
+
+    const handleCreateActivityLog = async (activity: string) => {
+        const payload = {
+            part: "OBB Sheet",
+            activity,
+        }
+        console.log("Created activity log: ", activity);
+        
+        try {
+            await axios.post('/api/activity-log', payload);
+        } catch (error: any) {
+            console.error("ACTIVITY_LOG_ERROR", error);
+        }
+    }
 
     const onDelete = async (obbSheetId: string) => {
         try {
@@ -40,6 +63,9 @@ const ActionCell = ({ row }: { row: any }) => {
                 title: "Successfully removed OBB sheet!",
                 variant: 'success',
             });
+            await handleCreateActivityLog(
+                `Deleted OBB sheet ${row.original.name} by ${user?.email ?? "unknown"} (${user?.role})`
+            );
         } catch (error: any) {
             console.error("ERROR", error);
             toast({
@@ -52,41 +78,52 @@ const ActionCell = ({ row }: { row: any }) => {
     }
 
     const handleStatus = async (obbSheetId: string) => {
-        if (row.original.isActive === true) {
-            try {
-                setIsLoading(true);
-                await axios.patch(`/api/obb-sheet/${obbSheetId}/deactive`);
-                router.refresh();
-                toast({
-                    title: `Successfully deactivated OBB operation!`,
-                    variant: "success",
-                });
-            } catch (error: any) {
-                console.error("STATUS_DEACTIVATE_ERROR", error);
-                toast({
-                    title: error.response.data || "Something went wrong! Try again",
-                    variant: "error"
-                });
-            }
-        } else {
-            try {
-                setIsLoading(true);
-                await axios.patch(`/api/obb-sheet/${obbSheetId}/active`);
-                router.refresh();
-                toast({
-                    title: `Successfully activated OBB operation!`,
-                    variant: "success",
-                });
-            } catch (error: any) {
-                console.error("STATUS_ACTIVATE_ERROR", error);
-                toast({
-                    title: error.response.data || "Something went wrong! Try again",
-                    variant: "error"
-                });
-            }
+      if (row.original.isActive === true) {
+        try {
+          setIsLoading(true);
+          await axios.patch(`/api/obb-sheet/${obbSheetId}/deactive`);
+          router.refresh();
+          toast({
+            title: `Successfully deactivated OBB operation!`,
+            variant: "success",
+          });
+          await handleCreateActivityLog(`Deactivated OBB sheet ${row.original.name} by ${user?.email ?? "unknown"} (${user?.role})`
+          );
+        } catch (error: any) {
+          console.error("STATUS_DEACTIVATE_ERROR", error);
+          toast({
+            title: error.response.data || "Something went wrong! Try again",
+            variant: "error",
+          });
         }
-        setIsLoading(false);
-    }
+      } else {
+        try {
+          setIsLoading(true);
+          await axios.patch(`/api/obb-sheet/${obbSheetId}/active`);
+          router.refresh();
+          toast({
+            title: `Successfully activated OBB operation!`,
+            variant: "success",
+          });
+          await handleCreateActivityLog(
+            `Activated OBB sheet ${row.original.name} by ${
+              user?.email ?? "unknown"
+            } (${user?.role})`
+          );
+        } catch (error: any) {
+          const action = row.original.isActive ? "Deactivate" : "Activate";
+          console.error("STATUS_ACTIVATE_ERROR", error);
+          toast({
+            title: error.response.data || "Something went wrong! Try again",
+            variant: "error",
+          });
+          await handleCreateActivityLog(`Failed to ${action.toLowerCase()} OBB sheet ${row.original.name} by ${user?.email ?? "unknown"} (${user?.role})`
+          );
+        } finally {
+          setIsLoading(false);
+        }
+      }
+    };
 
     const handleDuplicate = async (obbSheetId: string) => {
         // console.log("Duplicate:", obbSheet);
@@ -103,6 +140,9 @@ const ActionCell = ({ row }: { row: any }) => {
                     title: "Successfully duplicated OBB sheet!",
                     variant: "success",
                 });
+                await handleCreateActivityLog(
+                    `Duplicated OBB sheet ${row.original.name} by ${user?.email ?? "unknown"} (${user?.role})`
+                );
                 router.push(`/obb-sheets/${res.id}`);
             }
         } catch (error: any) {
