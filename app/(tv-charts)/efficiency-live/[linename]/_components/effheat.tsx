@@ -16,8 +16,8 @@ interface EffiencyHeatmapProps {
 
 const EffiencyHeatmap = ({
     xAxisLabel,
-    efficiencyLow = 70,
-    efficiencyHigh = 80,
+    efficiencyLow = 60,
+    efficiencyHigh = 70,
     heatmapData
 }: EffiencyHeatmapProps) => {
     const categories = heatmapData.categories || [];
@@ -52,32 +52,41 @@ const EffiencyHeatmap = ({
                 useFillColorAsStroke: true,
                 colorScale: {
                     ranges: [
-                        {
-                            from: -10,
-                            to: -0.9,
-                            name: 'No Data',
-                            color: '#f1f5f9'
-                        },
-                        {
-                            from: 0,
-                            to: efficiencyLow,
-                            name: 'Low(Below 70%)',
-                            color: '#ef4444'
-                        },
-                        {
-                            from: efficiencyLow,
-                            to: efficiencyHigh,
-                            name: 'Medium(70% - 80%)',
-                            color: '#fcd303'
-                        },
-                        {
-                            from: efficiencyHigh,
-                            to: 10000,
-                            name: 'High(above 80%)',
-                            color: '#16a34a'
-                        },
+                      { from: -10, to: -0.9, name: 'No Data', color: '#f1f5f9' },
+                      { from: 0, to: efficiencyLow, name: 'Low(Below 60%)', color: '#ef4444' },
+                      { from: efficiencyLow, to: efficiencyHigh, name: 'Medium(60% - 70%)', color: '#fcd303' },
+                      { from: efficiencyHigh, to: 10000, name: 'High(above 70%)', color: '#16a34a' },
                     ],
-                },
+                  }
+                  
+                // colorScale: {
+                //     ranges: [
+                //         {
+                //             from: -10,
+                //             to: -0.9,
+                //             name: 'No Data',
+                //             color: '#f1f5f9'
+                //         },
+                //         {
+                //             from: 0,
+                //             to: efficiencyLow,
+                //             name: 'Low(Below 60%)',
+                //             color: '#ef4444'
+                //         },
+                //         {
+                //             from: efficiencyLow,
+                //             to: efficiencyHigh,
+                //             name: 'Medium(60% - 70%)',
+                //             color: '#fcd303'
+                //         },
+                //         {
+                //             from: efficiencyHigh,
+                //             to: 10000,
+                //             name: 'High(above 70%)',
+                //             color: '#16a34a'
+                //         },
+                //     ],
+                // },
             },
         },
         dataLabels: {
