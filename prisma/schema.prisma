@@ -57,9 +57,9 @@ model Operator {
   createdAt                DateTime                   @default(now())
   updatedAt                DateTime                   @updatedAt
   isLoggedIn               Boolean                    @default(false)
-  obbOperationId           String?      
-  operationName            String?
   avgEfficiency            Float?
+  obbOperationId           String?
+  operationName            String?
   alertLogs                AlertLog[]
   OperatorEffectiveTime    OperatorEffectiveTime[]
   operatorNonEffectiveTime OperatorNonEffectiveTime[]
@@ -444,4 +444,22 @@ model ActivityLog {
   part      String
   activity  String
   timestamp DateTime @default(now())
+}
+
+model Rework {
+  id             String  @id
+  operatorRfid   String?
+  obbOperationId String?
+  category       String?
+  count          Int?
+  startTimestamp String?
+  endTimestamp   String?
+}
+
+model MachineType {
+  id          String         @id @default(uuid())
+  name        String
+  code        String         @unique
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
 }
