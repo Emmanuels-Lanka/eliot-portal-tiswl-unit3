@@ -36,6 +36,7 @@ export const AddMachineTypeDialog = () => {
       if (!response.ok) {
         throw new Error(await response.text());
       }
+      console.log(response);
 
       setOpen(false);
       setName("");
