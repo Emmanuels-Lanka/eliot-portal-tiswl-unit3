@@ -444,11 +444,27 @@ import {
 } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { PDFDownloadLink, Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer';
-import { ROIPDFDocument } from './roi-pdfDocument';
-import { PdfDownloadButton } from './pdfDownloadButton';
+// The following imports are likely causing the server-side issue
+// import { PDFDownloadLink, Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer'; // Remove or ensure dynamic import handles this
+// import { ROIPDFDocument } from './roi-pdfDocument'; // Remove or ensure dynamic import handles this
+// import { PdfDownloadButton } from './pdfDownloadButton'; // Remove this direct import
 
-// Type definitions
+import dynamic from 'next/dynamic'; // Import dynamic for client-side only components
+import { ROIPDFDocument } from './roi-pdfDocument';
+
+// Use dynamic import for PdfDownloadButton
+const PdfDownloadButton = dynamic(
+  () => import('./pdfDownloadButton').then(mod => mod.PdfDownloadButton),
+  { ssr: false } // Ensure this component is only loaded on the client
+);
+
+// Assuming ROIPDFDocument is also client-side dependent because it's used by PdfDownloadButton/react-pdf
+// You might need to dynamically import ROIPDFDocument if PdfDownloadButton doesn't handle it,
+// but usually dynamically importing the component that *uses* the client-only library is enough.
+// Let's assume dynamically importing PdfDownloadButton is sufficient for now.
+// If the error persists, you might need to check how ROIPDFDocument is structured and imported within PdfDownloadButton.
+
+// Type definitions (Keep as they are for static analysis)
 export type FormDataType = {
   currentDailyProduction: number;
   newDailyProduction: number;
@@ -473,7 +489,7 @@ export type FormDataType = {
   };
 };
 
-// Form validation schema
+// Form validation schema (Keep as is)
 const formSchema = z.object({
   sewingMachines: z.coerce.number().min(1, { message: "Required" }),
   smv: z.coerce.number().min(0.1, { message: "Required" }),
@@ -519,7 +535,7 @@ const CalculatorForm = () => {
       line,
     } = data;
 
-    // Calculations
+    // Calculations (Keep as is)
     const currentProduction = (sewingMachines * workHours * 60 * (currentOperEfficiency / 100)) / smv;
     const newProduction = (sewingMachines * workHours * 60 * (newOperEfficiency / 100)) / smv;
     const totDailyProduction = currentProduction * line;
@@ -552,10 +568,10 @@ const CalculatorForm = () => {
     <div className="container mx-auto px-4 py-8">
       <div className="bg-white rounded-lg shadow-md p-6">
         <h1 className="text-2xl font-bold text-center mb-6">Eliot ROI Calculator</h1>
-        
+
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            {/* Input Grid */}
+            {/* Input Grid (Keep as is) */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {/* Number of Lines */}
               <FormField
@@ -693,7 +709,7 @@ const CalculatorForm = () => {
               />
             </div>
 
-            {/* Submit Button */}
+            {/* Submit Button (Keep as is) */}
             <div className="flex justify-center">
               <Button type="submit" disabled={isSubmitting || !isValid}>
                 Calculate ROI
@@ -707,13 +723,15 @@ const CalculatorForm = () => {
           <div className="mt-8">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-semibold">ROI Calculation Results</h2>
+              {/* Use the dynamically imported PdfDownloadButton */}
               <PdfDownloadButton
                 document={<ROIPDFDocument data={resultData} />}
                 fileName="eliot-roi-report.pdf"
               />
-              
-              {/* <PDFDownloadLink 
-                document={<ROIPDF data={resultData} />} 
+
+              {/* If you were using PDFDownloadLink directly here, you'd need to ensure react-pdf/renderer is handled */}
+              {/* <PDFDownloadLink
+                document={<ROIPDF data={resultData} />}
                 fileName="eliot-roi-report.pdf"
                 className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
               >
@@ -721,6 +739,7 @@ const CalculatorForm = () => {
               </PDFDownloadLink> */}
             </div>
 
+            {/* Results Table (Keep as is) */}
             <div className="overflow-x-auto">
               <Table>
                 <TableHeader>

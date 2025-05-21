@@ -1,12 +1,16 @@
 import React from 'react'
 import dynamic from 'next/dynamic'
 import Image from 'next/image'
+import { Loader2 } from 'lucide-react'
 
 // Use dynamic import to handle potential client-side only components
 const CalculatorForm = dynamic(
   () => import('./_components/calculatorForm-compo').then(mod => mod.default),
   { 
-    loading: () => <div className="p-4 text-center">Loading calculator...</div>,
+    loading: () => 
+    <div className='loading-body-height w-full flex justify-center items-center'>
+          <Loader2 className="animate-spin w-8 h-8" />
+    </div>,
     ssr: false // Disable server-side rendering for this component
   }
 )
