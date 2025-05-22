@@ -243,6 +243,9 @@ const AddSewingMachineForm = ({
                 <FormItem>
                   <div className="flex items-center justify-between">
                     <FormLabel className="text-base">Machine Type</FormLabel>
+                      <div className="relative flex cursor-default select-none items-center rounded-sm px-0.5 py-0.5 text-sm ">
+                        <AddMachineTypeDialog />
+                      </div>
                   </div>
                   <Select
                     onValueChange={(value) => {
@@ -257,10 +260,6 @@ const AddSewingMachineForm = ({
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <div className="relative flex cursor-default select-none items-center rounded-sm px-0.5 py-0.5 text-sm ">
-                        <AddMachineTypeDialog />
-                      </div>
-                      <Separator className="mb-2 mt-0.5" />
                       {machineTypes.map((type) => (
                         <SelectItem key={type.code} value={type.code}>
                           {type.name} - {type.code}

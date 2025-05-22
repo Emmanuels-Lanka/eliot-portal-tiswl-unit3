@@ -63,9 +63,9 @@ export const AddMachineTypeDialog = () => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="ghost" size="sm" className="w-full justify-start">
+        <Button variant="ghost" size="sm" className="w-full justify-start text-sm text-slate-600 ">
           <PlusCircle className="mr-2 h-4 w-4" />
-          Add new machine type
+          Add new 
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
