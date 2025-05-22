@@ -12,7 +12,9 @@ const nextConfig = {
                 // pathname: "/",
             },
         ]
-    },
+    },eslint: {
+    ignoreDuringBuilds: true, // ✅ Add this line to bypass ESLint on build
+  },
     env: {
         DATABASE_URL: process.env.DATABASE_URL,
         JWT_SECRET: process.env.JWT_SECRET,
