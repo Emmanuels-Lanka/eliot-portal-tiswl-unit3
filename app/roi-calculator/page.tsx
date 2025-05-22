@@ -1,33 +1,20 @@
 import React from 'react'
-import dynamic from 'next/dynamic'
+// import CalculatorForm from './_components/calculatorForm-compo'
 import Image from 'next/image'
-import { Loader2 } from 'lucide-react'
 
-// Use dynamic import to handle potential client-side only components
-const CalculatorForm = dynamic(
-  () => import('./_components/calculatorForm-compo').then(mod => mod.default),
-  { 
-    loading: () => 
-    <div className='loading-body-height w-full flex justify-center items-center'>
-          <Loader2 className="animate-spin w-8 h-8" />
-    </div>,
-    ssr: false // Disable server-side rendering for this component
-  }
-)
-
-function RoiCalculatorPage() {
+const page = () => {
   return (
     <>
     <div>
-      <div className='mx-4 flex items-center justify-center gap-4'>
-        <Image src={"/eliot-logo.png"} alt='Eliot Logo' height={150} width={150} />
+    <div className='mx-4 flex items-center justify-center gap-4'>
+        <Image src={"/eliot-logo.png"} alt=' ' height={150} width={150} />
         <h1 className='text-[#0071c1] my-4 text-2xl'>Return of Investment Calculator</h1>
       </div>
       
-      <CalculatorForm/>
+      {/* <CalculatorForm/> */}
     </div>
     </>
   )
 }
 
-export default RoiCalculatorPage
+export default page

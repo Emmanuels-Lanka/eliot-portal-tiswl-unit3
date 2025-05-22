@@ -418,396 +418,377 @@
 
 // export default CalculatorForm
 
-"use client";
+// "use client";
 
-import React, { useState } from 'react';
-import * as z from "zod";
-import { useForm } from 'react-hook-form';
-import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableFooter,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-// The following imports are likely causing the server-side issue
-// import { PDFDownloadLink, Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer'; // Remove or ensure dynamic import handles this
-// import { ROIPDFDocument } from './roi-pdfDocument'; // Remove or ensure dynamic import handles this
-// import { PdfDownloadButton } from './pdfDownloadButton'; // Remove this direct import
+// import React, { useState } from 'react';
+// import * as z from "zod";
+// import { useForm } from 'react-hook-form';
+// import { zodResolver } from "@hookform/resolvers/zod";
+// import {
+//   Form,
+//   FormControl,
+//   FormField,
+//   FormItem,
+//   FormLabel,
+//   FormMessage,
+// } from "@/components/ui/form";
+// import {
+//   Table,
+//   TableBody,
+//   TableCaption,
+//   TableCell,
+//   TableFooter,
+//   TableHead,
+//   TableHeader,
+//   TableRow,
+// } from "@/components/ui/table";
+// import { Input } from "@/components/ui/input";
+// import { Button } from "@/components/ui/button";
+// import { PDFDownloadLink, Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer';
+// import { ROIPDFDocument } from './roi-pdfDocument';
+// import { PdfDownloadButton } from './pdfDownloadButton';
 
-import dynamic from 'next/dynamic'; // Import dynamic for client-side only components
-import { ROIPDFDocument } from './roi-pdfDocument';
+// // Type definitions
+// export type FormDataType = {
+//   currentDailyProduction: number;
+//   newDailyProduction: number;
+//   totDailyProduction: number;
+//   totNewDailyProduction: number;
+//   additionalGarmentPerDay: number;
+//   additionalGarmentPerMonth: number;
+//   additionalRevenuePerMonth: number;
+//   additionalCostPerMonth: number;
+//   additionalProfitPerMonth: number;
+//   additionalProfitPerYear: number;
+//   inputs: {
+//     sewingMachines: number;
+//     smv: number;
+//     line: number;
+//     workHours: number;
+//     workDays: number;
+//     currentOperEfficiency: number;
+//     newOperEfficiency: number;
+//     price: number;
+//     cost: number;
+//   };
+// };
 
-// Use dynamic import for PdfDownloadButton
-const PdfDownloadButton = dynamic(
-  () => import('./pdfDownloadButton').then(mod => mod.PdfDownloadButton),
-  { ssr: false } // Ensure this component is only loaded on the client
-);
-
-// Assuming ROIPDFDocument is also client-side dependent because it's used by PdfDownloadButton/react-pdf
-// You might need to dynamically import ROIPDFDocument if PdfDownloadButton doesn't handle it,
-// but usually dynamically importing the component that *uses* the client-only library is enough.
-// Let's assume dynamically importing PdfDownloadButton is sufficient for now.
-// If the error persists, you might need to check how ROIPDFDocument is structured and imported within PdfDownloadButton.
-
-// Type definitions (Keep as they are for static analysis)
-export type FormDataType = {
-  currentDailyProduction: number;
-  newDailyProduction: number;
-  totDailyProduction: number;
-  totNewDailyProduction: number;
-  additionalGarmentPerDay: number;
-  additionalGarmentPerMonth: number;
-  additionalRevenuePerMonth: number;
-  additionalCostPerMonth: number;
-  additionalProfitPerMonth: number;
-  additionalProfitPerYear: number;
-  inputs: {
-    sewingMachines: number;
-    smv: number;
-    line: number;
-    workHours: number;
-    workDays: number;
-    currentOperEfficiency: number;
-    newOperEfficiency: number;
-    price: number;
-    cost: number;
-  };
-};
-
-// Form validation schema (Keep as is)
-const formSchema = z.object({
-  sewingMachines: z.coerce.number().min(1, { message: "Required" }),
-  smv: z.coerce.number().min(0.1, { message: "Required" }),
-  line: z.coerce.number().min(1, { message: "Required" }),
-  workHours: z.coerce.number().min(1, { message: "Required" }).max(24),
-  workDays: z.coerce.number().min(1, { message: "Required" }).max(31),
-  currentOperEfficiency: z.coerce.number().min(0, { message: "Required" }).max(100),
-  newOperEfficiency: z.coerce.number().min(0, { message: "Required" }).max(100),
-  price: z.coerce.number().min(0.01, { message: "Required" }),
-  cost: z.coerce.number().min(0, { message: "Required" }),
-});
+// // Form validation schema
+// const formSchema = z.object({
+//   sewingMachines: z.coerce.number().min(1, { message: "Required" }),
+//   smv: z.coerce.number().min(0.1, { message: "Required" }),
+//   line: z.coerce.number().min(1, { message: "Required" }),
+//   workHours: z.coerce.number().min(1, { message: "Required" }).max(24),
+//   workDays: z.coerce.number().min(1, { message: "Required" }).max(31),
+//   currentOperEfficiency: z.coerce.number().min(0, { message: "Required" }).max(100),
+//   newOperEfficiency: z.coerce.number().min(0, { message: "Required" }).max(100),
+//   price: z.coerce.number().min(0.01, { message: "Required" }),
+//   cost: z.coerce.number().min(0, { message: "Required" }),
+// });
 
 
-const CalculatorForm = () => {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      sewingMachines: 43,
-      smv: 19,
-      line: 12,
-      workHours: 8,
-      workDays: 26,
-      currentOperEfficiency: 60,
-      newOperEfficiency: 85,
-      price: 7,
-      cost: 4,
-    },
-  });
+// const CalculatorForm = () => {
+//   const form = useForm<z.infer<typeof formSchema>>({
+//     resolver: zodResolver(formSchema),
+//     defaultValues: {
+//       sewingMachines: 43,
+//       smv: 19,
+//       line: 12,
+//       workHours: 8,
+//       workDays: 26,
+//       currentOperEfficiency: 60,
+//       newOperEfficiency: 85,
+//       price: 7,
+//       cost: 4,
+//     },
+//   });
 
-  const { isSubmitting, isValid } = form.formState;
-  const [resultData, setResultData] = useState<FormDataType | null>(null);
+//   const { isSubmitting, isValid } = form.formState;
+//   const [resultData, setResultData] = useState<FormDataType | null>(null);
 
-  const onSubmit = (data: z.infer<typeof formSchema>) => {
-    const {
-      sewingMachines,
-      smv,
-      workHours,
-      workDays,
-      currentOperEfficiency,
-      newOperEfficiency,
-      price,
-      cost,
-      line,
-    } = data;
+//   const onSubmit = (data: z.infer<typeof formSchema>) => {
+//     const {
+//       sewingMachines,
+//       smv,
+//       workHours,
+//       workDays,
+//       currentOperEfficiency,
+//       newOperEfficiency,
+//       price,
+//       cost,
+//       line,
+//     } = data;
 
-    // Calculations (Keep as is)
-    const currentProduction = (sewingMachines * workHours * 60 * (currentOperEfficiency / 100)) / smv;
-    const newProduction = (sewingMachines * workHours * 60 * (newOperEfficiency / 100)) / smv;
-    const totDailyProduction = currentProduction * line;
-    const totNewDailyProduction = newProduction * line;
-    const additionalGarmentPerDay = totNewDailyProduction - totDailyProduction;
-    const additionalGarmentPerMonth = additionalGarmentPerDay * workDays;
-    const additionalRevenuePerMonth = additionalGarmentPerMonth * price;
-    const additionalCostPerMonth = additionalGarmentPerMonth * cost;
-    const additionalProfitPerMonth = additionalRevenuePerMonth - additionalCostPerMonth;
-    const additionalProfitPerYear = additionalProfitPerMonth * 12;
+//     // Calculations
+//     const currentProduction = (sewingMachines * workHours * 60 * (currentOperEfficiency / 100)) / smv;
+//     const newProduction = (sewingMachines * workHours * 60 * (newOperEfficiency / 100)) / smv;
+//     const totDailyProduction = currentProduction * line;
+//     const totNewDailyProduction = newProduction * line;
+//     const additionalGarmentPerDay = totNewDailyProduction - totDailyProduction;
+//     const additionalGarmentPerMonth = additionalGarmentPerDay * workDays;
+//     const additionalRevenuePerMonth = additionalGarmentPerMonth * price;
+//     const additionalCostPerMonth = additionalGarmentPerMonth * cost;
+//     const additionalProfitPerMonth = additionalRevenuePerMonth - additionalCostPerMonth;
+//     const additionalProfitPerYear = additionalProfitPerMonth * 12;
 
-    const passData: FormDataType = {
-      currentDailyProduction: currentProduction,
-      newDailyProduction: newProduction,
-      totDailyProduction: totDailyProduction,
-      totNewDailyProduction: totNewDailyProduction,
-      additionalGarmentPerDay: additionalGarmentPerDay,
-      additionalGarmentPerMonth: additionalGarmentPerMonth,
-      additionalRevenuePerMonth: additionalRevenuePerMonth,
-      additionalCostPerMonth: additionalCostPerMonth,
-      additionalProfitPerMonth: additionalProfitPerMonth,
-      additionalProfitPerYear: additionalProfitPerYear,
-      inputs: data,
-    };
+//     const passData: FormDataType = {
+//       currentDailyProduction: currentProduction,
+//       newDailyProduction: newProduction,
+//       totDailyProduction: totDailyProduction,
+//       totNewDailyProduction: totNewDailyProduction,
+//       additionalGarmentPerDay: additionalGarmentPerDay,
+//       additionalGarmentPerMonth: additionalGarmentPerMonth,
+//       additionalRevenuePerMonth: additionalRevenuePerMonth,
+//       additionalCostPerMonth: additionalCostPerMonth,
+//       additionalProfitPerMonth: additionalProfitPerMonth,
+//       additionalProfitPerYear: additionalProfitPerYear,
+//       inputs: data,
+//     };
 
-    setResultData(passData);
-  };
+//     setResultData(passData);
+//   };
 
-  return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="bg-white rounded-lg shadow-md p-6">
-        <h1 className="text-2xl font-bold text-center mb-6">Eliot ROI Calculator</h1>
+//   return (
+//     <div className="container mx-auto px-4 py-8">
+//       <div className="bg-white rounded-lg shadow-md p-6">
+//         <h1 className="text-2xl font-bold text-center mb-6">Eliot ROI Calculator</h1>
+        
+//         <Form {...form}>
+//           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+//             {/* Input Grid */}
+//             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+//               {/* Number of Lines */}
+//               <FormField
+//                 control={form.control}
+//                 name="line"
+//                 render={({ field }) => (
+//                   <FormItem>
+//                     <FormLabel>Number of Lines</FormLabel>
+//                     <FormControl>
+//                       <Input type="number" {...field} />
+//                     </FormControl>
+//                     <FormMessage />
+//                   </FormItem>
+//                 )}
+//               />
 
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            {/* Input Grid (Keep as is) */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {/* Number of Lines */}
-              <FormField
-                control={form.control}
-                name="line"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Number of Lines</FormLabel>
-                    <FormControl>
-                      <Input type="number" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+//               {/* Sewing Machines */}
+//               <FormField
+//                 control={form.control}
+//                 name="sewingMachines"
+//                 render={({ field }) => (
+//                   <FormItem>
+//                     <FormLabel>Sewing Machines per Line</FormLabel>
+//                     <FormControl>
+//                       <Input type="number" {...field} />
+//                     </FormControl>
+//                     <FormMessage />
+//                   </FormItem>
+//                 )}
+//               />
 
-              {/* Sewing Machines */}
-              <FormField
-                control={form.control}
-                name="sewingMachines"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Sewing Machines per Line</FormLabel>
-                    <FormControl>
-                      <Input type="number" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+//               {/* SMV */}
+//               <FormField
+//                 control={form.control}
+//                 name="smv"
+//                 render={({ field }) => (
+//                   <FormItem>
+//                     <FormLabel>SMV per Garment (minutes)</FormLabel>
+//                     <FormControl>
+//                       <Input type="number" step="0.01" {...field} />
+//                     </FormControl>
+//                     <FormMessage />
+//                   </FormItem>
+//                 )}
+//               />
 
-              {/* SMV */}
-              <FormField
-                control={form.control}
-                name="smv"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>SMV per Garment (minutes)</FormLabel>
-                    <FormControl>
-                      <Input type="number" step="0.01" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+//               {/* Working Hours */}
+//               <FormField
+//                 control={form.control}
+//                 name="workHours"
+//                 render={({ field }) => (
+//                   <FormItem>
+//                     <FormLabel>Working Hours per Day</FormLabel>
+//                     <FormControl>
+//                       <Input type="number" {...field} />
+//                     </FormControl>
+//                     <FormMessage />
+//                   </FormItem>
+//                 )}
+//               />
 
-              {/* Working Hours */}
-              <FormField
-                control={form.control}
-                name="workHours"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Working Hours per Day</FormLabel>
-                    <FormControl>
-                      <Input type="number" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+//               {/* Working Days */}
+//               <FormField
+//                 control={form.control}
+//                 name="workDays"
+//                 render={({ field }) => (
+//                   <FormItem>
+//                     <FormLabel>Working Days per Month</FormLabel>
+//                     <FormControl>
+//                       <Input type="number" {...field} />
+//                     </FormControl>
+//                     <FormMessage />
+//                   </FormItem>
+//                 )}
+//               />
 
-              {/* Working Days */}
-              <FormField
-                control={form.control}
-                name="workDays"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Working Days per Month</FormLabel>
-                    <FormControl>
-                      <Input type="number" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+//               {/* Current Efficiency */}
+//               <FormField
+//                 control={form.control}
+//                 name="currentOperEfficiency"
+//                 render={({ field }) => (
+//                   <FormItem>
+//                     <FormLabel>Current Efficiency (%)</FormLabel>
+//                     <FormControl>
+//                       <Input type="number" {...field} />
+//                     </FormControl>
+//                     <FormMessage />
+//                   </FormItem>
+//                 )}
+//               />
 
-              {/* Current Efficiency */}
-              <FormField
-                control={form.control}
-                name="currentOperEfficiency"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Current Efficiency (%)</FormLabel>
-                    <FormControl>
-                      <Input type="number" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+//               {/* Target Efficiency */}
+//               <FormField
+//                 control={form.control}
+//                 name="newOperEfficiency"
+//                 render={({ field }) => (
+//                   <FormItem>
+//                     <FormLabel>Target Efficiency (%)</FormLabel>
+//                     <FormControl>
+//                       <Input type="number" {...field} />
+//                     </FormControl>
+//                     <FormMessage />
+//                   </FormItem>
+//                 )}
+//               />
 
-              {/* Target Efficiency */}
-              <FormField
-                control={form.control}
-                name="newOperEfficiency"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Target Efficiency (%)</FormLabel>
-                    <FormControl>
-                      <Input type="number" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+//               {/* Selling Price */}
+//               <FormField
+//                 control={form.control}
+//                 name="price"
+//                 render={({ field }) => (
+//                   <FormItem>
+//                     <FormLabel>Selling Price per Garment ($)</FormLabel>
+//                     <FormControl>
+//                       <Input type="number" step="0.01" {...field} />
+//                     </FormControl>
+//                     <FormMessage />
+//                   </FormItem>
+//                 )}
+//               />
 
-              {/* Selling Price */}
-              <FormField
-                control={form.control}
-                name="price"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Selling Price per Garment ($)</FormLabel>
-                    <FormControl>
-                      <Input type="number" step="0.01" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+//               {/* Cost */}
+//               <FormField
+//                 control={form.control}
+//                 name="cost"
+//                 render={({ field }) => (
+//                   <FormItem>
+//                     <FormLabel>Cost per Garment ($)</FormLabel>
+//                     <FormControl>
+//                       <Input type="number" step="0.01" {...field} />
+//                     </FormControl>
+//                     <FormMessage />
+//                   </FormItem>
+//                 )}
+//               />
+//             </div>
 
-              {/* Cost */}
-              <FormField
-                control={form.control}
-                name="cost"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Cost per Garment ($)</FormLabel>
-                    <FormControl>
-                      <Input type="number" step="0.01" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
+//             {/* Submit Button */}
+//             <div className="flex justify-center">
+//               <Button type="submit" disabled={isSubmitting || !isValid}>
+//                 Calculate ROI
+//               </Button>
+//             </div>
+//           </form>
+//         </Form>
 
-            {/* Submit Button (Keep as is) */}
-            <div className="flex justify-center">
-              <Button type="submit" disabled={isSubmitting || !isValid}>
-                Calculate ROI
-              </Button>
-            </div>
-          </form>
-        </Form>
+//         {/* Results Section */}
+//         {resultData && (
+//           <div className="mt-8">
+//             <div className="flex justify-between items-center mb-4">
+//               <h2 className="text-xl font-semibold">ROI Calculation Results</h2>
+//               <PdfDownloadButton
+//                 document={<ROIPDFDocument data={resultData} />}
+//                 fileName="eliot-roi-report.pdf"
+//               />
+              
+//               {/* <PDFDownloadLink 
+//                 document={<ROIPDF data={resultData} />} 
+//                 fileName="eliot-roi-report.pdf"
+//                 className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+//               >
+//                 {({ loading }) => (loading ? 'Generating PDF...' : 'Download PDF Report')}
+//               </PDFDownloadLink> */}
+//             </div>
 
-        {/* Results Section */}
-        {resultData && (
-          <div className="mt-8">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-semibold">ROI Calculation Results</h2>
-              {/* Use the dynamically imported PdfDownloadButton */}
-              <PdfDownloadButton
-                document={<ROIPDFDocument data={resultData} />}
-                fileName="eliot-roi-report.pdf"
-              />
+//             <div className="overflow-x-auto">
+//               <Table>
+//                 <TableHeader>
+//                   <TableRow>
+//                     <TableHead className="w-[30%]">Metric</TableHead>
+//                     <TableHead className="text-right">Value</TableHead>
+//                     <TableHead className="w-[50%] text-center">Description</TableHead>
+//                   </TableRow>
+//                 </TableHeader>
+//                 <TableBody>
+//                   <TableRow>
+//                     <TableCell>Current Daily Production (per line)</TableCell>
+//                     <TableCell className="text-right">{resultData.currentDailyProduction.toFixed(2)}</TableCell>
+//                     <TableCell className="text-center">Garments produced per line per day</TableCell>
+//                   </TableRow>
+//                   <TableRow>
+//                     <TableCell>New Daily Production (per line)</TableCell>
+//                     <TableCell className="text-right">{resultData.newDailyProduction.toFixed(2)}</TableCell>
+//                     <TableCell className="text-center">Garments produced per day after efficiency improvement </TableCell>
+//                   </TableRow>
+//                   <TableRow>
+//                     <TableCell>Total Current Daily Production</TableCell>
+//                     <TableCell className="text-right">{resultData.totDailyProduction.toFixed(2)}</TableCell>
+//                     <TableCell className="text-center">Total existing daily production for total number of lines</TableCell>
+//                   </TableRow>
+//                   <TableRow>
+//                     <TableCell>Total New Daily Production</TableCell>
+//                     <TableCell className="text-right">{resultData.totNewDailyProduction.toFixed(2)}</TableCell>
+//                     <TableCell className="text-center">Total daily production after efficiency improvement</TableCell>
+//                   </TableRow>
+//                   <TableRow>
+//                     <TableCell>Additional Garments per Day</TableCell>
+//                     <TableCell className="text-right">{resultData.additionalGarmentPerDay.toFixed(2)}</TableCell>
+//                     <TableCell className="text-center">Additional garments produced daily</TableCell>
+//                   </TableRow>
+//                   <TableRow>
+//                     <TableCell>Additional Garments per Month</TableCell>
+//                     <TableCell className="text-right">{resultData.additionalGarmentPerMonth.toFixed(2)}</TableCell>
+//                     <TableCell className="text-center">Additional garments produced per month</TableCell>
+//                   </TableRow>
+//                   <TableRow>
+//                     <TableCell>Additional Revenue per Month</TableCell>
+//                     <TableCell className="text-right">${resultData.additionalRevenuePerMonth.toFixed(2)}</TableCell>
+//                     <TableCell className="text-center">Extra revenue from efficiency improvement</TableCell>
+//                   </TableRow>
+//                   <TableRow>
+//                     <TableCell>Additional Cost per Month</TableCell>
+//                     <TableCell className="text-right">${resultData.additionalCostPerMonth.toFixed(2)}</TableCell>
+//                     <TableCell className="text-center">Extra cost incurred from production increase</TableCell>
+//                   </TableRow>
+//                   <TableRow>
+//                     <TableCell>Additional Profit per Month</TableCell>
+//                     <TableCell className="text-right">${resultData.additionalProfitPerMonth.toFixed(2)}</TableCell>
+//                     <TableCell className="text-center">Net profit gained per month</TableCell>
+//                   </TableRow>
+//                   <TableRow>
+//                     <TableCell>Additional Profit per Year</TableCell>
+//                     <TableCell className="text-right">${resultData.additionalProfitPerYear.toFixed(2)}</TableCell>
+//                     <TableCell className="text-center">Net profit gained per year from Eliot Deployment</TableCell>
+//                   </TableRow>
+//                 </TableBody>
+//               </Table>
+//             </div>
+//           </div>
+//         )}
+//       </div>
+//     </div>
+//   );
+// };
 
-              {/* If you were using PDFDownloadLink directly here, you'd need to ensure react-pdf/renderer is handled */}
-              {/* <PDFDownloadLink
-                document={<ROIPDF data={resultData} />}
-                fileName="eliot-roi-report.pdf"
-                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
-              >
-                {({ loading }) => (loading ? 'Generating PDF...' : 'Download PDF Report')}
-              </PDFDownloadLink> */}
-            </div>
-
-            {/* Results Table (Keep as is) */}
-            <div className="overflow-x-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="w-[30%]">Metric</TableHead>
-                    <TableHead className="text-right">Value</TableHead>
-                    <TableHead className="w-[50%] text-center">Description</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  <TableRow>
-                    <TableCell>Current Daily Production (per line)</TableCell>
-                    <TableCell className="text-right">{resultData.currentDailyProduction.toFixed(2)}</TableCell>
-                    <TableCell className="text-center">Garments produced per line per day</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>New Daily Production (per line)</TableCell>
-                    <TableCell className="text-right">{resultData.newDailyProduction.toFixed(2)}</TableCell>
-                    <TableCell className="text-center">Garments produced per day after efficiency improvement </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>Total Current Daily Production</TableCell>
-                    <TableCell className="text-right">{resultData.totDailyProduction.toFixed(2)}</TableCell>
-                    <TableCell className="text-center">Total existing daily production for total number of lines</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>Total New Daily Production</TableCell>
-                    <TableCell className="text-right">{resultData.totNewDailyProduction.toFixed(2)}</TableCell>
-                    <TableCell className="text-center">Total daily production after efficiency improvement</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>Additional Garments per Day</TableCell>
-                    <TableCell className="text-right">{resultData.additionalGarmentPerDay.toFixed(2)}</TableCell>
-                    <TableCell className="text-center">Additional garments produced daily</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>Additional Garments per Month</TableCell>
-                    <TableCell className="text-right">{resultData.additionalGarmentPerMonth.toFixed(2)}</TableCell>
-                    <TableCell className="text-center">Additional garments produced per month</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>Additional Revenue per Month</TableCell>
-                    <TableCell className="text-right">${resultData.additionalRevenuePerMonth.toFixed(2)}</TableCell>
-                    <TableCell className="text-center">Extra revenue from efficiency improvement</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>Additional Cost per Month</TableCell>
-                    <TableCell className="text-right">${resultData.additionalCostPerMonth.toFixed(2)}</TableCell>
-                    <TableCell className="text-center">Extra cost incurred from production increase</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>Additional Profit per Month</TableCell>
-                    <TableCell className="text-right">${resultData.additionalProfitPerMonth.toFixed(2)}</TableCell>
-                    <TableCell className="text-center">Net profit gained per month</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>Additional Profit per Year</TableCell>
-                    <TableCell className="text-right">${resultData.additionalProfitPerYear.toFixed(2)}</TableCell>
-                    <TableCell className="text-center">Net profit gained per year from Eliot Deployment</TableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
-            </div>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-};
-
-export default CalculatorForm;
+// export default CalculatorForm;
