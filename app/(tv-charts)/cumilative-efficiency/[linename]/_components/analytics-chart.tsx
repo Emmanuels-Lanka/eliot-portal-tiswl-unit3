@@ -305,6 +305,8 @@ const abbreviatePart = (part: string) => {
             
             // setHeatmapData(heatmapData);
             // setObbSheet(response.data.obbSheet);
+            // setObbSheet(response.data.obbSheet);
+            console.log("")
             const response : any = await fetchDirectProductionData(obbSheetId, date);
 
 
