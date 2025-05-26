@@ -98,20 +98,20 @@ const EffiencyHeatmap = ({
                     },
                     {
                         from: 0,
-                        to: efficiencyLow,
-                        name: 'Low(Below 70%)',
+                        to: heatmapData.low,
+                        name: `Low(Below ${heatmapData.low}%)`, 
                         color: '#ef4444'
                     },
                     {
-                        from: efficiencyLow,
-                        to: efficiencyHigh,
-                        name: 'Medium(70% - 80%)',
+                        from: heatmapData.low,
+                        to: heatmapData.high,
+                        name: `Medium(${heatmapData.low}% - ${heatmapData.high}%)`,
                         color: '#fcd303'
                     },
                     {
-                        from: efficiencyHigh,
+                        from: heatmapData.high,
                         to: 10000,
-                        name: 'High(above 80%)',
+                        name: `High(above ${heatmapData.high}%)`,
                         color: '#16a34a'
                     },
                 ],

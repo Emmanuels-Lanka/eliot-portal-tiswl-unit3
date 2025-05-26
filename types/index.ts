@@ -126,6 +126,8 @@ type OperationEfficiencyOutputTypes = {
     machines?: string[];
     eliot?:string[];
     part?: string[];
+    low?:number;
+    high?:number;
     
 };
 
