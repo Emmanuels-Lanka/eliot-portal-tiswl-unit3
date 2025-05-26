@@ -19,7 +19,12 @@ interface AnalyticsChartProps {
     }[] | null;
     title: string;
 }
-
+type ObbSheetEffType = {
+    name: string;
+    efficiencyLevel1: number;
+    efficiencyLevel2: number;
+    efficiencyLevel3: number;
+} | null;
 type ProductionDataForChartTypes = {
     id: string;
     operatorRfid: string;
@@ -70,7 +75,7 @@ const OperatorCumilative = ({
     const [heatmapData, setHeatmapData] = useState<OperationEfficiencyOutputTypes>();
     const [obbSheet, setObbSheet] = useState<ObbSheet | null>(null);
 
-    function processProductionData(productionData: ProductionDataForChartTypes[]): OperationEfficiencyOutputTypes {
+    function processProductionData(productionData: ProductionDataForChartTypes[],obbSheet:ObbSheetEffType): OperationEfficiencyOutputTypes {
            const hourGroups = ["8:00 AM - 9:00 AM", "9:00 AM - 10:00 AM", "10:00 AM - 11:00 AM", "11:00 AM - 12:00 PM", "12:00 PM - 1:00 PM", "1:00 PM - 2:00 PM", "2:00 PM - 3:00 PM", "3:00 PM - 4:00 PM", "4:00 PM - 5:00 PM", "5:00 PM - 6:00 PM", "6:00 PM - 7:00 PM"];
    
            const getHourGroup = (timestamp: string): string => {
@@ -202,6 +207,9 @@ const OperatorCumilative = ({
                categories,
                machines,
                eliot,
+             low:obbSheet?.efficiencyLevel1,
+            // mid:obbSheet?.efficiencyLevel2
+            high:obbSheet?.efficiencyLevel3
    
    
            };
@@ -220,7 +228,7 @@ const OperatorCumilative = ({
              const response : any = await fetchDirectProductionData(data.obbSheetId, formattedDate);
             
             
-                        const heatmapData  = processProductionData(response.data);
+                        const heatmapData  = processProductionData(response.data,response.obbSheet);
             console.log("HEATMAP:", heatmapData.data);
             console.log("CATEGORIES:", heatmapData.categories);
 

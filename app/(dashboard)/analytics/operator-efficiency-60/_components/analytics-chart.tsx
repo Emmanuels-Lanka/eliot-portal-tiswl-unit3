@@ -19,7 +19,12 @@ interface AnalyticsChartProps {
     }[] | null;
     title: string;
 }
-
+type ObbSheetEffType = {
+    name: string;
+    efficiencyLevel1: number;
+    efficiencyLevel2: number;
+    efficiencyLevel3: number;
+} | null;
 type ProductionDataForChartTypes = {
     id: string;
     operatorRfid: string;
@@ -67,7 +72,7 @@ const AnalyticsChart = ({
     const [heatmapData, setHeatmapData] = useState<OperationEfficiencyOutputTypes>();
     const [obbSheet, setObbSheet] = useState<ObbSheet | null>(null);
 
-    function processProductionData(productionData: ProductionDataForChartTypes[],state:boolean): OperationEfficiencyOutputTypes {
+    function processProductionData(productionData: ProductionDataForChartTypes[],state:boolean,obbSheet:ObbSheetEffType): OperationEfficiencyOutputTypes {
         const hourGroups = ["7:00 AM - 8:00 AM", "8:00 AM - 9:00 AM", "9:00 AM - 10:00 AM", "10:00 AM - 11:00 AM", "11:00 AM - 12:00 PM", "12:00 PM - 1:00 PM", "1:00 PM - 2:00 PM", "2:00 PM - 3:00 PM", "3:00 PM - 4:00 PM", "4:00 PM - 5:00 PM", "5:00 PM - 6:00 PM", "6:00 PM - 7:00 PM"];
 
         // const getHourGroup = (timestamp: string): string => {
@@ -138,7 +143,10 @@ const AnalyticsChart = ({
             data: resultData,
             categories,
             machines,
-            eliot
+            eliot,
+             low:obbSheet?.efficiencyLevel1,
+            // mid:obbSheet?.efficiencyLevel2
+            high:obbSheet?.efficiencyLevel3
         };
     }
 
@@ -147,7 +155,7 @@ const AnalyticsChart = ({
             data.date.setDate(data.date.getDate() + 1);
             const formattedDate = data.date.toISOString().split('T')[0];
 
-            let response 
+            let response :any
             let state = true
            
              response  = await fetchDirectProductionData(data.obbSheetId, formattedDate);
@@ -157,7 +165,7 @@ const AnalyticsChart = ({
                            response = await axios.get(`/api/efficiency/production?obbSheetId=${data.obbSheetId}&date=${formattedDate}`);
                         }
             
-                        const heatmapData = processProductionData(response.data,state);
+                        const heatmapData = processProductionData(response.data,state,response.obbSheet);
                         
                         setHeatmapData(heatmapData);
                         setObbSheet(response.data.obbSheet);

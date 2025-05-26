@@ -16,8 +16,8 @@ interface EffiencyHeatmapProps {
 
 const EffiencyHeatmap = ({
     xAxisLabel,
-    efficiencyLow = 60,
-    efficiencyHigh = 70,
+    efficiencyLow,
+    efficiencyHigh ,
     heatmapData
 }: EffiencyHeatmapProps) => {
     const categories = heatmapData.categories || [];
@@ -33,114 +33,144 @@ const EffiencyHeatmap = ({
     const height = totalCount < 50 ? '600%' : totalCount < 60 ? '700%' : '600%';
 
     const options = {
-        chart: {
-            type: 'heatmap' as const,
-        },
-        tooltip: {
-            custom: function({ series, seriesIndex, dataPointIndex, w }: { series: any, seriesIndex: any, dataPointIndex: any, w: any }) {
-                return `<div style="padding: 10px; color: #000;">
-                    <strong>Machine Id: </strong> ${heatmapData.machines && heatmapData.machines[dataPointIndex]} <br/>
-                    <strong>Sewing Id: </strong> ${heatmapData.eliot && heatmapData.eliot[dataPointIndex]} <br/>
+      chart: {
+        type: "heatmap" as const,
+      },
+      tooltip: {
+        custom: function ({
+          series,
+          seriesIndex,
+          dataPointIndex,
+          w,
+        }: {
+          series: any;
+          seriesIndex: any;
+          dataPointIndex: any;
+          w: any;
+        }) {
+          return `<div style="padding: 10px; color: #000;">
+                    <strong>Machine Id: </strong> ${
+                      heatmapData.machines &&
+                      heatmapData.machines[dataPointIndex]
+                    } <br/>
+                    <strong>Sewing Id: </strong> ${
+                      heatmapData.eliot && heatmapData.eliot[dataPointIndex]
+                    } <br/>
                 </div>`;
-            },
         },
-        plotOptions: {
-            heatmap: {
-                distributed: true,
-                enableShades: false,
-                radius: 50,
-                useFillColorAsStroke: true,
-                colorScale: {
-                    ranges: [
-                      { from: -10, to: -0.9, name: 'No Data', color: '#f1f5f9' },
-                      { from: 0, to: efficiencyLow, name: 'Low(Below 60%)', color: '#ef4444' },
-                      { from: efficiencyLow, to: efficiencyHigh, name: 'Medium(60% - 70%)', color: '#fcd303' },
-                      { from: efficiencyHigh, to: 10000, name: 'High(above 70%)', color: '#16a34a' },
-                    ],
-                  }
-                  
-                // colorScale: {
-                //     ranges: [
-                //         {
-                //             from: -10,
-                //             to: -0.9,
-                //             name: 'No Data',
-                //             color: '#f1f5f9'
-                //         },
-                //         {
-                //             from: 0,
-                //             to: efficiencyLow,
-                //             name: 'Low(Below 60%)',
-                //             color: '#ef4444'
-                //         },
-                //         {
-                //             from: efficiencyLow,
-                //             to: efficiencyHigh,
-                //             name: 'Medium(60% - 70%)',
-                //             color: '#fcd303'
-                //         },
-                //         {
-                //             from: efficiencyHigh,
-                //             to: 10000,
-                //             name: 'High(above 70%)',
-                //             color: '#16a34a'
-                //         },
-                //     ],
-                // },
-            },
+      },
+      plotOptions: {
+        heatmap: {
+          distributed: true,
+          enableShades: false,
+          radius: 50,
+          useFillColorAsStroke: true,
+          colorScale: {
+            ranges: [
+              { from: -10, to: -0.9, name: "No Data", color: "#f1f5f9" },
+              {
+                from: 0,
+                to: efficiencyLow,
+                name: `Low(Below ${efficiencyLow}%)`,
+                color: "#ef4444",
+              },
+              {
+                from: efficiencyLow,
+                to: efficiencyHigh,
+                name: `Medium(${efficiencyLow}% - ${efficiencyHigh}%)`,
+                color: "#fcd303",
+              },
+              {
+                from: efficiencyHigh,
+                to: 10000,
+                name: `High(above ${efficiencyHigh}%)`,
+                color: "#16a34a",
+              },
+            ],
+          },
+
+          // colorScale: {
+          //     ranges: [
+          //         {
+          //             from: -10,
+          //             to: -0.9,
+          //             name: 'No Data',
+          //             color: '#f1f5f9'
+          //         },
+          //         {
+          //             from: 0,
+          //             to: efficiencyLow,
+          //             name: 'Low(Below 60%)',
+          //             color: '#ef4444'
+          //         },
+          //         {
+          //             from: efficiencyLow,
+          //             to: efficiencyHigh,
+          //             name: 'Medium(60% - 70%)',
+          //             color: '#fcd303'
+          //         },
+          //         {
+          //             from: efficiencyHigh,
+          //             to: 10000,
+          //             name: 'High(above 70%)',
+          //             color: '#16a34a'
+          //         },
+          //     ],
+          // },
         },
-        dataLabels: {
-            enabled: true,
-            style: {
-                colors: ['#fff'],
-                fontSize: '10px',
-            }
+      },
+      dataLabels: {
+        enabled: true,
+        style: {
+          colors: ["#fff"],
+          fontSize: "10px",
         },
-        stroke: {
-            width: 0,
+      },
+      stroke: {
+        width: 0,
+      },
+      xaxis: {
+        title: {
+          text: xAxisLabel,
+          style: {
+            color: "#0070c0",
+            fontSize: "14px",
+            fontWeight: 600,
+            fontFamily: "Inter, sans-serif",
+          },
         },
-        xaxis: {
-            title: {
-                text: xAxisLabel,
-                style: {
-                    color: '#0070c0',
-                    fontSize: '14px',
-                    fontWeight: 600,
-                    fontFamily: 'Inter, sans-serif',
-                }
-            },
-            labels: {
-                style: {
-                    colors: '#0070c0',
-                    fontSize: '11px',
-                    fontFamily: 'Inter, sans-serif',
-                },
-                rotate: -90,
-                minHeight: 400,
-            },
-            categories: categories,
+        labels: {
+          style: {
+            colors: "#0070c0",
+            fontSize: "11px",
+            fontFamily: "Inter, sans-serif",
+          },
+          rotate: -90,
+          minHeight: 400,
         },
-        yaxis: {
-            tickHeight: 50,
-            title: {
-                text: "Time",
-                style: {
-                    color: '#0070c0',
-                    fontSize: '14px',
-                    fontWeight: 600,
-                    fontFamily: 'Inter, sans-serif',
-                }
-            },
-            labels: {
-                style: {
-                    colors: '#0070c0',
-                    fontSize: '12px',
-                    fontFamily: 'Inter, sans-serif',
-                    height: 50
-                },
-                offsetY: 10,
-            },
+        categories: categories,
+      },
+      yaxis: {
+        tickHeight: 50,
+        title: {
+          text: "Time",
+          style: {
+            color: "#0070c0",
+            fontSize: "14px",
+            fontWeight: 600,
+            fontFamily: "Inter, sans-serif",
+          },
         },
+        labels: {
+          style: {
+            colors: "#0070c0",
+            fontSize: "12px",
+            fontFamily: "Inter, sans-serif",
+            height: 50,
+          },
+          offsetY: 10,
+        },
+      },
     };
 
     return (

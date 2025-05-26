@@ -52,30 +52,25 @@ const EffiencyHeatmap = ({
                 useFillColorAsStroke: true,
                 colorScale: {
                     ranges: [
-                        {
-                            from: -10,
-                            to: -0.9,
-                            name: 'No Data',
-                            color: '#f1f5f9'
-                        },
-                        {
-                            from: 0,
-                            to: efficiencyLow,
-                            name: 'Low(Below 70%)',
-                            color: '#ef4444'
-                        },
-                        {
-                            from: efficiencyLow,
-                            to: efficiencyHigh,
-                            name: 'Medium(70% - 80%)',
-                            color: '#fcd303'
-                        },
-                        {
-                            from: efficiencyHigh,
-                            to: 10000,
-                            name: 'High(above 80%)',
-                            color: '#16a34a'
-                        },
+                        { from: -10, to: -0.9, name: "No Data", color: "#f1f5f9" },
+              {
+                from: 0,
+                to: efficiencyLow,
+                name: `Low(Below ${efficiencyLow}%)`,
+                color: "#ef4444",
+              },
+              {
+                from: efficiencyLow,
+                to: efficiencyHigh,
+                name: `Medium(${efficiencyLow}% - ${efficiencyHigh}%)`,
+                color: "#fcd303",
+              },
+              {
+                from: efficiencyHigh,
+                to: 10000,
+                name: `High(above ${efficiencyHigh}%)`,
+                color: "#16a34a",
+              },
                     ],
                 },
             },

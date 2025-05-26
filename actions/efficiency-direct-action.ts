@@ -42,7 +42,7 @@ export async function fetchDirectProductionData(obbSheetId: string, date: string
                         operation: { select: { name: true } },
                         sewingMachine: { select: { machineId: true } }
                     }
-                }
+                }                
             },
             orderBy: { createdAt: "desc" }
         });
