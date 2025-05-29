@@ -191,8 +191,8 @@ const BarChartGraphEfficiencyRate = ({ date, obbSheetId }: BarChartGraphProps) =
                
                     count: item.count,
                     target: item.target * hours,
-                    ratio: Math.min(parseFloat(((earnmins / hours)).toFixed(2)), 200),
-                    realratio: parseFloat(((earnmins / hours)).toFixed(2))
+                    ratio: Math.min(parseFloat(((earnmins / hours)).toFixed(1)), 200),
+                    realratio: parseFloat(((earnmins / hours)).toFixed(1))
                 // ratio: (item.count / (item.target * workingHrs)) * 100,
                 // ratio: parseFloat((item.count / (item.target * workingHrs)).toFixed(2))*100,
                 
@@ -238,36 +238,22 @@ const BarChartGraphEfficiencyRate = ({ date, obbSheetId }: BarChartGraphProps) =
        </div>
     
     
-        {/* <div className='mb-3 '>
-            <Button type="button" className='mr-3' onClick={saveAsPDF}>Save as PDF</Button>
-            <Button type="button" onClick={saveAsExcel}>Save as Excel</Button>
-        </div> */}
 
             {chartData.length > 0 ?
-                    // <div className='bg-slate-100 pt-5 -pl-8 rounded-lg border w-full mb-16 overflow-x-auto'>
 
-                <div className=' pt-5 -pl-8 rounded-lg border w-full '>
-                <Card className='pr-2 pt-1 pb-2 border rounded-xl w-11/12' >
-                {/* <h1 className='text-2xl font-semibold m-12'>  Overall Efficiency Data</h1> */}
-                    {/* <CardTitle className="text-center">
-                {" "}
-                Overall Efficiency Data
-              </CardTitle> */}
-                    <CardContent>
-                        {/* <ChartContainer config={chartConfig} className={`min-h-[300px] max-h-[600px] w-[${chartWidth.toString()}%]`}> */}
-                        <ChartContainer 
-                        ref={chartRef}
-                        config={chartConfig} className={`min-h-[800px] max-h-[1000px] `} style={{ width: chartWidth + "%", height: chartWidth + "%" }}>
 
+                  <div className="w-full flex justify-center px-2 sm:px-4">
+    <div className="w-full max-w-[1850px] bg-slate-50 rounded-lg border shadow-md">
+
+                 <Card className="bg-slate-50 w-full border-none shadow-none">
+                        <CardContent className="p-4">
+                          <div className="w-full" style={{ height: "600px" }}>
+                          <ChartContainer config={chartConfig} ref={chartRef} style={{ width: "100%", height: "100%" }}>
                             <BarChart
-                                accessibilityLayer
-                                data={chartData}
-                                margin={{
-                                    top: 0,
-                                    bottom: 300
-                                }}
-                                barGap={10}
-                                className="h-[300px] "
+                              data={chartData}
+                              margin={{ top: 60, bottom: 220 }}
+                              barCategoryGap={chartData.length > 20 ? "10%" : "20%"}
+                              barGap={2}
                             >
                                 <CartesianGrid vertical={false} />
                                 <YAxis
@@ -282,22 +268,23 @@ const BarChartGraphEfficiencyRate = ({ date, obbSheetId }: BarChartGraphProps) =
                                     tickLine={true}
                                     tickMargin={10}
                                     axisLine={true}
-                                    angle={90}
+                                    angle={-90}
                                     interval={0}
-                                    textAnchor='start'
+                                    textAnchor='end'
                                 />
                                 <ChartTooltip
                                     cursor={false}
                                     content={<ChartTooltipContent indicator="line" />}
                                 />
 
-                                <Bar dataKey="ratio" fill="orange" radius={5}>
+                                <Bar dataKey="ratio" fill="orange" radius={5} >
                                     <LabelList
                                     dataKey="realratio"
                                         position="top"
-                                        offset={12}
+                                        angle={-90}
+                                        offset={18}
                                         className="fill-foreground"
-                                        fontSize={12}
+                                        fontSize={10}
                                         formatter={(value: any) => `${value}%`}
                                     />
                                 </Bar>
@@ -311,19 +298,16 @@ const BarChartGraphEfficiencyRate = ({ date, obbSheetId }: BarChartGraphProps) =
                         </Bar> */}
                             </BarChart>
                         </ChartContainer>
+                </div>
                     </CardContent>
                 </Card>
+                </div>
                 </div>
                 : <div className="mt-12 w-full">
                     <p className="text-center text-slate-500">No Data Available.</p>
                 </div>
             }
-            <div className="flex justify-center gap-2 mt-5 ">
-
-                <Button onClick={() => setChartWidth((p) => p + 20)} className="rounded-full bg-gray-300"><FaPlus size={12} color="#007bff" /></Button>
-                <Button onClick={() => setChartWidth((p) => p - 20)} className="rounded-full bg-gray-300"> <FaMinus size={12} color="#007bff" /></Button>
-
-            </div>
+          
             
         </>
     )

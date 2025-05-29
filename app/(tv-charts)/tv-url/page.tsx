@@ -36,6 +36,14 @@ const page = () => {
       url: "https://portal.eliot.global/SvC",
       imageUrl: "/tv/svc.png",
     },
+    {
+      id: "5",
+      title: "Overall Operation Efficiency",
+      description:
+        "Shows, for each operation, how much of their production target they have achieved so far in the day.",
+      url: "https://portal.eliot.global/ovef",
+      imageUrl: "/tv/overall.png",
+    },
     
     // Add more cards as needed
   ];
