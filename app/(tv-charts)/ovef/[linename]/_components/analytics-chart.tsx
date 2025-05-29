@@ -8,8 +8,9 @@ import { ProductionData } from "@prisma/client";
 import { useToast } from "@/components/ui/use-toast";
 import SelectObbSheetAndDate  from "@/components/dashboard/common/select-obbsheet-and-date";
 import BarChartGraph from "./bar-chart-graph";
-import { getObbSheetID } from "./actions";
+// import { getObbSheetID } from "./actions";
 import LogoImporter from "@/components/dashboard/common/eliot-logo";
+import { getObbSheetID } from "@/app/(tv-charts)/SvC/[linename]/_components/actions";
 // import { getObbSheetID } from "@/components/tv-charts/achievement-rate-operation/actions";
 
 
@@ -47,11 +48,13 @@ const EfficiencyAnalyticsChart = ({ linename }: { linename: string }) => {
     // const[date,setDate]=useState<string>("")
     
      const [obbSheetId, setobbSheetId] = useState<string>("")
+     const [obbSheetName, setobbSheetName] = useState<string>("")
     const [date, setdate] = useState<string>("")
   
     const getObbSheetID1 = async () => {
       const obbSheetId1 = await getObbSheetID(linename);
-      setobbSheetId(obbSheetId1)
+      setobbSheetId(obbSheetId1.id)
+      setobbSheetName(obbSheetId1.name)
      
     }
     
@@ -103,7 +106,7 @@ const EfficiencyAnalyticsChart = ({ linename }: { linename: string }) => {
             <div className='flex justify-center items-center gap-3'>
 
         <LogoImporter/>
-        <h1 className='text-[#0071c1] my-4 text-3xl '>Dashboard - Overall Operation Efficiency - {linename}</h1>
+        <h1 className='text-[#0071c1] my-4 text-3xl '>Dashboard - Overall Operation Efficiency - {obbSheetName}</h1>
       </div>
                 {obbSheetId.length > 0 ?
                     <div className="my-8">

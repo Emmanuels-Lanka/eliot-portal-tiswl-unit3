@@ -1,0 +1,63 @@
+import TVLinkCards from "@/components/tvUrl/page";
+import Image from "next/image";
+import React from "react";
+
+const page = () => {
+  const tvLinks = [
+    {
+      id: "1",
+      title: "Operation Efficiency Heatmaps",
+      description:
+        "This component visualizes horly efficiency for each operation  ",
+      url: "https://portal.eliot.global/efficiency-live",
+      imageUrl: "/tv/efficiency.png",
+    },
+    {
+      id: "2",
+      title: "Operator Efficiency Heatmap",
+      description:
+        "This Chart visualizes  efficiency for each operator ",
+      url: "https://portal.eliot.global/oe60",
+      imageUrl: "/tv/operator.png",
+    },
+    {
+      id: "3",
+      title: "Production Heatmap",
+      description:
+        "This Heatmap shows hourly production of each operation.",
+      url: "https://portal.eliot.global/prod60",
+      imageUrl: "/tv/prod.png",
+    },
+    {
+      id: "4",
+      title: "SMV vs Cycle Time",
+      description:
+        "This Graph shows the difference between the SMV and the Actual Cycle Time.",
+      url: "https://portal.eliot.global/SvC",
+      imageUrl: "/tv/svc.png",
+    },
+    
+    // Add more cards as needed
+  ];
+  return (
+    <div className="max-w-7xl mx-auto py-8 px-4">
+        <div className="flex justify-center items-center mb-8">
+            <Image
+                                            src="/eliot-logo.png"
+                                            alt='logo'
+                                            width={200}
+                                            height={200}
+                                            className='py-0'
+                                        />
+                            
+                                
+      <h1 className="text-3xl text-[#0071c1] font-bold pt-8 mb-8">
+        Featured TV Links
+      </h1>
+        </div>
+      <TVLinkCards cards={tvLinks} />
+    </div>
+  );
+};
+
+export default page;
