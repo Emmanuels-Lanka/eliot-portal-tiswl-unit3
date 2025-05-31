@@ -36,16 +36,18 @@ const TVLinkCards = ({ cards }: TVLinkCardsProps) => {
   };
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 p-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 p-4 bg-gray-900">
       {cards.map((card, idx) => (
         <div
           key={card.id}
           ref={el => { cardRefs.current[idx] = el; }}
           tabIndex={0}
-          aria-label={card.title}
-          className={`relative bg-white rounded-2xl shadow-md overflow-hidden transition-all duration-300 
-            ${hoveredCard === card.id || focusedIndex === idx ? 'shadow-2xl border-blue-400 border-2 scale-[1.025]' : 'shadow-md'}
-            hover:cursor-pointer group focus:outline-none focus:ring-4 focus:ring-blue-300`}
+          aria-label={`Open ${card.title}`}
+          className={`relative bg-gray-800 rounded-2xl shadow-lg overflow-hidden transition-all duration-300 
+            ${hoveredCard === card.id || focusedIndex === idx ? 
+              'shadow-xl ring-4 ring-blue-500/50 scale-[1.03]' : 
+              'shadow-md hover:shadow-lg'}
+            hover:cursor-pointer group focus:outline-none focus:ring-4 focus:ring-blue-400/70`}
           onMouseEnter={() => setHoveredCard(card.id)}
           onMouseLeave={() => setHoveredCard(null)}
           onClick={() => window.open(card.url, '_blank')}
@@ -53,45 +55,53 @@ const TVLinkCards = ({ cards }: TVLinkCardsProps) => {
           onBlur={() => setFocusedIndex(-1)}
           onKeyDown={e => handleKeyDown(e, idx)}
         >
-          {/* Image with overlay on hover */}
-          <div className="relative h-48 overflow-hidden">
+          {/* Image with dark overlay */}
+          <div className="relative h-52 overflow-hidden">
             <Image
               src={card.imageUrl}
               alt={card.title}
               fill
-              className="object-cover transition-transform duration-500 group-hover:scale-110"
+              className="object-cover transition-transform duration-500 group-hover:scale-105"
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              priority={idx < 4} // Lazy load after first 4
             />
-            <div className={`absolute inset-0 bg-gradient-to-t from-black/40 to-transparent transition-all duration-300 
-              ${hoveredCard === card.id || focusedIndex === idx ? 'bg-opacity-40' : 'bg-opacity-20'}`} />
+            <div className={`absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent 
+              transition-all duration-500 ${hoveredCard === card.id || focusedIndex === idx ? 'opacity-90' : 'opacity-70'}`} />
           </div>
 
-          {/* Card content */}
-          <div className="p-6 bg-white/90 backdrop-blur-sm">
-            <div className="flex justify-between items-start">
-              <h3 className={`text-xl font-bold mb-2 line-clamp-2 transition-colors duration-300
-                ${hoveredCard === card.id || focusedIndex === idx ? 'text-blue-700' : 'text-gray-800'}`}>
+          {/* Card content - Dark mode optimized */}
+          <div className="p-5 bg-gray-800/90 backdrop-blur-sm border-t border-gray-700">
+            <div className="flex justify-between items-start gap-3">
+              <h3 className={`text-lg font-semibold mb-2 line-clamp-2 transition-colors
+                ${hoveredCard === card.id || focusedIndex === idx ? 'text-blue-400' : 'text-gray-100'}`}>
                 {card.title}
               </h3>
               <ArrowUpRight 
-                className={`text-gray-400 transition-all duration-300 
-                  ${hoveredCard === card.id || focusedIndex === idx ? 'text-blue-500 scale-125' : ''}`}
-                size={22}
+                className={`flex-shrink-0 transition-all duration-300 mt-1
+                  ${hoveredCard === card.id || focusedIndex === idx ? 
+                    'text-blue-400 scale-110' : 
+                    'text-gray-400'}`}
+                size={20}
               />
             </div>
-            <p className="text-gray-600 text-sm mb-4 line-clamp-3">
+            
+            <p className="text-gray-300 text-sm mb-4 line-clamp-3">
               {card.description}
             </p>
-            <div className="flex items-center">
-              <span className="text-xs text-blue-600 font-mono break-all">
-                {new URL(card.url).hostname.replace('www.', '') + new URL(card.url).pathname}
+            
+            <div className="flex items-center mt-auto">
+              <span className="text-xs text-blue-300 font-medium truncate">
+                {new URL(card.url).hostname.replace('www.', '')}
+                <span className="text-gray-400">{new URL(card.url).pathname}</span>
               </span>
             </div>
           </div>
 
-          {/* Hover/focus border effect */}
-          <div className={`absolute inset-0 border-2 border-transparent rounded-2xl transition-all duration-300 pointer-events-none
-            ${hoveredCard === card.id || focusedIndex === idx ? 'border-blue-400' : ''}`} />
+          {/* Glow effect on hover/focus */}
+          <div className={`absolute inset-0 rounded-2xl pointer-events-none 
+            transition-all duration-300
+            ${hoveredCard === card.id || focusedIndex === idx ? 
+              'shadow-[0_0_20px_rgba(59,130,246,0.4)]' : ''}`} />
         </div>
       ))}
     </div>

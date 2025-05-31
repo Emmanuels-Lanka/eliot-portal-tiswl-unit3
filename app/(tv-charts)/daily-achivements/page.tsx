@@ -7,13 +7,13 @@ const page = async () => {
         orderBy: { createdAt: "desc" },
     });
 
-    console.log(obbSheets)
+    // console.log(obbSheets)
             
     return (
         <div className='mx-auto max-w-4xl'>
           <div className='mt-24'>
-                <h1 className='text-center text-2xl font-medium text-sky-700 mb-6'>Select Obb Sheet for SMV vs Cycle Time</h1>
-                <SelectObbSheet obbSheets={obbSheets} route="/SvC" />
+                <h1 className='text-center text-2xl font-medium text-sky-700 mb-6'>Select Obb Sheet for Daily Target vs Actual Production</h1>
+                <SelectObbSheet obbSheets={obbSheets} route="/daily-achivements" />
             </div>
         </div>
     )

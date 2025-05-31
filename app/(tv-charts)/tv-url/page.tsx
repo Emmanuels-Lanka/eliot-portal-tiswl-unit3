@@ -48,7 +48,8 @@ const page = () => {
     // Add more cards as needed
   ];
   return (
-    <div className="max-w-7xl mx-auto py-8 px-4">
+    <div className="h-full w-full bg-gray-900 ">
+<div className="max-w-7xl mx-auto  " >
         <div className="flex justify-center items-center mb-8">
             <Image
                                             src="/eliot-logo.png"
@@ -63,7 +64,10 @@ const page = () => {
         Featured TV Links
       </h1>
         </div>
-      <TVLinkCards cards={tvLinks} />
+      <div className="min-h-screen bg-gray-900 text-white">
+  <TVLinkCards cards={tvLinks} />
+</div>
+    </div>
     </div>
   );
 };
