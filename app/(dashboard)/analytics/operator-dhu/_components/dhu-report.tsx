@@ -9,7 +9,6 @@ import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { getChecked } from "../../dhu-operator/_components/actions";
 
-
 interface AnalyticsChartProps {
   obbSheets: {
     id: string;
@@ -42,6 +41,7 @@ export type ReportData1 = {
   inspect: number;
   employeeId: string;
 };
+
 type combinedData = {
   count: number;
   id: string;
@@ -59,19 +59,19 @@ type combinedData = {
   seqNo: number;
   inspectcount: number;
   employeeId: string;
-
-
 }
+
 type ReportData2 = {
   defectcount: number;
   operatorid: string;
 }
+
 type ReportData3 = {
   inspectcount: number;
   operatorid: string;
 }
-const DhuReport = ({ obbSheets }: AnalyticsChartProps) => {
 
+const DhuReport = ({ obbSheets }: AnalyticsChartProps) => {
   const [date, setDate] = useState<string>("");
   const [dates, setDates] = useState<string>("");
   const [data, setData] = useState<ReportData[]>([]);
@@ -80,11 +80,11 @@ const DhuReport = ({ obbSheets }: AnalyticsChartProps) => {
   const [data3, setData3] = useState<ReportData3[]>([]);
   const [combined, setcombined] = useState<any[]>([]);
   const [obbSheetId, setObbSheetId] = useState<string>("");
+  const [isLoading, setIsLoading] = useState(false);
   const reportRef = useRef<any>(null);
 
-
   const handleFetchProductions = async (data: { obbSheetId: string; date: Date }) => {
-    console.log("date", data.date)
+    console.log("date", data.date);
     data.date.setDate(data.date.getDate() + 1);
     const formattedDate = data.date.toISOString().split('T')[0].toString() + "%";
     const fDate = data.date.toISOString().split('T')[0].toString();
@@ -93,153 +93,34 @@ const DhuReport = ({ obbSheets }: AnalyticsChartProps) => {
     setObbSheetId(data.obbSheetId);
   };
 
-
-
-  const getDetails = async () => {
-
-
-    const defects= await getDefectsNew(obbSheetId, date)
-    console.log("def,",defects)
-
-    const checked = await getChecked(date,obbSheetId)
-
-    console.log("count",checked.total)
-    const newMap = defects.map((d:any)=>{
-      return{
-        ...d,
-        dhu : Number((( d.count/ checked.total)*100).toFixed(3)),
-        totalCount: checked
-      }
-    })
-
-
-    console.log("first",newMap)
-    // const details = await getDHUData(obbSheetId, date);
-    // const details1 = await getDailyData(obbSheetId, date);
-    // const details2 = await getDefects(obbSheetId, date);
-    // const details3 = await inspaetfetch(obbSheetId, date);
-
-
-    // setData(details);
-    // setData1(details1);
-    // setData2(details2);
-    // setData3(details3);
-    // console.log("details 3333333333333333", details3)
-    // const combinedMap = new Map<string, combinedData>();
-
-    // for (const detail of details) {
-    //   for (const detail1 of details1) {
-    //     for (const detail2 of details2) {
-    //       for (const detail3 of details3) {
-    //         if (detail.operatorid === detail1.operatorid && detail.operatorid === detail2.operatorid && detail3.inspectcount > 0) {
-    //           const key = detail.operatorid;
-    //           const existing = combinedMap.get(key);
-
-    //           if (existing) {
-    //             // If a record for this operator already exists, sum the defectcount as numbers
-    //             existing.defectcount += Number(detail2.defectcount);
-    //             // Add an instance number if needed
-
-    //           } else {
-    //             // Add new record to the map
-    //             combinedMap.set(key, {
-    //               ...detail,
-    //               ...detail1,
-    //               ...detail2,
-    //               ...detail3,
-    //               defectcount: Number(detail2.defectcount),  // Ensure defectcount is treated as a number
-    //               name: `${detail.name}`,    // Include seqNo in the name
-    //             });
-    //           }
-    //         }
-    //       }
-    //     }
-    //   }
-    // }
-
-    // Convert Map back to array for rendering
+const getDetails = async () => {
+  setIsLoading(true);
+  try {
+    const defects = await getDefectsNew(obbSheetId, date);
+    const checked = await getChecked(date, obbSheetId);
+    const newMap = defects.map((d:any) => ({
+      ...d,
+      dhu: Number(((d.count/checked.total)*100).toFixed(3)),
+      totalCount: checked
+    }));
     setcombined(newMap);
-  };
-
-
-  // const getDetails = async () => {
-  //   const details = await getDHUData(obbSheetId, date);
-  //   const details1 = await getDailyData(obbSheetId, date);
-  //   const details2 = await getDefects(obbSheetId, date);
-
-  //   setData(details);
-  //   setData1(details1);
-  //   setData2(details2);
-
-  //   const combinedMap = new Map<string, combinedData>();
-  //   const nameCountMap = new Map<string, number>();  // Track how many times a name appears
-
-  //   for (const detail of details) {
-  //     for (const detail1 of details1) {
-  //       for (const detail2 of details2) {
-  //         if (detail.operatorid === detail1.operatorid && detail.operatorid === detail2.operatorid) {
-  //           const key = detail.operatorid;
-  //           const existing = combinedMap.get(key);
-
-  //           if (existing) {
-  //             // Combine defect counts
-  //             existing.defectcount += Number(detail2.defectcount);
-
-  //             // Get the current count for this operator name and increment it
-  //             let nameCount = nameCountMap.get(detail.name) || 1;
-  //             nameCountMap.set(detail.name, nameCount + 1);
-
-  //             // Append instance number if not already appended
-  //             if (nameCount === 2) {
-  //               existing.name = `${existing.name} 1&2`;
-  //             } else if (nameCount > 2) {
-  //               existing.name = `${existing.name.split(" ")[0]} 1&${nameCount}`;
-  //             }
-  //           } else {
-  //             // Initialize new record
-  //             combinedMap.set(key, {
-  //               ...detail,
-  //               ...detail1,
-  //               ...detail2,
-  //               defectcount: Number(detail2.defectcount),
-  //               name: detail.name,  // Just use the name, no seqNo
-  //             });
-
-  //             // Initialize count for this name
-  //             nameCountMap.set(detail.name, 1);
-  //           }
-  //         }
-  //       }
-  //     }
-  //   }
-
-  //   // Convert Map back to array for rendering
-  //   setcombined(Array.from(combinedMap.values()));
-  // };
-
-
-
-
-
-
-
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   useEffect(() => {
-    console.log("Combined Data:", combined); // Log combined data
+    console.log("Combined Data:", combined);
   }, [combined]);
-
 
   useEffect(() => {
     getDetails();
   }, [obbSheetId, date]);
 
-
   const handlePrint = () => {
     const baseUrl = window.location.origin;
     const printContent = reportRef.current?.innerHTML;
     let selectedDate = new Date(dates);
-
-    // Subtract one day from the selected date
     selectedDate.setDate(selectedDate.getDate());
     const formattedDate = selectedDate.toISOString().split('T')[0];
 
@@ -251,7 +132,6 @@ const DhuReport = ({ obbSheets }: AnalyticsChartProps) => {
             @media print {
               body { margin: 0; padding: 0; }
             }
-            
             body {
               font-family: Arial, sans-serif;
               margin: 0;
@@ -293,12 +173,10 @@ const DhuReport = ({ obbSheets }: AnalyticsChartProps) => {
               width: 120px;
               height: auto;
             }
-        
-            /* Existing styles here */
           </style>
         </head>
         <body>
-           <div class="logo-div">
+          <div class="logo-div">
             <img src="${baseUrl}/ha-meem.png" alt="Ha-Meem Logo" style="margin-top:10px;"/>
             <h5 style="margin-top:10px;">~ Bangladesh ~</h5>
           </div>
@@ -313,7 +191,7 @@ const DhuReport = ({ obbSheets }: AnalyticsChartProps) => {
             <h5>Line Name: ${data1[0]?.linename || ''}</h5>
           </div>
           ${printContent}
-             <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 50px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 50px;">
             <div>
               <p><a href="https://rfid-tracker.eliot.global/">https://rfid-tracker.eliot.global/</a></p>
             </div>
@@ -341,33 +219,31 @@ const DhuReport = ({ obbSheets }: AnalyticsChartProps) => {
       console.error("Failed to open print window");
     }
   };
-  
-    
+
   const handleDownloadPDF = async () => {
-    if (!reportRef.current || !data1.length) return;
-  
+    if (!reportRef.current || !combined.length) return;
+
     try {
       await new Promise(resolve => setTimeout(resolve, 2000));
-  
+
       const canvas = await html2canvas(reportRef.current, {
         scale: 1,
         logging: false,
         useCORS: true,
       } as any);
-  
+
       const imgWidth = 190; // Adjust for margins (A4 width is 210mm, minus 10mm margins on both sides)
       const imgHeight = (canvas.height * imgWidth) / canvas.width;
       const pdf = new jsPDF('p', 'mm', 'a4');
       const pageHeight = pdf.internal.pageSize.getHeight();
       
       let position = 0;
-  
-      // Split content into multiple pages if necessary
+
       while (position < canvas.height) {
         const canvasSlice = document.createElement('canvas');
         canvasSlice.width = canvas.width;
         canvasSlice.height = Math.min(canvas.height - position, (pageHeight * canvas.width) / imgWidth);
-  
+
         const ctx = canvasSlice.getContext('2d');
         if (ctx) {
           ctx.drawImage(
@@ -382,120 +258,107 @@ const DhuReport = ({ obbSheets }: AnalyticsChartProps) => {
             canvasSlice.height
           );
         }
-  
+
         const imgData = canvasSlice.toDataURL('image/png', 0.5);
         pdf.addImage(imgData, 'PNG', 10, 10, imgWidth, (canvasSlice.height * imgWidth) / canvas.width);
-  
+
         position += canvasSlice.height;
-  
+
         if (position < canvas.height) {
-          pdf.addPage(); // Add new page
+          pdf.addPage();
         }
       }
-  
-      const fileName = `Operator DHU Report_${data1[0]?.linename}_${dates}.pdf`;
+
+      const fileName = `Operator_DHU_Report_${data1[0]?.linename}_${dates}.pdf`;
       pdf.save(fileName);
     } catch (error) {
       console.error('Error generating PDF:', error);
     }
   };
 
-
-    return(
-   <>
-   <SelectObbSheetAndDate
+  return (
+    <>
+      <SelectObbSheetAndDate
         obbSheets={obbSheets}
         handleSubmit={handleFetchProductions}
       />
-       {data.length>0?(
- <Button className="mt-5" onClick={handleDownloadPDF}>Print</Button>
-      ):(
+      {combined.length > 0 ? (
+        <div className="mt-5">
+          <Button onClick={handleDownloadPDF}>Download</Button>
+        </div>
+      ) : (
         <></>
-      )
-    }
+      )}
 
+      {(obbSheetId && date) && (
+        <div ref={reportRef} className="container mt-5 mb-10 border">
+          <div className="text-center">
+            <img src="/ha-meem.png" alt="Ha-Meem Logo" className="mx-auto w-[120px] h-auto mt-[10px]" />
+            <h5 className="mt-[10px]">~ Bangladesh ~</h5>
+            <h1 className="text-center">Operator DHU Report</h1>
+            <hr className="my-4" />
+          </div>
 
+          <div className="flex justify-around mt-5 text-sm mb-5">
+            <div className="flex-1 mr-[10px] leading-[1.5]">
+              <h5 className="m-0 font-semibold">Factory Name: Apparel Gallery LTD</h5>
+              <h5 className="m-0 font-semibold">Unit: {data1[0]?.unitname}</h5>
+              <h5 className="font-semibold">Line Name: {data1[0]?.linename}</h5>
+            </div>
+            <div className="flex-1 justify-around ml-[10px] leading-[1.5]">
+              <h5 className="m-0 font-semibold">Style Name: {data1[0]?.style}</h5>
+              <h5 className="m-0 font-semibold">Date: {dates}</h5>
+            </div>
+          </div>
 
-
-      { (obbSheetId && date) &&
-      
-      <div ref={reportRef} className="container mt-5 mb-10">
-
-        <div className="text-center">
-    <img src="/ha-meem.png" alt="Ha-Meem Logo" className="mx-auto w-[120px] h-auto mt-[10px]" />
-    <h5 className="mt-[10px]">~ Bangladesh ~</h5>
-    <h1 className="text-center">Operator DHU Report</h1>
-    <hr className="my-4" />
-  </div>
-
-
-  {/* <h5>Date: ${formattedDate}</h5>
-            <h5>Unit: ${data1[0]?.unitname || ''}</h5>
-            <h5>Style Name: ${data1[0]?.style || ''}</h5>
-            <h5>Line Name: ${data1[0]?.linename || ''}</h5>
-          </div> */}
-
-  <div className="flex justify-around mt-5 text-sm mb-5">
-    <div className="flex-1 mr-[10px] leading-[1.5]">
-      <h5 className="m-0 font-semibold">Factory Name: Apparel Gallery LTD</h5>
-
-      <h5 className="m-0 font-semibold">Unit: {data1[0]?.unitname}</h5>
-
-      <h5 className="font-semibold">Line Name: {data1[0]?.linename}</h5>
-    </div>
-    <div className="flex-1 justify-around ml-[10px] leading-[1.5]">
-      {/* <h5 className="m-0 font-semibold">Buyer: {obbData[0]?.buyer}</h5> */}
-      <h5 className="m-0 font-semibold">Style Name: {data1[0]?.style}</h5>
-      <h5 className="m-0 font-semibold"> Date: {dates}</h5>
-    </div>
-  </div>
-
-
-
-
-        <Table>
-          <TableHeader>
-            <TableRow>
-              {/* <TableHead>Emp ID:</TableHead> */}
-              <TableHead>Operator Name</TableHead>
-              <TableHead>Operation Name</TableHead>
-              <TableHead>Operated Machine</TableHead>
-              <TableHead>No. Of Gmt inspect</TableHead>
-              <TableHead>No. Of defects</TableHead>
-              <TableHead>DHU</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {combined.map((d, rid) => (
-              <TableRow key={rid}>
-                {/* <TableCell className="px-2 py-2">{d.employeeId}</TableCell> */}
-                <TableCell className="px-2 py-2 text-left">{d.operatorName}</TableCell>
-                <TableCell className="px-2 py-2 text-left">{d.operationName}</TableCell>
-                <TableCell className="px-2 py-2 text-left">{d.machineId}</TableCell>
-                <TableCell className="px-2 py-2 text-center">{d.totalCount.total}</TableCell>
-                <TableCell className="px-2 py-2 text-center">{d.count}</TableCell>
-                <TableCell className="px-2 py-2 text-center">{d.dhu}</TableCell>
-                {/* <TableCell className="px-2 py-2">{d.count.toFixed(2)}</TableCell> */}
-                              
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Operator Name</TableHead>
+                <TableHead>Operation Name</TableHead>
+                <TableHead>Operated Machine</TableHead>
+                <TableHead>No. Of Gmt inspect</TableHead>
+                <TableHead>No. Of defects</TableHead>
+                <TableHead>DHU</TableHead>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-        <div className="flex justify-between items-center mt-12">
-  <div>
-    <p>
-      <a href="https://www.portal.eliot.global/" className="text-blue-500 hover:underline">
-        https://www.portal.eliot.global/
-      </a>
-    </p>
-  </div>
-  <div className="footer-logo">
-    <img src="/eliot-logo.png" alt="Company Footer Logo" className="w-[120px] h-auto" />
-  </div>
-</div>
-      </div>}
-   </>
-    )
+            </TableHeader>
+            <TableBody>
+             {isLoading ? (
+  <TableRow>
+    <TableCell colSpan={6} className="text-center py-4">
+      Loading data...
+    </TableCell>
+  </TableRow>
+) : (
+  combined.map((d, rid) => (
+    <TableRow key={rid}>
+                  <TableCell className="px-2 py-2 text-left">{d.operatorName}</TableCell>
+                  <TableCell className="px-2 py-2 text-left">{d.operationName}</TableCell>
+                  <TableCell className="px-2 py-2 text-left">{d.machineId}</TableCell>
+                  <TableCell className="px-2 py-2 text-center">{d.totalCount.total}</TableCell>
+                  <TableCell className="px-2 py-2 text-center">{d.count}</TableCell>
+                  <TableCell className="px-2 py-2 text-center">{d.dhu}</TableCell>
+       </TableRow>
+  ))
+)}
+            </TableBody>
+          </Table>
+          <div className="flex justify-between items-center mt-12">
+            <div>
+              <p>
+                <a href="https://www.portal.eliot.global/" className="text-blue-500 hover:underline">
+                  https://www.portal.eliot.global/
+                </a>
+              </p>
+            </div>
+            <div className="footer-logo">
+              <img src="/eliot-logo.png" alt="Company Footer Logo" className="w-[120px] h-auto" />
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );
 }
 
-export default DhuReport
+export default DhuReport;
