@@ -503,6 +503,11 @@ export const HEADER_INFO = [
     href: "/analytics/roaming-qc",
     icon: AlignHorizontalDistributeCenter,
   },
+  {
+    label: "Roaming QC Report",
+    href: "/reports/roaming-qc",
+    icon: AlignHorizontalDistributeCenter,
+  },
   // {
   //     label: "Machine Summary",
   //     href: "/analytics/machine-summary",

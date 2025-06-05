@@ -31,14 +31,13 @@ import { useRouter } from "next/navigation";
 import { useToast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button";
 
-
-import { Loader2 } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { Loader2 } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 import React, { useRef } from "react";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
-import * as XLSX from 'xlsx';
+import * as XLSX from "xlsx";
 
 const chartConfig = {
   target: {
@@ -73,61 +72,62 @@ const BarChartGraph = ({ date, obbSheetId }: BarChartGraphProps) => {
 
   const [chartData, setChartData] = useState<BarchartData[]>([]);
 
-  const[chartWidth,setChartWidth] = useState<number>(200)
+  const [chartWidth, setChartWidth] = useState<number>(200);
 
   const chartRef = useRef<HTMLDivElement>(null);
 
-  const[isSubmitting,setisSubmitting]=useState<boolean>(false)
+  const [isSubmitting, setisSubmitting] = useState<boolean>(false);
 
   /////
   const handleFetchProductions = async () => {
     try {
-      setisSubmitting(true)
+      setisSubmitting(true);
 
-      
       const prod = await getData(obbSheetId, date);
-console.log("first,",prod)
+      console.log("first,", prod);
       setProductionData(prod);
-      const seq=1;
+      const seq = 1;
       // const chartData1: BarchartData[] = prod.map((item) => ({
-        
+
       //   name: item.name,
       //   target: (item.target/60),// need to add the time until now
       //   count: item.count,
       // }));
 
       const chartData1: BarchartData[] = prod.map((item) => {
-        const now = new Date(); 
-        const currentHour = now.getHours(); 
-        const currentMinutes = now.getMinutes(); 
-        
-        const startHour = 8; 
-        const endHour = startHour+10; 
-        
-     
-        const elapsedHours = currentHour > startHour ? Math.min(currentHour - startHour, endHour - startHour) : 0;
-        
+        const now = new Date();
+        const currentHour = now.getHours();
+        const currentMinutes = now.getMinutes();
 
-        const elapsedMinutes = currentHour >= endHour 
-            ? (endHour - startHour) * 60 
-            : (elapsedHours * 60 + currentMinutes); 
-    
-        const targetPerMinute = Math.round(item.target / 60)  ; 
-        
-        const adjustedTarget = (targetPerMinute * elapsedMinutes);
-    
+        const startHour = 8;
+        const endHour = startHour + 10;
+
+        const elapsedHours =
+          currentHour > startHour
+            ? Math.min(currentHour - startHour, endHour - startHour)
+            : 0;
+
+        const elapsedMinutes =
+          currentHour >= endHour
+            ? (endHour - startHour) * 60
+            : elapsedHours * 60 + currentMinutes;
+
+        const targetPerMinute = Math.round(item.target / 60);
+
+        const adjustedTarget = targetPerMinute * elapsedMinutes;
+
         return {
-            name: item.name+"- ("+item.machine+" )",
-            target: Math.min(adjustedTarget,3000), // Use the calculated target
-            count: Math.min(item.count, 3000),
+          name: item.name + "- (" + item.machine + " )",
+          target: Math.min(adjustedTarget, 3000), // Use the calculated target
+          count: Math.min(item.count, 3000),
 
-            // name: item.name,
-            // target: Math.min(item.target*10, 4000),
-            // count: Math.min(item.count, 4000),   
-            originalTarget: adjustedTarget,         
-            originalCount: item.count   
+          // name: item.name,
+          // target: Math.min(item.target*10, 4000),
+          // count: Math.min(item.count, 4000),
+          originalTarget: adjustedTarget,
+          originalCount: item.count,
         };
-    });
+      });
       setChartData(chartData1);
 
       router.refresh();
@@ -139,12 +139,11 @@ console.log("first,",prod)
         description: (
           <div className="mt-2 bg-slate-200 py-2 px-3 md:w-[336px] rounded-md">
             <code className="text-slate-800">ERROR: {error.message}</code>
-
           </div>
         ),
       });
     }
-    setisSubmitting(false)
+    setisSubmitting(false);
   };
   ///
 
@@ -153,93 +152,91 @@ console.log("first,",prod)
       handleFetchProductions();
     }
     const intervalId = setInterval(() => {
-
       handleFetchProductions();
-
     }, 60000);
 
     return () => {
       clearInterval(intervalId);
     };
-
-
-
-
   }, [date, obbSheetId]);
 
-
   useEffect(() => {
-    const chartWidths = Math.min(250, 100 + (chartData.length * 2));
+    const chartWidths = Math.min(250, 100 + chartData.length * 2);
     setChartWidth(chartWidths);
-  }, [chartData]); 
+  }, [chartData]);
 
   const saveAsPDF = async () => {
     if (chartRef.current) {
       const canvas = await html2canvas(chartRef.current);
-      const imgData = canvas.toDataURL('image/png');
+      const imgData = canvas.toDataURL("image/png");
       const pdf = new jsPDF({
-        orientation: 'landscape',
-        unit: 'px',
+        orientation: "landscape",
+        unit: "px",
         format: [canvas.width, canvas.height + 150],
       });
-  
+
       const baseUrl = window.location.origin;
       const logoUrl = `${baseUrl}/logo.png`;
-  
+
       const logo = new Image();
       logo.src = logoUrl;
       logo.onload = () => {
         const logoWidth = 110;
         const logoHeight = 50;
-        const logoX = (canvas.width / 2) - (logoWidth + 250); // Adjust to place the logo before the text
+        const logoX = canvas.width / 2 - (logoWidth + 250); // Adjust to place the logo before the text
         const logoY = 50;
-  
+
         // Add the logo to the PDF
-        pdf.addImage(logo, 'PNG', logoX, logoY, logoWidth, logoHeight);
-  
+        pdf.addImage(logo, "PNG", logoX, logoY, logoWidth, logoHeight);
+
         // Set text color to blue
-        pdf.setTextColor(0, 113 ,193); // RGB for blue
-  
+        pdf.setTextColor(0, 113, 193); // RGB for blue
+
         // Set larger font size and align text with the logo
         pdf.setFontSize(30);
-        pdf.text('Dashboard - Target vs Actual (Instance) ', logoX + logoWidth + 10, 83, { align: 'left' });
-  
+        pdf.text(
+          "Dashboard - Target vs Actual (Instance) ",
+          logoX + logoWidth + 10,
+          83,
+          { align: "left" }
+        );
+
         // Add the chart image to the PDF
-        pdf.addImage(imgData, 'PNG', 0, 150, canvas.width, canvas.height);
-  
+        pdf.addImage(imgData, "PNG", 0, 150, canvas.width, canvas.height);
+
         // Save the PDF
-        pdf.save('chart.pdf');
-      };
-    }
+        pdf.save("chart.pdf");
+      };
+    }
   };
 
-
-//create Excel sheet
-const saveAsExcel = () => {
+  //create Excel sheet
+  const saveAsExcel = () => {
     const worksheet = XLSX.utils.json_to_sheet(chartData);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Chart Data");
     XLSX.writeFile(workbook, `chart-data.xlsx`);
-};
-  
+  };
 
   return (
     <>
+      <div className="flex justify-center ">
+        <Loader2
+          className={cn("animate-spin w-7 h-7 hidden", isSubmitting && "flex")}
+        />
+      </div>
 
-<div className="flex justify-center ">
-        <Loader2 className={cn("animate-spin w-7 h-7 hidden", isSubmitting && "flex")} />
-       </div>
-    
-    
-        {/* <div className='mb-3'>
+      {/* <div className='mb-3'>
             <Button type="button" className='mr-3' onClick={saveAsPDF}>Save as PDF</Button>
             <Button type="button" onClick={saveAsExcel}>Save as Excel</Button>
         </div> */}
- <div className=' pt-5 -pl-8 rounded-lg border w-full h-[450px] mb-16 overflow-scroll'>
- 
-      {chartData.length > 0 ? (
-        <Card className="pr-2 pt-6  border rounded-xl  w-auto" style={{width:(chartWidth)+"%"}}>  
-          {/* <div className="px-8">
+      <div className=" pt-5 -pl-8 rounded-lg w-full h-[850px] mb-16 overflow-scroll">
+        {chartData.length > 0 ? (
+          <Card
+            className=" pr-2 pt-6  border rounded-xl  w-auto"
+            style={{ width: chartWidth + "%" }}
+          >
+            {/* <div className="px-8">
             <CardHeader>
               <CardTitle className="text-center">
                 {" "}
@@ -247,103 +244,103 @@ const saveAsExcel = () => {
               </CardTitle>
             </CardHeader>
           </div> */}
-          <CardContent>
-            <ChartContainer
-            ref={chartRef}
-            config={chartConfig}
-            className="  max-h-screen min-h-[300px] w-full " 
-              style={{width:chartWidth+"%"}} 
-            >
-              <BarChart
-                accessibilityLayer
-                data={chartData}
-                margin={{
-                  top: 20,
-                  bottom: 250,
-                }}
-
+            <CardContent>
+              <ChartContainer
+                ref={chartRef}
+                config={chartConfig}
+                className="  max-h-screen min-h-[300px] w-full "
+                style={{ width: chartWidth + "%" }}
               >
-                <CartesianGrid vertical={false} />
-                <YAxis
-                  dataKey="target"
-                  type="number"
-                  tickLine={true}
-                  tickMargin={10}
-                  axisLine={true}
-                  domain={[0, 3000]}
-                />
-                <XAxis
-                  dataKey="name"
-                  tickLine={true}
-                  tickMargin={15}
-                  axisLine={true}
-                  angle={90}
-                  fontSize={10}
-                  interval={0}
-                  textAnchor="start"
-                  
-
-
-                />
-                <ChartTooltip
-                  cursor={false}
-                  content={<ChartTooltipContent indicator="line" />}
-                />
-                <ChartLegend
-                  verticalAlign="top"
-                  content={<ChartLegendContent />}
-                  className="mt-2 text-sm"
-                />
-                <Bar dataKey="target" fill="var(--color-actual)" radius={5}>
-                  <LabelList
-                   dataKey="originalTarget"
-                    position="top"
-                    offset={7} // Increase the offset value
-                    className="fill-foreground"
-                    fontSize={9}
+                <BarChart
+                  accessibilityLayer
+                  data={chartData}
+                  margin={{
+                    top: 20,
+                    bottom: 250,
+                  }}
+                >
+                  <CartesianGrid vertical={false} />
+                  <YAxis
+                    dataKey="target"
+                    type="number"
+                    tickLine={true}
+                    tickMargin={10}
+                    axisLine={true}
+                    domain={[0, 3000]}
                   />
-                </Bar>
-                <Bar dataKey="count" fill="orange" radius={5}>
-                  <LabelList
-                    position="top"
-                    offset={20} // Increase the offset value
-                    className="fill-foreground"
-                    fontSize={9}
-                    
+                  <XAxis
+                    dataKey="name"
+                    tickLine={true}
+                    tickMargin={15}
+                    axisLine={true}
+                    angle={90}
+                    fontSize={10}
+                    interval={0}
+                    textAnchor="start"
                   />
-                </Bar>
-              </BarChart>
-            </ChartContainer>
-          </CardContent>
-        </Card>
-      ) : (
-        <div className="mt-12 w-full">
-          <p className="text-center text-slate-500">No Data Available...</p>
-        </div>
-      )
-      }
-</div>
-       {chartData.length > 0 && (
-      <div className="flex flex-col items-center mt-5">
-        <div className="flex gap-2">
-          <Button onClick={() => setChartWidth((p) => p + 20)} className="rounded-full bg-gray-300">
-            +
-          </Button>
-          <Button onClick={() => setChartWidth((p) => p - 20)} className="rounded-full bg-gray-300">
-            -
-          </Button>
-        </div>
-
-        <div className="flex gap-3 mt-3">
-          <Button type="button" className="mr-3" onClick={saveAsPDF}>
-            Save as PDF
-          </Button>
-          <Button type="button" onClick={saveAsExcel}>
-            Save as Excel
-          </Button>
-        </div>
+                  <ChartTooltip
+                    cursor={false}
+                    content={<ChartTooltipContent indicator="line" />}
+                  />
+                  <ChartLegend
+                    verticalAlign="top"
+                    content={<ChartLegendContent />}
+                    className="mt-2 text-sm"
+                  />
+                  <Bar dataKey="target" fill="var(--color-actual)" radius={5}>
+                    <LabelList
+                      dataKey="originalTarget"
+                      position="top"
+                      offset={7} // Increase the offset value
+                      className="fill-foreground"
+                      fontSize={9}
+                    />
+                  </Bar>
+                  <Bar dataKey="count" fill="orange" radius={5}>
+                    <LabelList
+                      position="top"
+                      offset={20} // Increase the offset value
+                      className="fill-foreground"
+                      fontSize={9}
+                    />
+                  </Bar>
+                </BarChart>
+              </ChartContainer>
+            </CardContent>
+          </Card>
+        ) : (
+          <div className="mt-12 w-full">
+            <p className="text-center text-slate-500">No Data Available...</p>
+          </div>
+        )}
       </div>
-    )}
+      {chartData.length > 0 && (
+        <div className="flex flex-col items-center mt-5">
+          <div className="flex gap-2">
+            <Button
+              onClick={() => setChartWidth((p) => p + 20)}
+              className="rounded-full bg-gray-300"
+            >
+              +
+            </Button>
+            <Button
+              onClick={() => setChartWidth((p) => p - 20)}
+              className="rounded-full bg-gray-300"
+            >
+              -
+            </Button>
+          </div>
+
+          <div className="flex gap-3 mt-3">
+            <Button type="button" className="mr-3" onClick={saveAsPDF}>
+              Save as PDF
+            </Button>
+            <Button type="button" onClick={saveAsExcel}>
+              Save as Excel
+            </Button>
+          </div>
+        </div>
+      )}
 
       {/* {<div className="flex justify-center gap-2 mt-5 2xl:hidden block">
 

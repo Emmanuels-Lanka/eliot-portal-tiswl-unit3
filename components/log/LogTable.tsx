@@ -1,31 +1,16 @@
 "use client";
-import React, { useEffect, useState } from 'react';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
-import { getData } from './action';
-import SelectObbSheetAndDate from '../dashboard/common/select-obbsheet-and-date';
-import TableComponent from './TableComponent';
+import React, { useEffect, useState } from "react";
+import { getData } from "./action";
+import SelectObbSheetAndDate from "../dashboard/common/select-obbsheet-and-date";
+import TableComponent from "./TableComponent";
 
 interface AnalyticsChartProps {
-  obbSheets: {
-    id: string;
-    name: string;
-  }[] | null;
+  obbSheets:
+    | {
+        id: string;
+        name: string;
+      }[]
+    | null;
 }
 
 export type ProductionDataType = {
@@ -40,79 +25,64 @@ export type ProductionDataType = {
   totprod: number;
   LoginTimestamp: string;
   LogoutTimestamp: string;
-
 };
 
-const LogTable = ({
-  obbSheets,
-}: AnalyticsChartProps) => {
+const LogTable = ({ obbSheets }: AnalyticsChartProps) => {
   const [date, setDate] = useState<string>("");
   const [obbSheetId, setObbSheetId] = useState<string>("");
-
   const [data, setData] = useState<ProductionDataType[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
-
-  
-
-  const handleFetchProductions = async (data: { obbSheetId: string; date: Date }) => {
-
-
+  const handleFetchProductions = async (data: {
+    obbSheetId: string;
+    date: Date;
+  }) => {
     data.date.setDate(data.date.getDate() + 1);
-    const formattedDate = data.date.toISOString().split('T')[0].toString() + "%";
-
+    const formattedDate =
+      data.date.toISOString().split("T")[0].toString() + "%";
 
     setObbSheetId(data.obbSheetId);
     setDate(formattedDate);
-
-
-    console.log("obb", obbSheetId);
-
-
   };
 
   const getDetails = async () => {
-
-    const details = await getData(obbSheetId, date);
-    console.log("details", details);
-    setData(details)
-
+    try {
+      setIsLoading(true);
+      const details = await getData(obbSheetId, date);
+      setData(details);
+      setIsLoading(false);
+    } catch (error) {
+      console.error("Error fetching production data:", error);
+    }
   };
 
   useEffect(() => {
-    console.log("obb", obbSheetId);
-    console.log("date", date);
     getDetails();
   }, [date, obbSheetId]);
 
   return (
-
-    <div>
-      
-      <div className="mx-auto max-w-7xl">
-
+    <div className="mx-auto max-w-full p-6">
+      <div>
+        <SelectObbSheetAndDate
+          obbSheets={obbSheets}
+          handleSubmit={handleFetchProductions}
+        />
+        <div>
+          {obbSheetId && obbSheetId.length > 0 ? (
+            <div className="my-8">
+              <TableComponent data={data} isLoading={isLoading} />
+            </div>
+          ) : (
+            <div className="mt-12 w-full">
+              <p className="text-center text-slate-500">
+                Please select style and date
+              </p>
+            </div>
+          )}
+        </div>
       </div>
-      <Card x-chunk="dashboard-05-chunk-3">
-        <CardHeader className="px-7">
-          <CardTitle> </CardTitle>
-          <CardDescription>
-
-          </CardDescription>
-          <SelectObbSheetAndDate
-            obbSheets={obbSheets}
-            handleSubmit={handleFetchProductions}
-          />
-
-        </CardHeader>
-
-
-        <CardContent>
-          <TableComponent data={data}></TableComponent>
-
-        </CardContent>
-      </Card>
     </div>
+  );
+};
 
-  )
-}
-
-export default LogTable
+export default LogTable;
