@@ -205,7 +205,7 @@ const saveAsPDF = async () => {
     >
       <CardContent className="p-4">
         <div className="w-full overflow-x-auto">
-          <div style={{ minWidth: Math.max(700, chartData.length * 120) }}>
+          <div style={{ minWidth: Math.max(700, chartData.length * 50) }}>
             <ChartContainer
               ref={chartRef}
               config={chartConfig}
@@ -214,7 +214,7 @@ const saveAsPDF = async () => {
             >
               <BarChart
                 data={chartData}
-                margin={{ top: 30, right: 30, left: 30, bottom: 80 }}
+                margin={{ top: 30, right: 30, left: 30, bottom: 100 }}
                 barGap={16}
                 className="h-[400px] w-full"
               >
@@ -232,11 +232,11 @@ const saveAsPDF = async () => {
           <XAxis
             dataKey="operation"
             tickLine={false}
-            tickMargin={16}
+            tickMargin={2}
             axisLine={false}
-            angle={-30}
+            angle={30}
             interval={0}
-            textAnchor="end"
+            textAnchor="start"
             fontSize={10}
             stroke="#888"
             height={60}

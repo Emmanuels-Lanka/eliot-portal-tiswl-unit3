@@ -11,6 +11,8 @@ import SelectObbSheetAndDate from "@/components/dashboard/common/select-obbsheet
 import { useToast } from "@/components/ui/use-toast";
 import EffiencyHeatmap from "@/components/dashboard/charts/efficiency-heatmap";
 import EfficiencyBarChart from "./bargraph";
+import { finalDataTypes } from "../efficiency-rate/_components/analytics-chart";
+import { fetchDirectProductionData } from "@/actions/efficiency-direct-action";
 
 interface AnalyticsChartProps {
     obbSheets: {
@@ -42,60 +44,82 @@ const AnalyticsChart = ({
     const { toast } = useToast();
     const router = useRouter();
 
-    const [heatmapData, setHeatmapData] = useState<newOperationEfficiencyOutputTypes>();
-    const [obbSheet, setObbSheet] = useState<ObbSheet | null>(null);
+    // const [obbSheet, setObbSheet] = useState<ObbSheet | null>(null);
     const [date, setDate] = useState<string>("");
+        const[finalData,setFinalData]=useState<finalDataTypes[]>([])
+    
 
-    function processProductionData(productionData: ProductionDataForChartTypes[]): newOperationEfficiencyOutputTypes {
-        const operatorsMap: { [key: string]: ProductionDataForChartTypes[] } = {};
-        
-        // Group data by operator
-        productionData.forEach(data => {
-            if (!operatorsMap[data.operatorRfid]) {
-                operatorsMap[data.operatorRfid] = [];
-            }
-            operatorsMap[data.operatorRfid].push(data);
-        });
-        
-        // Prepare operations data
-        const operations = Object.values(operatorsMap).map(group => ({
-            operator: group[0],
-            data: group
-        })).sort((a, b) => a.operator.obbOperation.seqNo - b.operator.obbOperation.seqNo);
+
+       const processData = (productionData: any[]) => {
     
-        const categories = operations.map(op => `${op.operator.operator.name} - ( ${op.operator.obbOperation.sewingMachine.machineId} ) - ${op.operator.obbOperation.seqNo}`);
-        const machines = operations.map(op => ` ${op.operator.obbOperation.sewingMachine.machineId}`);
-        const eliot = operations.map(op => ` ${op.data[0].eliotSerialNumber}`);
+             const operationsMap: { [key: string]: any[] } = {};
+            productionData.forEach(data => {
+                if (!operationsMap[data.obbOperation?.id]) {
+                    operationsMap[data.obbOperation?.id] = [];
+                }
+                operationsMap[data.obbOperation?.id].push(data);
+            });
     
-        // Calculate total production for each operator
-        const resultData = [{
-            operation: operations.map(op => {
-                const totalProduction = op.data.reduce((sum, curr) => sum + curr.productionCount, 0);
-                const earnMinutes = op.operator.obbOperation.smv * totalProduction
-                return { name: `${op.operator.obbOperation.seqNo}-${op.operator.obbOperation.sewingMachine.machineId}-${op.operator.operator.name}`, count: totalProduction,earnMinute:earnMinutes };
-            })
-        }];
+            const operations = Object.values(operationsMap).map(group => ({
+                obbOperation: group[0].obbOperation,
+                
+                data: group
+            })).sort((a, b) => a.obbOperation.seqNo - b.obbOperation.seqNo);
     
-        return {
-            data: resultData,
-            categories,
-            machines,
-            eliot
-        };
-    }
+            console.log(operations)
+
+            const formattedData = operations.map((o)=>{
+               const log =  o.data[0].operator.operatorSessions?.find((s:any)=>s.obbOperationId === o.obbOperation.id )?.LoginTimestamp
+               const loginTime = new Date(log);
+               const  lastProductionTime = o.data[0].timestamp;
+               const lastTime = new Date(lastProductionTime)
+               let timeDiffMinutes = (lastTime.getTime() - loginTime.getTime()) / (1000 * 60);
+               let is2Passed :boolean = false
+                  let isLoggedBfr2 :boolean =false
+               if (
+                 lastTime.getHours() > 14 ||
+                 (lastTime.getHours() === 14 && lastTime.getMinutes() >= 5)
+               ) {
+                 if (
+                   loginTime.getHours() < 14 ||
+                   (loginTime.getHours() === 14 && loginTime.getMinutes() < 5)
+                 ) {
+                   timeDiffMinutes -= 60;
+                   isLoggedBfr2 = true;
+                 }
+                 is2Passed = true;
+               }
+
+
+                const smv = o.obbOperation.smv
+                const lastProd = o.data[0].totalPcs
+                const earnMins = smv* lastProd
+                const efficiency = timeDiffMinutes > 0  ? Math.max(Math.min((earnMins * 100) / timeDiffMinutes, 100), 0)  : 0
+                return{
+                    operation: o.obbOperation.operation.name,
+                    operator:o.data[0].operator.name,
+                    machine:o.data[0].obbOperation.sewingMachine.machineId,
+                    efficiency : Number(Math.round(efficiency))
+                }
+            }).sort((a, b) => b.efficiency - a.efficiency);
+
+            console.log(formattedData,"fd")
+            setFinalData(formattedData)
+            
+          }
+
+   
     const handleFetchProductions = async (data: { obbSheetId: string; date: Date }) => {
         try {
             data.date.setDate(data.date.getDate() + 1);
             const formattedDate = data.date.toISOString().split('T')[0];
 
-            const response = await axios.get(`/api/efficiency/production?obbSheetId=${data.obbSheetId}&date=${formattedDate}`);
-            const heatmapData = processProductionData(response.data.data);
-            console.log("HEATMAP:", heatmapData.data);
-            console.log("CATEGORIES:", heatmapData.categories);
-            setDate(formattedDate)
+            const dataa = await fetchDirectProductionData(data.obbSheetId,formattedDate)
+            const heatmapData = processData(dataa.data);
+     
+            
 
-            setHeatmapData(heatmapData);
-            setObbSheet(response.data.obbSheet);
+           
 
             router.refresh();
         } catch (error: any) {
@@ -123,7 +147,7 @@ const AnalyticsChart = ({
                 />
             </div>
             <div className="mx-auto max-w-[1680px]">
-                {heatmapData ?
+                {finalData.length > 0 ?
                     <div className="mt-12">
                         {/* <h2 className="text-lg mb-2 font-medium text-slate-700">{title}</h2> */}
                         {/* <EffiencyHeatmap
@@ -133,7 +157,8 @@ const AnalyticsChart = ({
                             efficiencyHigh={obbSheet?.efficiencyLevel3}
                             heatmapData={heatmapData}
                         /> */}
-                        <EfficiencyBarChart heatmapData={heatmapData} date={date} ></EfficiencyBarChart>
+                            
+                        <EfficiencyBarChart  finalData={finalData} ></EfficiencyBarChart>
                     </div>
                     :
                     <div className="mt-12 w-full">

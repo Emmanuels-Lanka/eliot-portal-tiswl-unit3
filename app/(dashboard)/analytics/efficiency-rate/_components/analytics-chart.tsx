@@ -134,7 +134,7 @@ const EfficiencyAnalyticsChart = ({
                 const earnMins = smv* lastProd
                 const efficiency = timeDiffMinutes > 0  ? Math.max(Math.min((earnMins * 100) / timeDiffMinutes, 100), 0)  : 0
                 return{
-                    operation: o.obbOperation.operation.name,
+                    operation: o.data[0].obbOperation.seqNo+"-"+o.obbOperation.operation.name,
                     operator:o.data[0].operator.name,
                     
                     efficiency : Number(Math.round(efficiency))
