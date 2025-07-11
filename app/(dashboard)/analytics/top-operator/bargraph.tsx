@@ -36,6 +36,7 @@ import html2canvas from "html2canvas";
 import * as XLSX from 'xlsx';
 import { count } from 'console';
 import { newOperationEfficiencyOutputTypes } from './analytics';
+import { finalDataTypes } from '../efficiency-rate/_components/analytics-chart';
 
 const chartConfig = {
     efficiency: {
@@ -53,13 +54,12 @@ name:string;
 }
 interface BarChartGraphProps {
 
-    date: string
-    obbSheetId?: string
-    heatmapData:newOperationEfficiencyOutputTypes
+
+    finalData : finalDataTypes[]
 }
 
-const EfficiencyBarChart = ({heatmapData,date }: BarChartGraphProps) => {
-    const [chartData, setChartData] = useState<BarChartData[]>([])
+const EfficiencyBarChart = ({finalData}: BarChartGraphProps) => {
+    const [chartData, setChartData] = useState<any[]>([])
     const [chartWidth, setChartWidth] = useState<number>(250);
     const [isSubmitting,setisSubmitting]=useState<boolean>(false)
     const chartRef = useRef<HTMLDivElement>(null);
@@ -67,69 +67,17 @@ const EfficiencyBarChart = ({heatmapData,date }: BarChartGraphProps) => {
 
     const processProductionData = ()=> {
 
-        const data = heatmapData.data[0].operation
-        // console.log(data)
-        const time = calculateMinutes(date)
-        // console.log(time)
-        
-        const oprs = data.map(d=> {
-            const eff = Number(((d.earnMinute/time)*100).toFixed(1));
-            return {
-                ...d,
-                efficiency: eff
-            }
-            
-        })
+            setisSubmitting(true)
          
-        console.log(oprs)
-
-        const chartData = oprs.sort((a,b)=> b.efficiency-a.efficiency)
-        console.log("sd",chartData)
-        setChartData(chartData)
-
-        // setChartData(chartData)
-
-    }
-
-    function calculateMinutes(date: string): number {
-        const inputDate = new Date(date);
-        const today = new Date();
+          
+    setChartData(finalData)
         
-        // Set the time for the input date to 8 AM
-        const startOfDay = new Date(inputDate);
-        startOfDay.setHours(8, 0, 0, 0); // 8 AM
-    
-        // Set the time for the input date to 5 PM
-        const endOfDay = new Date(inputDate);
-        endOfDay.setHours(17, 0, 0, 0); // 5 PM
-    
-        // Check if the input date is today
-        if (inputDate.toDateString() !== today.toDateString()) {
-            // Not today, return minutes from 8 AM to 5 PM
-            return 540; // 9 hours * 60 minutes
-        } else {
-            // Today, calculate minutes from 8 AM to now
-            const now = new Date();
-            
-            // If current time is before 8 AM, return 0
-            if (now < startOfDay) {
-                return 0;
-            }
-            
-            // If current time is after 5 PM, return minutes from 8 AM to 5 PM
-            if (now > endOfDay) {
-                return 540; // 9 hours * 60 minutes
-            }
-            
-            // Calculate minutes from 8 AM to now
-            const minutes = Math.floor((now.getTime() - startOfDay.getTime()) / (1000 * 60));
-            return minutes;
-        }
+        setisSubmitting(false)
     }
 
     useEffect(()=>{
         processProductionData()
-    },[date,heatmapData])
+    },[finalData])
 
     
 
@@ -141,45 +89,46 @@ const EfficiencyBarChart = ({heatmapData,date }: BarChartGraphProps) => {
 
 
     //create pdf
-    const saveAsPDF = async () => {
-        if (chartRef.current) {
-          const canvas = await html2canvas(chartRef.current);
-          const imgData = canvas.toDataURL('image/png');
-          const pdf = new jsPDF({
-            orientation: 'landscape',
-            unit: 'px',
-            format: [canvas.width, canvas.height + 150],
-          });
+const saveAsPDF = async () => {
+  if (chartRef.current) {
+    // Downscale for smaller image
+    const scale = 0.7; // adjust for quality/size tradeoff
+    const canvas = await html2canvas(chartRef.current, {
       
-          const baseUrl = window.location.origin;
-          const logoUrl = `${baseUrl}/logo.png`;
-      
-          const logo = new Image();
-          logo.src = logoUrl;
-          logo.onload = () => {
-            const logoWidth = 110;
-            const logoHeight = 50;
-            const logoX = (canvas.width / 2) - (logoWidth + 100); // Adjust to place the logo before the text
-            const logoY = 50;
-      
-            // Add the logo to the PDF
-            pdf.addImage(logo, 'PNG', logoX, logoY, logoWidth, logoHeight);
-      
-            // Set text color to blue
-            pdf.setTextColor(0,113,193); // RGB for blue
-      
-            // Set larger font size and align text with the logo
-            pdf.setFontSize(24);
-            pdf.text('Dashboard - Overall Operation Efficiency', logoX + logoWidth + 20, 83, { align: 'left' });
-      
-            // Add the chart image to the PDF
-            pdf.addImage(imgData, 'PNG', 0, 150, canvas.width, canvas.height);
-      
-            // Save the PDF
-            pdf.save('chart.pdf');
-          };
-        }
-      };
+      useCORS: true,
+      background: "#fff",
+    });
+    const imgData = canvas.toDataURL('image/jpeg', 0.7); // JPEG, 70% quality
+
+    const pdf = new jsPDF({
+      orientation: 'landscape',
+      unit: 'px',
+      format: [canvas.width, canvas.height + 100],
+    });
+
+    // Optional: Add logo and title as before
+    const baseUrl = window.location.origin;
+    const logoUrl = `${baseUrl}/logo.png`;
+    const logo = new Image();
+    logo.src = logoUrl;
+    logo.onload = () => {
+      const logoWidth = 110;
+      const logoHeight = 50;
+      const logoX = (canvas.width / 2) - (logoWidth + 100);
+      const logoY = 30;
+
+      pdf.addImage(logo, 'PNG', logoX, logoY, logoWidth, logoHeight);
+      pdf.setTextColor(0, 113, 193);
+      pdf.setFontSize(20);
+      pdf.text('Dashboard - Top Performence Operators', logoX + logoWidth + 20, 60, { align: 'left' });
+
+      // Add chart image (JPEG, compressed)
+      pdf.addImage(imgData, 'JPEG', 0, 100, canvas.width, canvas.height);
+
+      pdf.save('Top Performence Operators.pdf');
+    };
+  }
+};
 
     
 //create Excel sheet
@@ -200,30 +149,34 @@ const EfficiencyBarChart = ({heatmapData,date }: BarChartGraphProps) => {
        </div>
     
     
-       
+        
 
             {chartData.length > 0 ?
                     // <div className='bg-slate-100 pt-5 -pl-8 rounded-lg border w-full mb-16 overflow-x-auto'>
 
-                <div className='bg-slate-50 pt-5 -pl-8 rounded-lg border w-full h-[450px] mb-16 overflow-scroll'>
-                 <Card className='bg-slate-50 pt-4' style={{width:(chartWidth)+"%"}}>
+                <div className='w-full'>
+                 <Card className="w-full shadow-xl rounded-2xl bg-white border border-slate-200"
+             style={{
+               margin: "0 auto",
+               boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.15)",
+             }}>
                
-                    <CardContent>
+                    <CardContent className="p-4">
+                        <div className="w-full overflow-x-auto ">
                         {/* <ChartContainer config={chartConfig} className={`min-h-[300px] max-h-[600px] w-[${chartWidth.toString()}%]`}> */}
+                        <div style={{ minWidth: Math.max(700, chartData.length * 50),maxHeight:600}}>
                         <ChartContainer 
                         ref={chartRef}
-                        config={chartConfig} className={`min-h-[300px] max-h-[600px] `} style={{ width: chartWidth + "%", height: 600 + "%" }}>
+                     config={chartConfig}
+                     className="w-full h-full"
+                     style={{ width: "100%", height: 500 }}>
 
-                            <BarChart
-                                accessibilityLayer
-                                data={chartData}
-                                margin={{
-                                    top: 20,
-                                    bottom: 250
-                                }}
-                                barGap={10}
-                                className="h-[300px] "
-                            >
+                           <BarChart
+                       data={chartData}
+                       margin={{ top: 30, right: 30, left: 30, bottom: 150 }}
+                       barGap={16}
+                       className="h-[400px] w-full"
+                     >
                                 <CartesianGrid vertical={false} />
                                 <YAxis
                                     dataKey="efficiency"
@@ -233,7 +186,7 @@ const EfficiencyBarChart = ({heatmapData,date }: BarChartGraphProps) => {
                                     axisLine={true}
                                 />
                                 <XAxis
-                                    dataKey="name"
+                                    dataKey="operator"
                                     tickLine={true}
                                     tickMargin={10}
                                     axisLine={true}
@@ -241,12 +194,24 @@ const EfficiencyBarChart = ({heatmapData,date }: BarChartGraphProps) => {
                                     interval={0}
                                     textAnchor='start'
                                 />
-                                <ChartTooltip
-                  cursor={false}
-                  content={<ChartTooltipContent indicator="line" />}
-                />
+                               <ChartTooltip
+                                 cursor={{ fill: "rgba(0,0,0,0.04)" }}
+                                 content={({ active, payload }) => {
+                                   if (active && payload && payload.length) {
+                                     const data = payload[0].payload;
+                                     return (
+                                       <div className="p-2 bg-white rounded shadow text-xs">
+                                         <div><strong>Operation:</strong> {data.name || data.operation}</div>
+                                         <div><strong>Efficiency:</strong> {data.efficiency ?? data.ratio}</div>
+                                         <div><strong>Sewing Machine:</strong> {data.machine ?? data.ratio}</div>
+                                       </div>
+                                     );
+                                   }
+                                   return null;
+                                 }}
+                               />
 
-                                <Bar dataKey="efficiency" fill="orange" radius={5}>
+                                <Bar dataKey="efficiency" fill="orange" radius={5} barSize={50}>
                                     <LabelList
                                     dataKey="efficiency"
                                         position="top"
@@ -265,9 +230,14 @@ const EfficiencyBarChart = ({heatmapData,date }: BarChartGraphProps) => {
                         </Bar> */}
                             </BarChart>
                         </ChartContainer>
+                    
+                </div>
+                </div>
                     </CardContent>
                 </Card>
+                
                 </div>
+                
                 : <div className="mt-12 w-full">
                     <p className="text-center text-slate-500">No Data Available.</p>
                 </div>
