@@ -139,7 +139,7 @@ const saveAsPDF = async () => {
     const canvas = await html2canvas(chartRef.current, {
       
       useCORS: true,
-      background: "#fff",
+   
     });
     const imgData = canvas.toDataURL('image/jpeg', 0.7); // JPEG, 70% quality
 
