@@ -193,6 +193,11 @@ export const SIDEBAR_ROUTES = [
         href: "/analytics/top-operator",
         icon: BarChartHorizontal,
       },
+      {
+        label: "Operator Efficiency Overview",
+        href: "/analytics/overall-operator",
+        icon: BarChartHorizontal,
+      },
     ],
   },
   {
@@ -705,6 +710,11 @@ export const HEADER_INFO = [
     href: "/analytics/pitch-diagram",
     icon: LineChart,
   },
+   {
+        label: "Operator Efficiency Overview",
+        href: "/analytics/overall-operator",
+        icon: BarChartHorizontal,
+      },
   {
     label: "Capacity Diagram",
     href: "/analytics/capacity-graph",
