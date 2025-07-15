@@ -259,8 +259,8 @@ const EffiencyHeatmap = ({
     const width = getChartWidth();
     return (
         // <div className='bg-slate-100 pt-5 pl-8 rounded-lg border w-full mb-16 overflow-x-auto'>
-                    <div>
-                    <div className='bg-slate-50 pt-5 -pl-8 rounded-lg border w-full h-[600px] mb-2 overflow-x-auto'>
+                    <div className=''>
+                    <div className='bg-slate-50 pt-5 -pl-8 mx-4 rounded-xl border w-full h-[700px] mb-2 overflow-x-auto'>
             <div id="chart"  ref={chartRef}>
 <p className="text-xs text-gray-500 italic mx-6">📌 indicates operator has multiple operations</p>
                 <ReactApexChart options={options} series={series} type="heatmap" height={height} width={width} />

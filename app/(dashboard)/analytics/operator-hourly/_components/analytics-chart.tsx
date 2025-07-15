@@ -80,6 +80,7 @@ const AnalyticsChart = ({
     const [heatmapData, setHeatmapData] = useState<OperationEfficiencyOutputTypes>();
     const [obbSheet, setObbSheet] = useState<ObbSheet | null>(null);
     const [isNew,setIsNew] = useState<boolean>(true)
+    const [isLoading, setIsLoading] = useState<boolean>(false); 
 
     function processProductionData(productionData: ProductionDataForChartTypes[],state:boolean): OperationEfficiencyOutputTypes {
         const hourGroups = ["7:00 AM - 8:00 AM", "8:00 AM - 9:00 AM", "9:00 AM - 10:00 AM", "10:00 AM - 11:00 AM", "11:00 AM - 12:00 PM", "12:00 PM - 1:00 PM", "1:00 PM - 2:00 PM", "2:00 PM - 3:00 PM", "3:00 PM - 4:00 PM", "4:00 PM - 5:00 PM", "5:00 PM - 6:00 PM", "6:00 PM - 7:00 PM","7:00 PM - 8:00 PM"];
@@ -227,6 +228,7 @@ const AnalyticsChart = ({
 
     const handleFetchProductions = async (data: { obbSheetId: string; date: Date }) => {
         try {
+              setIsLoading(true);
             data.date.setDate(data.date.getDate() + 1);
             const formattedDate = data.date.toISOString().split('T')[0];
             // let response 
@@ -287,36 +289,43 @@ const AnalyticsChart = ({
                     </div>
                 ),
             });
-        }
+        } finally {
+        setIsLoading(false); // <-- Stop loading
+    }
     }
 
     return (
-        <>
-            <div className="mx-auto max-w-7xl">
-                <SelectObbSheetAndDate
-                    obbSheets={obbSheets}
-                    handleSubmit={handleFetchProductions}
-                />
-            </div>
-            <div className="mx-auto max-w-[1680px]">
-                {heatmapData ?
-                    <div className="mt-12">
-                        {/* <h2 className="text-lg mb-2 font-medium text-slate-700">{title}</h2> */}
-                        <EffiencyHeatmap
-                            xAxisLabel='Operations'
-                            height={1200}
-                            efficiencyLow={obbSheet?.efficiencyLevel1}
-                            efficiencyHigh={obbSheet?.efficiencyLevel3}
-                            heatmapData={heatmapData}
-                        />
-                    </div>
-                    :
-                    <div className="mt-12 w-full">
-                        <p className="text-center text-slate-500">Please select the OBB sheet and date ☝️</p>
-                    </div>
-                }
-            </div>
-        </>
+         <>
+        <div className="mx-auto max-w-7xl">
+            <SelectObbSheetAndDate
+                obbSheets={obbSheets}
+                handleSubmit={handleFetchProductions}
+            />
+        </div>
+        <div className="mx-auto max-w-[1680px]">
+            {isLoading ? (
+                <div className="flex flex-col items-center justify-center w-full h-[600px] mt-12">
+                    <span className="text-2xl text-[#0071c1] font-semibold mb-4">Loading...</span>
+                    <div className="animate-spin rounded-full h-24 w-24 border-t-4 border-b-4 border-[#0071c1]"></div>
+                </div>
+            ) : heatmapData ? (
+                <div className="mt-12">
+                    {/* <h2 className="text-lg mb-2 font-medium text-slate-700">{title}</h2> */}
+                    <EffiencyHeatmap
+                        xAxisLabel='Operations'
+                        height={1200}
+                        efficiencyLow={obbSheet?.efficiencyLevel1}
+                        efficiencyHigh={obbSheet?.efficiencyLevel3}
+                        heatmapData={heatmapData}
+                    />
+                </div>
+            ) : (
+                <div className="mt-12 w-full">
+                    <p className="text-center text-slate-500">Please select the OBB sheet and date ☝️</p>
+                </div>
+            )}
+        </div>
+    </>
     )
 }
 
