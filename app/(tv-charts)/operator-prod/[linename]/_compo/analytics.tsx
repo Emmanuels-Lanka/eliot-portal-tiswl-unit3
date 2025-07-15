@@ -363,7 +363,7 @@ const AnalyticsChart = ({ obbSheetId }: AnalyticsChartProps) => {
 
 
               <h1 className="text-[#0071c1] text-3xl text-center">
-                Dashboard - LIVE Efficiency TV Graph - {lineName}
+                Dashboard - Hourly Production (Operator) TV Graph - {lineName}
               </h1>
             </div>
 

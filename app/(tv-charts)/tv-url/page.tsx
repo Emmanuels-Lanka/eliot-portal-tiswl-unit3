@@ -45,6 +45,15 @@ const page = () => {
       imageUrl: "/tv/overall.png",
     },
     
+    {
+      id: "6",
+      title: "Hourly Production (Operator)",
+      description:
+        "This Heatmap shows hourly production of each operator.",
+      url: "https://portal.eliot.global/operator-prod",
+      imageUrl: "/tv/HourlyProd.png",
+    },
+    
     // Add more cards as needed
   ];
   return (
