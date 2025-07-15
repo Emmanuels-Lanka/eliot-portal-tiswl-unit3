@@ -276,7 +276,7 @@ const AnalyticsChart = ({ obbSheetId }: AnalyticsChartProps) => {
           name: `${op.operatorOperation}`,
           efficiency:
             totalProduction !== null
-              ? parseFloat(totalProduction.toFixed(1))
+              ? Math.max(0, parseFloat(totalProduction.toFixed(1)))
               : null,
         };
       }),

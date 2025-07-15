@@ -211,7 +211,7 @@ const AnalyticsChart = ({
                 // const earnmins = op.obbOperation.smv * totalProduction
                 // const efficiency = filteredData.length > 0 ? (totalProduction === 0 ? 0 : (earnmins / 60) * 100) : null;
                 
-                return { name: `${op.operatorOperation}`, efficiency: totalProduction !== null ? parseFloat(totalProduction.toFixed(1)) : null };
+                return { name: `${op.operatorOperation}`, efficiency: totalProduction !== null ?  Math.max(0, parseFloat(totalProduction.toFixed(1))) : null };
             })
         })); 
 
