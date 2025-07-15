@@ -249,15 +249,29 @@ const AnalyticsChart = ({
                         // response = await axios.get(`/api/efficiency-direct?obbSheetId=${data.obbSheetId}&date=${formattedDate}`);
                          response  = await fetchDirectProductionData(data.obbSheetId, formattedDate);
             
-                        if(response.data.length === 0){
-                            state = false
-                           response = await axios.get(`/api/efficiency/production?obbSheetId=${data.obbSheetId}&date=${formattedDate}`);
-                        }
-            
-                        const heatmapData = processProductionData(response.data,state);
+                        if(response.data.length !== 0){
+                            const heatmapData = processProductionData(response.data,state);
                         
                         setHeatmapData(heatmapData);
                         setObbSheet(response.data.obbSheet);
+                        }
+                        else{
+                            toast({
+                title: "That Obb Sheet Doesnt Have Any Data for That Date",
+                variant: "error",
+                description: (
+                    <div className='mt-2 bg-slate-200 py-2 px-3 md:w-[336px] rounded-md'>
+                        <code className="text-slate-800">
+                            ERROR: {"No Data Available"}
+                        </code>
+                    </div>
+                ),
+            });
+                            
+                        }
+                    
+            
+                       
 
             router.refresh();
         } catch (error: any) {
