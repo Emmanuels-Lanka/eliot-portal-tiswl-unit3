@@ -109,6 +109,11 @@ export const SIDEBAR_ROUTES = [
         href: "/analytics/production-hourly",
         icon: BarChartHorizontal,
       },
+      {
+        label: "Hourly Production (Operator)",
+        href: "/analytics/operator-hourly",
+        icon: BarChartHorizontal,
+      },
       // {
       //     label: "Overall Performance",
       //     href: "/analytics/achievement-rate-operation",
@@ -654,6 +659,11 @@ export const HEADER_INFO = [
     href: "/analytics/tls-operators",
     icon: Sliders,
   },
+  {
+        label: "Hourly Production (Operator)",
+        href: "/analytics/operator-hourly",
+        icon: BarChartHorizontal,
+      },
   {
     label: "Sectional DHU",
     href: "/analytics/defect-chart",
