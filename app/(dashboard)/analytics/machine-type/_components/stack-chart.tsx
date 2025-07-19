@@ -21,7 +21,7 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart"
 import { useEffect, useRef, useState } from "react"
-import { getOperatorEfficiency} from "./actions"
+import { getMachineTypes, getOperatorEfficiency} from "./actions"
 import { Button } from "@/components/ui/button"
 
 export const description = "A stacked bar chart with a legend"
@@ -94,29 +94,33 @@ const Fetchdata = async () => {
   try {
      
       setisSubmitting(true)
-      const smvs :any = await getOperatorEfficiency(obbSheetId, date,timeValue)
-      console.log(smvs)
+     
 
+     const machines = await  getMachineTypes(obbSheetId)
+
+    const machineMap : {[key:string]:any[]} = {};
+    machines.data.forEach(machine => {
+      const type = machine.machineType;
+      if(!machineMap[type]){
+        machineMap[type] = [];
+
+      }
+      machineMap[type].push(machine)
+    })
+
+    const machineTypes = Object.values(machineMap).map((m)=>({
+      type: m[0].machineType,
+      count: m.length,
+      brandName:m[0].brandName,
+      isAssigned:m[0].isAssigned,
+      isNotAssigned:m.filter((i:any)=>!i.isAssigned).length
+    }))
+    .sort((a, b) => a.type - b.type);
     
-
-      
-  
+    console.log(machines,"mac")
+     console.log(machineTypes,"macTypes")
    
-     
-     
-      const chartData: any[] = smvs.map((i:any) => 
-        
-        { 
-          return {
-            count:Math.min(i.count,12),
-            realCount:i.count,
-            type:i.type
-            
-      }}
-      
-      );
-     console.log(chartData)
-      setChartDatas(chartData)
+      setChartDatas(machineTypes)
 
   }
 
@@ -192,93 +196,94 @@ useEffect(() => {
 
   return (
 
+<>
+  {chartDatas.length > 0 ? (
+    <div className="w-full">
+      <Card className="w-full rounded-2xl border border-slate-200 bg-white shadow-xl mb-16">
+        <CardContent className="p-6">
+          <div className="flex justify-between items-center">
+            <h2 className="text-xl font-semibold text-gray-700 my-2">Machine types</h2>
+            <div className="flex gap-3">
+              <Button type="button" onClick={saveAsPDF}>
+                Save as PDF
+              </Button>
+              <Button type="button" onClick={saveAsExcel}>
+                Save as Excel
+              </Button>
+            </div>
+          </div>
 
-    <>
-    {chartDatas.length>0 ? (
-     <div className=' pt-5 -pl-8 rounded-lg border w-full h-[450px] mb-16 overflow-scroll'>
-     <Card className="pr-2 pt-6  border rounded-xl  w-auto" style={{width:(chartWidth)+"%"}}>
-      
-       <CardContent>
-         <ChartContainer
-         ref={chartRef}
-           config={chartConfig}
-           className="  h-[500px] w-full pt-12" 
-           style={{width:chartWidth+"%"}} 
-         >
-           <BarChart
-             accessibilityLayer
-             data={chartDatas}
-             margin={{
-              
-             
-               bottom:50
-             }}
+          <div className="w-full overflow-auto">
+            {/* <p className="text-xs text-gray-500 italic my-2">📌 Legend or notes here</p> */}
 
-           >
-             <CartesianGrid vertical={false} />
-             <YAxis
-               dataKey="count"
-               type="number"
-               tickLine={true}
-               tickMargin={10}
-               axisLine={true}
-              //  domain={[0, 4000]}
-               
-             />
-             <XAxis
-               dataKey="type"
-               tickLine={true}
-               tickMargin={20}
-               axisLine={true}
-               angle={-90}
-               fontSize={10}
-               interval={0}
-               textAnchor="end"
-               
+            <div style={{ minWidth: Math.max(700, chartDatas.length * 50), maxHeight: 700 }}>
+              <ChartContainer
+                ref={chartRef}
+                config={chartConfig}
+                className="w-full h-full bg-slate-50 p-4 rounded-xl"
+                style={{ width: '100%', height: 600 }}
+              >
+                <BarChart
+                  data={chartDatas}
+                  margin={{ top: 30, right: 30, left: 0, bottom: 100 }}
+                  barGap={24}
+                  className="h-[400px] w-full"
+                >
+                  <CartesianGrid vertical={false} strokeDasharray="3 3" />
+                  <YAxis
+                    dataKey="count"
+                    type="number"
+                    tickLine
+                    tickMargin={10}
+                    axisLine
+                  />
+                  <XAxis
+                    dataKey="type"
+                    tickLine
+                    tickMargin={10}
+                    axisLine
+                    angle={-90}
+                    interval={0}
+                    fontSize={14}
+                    textAnchor="end"
+                  />
+                  <ChartTooltip
+                    cursor={{ fill: "rgba(0,0,0,0.04)" }}
+                    content={({ active, payload }) => {
+                      if (active && payload && payload.length) {
+                        const data = payload[0].payload;
+                        return (
+                          <div className="p-3 rounded-lg shadow-xl border border-slate-200 bg-white/80 backdrop-blur text-xs">
+                            <div><strong>Type:</strong> {data.type}</div>
+                            <div><strong>Count:</strong> {data.count}</div>
+                          </div>
+                        );
+                      }
+                      return null;
+                    }}
+                  />
+                  <ChartLegend
+                    verticalAlign="top"
+                    content={<ChartLegendContent />}
+                    className="mt-2 text-sm"
+                  />
+                  <Bar dataKey="count" fill="var(--color-count)" radius={5}>
+                    <LabelList
+                      dataKey="count"
+                      position="top"
+                      offset={10}
+                      className="fill-slate-700"
+                      fontSize={13}
+                    />
+                  </Bar>
+                </BarChart>
+              </ChartContainer>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
-
-             />
-             <ChartTooltip
-               cursor={false}
-               content={<ChartTooltipContent indicator="line"
-                 />}
-             />
-             <ChartLegend
-               verticalAlign="top"
-               content={<ChartLegendContent />}
-               className="mt-2 text-sm"
-             />
-             <Bar dataKey="count" fill="var(--color-count)" radius={5}>
-               <LabelList
-                //  dataKey="originalTarget"
-                dataKey="realCount"
-                 position="top"
-                 offset={7} // Increase the offset value
-                 className="fill-foreground"
-                 fontSize={9}
-               />
-             </Bar>
-             {/* <Bar dataKey="count" fill="var(--color-actual)" radius={5}>
-               <LabelList
-                 position="top"
-                 offset={20} // Increase the offset value
-                 className="fill-foreground"
-                 fontSize={9}
-                 
-               />
-             </Bar> */}
-           </BarChart>
-         </ChartContainer>
-       </CardContent>
-     </Card>
-     </div>
-    ):(
-      <div className="mt-12 w-full">
-        <p className="text-center text-slate-500">No Data Available...</p>
-      </div>)}
-
-      {chartData.length > 0 && (
-      <div className="flex flex-col items-center mt-5">
+      {/* <div className="flex flex-col items-center mt-5">
         <div className="flex gap-2">
           <Button onClick={() => setChartWidth((p) => p + 20)} className="rounded-full bg-gray-300">
             +
@@ -287,18 +292,14 @@ useEffect(() => {
             -
           </Button>
         </div>
+      </div> */}
+    </div>
+  ) : (
+    <div className="mt-12 w-full">
+      <p className="text-center text-slate-500">No Data Available...</p>
+    </div>
+  )}
+</>
 
-        <div className="flex gap-3 mt-3">
-          <Button type="button" className="mr-3" onClick={saveAsPDF}>
-            Save as PDF
-          </Button>
-          <Button type="button" onClick={saveAsExcel}>
-            Save as Excel
-          </Button>
-        </div>
-      </div>
-    )}
-    
-    </>
   )
 }

@@ -1,6 +1,9 @@
 "use server";
 import { poolForPortal } from "@/lib/postgres";
 
+
+import { db } from "@/lib/db";
+
 // import { ProductionDataType } from "./analytics-chart";
 
 export async function getOperatorEfficiency(obbsheetid:string,date:string,timeValue:string)    {
@@ -33,4 +36,26 @@ group by type,lineName
 }
 
 
+
+export async function getMachineTypes  (obbSheetId:string) {
+
+  const machines = await db.sewingMachine.findMany({
+    select:{
+      machineType: true,
+      brandName:true,
+      isAssigned:true
+    },
+    where:{
+      obbOperations:{
+        some:{
+          obbSheetId:obbSheetId
+        }
+      }
+  }})
+
+
+  console.log("first",machines)
+      return { data: machines,  message: "Production data fetched successfully" };
+
+}
 
