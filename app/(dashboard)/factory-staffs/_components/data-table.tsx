@@ -63,6 +63,14 @@ export function DataTable<TData, TValue>({
                     }
                     className="max-w-sm"
                 />
+                <Input
+                placeholder="Search By Name..."
+                value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
+                onChange={(event) =>
+                    table.getColumn("name")?.setFilterValue(event.target.value)
+                }
+                className="max-w-sm mx-4"
+            />
 
                     <Input
                     placeholder="Search By Designation..."  

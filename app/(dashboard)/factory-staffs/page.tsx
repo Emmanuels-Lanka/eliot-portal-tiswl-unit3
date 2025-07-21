@@ -6,7 +6,7 @@ import { DataTable } from "./_components/data-table";
 const FactoryStaff = async () => {
   const staffs = await db.staff.findMany({
     orderBy: {
-      createdAt: "desc",
+      designation: "desc",
     },
   });
 
