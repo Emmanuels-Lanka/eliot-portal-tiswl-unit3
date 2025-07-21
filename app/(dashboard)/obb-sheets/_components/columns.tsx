@@ -22,6 +22,7 @@ import ConfirmModel from "@/components/model/confirm-model";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { handleDuplicateObb } from "../_actions/handle-duplicate-obb";
+import { getUser } from "./getUser";
 
 interface ActionCellProps {
     row: any;
@@ -40,6 +41,8 @@ const ActionCell = ({ row, user }: ActionCellProps) => {
 
     const [isLoading, setIsLoading] = useState(false);
 
+   
+
     const handleCreateActivityLog = async (activity: string) => {
         const payload = {
             part: "OBB Sheet",
@@ -57,6 +60,9 @@ const ActionCell = ({ row, user }: ActionCellProps) => {
     const onDelete = async (obbSheetId: string) => {
         try {
             setIsLoading(true);
+
+             const realUser = await getUser()
+
             await axios.delete(`/api/obb-sheet/${obbSheetId}`);
             router.refresh();
             toast({
@@ -64,7 +70,7 @@ const ActionCell = ({ row, user }: ActionCellProps) => {
                 variant: 'success',
             });
             await handleCreateActivityLog(
-                `Deleted OBB sheet ${row.original.name} by ${user?.email ?? "unknown"} (${user?.role})`
+                `Deleted OBB sheet ${row.original.name} by ${realUser?.email ?? "unknown"} (${realUser?.role})`
             );
         } catch (error: any) {
             console.error("ERROR", error);
@@ -78,17 +84,21 @@ const ActionCell = ({ row, user }: ActionCellProps) => {
     }
 
     const handleStatus = async (obbSheetId: string) => {
+        const realUser = await getUser()
       if (row.original.isActive === true) {
         try {
           setIsLoading(true);
+          
           await axios.patch(`/api/obb-sheet/${obbSheetId}/deactive`);
           router.refresh();
           toast({
             title: `Successfully deactivated OBB operation!`,
             variant: "success",
           });
-          await handleCreateActivityLog(`Deactivated OBB sheet ${row.original.name} by ${user?.email ?? "unknown"} (${user?.role})`
+          await handleCreateActivityLog(`Deactivated OBB sheet ${row.original.name} by ${realUser?.email ?? "unknown"} (${realUser?.role})`
           );
+          setIsLoading(false);
+
         } catch (error: any) {
           console.error("STATUS_DEACTIVATE_ERROR", error);
           toast({
@@ -107,8 +117,8 @@ const ActionCell = ({ row, user }: ActionCellProps) => {
           });
           await handleCreateActivityLog(
             `Activated OBB sheet ${row.original.name} by ${
-              user?.email ?? "unknown"
-            } (${user?.role})`
+              realUser?.email ?? "unknown"
+            } (${realUser?.role})`
           );
         } catch (error: any) {
           const action = row.original.isActive ? "Deactivate" : "Activate";
@@ -117,7 +127,7 @@ const ActionCell = ({ row, user }: ActionCellProps) => {
             title: error.response.data || "Something went wrong! Try again",
             variant: "error",
           });
-          await handleCreateActivityLog(`Failed to ${action.toLowerCase()} OBB sheet ${row.original.name} by ${user?.email ?? "unknown"} (${user?.role})`
+          await handleCreateActivityLog(`Failed to ${action.toLowerCase()} OBB sheet ${row.original.name} by ${realUser?.email ?? "unknown"} (${realUser?.role})`
           );
         } finally {
           setIsLoading(false);
@@ -127,6 +137,8 @@ const ActionCell = ({ row, user }: ActionCellProps) => {
 
     const handleDuplicate = async (obbSheetId: string) => {
         // console.log("Duplicate:", obbSheet);
+             const realUser = await getUser()
+        
         try {
             const res = await handleDuplicateObb(obbSheetId);
             if (!res) {
@@ -141,7 +153,7 @@ const ActionCell = ({ row, user }: ActionCellProps) => {
                     variant: "success",
                 });
                 await handleCreateActivityLog(
-                    `Duplicated OBB sheet ${row.original.name} by ${user?.email ?? "unknown"} (${user?.role})`
+                    `Duplicated OBB sheet ${row.original.name} by ${realUser?.email ?? "unknown"} (${realUser?.role})`
                 );
                 router.push(`/obb-sheets/${res.id}`);
             }
