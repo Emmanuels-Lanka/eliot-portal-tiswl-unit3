@@ -8,13 +8,7 @@ import { verify,JwtPayload } from "jsonwebtoken";
 interface CategorizedStaff {
   [key: string]: Staff[];
 }
- const cookieStore = cookies();
-    const token = cookieStore.get('AUTH_TOKEN');
-
-    const { value } = token as any;
-    const secret = process.env.JWT_SECRET || "";
-    
-    const verifiedUser = verify(value, secret) as JwtPayload;
+ 
 const CreateNewObbSheet = async () => {
   const units = await db.unit.findMany({
     select: {
@@ -22,7 +16,13 @@ const CreateNewObbSheet = async () => {
       id: true,
     }
   });
+const cookieStore = cookies();
+    const token = cookieStore.get('AUTH_TOKEN');
 
+    const { value } = token as any;
+    const secret = process.env.JWT_SECRET || "";
+    
+    const verifiedUser = verify(value, secret) as JwtPayload;
   const staffs = await db.staff.findMany();
 
   const categorizedStaff: CategorizedStaff = staffs.reduce((acc: CategorizedStaff, staff: Staff) => {
