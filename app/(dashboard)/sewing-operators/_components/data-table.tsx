@@ -41,7 +41,20 @@ interface DataTableProps<TData, TValue> {
   pageIndex: number;
 }
 
-export function DataTable<TData, TValue>({
+export function DataTable<TData extends {
+  id: string;
+  name: string;
+  createdAt: Date;
+  updatedAt: Date;
+  employeeId: string;
+  rfid: string | null;
+  gender: string;
+  designation: string;
+  isLoggedIn: boolean;
+  avgEfficiency: number | null;
+  obbOperationId: string | null;
+  operationName: string | null;
+}, TValue>({
   columns,
   data,
   totalCount,
@@ -53,38 +66,24 @@ export function DataTable<TData, TValue>({
   const searchParams = useSearchParams();
 
   const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
-  );
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [pageSize, setPageSize] = React.useState(initialPageSize);
   const [pageIndex, setPageIndex] = React.useState(initialPageIndex);
-  const [searchValue, setSearchValue] = React.useState(
-    searchParams.get("search") || ""
-  );
+  const [searchValue, setSearchValue] = React.useState("");
 
-  const debouncedSearch = useCallback(
-    React.useCallback(
-      debounce((value: string) => {
-        const params = new URLSearchParams(searchParams.toString());
-        params.set("page", "0");
-
-        if (value) {
-          params.set("search", value);
-        } else {
-          params.delete("search");
-        }
-
-        router.push(`?${params.toString()}`);
-      }, 500),
-      [searchParams, router]
-    ),
-    [searchParams, router]
-  );
+  // Filter data by name, employeeId, or rfid
+  const filteredData = React.useMemo(() => {
+    if (!searchValue) return data;
+    const query = searchValue.toLowerCase();
+    return data.filter((row) =>
+      (row.name && row.name.toLowerCase().includes(query)) ||
+      (row.employeeId && row.employeeId.toLowerCase().includes(query)) ||
+      (row.rfid && row.rfid.toLowerCase().includes(query))
+    );
+  }, [data, searchValue]);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setSearchValue(value);
-    debouncedSearch(value);
+    setSearchValue(e.target.value);
   };
 
   const handlePageSizeChange = (value: string) => {
@@ -100,7 +99,7 @@ export function DataTable<TData, TValue>({
 
   // Create table instance
   const table = useReactTable({
-    data,
+    data: filteredData, // <-- use filtered data here
     columns,
     pageCount,
     getCoreRowModel: getCoreRowModel(),
@@ -138,7 +137,7 @@ export function DataTable<TData, TValue>({
       {/* Search and page size controls */}
       <div className="flex items-center justify-between py-4">
         <Input
-          placeholder="Search by employee ID..."
+          placeholder="Search by Name, RFID, or Emp ID..."
           value={searchValue}
           onChange={handleSearchChange}
           className="max-w-sm"
