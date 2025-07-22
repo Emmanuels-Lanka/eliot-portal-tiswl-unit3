@@ -52,7 +52,7 @@ const FactoryStaffPage = async ({
     skip,
     take: pageSize,
     orderBy: {
-      createdAt: "desc",
+      designation: "desc",
     },
   });
 

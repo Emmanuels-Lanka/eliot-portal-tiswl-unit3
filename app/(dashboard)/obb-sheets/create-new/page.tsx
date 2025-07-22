@@ -2,11 +2,13 @@ import { Staff } from "@prisma/client";
 
 import CreateObbSheetForm from "@/components/dashboard/forms/create-obb-sheet-form";
 import { db } from "@/lib/db";
+import { cookies } from "next/headers";
+import { verify,JwtPayload } from "jsonwebtoken";
 
 interface CategorizedStaff {
   [key: string]: Staff[];
 }
-
+ 
 const CreateNewObbSheet = async () => {
   const units = await db.unit.findMany({
     select: {
@@ -14,7 +16,13 @@ const CreateNewObbSheet = async () => {
       id: true,
     }
   });
+const cookieStore = cookies();
+    const token = cookieStore.get('AUTH_TOKEN');
 
+    const { value } = token as any;
+    const secret = process.env.JWT_SECRET || "";
+    
+    const verifiedUser = verify(value, secret) as JwtPayload;
   const staffs = await db.staff.findMany();
 
   const categorizedStaff: CategorizedStaff = staffs.reduce((acc: CategorizedStaff, staff: Staff) => {
@@ -39,6 +47,10 @@ const CreateNewObbSheet = async () => {
       fabricInputMan={categorizedStaff?.["fabric-input-man"]}
       lineChief={categorizedStaff?.["line-chief"]}
       mode="create" 
+      user={{
+                        email: verifiedUser.email,
+                        role: verifiedUser.role,
+                    }}
     />
   )
 }

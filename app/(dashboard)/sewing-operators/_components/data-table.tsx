@@ -8,6 +8,7 @@ import {
   SortingState,
   flexRender,
   getCoreRowModel,
+  getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
@@ -29,7 +30,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Loader2 } from "lucide-react";
+import { useCallback, useEffect } from "react";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -40,7 +41,23 @@ interface DataTableProps<TData, TValue> {
   pageIndex: number;
 }
 
-export function DataTable<TData, TValue>({
+export function DataTable<
+  TData extends {
+    id: string;
+    name: string;
+    createdAt: Date;
+    updatedAt: Date;
+    employeeId: string;
+    rfid: string | null;
+    gender: string;
+    designation: string;
+    isLoggedIn: boolean;
+    avgEfficiency: number | null;
+    obbOperationId: string | null;
+    operationName: string | null;
+  },
+  TValue
+>({
   columns,
   data,
   totalCount,
@@ -51,46 +68,28 @@ export function DataTable<TData, TValue>({
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const [isLoading, setIsLoading] = React.useState(false);
-
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   );
   const [pageSize, setPageSize] = React.useState(initialPageSize);
   const [pageIndex, setPageIndex] = React.useState(initialPageIndex);
-  const [searchValue, setSearchValue] = React.useState(
-    searchParams.get("search") || ""
-  );
+  const [searchValue, setSearchValue] = React.useState("");
 
-  React.useEffect(() => {
-    setIsLoading(false);
-  }, [data]);
-
-  const handleNavigation = (params: URLSearchParams) => {
-    setIsLoading(true);
-    router.push(`?${params.toString()}`);
-  };
-
-  const debouncedSearch = React.useCallback(
-    debounce((value: string) => {
-      const params = new URLSearchParams(searchParams.toString());
-      params.set("page", "0");
-
-      if (value) {
-        params.set("search", value);
-      } else {
-        params.delete("search");
-      }
-      handleNavigation(params);
-    }, 500),
-    [searchParams]
-  );
+  // Filter data by name, employeeId, or rfid
+  const filteredData = React.useMemo(() => {
+    if (!searchValue) return data;
+    const query = searchValue.toLowerCase();
+    return data.filter(
+      (row) =>
+        (row.name && row.name.toLowerCase().includes(query)) ||
+        (row.employeeId && row.employeeId.toLowerCase().includes(query)) ||
+        (row.rfid && row.rfid.toLowerCase().includes(query))
+    );
+  }, [data, searchValue]);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setSearchValue(value);
-    debouncedSearch(value);
+    setSearchValue(e.target.value);
   };
 
   const handlePageSizeChange = (value: string) => {
@@ -100,11 +99,13 @@ export function DataTable<TData, TValue>({
     const params = new URLSearchParams(searchParams.toString());
     params.set("pageSize", newSize.toString());
     params.set("page", "0");
-    handleNavigation(params);
+
+    router.push(`?${params.toString()}`);
   };
 
+  // Create table instance
   const table = useReactTable({
-    data,
+    data: filteredData, // <-- use filtered data here
     columns,
     pageCount,
     getCoreRowModel: getCoreRowModel(),
@@ -127,9 +128,10 @@ export function DataTable<TData, TValue>({
           pageSize,
         });
 
+        // Update URL with new page index
         const params = new URLSearchParams(searchParams.toString());
         params.set("page", newState.pageIndex.toString());
-        handleNavigation(params);
+        router.push(`?${params.toString()}`);
 
         setPageIndex(newState.pageIndex);
       }
@@ -138,20 +140,19 @@ export function DataTable<TData, TValue>({
 
   return (
     <div>
+      {/* Search and page size controls */}
       <div className="flex items-center justify-between py-4">
         <Input
-          placeholder="Search by Name, Employee ID, or RFID..."
+          placeholder="Search by Name, RFID, or Emp ID..."
           value={searchValue}
           onChange={handleSearchChange}
           className="max-w-sm"
-          disabled={isLoading}
         />
         <div className="flex items-center space-x-2">
           <p className="text-sm text-gray-500">Items per page</p>
           <Select
             value={pageSize.toString()}
             onValueChange={handlePageSizeChange}
-            disabled={isLoading}
           >
             <SelectTrigger className="h-8 w-[70px]">
               <SelectValue placeholder={pageSize.toString()} />
@@ -189,19 +190,7 @@ export function DataTable<TData, TValue>({
             ))}
           </TableHeader>
           <TableBody>
-            {isLoading ? (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
-                  <div className="flex justify-center items-center gap-2">
-                    <Loader2 className="h-6 w-6 animate-spin text-slate-500" />
-                    <span className="text-slate-500">Loading data...</span>
-                  </div>
-                </TableCell>
-              </TableRow>
-            ) : table.getRowModel().rows?.length ? (
+            {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
@@ -223,7 +212,7 @@ export function DataTable<TData, TValue>({
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  No results found.
+                  No results.
                 </TableCell>
               </TableRow>
             )}
@@ -243,7 +232,7 @@ export function DataTable<TData, TValue>({
             variant="outline"
             size="sm"
             onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage() || isLoading}
+            disabled={!table.getCanPreviousPage()}
             className="bg-white"
           >
             Previous
@@ -252,7 +241,7 @@ export function DataTable<TData, TValue>({
             variant="outline"
             size="sm"
             onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage() || isLoading}
+            disabled={!table.getCanNextPage()}
             className="bg-white"
           >
             Next
@@ -263,6 +252,7 @@ export function DataTable<TData, TValue>({
   );
 }
 
+// Utility function for debouncing
 function debounce<T extends (...args: any[]) => any>(
   func: T,
   wait: number
