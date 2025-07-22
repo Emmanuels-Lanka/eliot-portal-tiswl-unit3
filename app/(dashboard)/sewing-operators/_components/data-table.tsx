@@ -8,7 +8,6 @@ import {
   SortingState,
   flexRender,
   getCoreRowModel,
-  getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
@@ -30,7 +29,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useCallback, useEffect } from "react";
+import { Loader2 } from "lucide-react";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -52,6 +51,8 @@ export function DataTable<TData, TValue>({
   const router = useRouter();
   const searchParams = useSearchParams();
 
+  const [isLoading, setIsLoading] = React.useState(false);
+
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -62,23 +63,28 @@ export function DataTable<TData, TValue>({
     searchParams.get("search") || ""
   );
 
-  const debouncedSearch = useCallback(
-    React.useCallback(
-      debounce((value: string) => {
-        const params = new URLSearchParams(searchParams.toString());
-        params.set("page", "0");
+  React.useEffect(() => {
+    setIsLoading(false);
+  }, [data]);
 
-        if (value) {
-          params.set("search", value);
-        } else {
-          params.delete("search");
-        }
+  const handleNavigation = (params: URLSearchParams) => {
+    setIsLoading(true);
+    router.push(`?${params.toString()}`);
+  };
 
-        router.push(`?${params.toString()}`);
-      }, 500),
-      [searchParams, router]
-    ),
-    [searchParams, router]
+  const debouncedSearch = React.useCallback(
+    debounce((value: string) => {
+      const params = new URLSearchParams(searchParams.toString());
+      params.set("page", "0");
+
+      if (value) {
+        params.set("search", value);
+      } else {
+        params.delete("search");
+      }
+      handleNavigation(params);
+    }, 500),
+    [searchParams]
   );
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -94,11 +100,9 @@ export function DataTable<TData, TValue>({
     const params = new URLSearchParams(searchParams.toString());
     params.set("pageSize", newSize.toString());
     params.set("page", "0");
-
-    router.push(`?${params.toString()}`);
+    handleNavigation(params);
   };
 
-  // Create table instance
   const table = useReactTable({
     data,
     columns,
@@ -123,10 +127,9 @@ export function DataTable<TData, TValue>({
           pageSize,
         });
 
-        // Update URL with new page index
         const params = new URLSearchParams(searchParams.toString());
         params.set("page", newState.pageIndex.toString());
-        router.push(`?${params.toString()}`);
+        handleNavigation(params);
 
         setPageIndex(newState.pageIndex);
       }
@@ -135,19 +138,20 @@ export function DataTable<TData, TValue>({
 
   return (
     <div>
-      {/* Search and page size controls */}
       <div className="flex items-center justify-between py-4">
         <Input
-          placeholder="Search by employee ID..."
+          placeholder="Search by Name, Employee ID, or RFID..."
           value={searchValue}
           onChange={handleSearchChange}
           className="max-w-sm"
+          disabled={isLoading}
         />
         <div className="flex items-center space-x-2">
           <p className="text-sm text-gray-500">Items per page</p>
           <Select
             value={pageSize.toString()}
             onValueChange={handlePageSizeChange}
+            disabled={isLoading}
           >
             <SelectTrigger className="h-8 w-[70px]">
               <SelectValue placeholder={pageSize.toString()} />
@@ -185,7 +189,19 @@ export function DataTable<TData, TValue>({
             ))}
           </TableHeader>
           <TableBody>
-            {table.getRowModel().rows?.length ? (
+            {isLoading ? (
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
+                >
+                  <div className="flex justify-center items-center gap-2">
+                    <Loader2 className="h-6 w-6 animate-spin text-slate-500" />
+                    <span className="text-slate-500">Loading data...</span>
+                  </div>
+                </TableCell>
+              </TableRow>
+            ) : table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
@@ -207,7 +223,7 @@ export function DataTable<TData, TValue>({
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  No results.
+                  No results found.
                 </TableCell>
               </TableRow>
             )}
@@ -227,7 +243,7 @@ export function DataTable<TData, TValue>({
             variant="outline"
             size="sm"
             onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
+            disabled={!table.getCanPreviousPage() || isLoading}
             className="bg-white"
           >
             Previous
@@ -236,7 +252,7 @@ export function DataTable<TData, TValue>({
             variant="outline"
             size="sm"
             onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
+            disabled={!table.getCanNextPage() || isLoading}
             className="bg-white"
           >
             Next
@@ -247,7 +263,6 @@ export function DataTable<TData, TValue>({
   );
 }
 
-// Utility function for debouncing
 function debounce<T extends (...args: any[]) => any>(
   func: T,
   wait: number

@@ -7,36 +7,43 @@ const SewingOperators = async ({
 }: {
   searchParams: { page?: string; pageSize?: string; search?: string };
 }) => {
-  // Get pagination parameters from URL or use defaults
   const page = Number(searchParams.page) || 0;
   const pageSize = Number(searchParams.pageSize) || 10;
   const search = searchParams.search || "";
 
-  // Calculate skip value for pagination
   const skip = page * pageSize;
 
-  // Fetch total count for pagination info
-  const totalOperators = await db.operator.count({
-    where: search
-      ? {
-          employeeId: {
-            contains: search,
-            mode: "insensitive",
+  const whereClause = search
+    ? {
+        OR: [
+          {
+            employeeId: {
+              contains: search,
+              mode: "insensitive",
+            },
           },
-        }
-      : undefined,
+          {
+            name: {
+              contains: search,
+              mode: "insensitive",
+            },
+          },
+          {
+            rfid: {
+              contains: search,
+              mode: "insensitive",
+            },
+          },
+        ],
+      }
+    : {};
+
+  const totalOperators = await db.operator.count({
+    where: whereClause as any,
   });
 
-  // Fetch only the required operators with pagination
   const operators = await db.operator.findMany({
-    where: search
-      ? {
-          employeeId: {
-            contains: search,
-            mode: "insensitive",
-          },
-        }
-      : undefined,
+    where: whereClause as any,
     skip,
     take: pageSize,
     orderBy: {
