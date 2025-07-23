@@ -41,20 +41,23 @@ interface DataTableProps<TData, TValue> {
   pageIndex: number;
 }
 
-export function DataTable<TData extends {
-  id: string;
-  name: string;
-  createdAt: Date;
-  updatedAt: Date;
-  employeeId: string;
-  rfid: string | null;
-  gender: string;
-  designation: string;
-  isLoggedIn: boolean;
-  avgEfficiency: number | null;
-  obbOperationId: string | null;
-  operationName: string | null;
-}, TValue>({
+export function DataTable<
+  TData extends {
+    id: string;
+    name: string;
+    createdAt: Date;
+    updatedAt: Date;
+    employeeId: string;
+    rfid: string | null;
+    gender: string;
+    designation: string;
+    isLoggedIn: boolean;
+    avgEfficiency: number | null;
+    obbOperationId: string | null;
+    operationName: string | null;
+  },
+  TValue
+>({
   columns,
   data,
   totalCount,
@@ -66,7 +69,9 @@ export function DataTable<TData extends {
   const searchParams = useSearchParams();
 
   const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+    []
+  );
   const [pageSize, setPageSize] = React.useState(initialPageSize);
   const [pageIndex, setPageIndex] = React.useState(initialPageIndex);
   const [searchValue, setSearchValue] = React.useState("");
@@ -75,10 +80,11 @@ export function DataTable<TData extends {
   const filteredData = React.useMemo(() => {
     if (!searchValue) return data;
     const query = searchValue.toLowerCase();
-    return data.filter((row) =>
-      (row.name && row.name.toLowerCase().includes(query)) ||
-      (row.employeeId && row.employeeId.toLowerCase().includes(query)) ||
-      (row.rfid && row.rfid.toLowerCase().includes(query))
+    return data.filter(
+      (row) =>
+        (row.name && row.name.toLowerCase().includes(query)) ||
+        (row.employeeId && row.employeeId.toLowerCase().includes(query)) ||
+        (row.rfid && row.rfid.toLowerCase().includes(query))
     );
   }, [data, searchValue]);
 

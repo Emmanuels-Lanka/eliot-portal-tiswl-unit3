@@ -104,6 +104,8 @@ model EliotDevice {
   modelNumber              String
   serialNumber             String                 @unique
   hasTrained               Boolean?               @default(false)
+  status                   String?                @default("offline") @db.VarChar(50)
+  lastTimestamp            String?
   ProductionData           ProductionData[]
   ProductionEfficiencyData ProductionEfficiency[]
   sewingMachines           SewingMachine?
