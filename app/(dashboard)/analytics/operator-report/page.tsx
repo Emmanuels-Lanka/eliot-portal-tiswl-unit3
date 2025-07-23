@@ -8,6 +8,7 @@ import LogTable from '../../../../components/log/LogTable'
 import { db } from '@/lib/db';
 import ReportTable from './_components/daily-report';
 import { getEmployee } from './_components/actions';
+import { UnderConstruction } from '../daily-report/_components/loadCompo';
 
 const page = async () => {
 
@@ -54,7 +55,8 @@ const emp = await getEmployee()
     <div>
     
         <div className="container">
-        <ReportTable obbSheets={obbSheets} operators={emp}   ></ReportTable>
+        {/* <ReportTable obbSheets={obbSheets} operators={emp}   ></ReportTable> */}
+        <UnderConstruction />
       </div>
   </div>
   )
