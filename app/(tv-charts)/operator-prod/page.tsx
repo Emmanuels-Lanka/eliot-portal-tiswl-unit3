@@ -12,7 +12,7 @@ const page = async () => {
     return (
         <div className='mx-auto max-w-4xl'>
           <div className='mt-24'>
-                <h1 className='text-center text-2xl font-medium text-sky-700 mb-6'>Select Obb Sheet for SMV vs Cycle Time</h1>
+                <h1 className='text-center text-2xl font-medium text-sky-700 mb-6'>Select Obb Sheet for Hourly Production (Operator) TV Graph</h1>
                 <SelectObbSheet obbSheets={obbSheets} route="/operator-prod" />
             </div>
         </div>
