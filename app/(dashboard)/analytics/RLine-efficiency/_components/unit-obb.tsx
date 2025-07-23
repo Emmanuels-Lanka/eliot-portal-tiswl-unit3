@@ -283,7 +283,7 @@ const SelectObbSheetAndDate = ({
                                 <>{format(field.value.from, "PPP")}</>
                               )
                             ) : (
-                              <span>Pick a date range</span>
+                              <span>Pick a date </span>
                             )}
                             <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                           </Button>

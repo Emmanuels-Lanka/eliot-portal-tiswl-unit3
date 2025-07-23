@@ -231,6 +231,11 @@ export function TableDemo({ tableProp, date, obbData }: TableProps) {
       pdf.internal.pageSize.getWidth() - 80,
       30
     );
+    pdf.text(
+      [`( * ) Indicates operator has multiple operations`],
+      pdf.internal.pageSize.getWidth() - 80,
+      40
+    );
 
     const sortedTableProp = [...tableProp].sort(
       (a, b) => b.onStndEff - a.onStndEff
@@ -424,6 +429,9 @@ export function TableDemo({ tableProp, date, obbData }: TableProps) {
           <div>
             <div id="print-time-placeholder"></div>
           </div>
+        </div>
+        <div className="my-5">
+           ( * ) indicates operator has multiple operations
         </div>
         <Table style={{ tableLayout: "fixed" }}>
           {/* <TableCaption>LINE EFFICIENCY.</TableCaption> */}
