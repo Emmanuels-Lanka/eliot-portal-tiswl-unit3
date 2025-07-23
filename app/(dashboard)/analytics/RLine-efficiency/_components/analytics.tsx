@@ -62,6 +62,8 @@ const AnalyticsChart = ({ obbSheets, units }: AnalyticsChartProps) => {
       setNewDate(formattedDate);
 
       setObbSheetId(obb);
+
+      console.log(data)
     } catch (error: any) {
       console.error("Error fetching production data:", error);
       toast({

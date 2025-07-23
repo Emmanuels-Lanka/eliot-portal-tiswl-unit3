@@ -2,6 +2,7 @@
 import { DataRecord, EfficiencyData } from "./barchart";
 import { ObbSheet } from "@prisma/client";
 import { poolForPortal } from "@/lib/postgres";
+import { db } from "@/lib/db";
 
 type defects = {
   count: number;
@@ -68,7 +69,7 @@ export async function getObb(
 
     const result = await poolForPortal.query(query, values);
 
-    console.log("DATAaa: ", result.rows);
+    // console.log("DATAaa: ", result.rows);
     return new Promise((resolve) =>
       resolve(result.rows as { id: string; name: string }[])
     );
@@ -91,7 +92,7 @@ where pl.id = $1
 
     const result = await poolForPortal.query(query, values);
 
-    console.log("DATAaa: ", result.rows);
+    // console.log("DATAaa: ", result.rows);
     return new Promise((resolve) => resolve(result.rows as obb[]));
   } catch (error) {
     console.error("[TEST_ERROR]", error);
@@ -104,13 +105,13 @@ export async function getUnit(): Promise<{ id: string; name: string }[]> {
       select id as id , name as name from "Unit" u 
 
 
- order by "createdAt" desc
+ order by "name" asc
     `;
     const values = [];
 
     const result = await poolForPortal.query(query);
 
-    console.log("DATAaa: ", result.rows);
+    // console.log("DATAaa: ", result.rows);
     return new Promise((resolve) =>
       resolve(result.rows as { id: string; name: string }[])
     );
@@ -139,7 +140,7 @@ order by oo."seqNo"
 
     const result = await poolForPortal.query(query, values);
 
-    console.log("DATAaa: ", result.rows);
+    // console.log("DATAaa: ", result.rows);
     return new Promise((resolve) => resolve(result.rows as DataRecord[]));
   } catch (error) {
     console.error("[TEST_ERROR]", error);
@@ -253,5 +254,135 @@ order by eid desc
       throw error;
     } finally {
     }
+  }
+}
+
+
+
+export async function getAllData (date:string,lineId:string){
+  try {
+    const fixedDateFrom = `${date} 00:00:00`; 
+    const fixedDateTo = `${date} 23:59:59`;
+
+    const prodDate = await db.productionEfficiency.findMany({
+      where:{
+        timestamp:{
+          gte:fixedDateFrom,
+          lte:fixedDateTo
+        },
+        
+        obbOperation:{
+          obbSheet:{
+            productionLineId:lineId
+          }
+        }
+        
+        
+      },
+      include:{
+        operator:{
+          select:{
+            rfid:true,
+            name:true,
+            employeeId:true
+          }
+        },
+        obbOperation:{
+          select:{
+            seqNo:true,
+            smv:true,
+            operation:{
+              select:{
+                name:true
+              }
+            }
+
+          }
+         
+          
+        },
+        
+      }, orderBy:{
+        operatorRfid: 'asc',
+        
+       }
+      
+    })
+
+    const rfids = Array.from(new Set(prodDate.map(d => d.operatorRfid)));
+    // Sort prodDate so the latest timestamp is first
+
+    
+
+    const data = await db.operatorEffectiveTime.findMany({
+       where :{
+        loginTimestamp:{
+          gte:fixedDateFrom,
+          lte:fixedDateTo
+        },
+        logoutTimestamp:{
+          not:null,
+          
+        },
+        operatorRfid:{
+          in:rfids
+        }
+       },
+       include:{
+        operator:{
+          select:{
+            rfid:true,
+            name:true,
+            employeeId:true
+          }
+        }
+       },
+       orderBy:{
+        operatorRfid: 'asc'
+       }
+      
+    })
+    
+    prodDate.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+
+// Step 1: Group prodDate by operatorRfid and then by operation
+const grouped: {
+  [operatorRfid: string]: {
+    [operation: string]: typeof prodDate
+  }
+} = {};
+
+for (const item of prodDate) {
+  const rfid = item.operatorRfid;
+  const operation = item.obbOperation?.operation?.name || "Unknown";
+  if (!grouped[rfid]) grouped[rfid] = {};
+  if (!grouped[rfid][operation]) grouped[rfid][operation] = [];
+  grouped[rfid][operation].push(item);
+}
+
+// Step 2: Create a map for fast access (optional, if you want flat access)
+const prodDateMap = new Map<
+  string,
+  { [operation: string]: typeof prodDate }
+>();
+for (const [operatorRfid, opObj] of Object.entries(grouped)) {
+  if (operatorRfid) {
+    prodDateMap.set(operatorRfid, opObj);
+  }
+}
+
+// Step 3: Merge production data into operatorEffective records
+const merged = data.map(d => {
+  const prod = prodDateMap.get(d.operatorRfid) || {};
+  return {
+    ...d,
+    prod, // prod is now an object: { operationName: [prodData, ...], ... }
+  };
+});
+    
+    return {merged}
+
+  } catch (error) {
+    
   }
 }

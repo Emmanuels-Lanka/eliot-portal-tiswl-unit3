@@ -26,6 +26,7 @@ import {
 } from "@/components/ui/chart";
 import { use, useEffect, useState } from "react";
 import {
+  getAllData,
   getFinalData,
   getLogin,
   getNew,
@@ -119,6 +120,9 @@ export type ExtendedOperatorRfidData = OperatorRfidData & {
   onStndEff: number;
   earnHours: number;
   offStandHours: number;
+  operator:any
+  opId:string
+  date:string
 };
 export interface tableType {
   earnMinute: number;
@@ -144,23 +148,36 @@ function timeDifferenceInMinutes(
   minTime: string,
   maxTime: string
 ): { hours: number; minutes: number } {
-  // Convert the datetime strings to Date objects
   const minDate = new Date(minTime);
   const maxDate = new Date(maxTime);
-  // Calculate the difference in milliseconds
-  const timeDifferenceInMillis = maxDate.getTime() - minDate.getTime();
-  // Convert milliseconds to minutes
-  let minutes = Number((timeDifferenceInMillis / (1000 * 60)).toFixed(1));
-  let hours = Number((timeDifferenceInMillis / (1000 * 60 * 60)).toFixed(1));
 
-  if (hours >= 1) {
-    hours -= 1;
-    minutes -= 60; // Subtract 1 hour (60 minutes) from minutes
+  let diffMs = maxDate.getTime() - minDate.getTime();
+
+  if (diffMs <= 0) {
+    return { hours: 0, minutes: 0 };
   }
-  minutes = Number(Math.max(minutes, 0.1).toFixed(1));
-  hours = Number(Math.max(hours, 0.1).toFixed(1));
-  return { hours, minutes };
+
+  // Total minutes before deduction
+  let totalMinutes = diffMs / (1000 * 60);
+
+  // Subtract 1 hour for lunch if over 2 hours
+  if (totalMinutes > 120) {
+    totalMinutes -= 60;
+  }
+
+  // Cap at 1440 minutes (24 hours)
+  totalMinutes = Math.min(totalMinutes, 1440);
+
+  const hours = Number((totalMinutes / 60).toFixed(2));
+  const minutes = Math.round(totalMinutes);
+
+  return {
+    hours,
+    minutes
+  };
 }
+
+
 
 function timeStringToMinutes(timeString: string | null | undefined): number {
   if (!timeString) {
@@ -194,29 +211,45 @@ const BarChartGraphEfficiencyRate = ({
   const [chartWidth, setChartWidth] = useState<number>(50);
   const [isSubmitting, setisSubmitting] = useState<boolean>(false);
   const [obbData, setObbData] = useState<ObbSheet[]>([]);
+  const [reportDate,setReportDate] = useState<string>((""))
+ 
+
+ 
+
 
   const Fetchdata = async () => {
     try {
       setisSubmitting(true);
-      const login = await getLogin(date.from, date.to, obbSheet);
-      const newd = await getNew(date.from, date.to, obbSheet);
 
-      const newMapLast = newd.flatMap((n) => {
-        const foundEntries = login.filter(
-          (l) => l.operatorRfid === n.operatorRfid
-        );
-        if (foundEntries.length > 0) {
-          return foundEntries.map((found) => ({
-            ...n,
-            name: found.name, // Add the name from the second query
-            eid: found.eid, // Add the employee ID from the second query
-            login: found.login, // Add the min login timestamp
-            logout: n.timestamp, // Add the max logout timestamp
-            offStandTime: found.offstandtime, // Add the off-stand time
-          }));
-        }
-        return []; // Skip entries without matching `login` data
-      });
+
+      const data = await getAllData(date.from,obbSheet)
+      console.log(data?.merged)
+      setReportDate(date.from)
+      calcTotalTime(data?.merged ?? [])
+
+
+
+
+      
+      // const login = await getLogin(date.from, date.to, obbSheet);
+      // const newd = await getNew(date.from, date.to, obbSheet);
+
+      // const newMapLast = newd.flatMap((n) => {
+      //   const foundEntries = login.filter(
+      //     (l) => l.operatorRfid === n.operatorRfid
+      //   );
+      //   if (foundEntries.length > 0) {
+      //     return foundEntries.map((found) => ({
+      //       ...n,
+      //       name: found.name, // Add the name from the second query
+      //       eid: found.eid, // Add the employee ID from the second query
+      //       login: found.login, // Add the min login timestamp
+      //       logout: n.timestamp, // Add the max logout timestamp
+      //       offStandTime: found.offstandtime, // Add the off-stand time
+      //     }));
+      //   }
+      //   return []; // Skip entries without matching `login` data
+      // });
 
       // console.log("first",newMapLast)
       const obbData = await getObbData(obbSheet);
@@ -224,53 +257,138 @@ const BarChartGraphEfficiencyRate = ({
 
       // console.log("obbData",obbData)
 
-      const newMap = newMapLast.map((d) => {
-        const production = Number(d.sum);
+      // const newMap = newMapLast.map((d) => {
+      //   const production = Number(d.sum);
 
-        const earnMins = production * d.smv;
-        const earnHours = Number((earnMins / 60).toFixed(2));
+      //   const earnMins = production * d.smv;
+      //   const earnHours = Number((earnMins / 60).toFixed(2));
 
-        const { hours, minutes } = timeDifferenceInMinutes(d.login, d.logout);
+      //   const { hours, minutes } = timeDifferenceInMinutes(d.login, d.logout);
 
-        const offStand = timeStringToMinutes(d.offStandTime);
-        const offStandHours = Number((offStand / 60).toFixed(2));
+      //   const offStand = timeStringToMinutes(d.offStandTime);
+      //   const offStandHours = Number((offStand / 60).toFixed(2));
 
-        const ovlEff = Math.max(
-          0,
-          Number(((earnMins / minutes) * 100).toFixed(2))
-        );
-        const onStndEff = Math.max(
-          0,
-          Number(((earnMins / (minutes - offStand)) * 100).toFixed(2))
-        );
+      //   const ovlEff = Math.max(
+      //     0,
+      //     Number(((earnMins / minutes) * 100).toFixed(2))
+      //   );
+      //   const onStndEff = Math.max(
+      //     0,
+      //     Number(((earnMins / (minutes - offStand)) * 100).toFixed(2))
+      //   );
 
-        return {
-          ...d,
-          production: production,
-          earnMins,
-          minutes,
-          hours,
-          offStand,
-          ovlEff,
-          onStndEff,
-          earnHours,
-          offStandHours,
-        };
-      });
+      //   return {
+      //     ...d,
+      //     production: production,
+      //     earnMins,
+      //     minutes,
+      //     hours,
+      //     offStand,
+      //     ovlEff,
+      //     onStndEff,
+      //     earnHours,
+      //     offStandHours,
+      //   };
+      // });
 
-      setChartData(newMap);
+      
     } catch (error) {
       console.error("Error fetching data:", error);
     }
     setisSubmitting(false);
   };
 
-  useEffect(() => {
-    Fetchdata();
-    const chartWidths = Math.min(250, 110 + chartData.length * 2);
+  const calcTotalTime = (data:any [])=>{
 
-    setChartWidth(chartWidths);
-  }, [date, obbSheet]);
+
+     const groupedByOperator = new Map<string, any[]>();
+
+  // Step 1: Group by operatorRfid
+  for (const entry of data) {
+    if (!groupedByOperator.has(entry.operatorRfid)) {
+      groupedByOperator.set(entry.operatorRfid, []);
+    }
+    groupedByOperator.get(entry.operatorRfid)!.push(entry);
+  }
+
+const result: any[] = []; 
+
+for (const [operatorRfid, records] of Array.from(groupedByOperator.entries())) {
+    const operator = records[0].operator;
+    
+    // Step 2: Get earliest login and latest logout
+    const loginTimes = records.map(r => new Date(r.loginTimestamp));
+    const logoutTimes = records.map(r => new Date(r.logoutTimestamp));
+
+    const earliestLogin = new Date(Math.min(...loginTimes.map(d => d.getTime())));
+    const latestLogout = new Date(Math.max(...logoutTimes.map(d => d.getTime())));
+
+    const { hours, minutes } = timeDifferenceInMinutes(earliestLogin.toString(), latestLogout.toString());
+
+    const totalTimeMins = minutes
+    const offStand = timeStringToMinutes(records[0].offStandTime);
+
+    const prod = records[0].prod;
+
+
+   const operations = Object.entries(prod) as [string, any[]][];
+
+    const hasMultipleOps = operations.length > 1;
+
+    operations.forEach(([operationName, prodEntries], index) => {
+      const pin = hasMultipleOps  ? "* " : "";
+      const opId = pin + prodEntries[0].operator.employeeId; // ← add this line
+      const seqNo = prodEntries[0].obbOperation.seqNo;
+      const firstEntry = prodEntries[0];
+      const totalProduction = Number(firstEntry.totalPcs);
+      const smv = Number(firstEntry.obbOperation.smv);
+
+      const earnMins = totalProduction * smv;
+      const earnHours = Number((earnMins / 60).toFixed(2));
+      const offStandHours = Number((offStand / 60).toFixed(2));
+
+      const ovlEff = Math.max(0, Number(((earnMins / minutes) * 100).toFixed(2)));
+      const onStndEff = Math.max(0, Number(((earnMins / (minutes - offStand)) * 100).toFixed(2)));
+
+      result.push({
+        date:reportDate,
+        opId,
+        seqNo,
+        operator,
+        operatorRfid,
+        operation: operationName,
+        production: totalProduction,
+        earnMins,
+        earnHours,
+        totalTimeMins,
+        minutes,
+        hours,
+        offStand,
+        offStandHours,
+        ovlEff,
+        onStndEff,
+        login: earliestLogin.toString(),
+        logout: latestLogout.toString(),
+        smv
+      });
+    });
+
+
+    // console.log(earliestLogin,latestLogout,operator,operatorRfid,)
+  }
+  console.log(result)
+
+
+  setChartData(result);
+
+
+
+
+ }
+
+
+
+  
 
   useEffect(() => {
     Fetchdata();

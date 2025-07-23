@@ -213,11 +213,11 @@ const SelectObbSheetAndDate = ({
                                 ? obbSheet.find(
                                     (sheet) => sheet.id === field.value
                                   )?.name
-                                : "Select OBB Sheets..."}
+                                : "Select Lines..."}
                               <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                             </>
                           ) : (
-                            "No OBB sheets available!"
+                            "No Lines available!"
                           )}
                         </Button>
                       </PopoverTrigger>

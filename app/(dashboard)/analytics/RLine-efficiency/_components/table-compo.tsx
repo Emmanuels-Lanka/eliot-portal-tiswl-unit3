@@ -227,7 +227,7 @@ export function TableDemo({ tableProp, date, obbData }: TableProps) {
     ).padStart(2, "0")}:${String(now.getSeconds()).padStart(2, "0")}`;
     const currentTime = `${formattedDate} - ${formattedTime}`;
     pdf.text(
-      [`Document Date: ${date}`, `Printed Date: ${currentTime}`],
+      [`Document Date: ${tableProp[0]?.date}`, `Printed Date: ${currentTime}`],
       pdf.internal.pageSize.getWidth() - 80,
       30
     );
@@ -237,8 +237,8 @@ export function TableDemo({ tableProp, date, obbData }: TableProps) {
     );
 
     const tableData = sortedTableProp.map((row) => [
-      row.eid,
-      row.name,
+      row.opId,
+      row.operator.name,
       row.seqNo,
       row.operation,
       row.production,
@@ -270,8 +270,15 @@ export function TableDemo({ tableProp, date, obbData }: TableProps) {
       ],
       body: tableData,
       theme: "grid",
-      headStyles: { fillColor: [128, 128, 128] },
-      styles: { fontSize: 8, cellPadding: 2 },
+      headStyles: {
+  fillColor: [128, 128, 128],
+  textColor: "#FFFFFF"  // white header text
+},
+      styles: {
+  fontSize: 8,
+  cellPadding: 2,
+  textColor: "#000000"  // Force black text
+},
       columnStyles: {
         0: { halign: "center" },
         3: { halign: "left" },
@@ -338,7 +345,7 @@ export function TableDemo({ tableProp, date, obbData }: TableProps) {
     );
 
     pdf.save(
-      `Line_Individual_Efficiency_report_${obbData[0]?.line}_${date}.pdf`
+      `Line_Individual_Efficiency_report_${obbData[0]?.line}_${tableProp[0]?.date}.pdf`
     );
   };
 
@@ -409,7 +416,7 @@ export function TableDemo({ tableProp, date, obbData }: TableProps) {
             <h5 className="m-0 font-semibold">
               {" "}
               Date:{" "}
-              {date.from === date.to ? date.from : date.from + " to " + date.to}
+              {tableProp[0]?.date}
             </h5>
 
             <h5 className="font-semibold">Line Name: {obbData[0]?.line}</h5>
@@ -446,10 +453,10 @@ export function TableDemo({ tableProp, date, obbData }: TableProps) {
             {filteredTableProp.map((invoice, index) => (
               <TableRow key={index}>
                 <TableCell className="text-center px-2 py-2">
-                  {invoice.eid}
+                  {invoice.opId}
                 </TableCell>
                 <TableCell className="font-medium px-2 py-2">
-                  {invoice.name}
+                  {invoice.operator.name}
                 </TableCell>
                 <TableCell className="font-medium text-center px-2  py-2">
                   {invoice.seqNo}
@@ -457,26 +464,26 @@ export function TableDemo({ tableProp, date, obbData }: TableProps) {
                 <TableCell className="font-medium px-2 py-2">
                   {invoice.operation}
                 </TableCell>
-                <TableCell className="font-medium text-right px-2 py-2">
+                <TableCell className="font-medium text-center px-2 py-2">
                   {invoice.production}
                 </TableCell>
-                <TableCell className="font-medium text-right px-2 py-2">
+                <TableCell className="font-medium text-center px-2 py-2">
                   {invoice.smv}
                 </TableCell>
 
-                <TableCell className="text-right font-medium  px-2 py-2">
+                <TableCell className="text-center font-medium  px-2 py-2">
                   {invoice.hours}
                 </TableCell>
-                <TableCell className="text-right font-medium px-2 py-2">
+                <TableCell className="text-center font-medium px-2 py-2">
                   {invoice.earnHours}
                 </TableCell>
-                <TableCell className="text-right font-medium px-2 py-2">
+                <TableCell className="text-center font-medium px-2 py-2">
                   {invoice.offStandHours}
                 </TableCell>
-                <TableCell className="text-right font-medium px-2 py-2">
+                <TableCell className="text-center font-medium px-2 py-2">
                   {invoice.ovlEff}
                 </TableCell>
-                <TableCell className="text-right font-medium px-2 py-2">
+                <TableCell className="text-center font-medium px-2 py-2">
                   {invoice.onStndEff}
                 </TableCell>
                 {/* <TableCell className="text-r font-mediumight">{invoice.totalAmount}</TableCell> */}
@@ -485,7 +492,7 @@ export function TableDemo({ tableProp, date, obbData }: TableProps) {
           </TableBody>
         </Table>
 
-        <Table>
+        <Table className="mt-12">
           <TableFooter>
             <TableRow>
               <TableCell colSpan={5}></TableCell>
