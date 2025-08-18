@@ -61,6 +61,7 @@ model Operator {
   obbOperationId           String?
   operationName            String?
   alertLogs                AlertLog[]
+  OperationSession         OperationSession[]
   OperatorEffectiveTime    OperatorEffectiveTime[]
   operatorNonEffectiveTime OperatorNonEffectiveTime[]
   operatorSessions         OperatorSession[]
@@ -106,6 +107,7 @@ model EliotDevice {
   hasTrained               Boolean?               @default(false)
   status                   String?                @default("offline") @db.VarChar(50)
   lastTimestamp            String?
+  OperationSession         OperationSession[]
   ProductionData           ProductionData[]
   ProductionEfficiencyData ProductionEfficiency[]
   sewingMachines           SewingMachine?
@@ -239,6 +241,7 @@ model ObbOperation {
   operation                Operation              @relation(fields: [operationId], references: [id], onDelete: Cascade)
   sewingMachine            SewingMachine?         @relation(fields: [sewingMachineId], references: [id])
   supervisor               Staff?                 @relation(fields: [supervisorId], references: [id])
+  OperationSession         OperationSession[]
   operatorSessions         OperatorSession[]
   productionData           ProductionData[]
   ProductionEfficiencyData ProductionEfficiency[]
@@ -354,7 +357,7 @@ model OperatorNonEffectiveTime {
   endTimestamp   String?
   timeDifference String?
   createdAt      DateTime @default(now())
-  status         Boolean  @default(false)
+  status         String   @default(dbgenerated("false"))
   operator       Operator @relation(fields: [operatorRfid], references: [rfid], onDelete: Cascade)
 
   @@index([operatorRfid])
@@ -464,4 +467,24 @@ model MachineType {
   code      String   @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model OperationSession {
+  id                String       @id
+  operatorRfid      String
+  obbOperationId    String
+  eliotSerialNumber String?
+  startTimestamp    String
+  endTimestamp      String?
+  status            Boolean      @default(false)
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime
+  EliotDevice       EliotDevice? @relation(fields: [eliotSerialNumber], references: [serialNumber])
+  ObbOperation      ObbOperation @relation(fields: [obbOperationId], references: [id], onDelete: Cascade)
+  Operator          Operator     @relation(fields: [operatorRfid], references: [rfid], onDelete: Cascade)
+
+  @@index([eliotSerialNumber])
+  @@index([obbOperationId])
+  @@index([operatorRfid])
+  @@index([startTimestamp])
 }
