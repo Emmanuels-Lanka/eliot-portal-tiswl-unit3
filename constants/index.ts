@@ -31,6 +31,7 @@ import {
   UserX2,
   LucideUserCheck2,
   Server,
+  Building2,
 } from "lucide-react";
 
 export const ROAMING_QC_DEFECTS = [
@@ -302,6 +303,17 @@ export const SIDEBAR_ROUTES = [
       {
         label: "Add Production Lines",
         href: "/production-lines/create-new",
+        icon: AlignHorizontalDistributeCenter,
+      },
+    ],
+  },
+  {
+    categoryName: "Factory Units",
+    icon: Building2,
+    routes: [
+      {
+        label: "Manage Units",
+        href: "/factory-units",
         icon: AlignHorizontalDistributeCenter,
       },
     ],
