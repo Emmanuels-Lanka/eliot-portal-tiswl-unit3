@@ -61,37 +61,22 @@ interface AddProductionLineFormProps {
 
 
 const formSchema = z.object({
-    name: z.string()
-        .min(1, {
-            message: "Production line name is required"
-        })
-        .refine(value => value.startsWith("LINE-"), {
-            message: "Line name must start with 'LINE-'"
-        })
-        .refine(value => {
-            const parts = value.split('-');
-            // Remove empty parts if any (from trailing hyphens)
-            const filteredParts = parts.filter(part => part !== '');
-            
-            // Must have either:
-            // 1. LINE + 1 digit group (total 2 parts)
-            // 2. LINE + 2 digit groups (total 3 parts)
-            if (filteredParts.length < 2 || filteredParts.length > 3) return false;
-            
-            // Check all parts after "LINE" are digits with length 2-4
-            const digitParts = filteredParts.slice(1);
-            return digitParts.every(part => 
-                [2, 3, 4].includes(part.length) && /^\d+$/.test(part));
-        }, {
-            message: "Line name must be in format LINE-XX, LINE-XXX, LINE-XXXX or LINE-XX-XX, LINE-XXX-XXX, LINE-XXXX-XXXX where X are digits"
-        })
-        .refine(value => !/[^a-zA-Z0-9-]/.test(value), {
-            message: "Only letters, numbers and hyphens are allowed"
-        }),
-    unitId: z.string().min(1, {
-        message: "Production line unit is required"
+  name: z.string()
+    .min(1, {
+      message: "Production line name is required",
+    })
+    .refine(value => value.startsWith("LINE-"), {
+      message: "Line name must start with 'LINE-'",
+    })
+    .refine(value => /^[A-Za-z0-9-]+$/.test(value), {
+      message: "Only letters, numbers, and hyphens are allowed",
     }),
+    
+  unitId: z.string().min(1, {
+    message: "Production line unit is required",
+  }),
 });
+
 
 const AddProductionLineForm = ({
     units,
