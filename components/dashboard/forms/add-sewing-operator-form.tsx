@@ -89,15 +89,27 @@ const AddSewingOperatorForm = ({
                         </div>
                     ),
                 });
-                // router.refresh();
+                router.refresh();
                 form.reset();
-                window.location.reload();
             } catch (error: any) {
-                console.error("ERROR", error);
-                toast({
-                    title: error.response.data || "Something went wrong! Try again",
-                    variant: "error"
-                });
+                if (error.response && error.response.status === 409) {
+                    toast({
+                        title: error.response.data,
+                        variant: "error"
+                    });
+                } else {
+                    toast({
+                        title: "Something went wrong! Try again",
+                        variant: "error",
+                        description: (
+                            <div className='mt-2 bg-slate-200 py-2 px-3 md:w-[336px] rounded-md'>
+                                <code className="text-slate-800">
+                                    ERROR: {error.message}
+                                </code>
+                            </div>
+                        ),
+                    });
+                }
             }
         } else {
             try {
@@ -109,11 +121,24 @@ const AddSewingOperatorForm = ({
                 router.refresh();
                 router.push('/sewing-operators');
             } catch (error: any) {
-                console.error("ERROR", error);
-                toast({
-                    title: error.response.data || "Something went wrong! Try again",
-                    variant: "error"
-                });
+                if (error.response && error.response.status === 409) {
+                    toast({
+                        title: error.response.data,
+                        variant: "error"
+                    });
+                } else {
+                    toast({
+                        title: "Something went wrong! Try again",
+                        variant: "error",
+                        description: (
+                            <div className='mt-2 bg-slate-200 py-2 px-3 md:w-[336px] rounded-md'>
+                                <code className="text-slate-800">
+                                    ERROR: {error.message}
+                                </code>
+                            </div>
+                        ),
+                    });
+                }
             }
         }
     }
@@ -229,6 +254,9 @@ const AddSewingOperatorForm = ({
                                             <SelectItem value="junior-operator">Junior Operator</SelectItem>
                                             <SelectItem value="operator">Operator</SelectItem>
                                             <SelectItem value="senior-operator">Senior Operator</SelectItem>
+                                            <SelectItem value="senior-operator">Senior Operator</SelectItem>
+                                            <SelectItem value="assistant-operator">Assistant Operator</SelectItem>
+                                            <SelectItem value="jumper-operator">Jumper Operator</SelectItem>
                                         </SelectContent>
                                     </Select>
                                     <FormMessage />
