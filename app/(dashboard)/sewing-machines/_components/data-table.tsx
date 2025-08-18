@@ -73,7 +73,7 @@ export function DataTable<TData, TValue>({
 }: DataTableProps<TData, TValue>) {
     const router = useRouter()
     const searchParams = useSearchParams()
-
+    console.log(data,"asdasd")
     const [sorting, setSorting] = React.useState<SortingState>([])
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
     const [pageSize, setPageSize] = React.useState(initialPageSize)
@@ -253,7 +253,7 @@ export function DataTable<TData, TValue>({
                         disabled={!table.getCanNextPage()}
                         className="bg-white"
                     >
-                        Next
+                        Next   
                     </Button>
                 </div>
             </div>

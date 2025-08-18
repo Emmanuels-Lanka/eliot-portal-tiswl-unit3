@@ -115,6 +115,8 @@ const AddSewingMachineForm = ({
             </div>
           ),
         });
+        router.push("/sewing-machines");
+
         router.refresh();
         form.reset();
       } catch (error: any) {
@@ -131,8 +133,8 @@ const AddSewingMachineForm = ({
           title: "Updated successfully",
           variant: "success",
         });
-        router.refresh();
         router.push("/sewing-machines");
+        router.refresh();
       } catch (error: any) {
         console.error("ERROR", error);
         toast({

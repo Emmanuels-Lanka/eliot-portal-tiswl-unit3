@@ -49,14 +49,21 @@ const EliotDevices = async ({
       createdAt: "desc",
     },
     include: {
-      eliotDevice: {
-        select: {
-          serialNumber: true,
-          modelNumber: true
-        }
+    eliotDevice: {
+      select: {
+        serialNumber: true,
+        modelNumber: true
+      }
+    },
+    productionLines: {
+      select: {
+        id: true,
+        name: true,
+        unitId: true
       }
     }
-  });
+  }
+});
 
   return (
     <div className='mx-auto max-w-7xl mt-12'>
