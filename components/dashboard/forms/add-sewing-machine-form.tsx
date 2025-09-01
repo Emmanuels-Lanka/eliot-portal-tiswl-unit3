@@ -5,8 +5,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import { Loader2, Zap } from "lucide-react";
+import { Loader2, Zap, Check, ChevronsUpDown } from "lucide-react";
 import Link from "next/link";
+import { useState } from "react";
 
 import {
   Form,
@@ -23,6 +24,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
@@ -83,6 +97,7 @@ const AddSewingMachineForm = ({
 }: AddSewingMachineFormProps) => {
   const { toast } = useToast();
   const router = useRouter();
+  const [open, setOpen] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -115,8 +130,6 @@ const AddSewingMachineForm = ({
             </div>
           ),
         });
-        router.push("/sewing-machines");
-
         router.refresh();
         form.reset();
       } catch (error: any) {
@@ -133,8 +146,14 @@ const AddSewingMachineForm = ({
           title: "Updated successfully",
           variant: "success",
         });
-        router.push("/sewing-machines");
+        
+        // Refresh router data first
         router.refresh();
+        
+        // Navigate back after a brief delay to ensure refresh completes
+        setTimeout(() => {
+          router.push("/sewing-machines");
+        }, 500);
       } catch (error: any) {
         console.error("ERROR", error);
         toast({
@@ -160,6 +179,11 @@ const AddSewingMachineForm = ({
       });
       form.setValue("eliotDeviceId", "");
       router.refresh();
+      
+      // Force re-render by updating the form state
+      setTimeout(() => {
+        form.trigger("eliotDeviceId");
+      }, 100);
     } catch (error: any) {
       toast({
         title: "Something went wrong! Try again",
@@ -361,40 +385,96 @@ const AddSewingMachineForm = ({
                   control={form.control}
                   name="eliotDeviceId"
                   render={({ field }) => (
-                    <FormItem>
+                    <FormItem className="flex flex-col">
                       <FormLabel className="text-base">
                         ELIoT Device{" "}
                         {!initialData?.eliotDeviceId && "(Unassigned)"}
                       </FormLabel>
-                      <Select
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                      >
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select ELIoT device" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {initialData?.eliotDeviceId && (
-                            <SelectItem value={initialData?.eliotDeviceId}>
-                              {initialData.eliotDevice.serialNumber} ~{" "}
-                              {initialData.eliotDevice.modelNumber}
-                            </SelectItem>
-                          )}
-                          {devices.length > 0 ? (
-                            devices.map((device) => (
-                              <SelectItem key={device.id} value={device.id}>
-                                {device.serialNumber} ~ {device.modelNumber}
-                              </SelectItem>
-                            ))
-                          ) : (
-                            <p className="text-slate-500 italic text-sm px-2">
-                              No devices available. Please create new
-                            </p>
-                          )}
-                        </SelectContent>
-                      </Select>
+                      <Popover open={open} onOpenChange={setOpen}>
+                        <PopoverTrigger asChild>
+                          <Button
+                            variant="outline"
+                            role="combobox"
+                            aria-expanded={open}
+                            className="w-full justify-between font-normal"
+                          >
+                            {devices ? (
+                              <>
+                                {field.value
+                                  ? (() => {
+                                      const foundDevice = devices.find((device) => device.id === field.value);
+                                      if (foundDevice) {
+                                        return `${foundDevice.serialNumber} ~ ${foundDevice.modelNumber}`;
+                                      }
+                                      if (initialData?.eliotDeviceId === field.value && initialData?.eliotDevice) {
+                                        return `${initialData.eliotDevice.serialNumber} ~ ${initialData.eliotDevice.modelNumber}`;
+                                      }
+                                      return "Select ELIoT device...";
+                                    })()
+                                  : "Select ELIoT device..."}
+                                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                              </>
+                            ) : (
+                              "No devices available!"
+                            )}
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="p-0">
+                          <Command>
+                            <CommandInput placeholder="Search devices..." />
+                            <CommandList>
+                              <CommandEmpty>
+                                {devices.length === 0 ? (
+                                  "No devices available. Please create new"
+                                ) : (
+                                  "No devices found!"
+                                )}
+                              </CommandEmpty>
+                              <CommandGroup>
+                                {initialData?.eliotDeviceId && (
+                                  <CommandItem
+                                    key={initialData.eliotDeviceId}
+                                    value={`${initialData.eliotDevice.serialNumber} ${initialData.eliotDevice.modelNumber}`}
+                                    onSelect={() => {
+                                      form.setValue("eliotDeviceId", initialData.eliotDeviceId);
+                                      setOpen(false);
+                                    }}
+                                  >
+                                    <Check
+                                      className={cn(
+                                        "mr-2 h-4 w-4",
+                                        field.value === initialData.eliotDeviceId
+                                          ? "opacity-100"
+                                          : "opacity-0"
+                                      )}
+                                    />
+                                    {initialData.eliotDevice.serialNumber} ~ {initialData.eliotDevice.modelNumber}
+                                  </CommandItem>
+                                )}
+                                {devices &&
+                                  devices.map((device) => (
+                                    <CommandItem
+                                      key={device.id}
+                                      value={`${device.serialNumber} ${device.modelNumber}`}
+                                      onSelect={() => {
+                                        form.setValue("eliotDeviceId", device.id);
+                                        setOpen(false);
+                                      }}
+                                    >
+                                      <Check
+                                        className={cn(
+                                          "mr-2 h-4 w-4",
+                                          field.value === device.id ? "opacity-100" : "opacity-0"
+                                        )}
+                                      />
+                                      {device.serialNumber} ~ {device.modelNumber}
+                                    </CommandItem>
+                                  ))}
+                              </CommandGroup>
+                            </CommandList>
+                          </Command>
+                        </PopoverContent>
+                      </Popover>
                       <FormMessage />
                     </FormItem>
                   )}
